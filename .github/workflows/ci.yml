@@ -39,3 +39,4 @@ jobs:
                   node-version: '24'
             - run: cd Backend && npm ci
             - run: cd Backend && npm test
+            - run: node -v
