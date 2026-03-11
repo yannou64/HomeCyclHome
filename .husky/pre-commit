@@ -1,1 +1,1 @@
-npm test
+cd Frontend && npm run lint && cd ../Backend && npm run lint
