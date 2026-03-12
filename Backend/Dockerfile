@@ -36,4 +36,4 @@ RUN npm ci --only=production
 EXPOSE 3000
 
 # Commande de démarrage de l'application
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]
