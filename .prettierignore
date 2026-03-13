@@ -1,0 +1,16 @@
+# Dépendances
+node_modules
+
+# Build
+Frontend/dist
+Backend/dist
+
+# Coverage
+Backend/coverage
+
+# Prisma
+Backend/prisma/migrations
+
+# Environnement
+.env
+.env.*

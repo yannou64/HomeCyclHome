@@ -1,0 +1,78 @@
+name: CI/CD
+
+on:
+    push:
+        branches: [dev, 'feature/**']
+    pull_request:
+        branches: [main, dev]
+
+jobs:
+    lint-frontend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Cloner le dépot
+              uses: actions/checkout@v4
+            - name: Installer Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+            - run: cd Frontend && npm ci
+            - run: cd Frontend && npm run lint
+
+    lint-backend:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+            - run: cd Backend && npm ci
+            - run: cd Backend && npm run lint
+
+    test-backend:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+            - run: cd Backend && npm ci
+            - run: cd Backend && npm test
+
+    # ---- DÉPLOIEMENT STAGING ----
+    deploy-staging:
+        runs-on: ubuntu-latest
+        # Lance uniquement si la CI est passée et qu'on est sur dev
+        needs: [lint-frontend, lint-backend, test-backend]
+        if: github.ref == 'refs/heads/dev'
+        steps:
+            - name: Déploiement sur le VPS staging
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: ${{ secrets.VPS_PORT }}
+                  script: |
+                      cd /app/homecyclhome
+                      git pull origin dev
+                      docker compose --env-file .env.staging -f docker-compose.staging.yml up -d --build
+
+    # ---- DÉPLOIEMENT PROD ----
+    deploy-prod:
+        runs-on: ubuntu-latest
+        # Lance uniquement si la CI est passée et qu'on est sur main
+        needs: [lint-frontend, lint-backend, test-backend]
+        if: github.ref == 'refs/heads/main'
+        steps:
+            - name: Déploiement sur le VPS prod
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: ${{ secrets.VPS_PORT }}
+                  script: |
+                      cd /app/homecyclhome
+                      git pull origin main
+                      docker compose -f docker-compose.prod.yml up -d --build

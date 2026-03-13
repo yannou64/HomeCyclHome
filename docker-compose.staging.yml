@@ -1,0 +1,71 @@
+services:
+    # ---- BASE DE DONNÉES ----
+    postgres:
+        image: postgres:16-alpine
+        container_name: homecyclhome_staging_db
+        # Variables d'environnement PostgreSQL
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        # Persistance des données via un volume Docker
+        volumes:
+            - postgres_staging_data:/var/lib/postgresql/data
+        # PostgreSQL accessible uniquement sur le réseau interne
+        networks:
+            - staging_network
+        restart: unless-stopped
+
+    # ---- BACKEND NESTJS ----
+    backend:
+        build:
+            context: ./Backend
+            dockerfile: Dockerfile
+        container_name: homecyclhome_staging_backend
+        environment:
+            NODE_ENV: staging
+            DATABASE_URL: ${DATABASE_URL}
+            JWT_SECRET: ${JWT_SECRET}
+        # Le backend démarre uniquement si postgres est prêt
+        depends_on:
+            - postgres
+        # Port accessible uniquement sur le réseau interne
+        networks:
+            - staging_network
+        restart: unless-stopped
+
+    # ---- FRONTEND REACT ----
+    frontend:
+        build:
+            context: ./Frontend
+            dockerfile: Dockerfile
+        container_name: homecyclhome_staging_frontend
+        networks:
+            - staging_network
+        restart: unless-stopped
+
+    # ---- REVERSE PROXY NGINX ----
+    nginx:
+        image: nginx:alpine
+        container_name: homecyclhome_staging_nginx
+        ports:
+            # Seul Nginx est exposé publiquement
+            - '127.0.0.1:8080:80'
+        volumes:
+            # Configuration Nginx spécifique au staging
+            - ./nginx/staging.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - frontend
+            - backend
+        networks:
+            - staging_network
+        restart: unless-stopped
+
+# ---- VOLUMES ----
+volumes:
+    postgres_staging_data:
+
+# ---- RÉSEAU INTERNE ----
+networks:
+    staging_network:
+        driver: bridge

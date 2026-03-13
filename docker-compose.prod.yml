@@ -1,0 +1,66 @@
+services:
+    # ---- BASE DE DONNÉES ----
+    postgres:
+        image: postgres:16-alpine
+        container_name: homecyclhome_prod_db
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+            - postgres_prod_data:/var/lib/postgresql/data
+        networks:
+            - prod_network
+        restart: unless-stopped
+
+    # ---- BACKEND NESTJS ----
+    backend:
+        build:
+            context: ./Backend
+            dockerfile: Dockerfile
+        container_name: homecyclhome_prod_backend
+        environment:
+            NODE_ENV: production
+            DATABASE_URL: ${DATABASE_URL}
+            JWT_SECRET: ${JWT_SECRET}
+        depends_on:
+            - postgres
+        networks:
+            - prod_network
+        restart: unless-stopped
+
+    # ---- FRONTEND REACT ----
+    frontend:
+        build:
+            context: ./Frontend
+            dockerfile: Dockerfile
+        container_name: homecyclhome_prod_frontend
+        networks:
+            - prod_network
+        restart: unless-stopped
+
+    # ---- REVERSE PROXY NGINX ----
+    nginx:
+        image: nginx:alpine
+        container_name: homecyclhome_prod_nginx
+        ports:
+            # La prod écoute sur le port 80 (et 443 plus tard avec HTTPS)
+            - '127.0.0.1:8081:80'
+            - '443:443'
+        volumes:
+            - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - frontend
+            - backend
+        networks:
+            - prod_network
+        restart: unless-stopped
+
+# ---- VOLUMES ----
+volumes:
+    postgres_prod_data:
+
+# ---- RÉSEAU INTERNE ----
+networks:
+    prod_network:
+        driver: bridge
