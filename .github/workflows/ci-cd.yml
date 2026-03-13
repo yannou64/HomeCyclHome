@@ -73,6 +73,6 @@ jobs:
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: ${{ secrets.VPS_PORT }}
                   script: |
-                      cd /app/homecyclhome
+                      cd /app/homecyclhome-prod
                       git pull origin main
-                      docker compose -f docker-compose.prod.yml up -d --build
+                      docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
