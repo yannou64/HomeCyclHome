@@ -18,6 +18,7 @@ services:
         build:
             context: ./Backend
             dockerfile: Dockerfile
+        image: homecyclhome-prod-backend
         container_name: homecyclhome_prod_backend
         environment:
             NODE_ENV: production
@@ -34,6 +35,7 @@ services:
         build:
             context: ./Frontend
             dockerfile: Dockerfile
+        image: homecyclhome-prod-frontend
         container_name: homecyclhome_prod_frontend
         networks:
             - prod_network

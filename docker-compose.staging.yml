@@ -21,6 +21,7 @@ services:
         build:
             context: ./Backend
             dockerfile: Dockerfile
+        image: homecyclhome-staging-backend
         container_name: homecyclhome_staging_backend
         environment:
             NODE_ENV: staging
@@ -39,6 +40,7 @@ services:
         build:
             context: ./Frontend
             dockerfile: Dockerfile
+        image: homecyclhome-staging-frontend 
         container_name: homecyclhome_staging_frontend
         networks:
             - staging_network
