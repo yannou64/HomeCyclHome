@@ -18,10 +18,7 @@ services:
 
     # ---- BACKEND NESTJS ----
     backend:
-        build:
-            context: ./Backend
-            dockerfile: Dockerfile
-        image: homecyclhome-staging-backend
+        image: ghcr.io/yannou64/homecyclhome-backend:staging
         container_name: homecyclhome_staging_backend
         environment:
             NODE_ENV: staging
@@ -37,10 +34,7 @@ services:
 
     # ---- FRONTEND REACT ----
     frontend:
-        build:
-            context: ./Frontend
-            dockerfile: Dockerfile
-        image: homecyclhome-staging-frontend 
+        image: ghcr.io/yannou64/homecyclhome-frontend:staging
         container_name: homecyclhome_staging_frontend
         networks:
             - staging_network
