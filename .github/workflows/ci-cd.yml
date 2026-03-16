@@ -128,6 +128,7 @@ jobs:
                       echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u yannou64 --password-stdin
                       docker compose --env-file .env.staging -f docker-compose.staging.yml pull
                       docker compose --env-file .env.staging -f docker-compose.staging.yml up -d
+                      docker restart homecyclhome_staging_nginx
 
     # ---- DÉPLOIEMENT PROD ----
     deploy-prod:
@@ -159,3 +160,4 @@ jobs:
                       echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u yannou64 --password-stdin
                       docker compose --env-file .env.prod -f docker-compose.prod.yml pull
                       docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
+                      docker restart homecyclhome_prod_nginx
