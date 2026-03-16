@@ -15,10 +15,7 @@ services:
 
     # ---- BACKEND NESTJS ----
     backend:
-        build:
-            context: ./Backend
-            dockerfile: Dockerfile
-        image: homecyclhome-prod-backend
+        image: ghcr.io/yannou64/homecyclhome-backend:prod
         container_name: homecyclhome_prod_backend
         environment:
             NODE_ENV: production
@@ -32,10 +29,7 @@ services:
 
     # ---- FRONTEND REACT ----
     frontend:
-        build:
-            context: ./Frontend
-            dockerfile: Dockerfile
-        image: homecyclhome-prod-frontend
+        image: ghcr.io/yannou64/homecyclhome-frontend:prod
         container_name: homecyclhome_prod_frontend
         networks:
             - prod_network
