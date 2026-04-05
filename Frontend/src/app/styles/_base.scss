@@ -1,0 +1,98 @@
+// _base.scss
+@use 'variables' as *;
+
+h1 {
+  font-size: $font-size-h1;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+}
+
+h2 {
+  font-size: $font-size-h2;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+}
+
+h3 {
+  font-size: $font-size-body;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+p {
+  font-size: $font-size-body;
+  font-weight: $font-regular;
+  line-height: 1.6;
+}
+
+input {
+  width: 100%;
+  background-color: white;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $color-text-placeholder;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-myOrange;
+    box-shadow: 0 0 0 3px rgba($color-myOrange, 0.15);
+  }
+}
+
+// Bouton par défaut
+button {
+  background-color: white;
+  border: 1.5px solid $color-text-primary;
+  border-radius: $radius-md;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: $color-text-primary;
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Bouton CTA
+.btn-cta {
+  width: 100%;
+  height: 74px;
+  background-color: $color-myOrange;
+  border: none;
+  border-radius: $radius-md;
+  padding: $spacing-sm;
+  font-size: $font-size-body;
+  font-weight: $font-bold;
+  color: white;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background-color: darken($color-myOrange, 8%);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+}
+
+label {
+  font-size: $font-size-label;
+  font-weight: $font-medium;
+  color: $color-text-label;
+}

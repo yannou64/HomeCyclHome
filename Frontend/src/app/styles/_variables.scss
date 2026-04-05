@@ -1,0 +1,81 @@
+// Couleurs
+$color-myOrange: #f26419;
+$color-myYellow: #dfb202;
+$color-myBrown: #4f3b30;
+$color-myGreen: #d6f6dd;
+$color-myViolet: #ddaacc;
+$color-myLightGreen: #f4fbf5;
+
+$color-text-primary: #4f3b30;
+$color-text-label: #8c7b74;
+$color-text-placeholder: #b5a9a4;
+
+$color-border: #ddd5d2;
+
+// Font families
+$font-primary: 'Nunito', sans-serif;
+$font-hero: 'Grand Hotel', cursive;
+
+// Font weights
+$font-regular: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+// Font sizes - mobile first (ton design system)
+$font-size-hero: 2rem;
+$font-size-h1: 1.5rem;
+$font-size-h2: 1.25rem;
+$font-size-body: 1rem;
+$font-size-label: 0.75rem;
+$font-size-caption: 0.688rem;
+
+//spacing
+$spacing-xs: 0.5rem;   // 8px
+$spacing-sm: 1rem;     // 16px
+$spacing-md: 1.5rem;   // 24px
+$spacing-lg: 2rem;     // 32px
+$spacing-xl: 3rem;     // 48px
+
+// border-radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 16px;
+$radius-full: 9999px; // pour les pills/badges
+
+// Variables de shadow
+$shadow-sm: 0 2px 8px rgba($color-myBrown, 0.1);
+$shadow-md: 0 4px 16px rgba($color-myBrown, 0.15);
+
+// Breakpoints
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
+
+
+// Variables en css natif pour réutilisation par le navigateur
+:root {
+    --color-myOrange: #{$color-myOrange};
+    --color-myYellow: #{$color-myYellow};
+    --color-myBrown: #{$color-myBrown};
+    --color-myGreen: #{$color-myGreen};
+    --color-myViolet: #{$color-myViolet};
+    --color-myLightGreen: #{$color-myLightGreen};
+
+    --color-text-primary: #{$color-text-primary};
+    --color-text-label: #{$color-text-label};
+    --color-text-placeholder: #{$color-text-placeholder};
+
+    --color-border: #{$color-border};
+
+    --font-primary: #{$font-primary};
+    --font-hero: #{$font-hero};
+
+    --font-size-hero: #{$font-size-hero};
+    --font-size-h1: #{$font-size-h1};
+    --font-size-h2: #{$font-size-h2};
+    --font-size-body: #{$font-size-body};
+    --font-size-label: #{$font-size-label};
+    --font-size-caption: #{$font-size-caption};
+}

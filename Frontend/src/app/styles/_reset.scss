@@ -1,0 +1,52 @@
+@use './variables' as *;
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px; // base pour les rem
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-regular;
+    color: $color-text-primary;
+    background-color: $color-myLightGreen;
+    -webkit-font-smoothing: antialiased; // meilleur rendu des fonts sur Mac
+}
+
+img {
+    max-width: 100%;
+    display: block; // supprime l'espace blanc sous les images
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+input,
+textarea {
+    font-family: inherit;
+    border: none;
+    outline: none;
+}

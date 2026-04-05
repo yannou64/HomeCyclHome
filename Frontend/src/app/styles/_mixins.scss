@@ -1,0 +1,52 @@
+// _mixins.scss
+@use './variables' as *;
+
+// Breakpoints
+@mixin mobile {
+    @media (max-width: #{$bp-mobile}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (max-width: #{$bp-tablet}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$bp-desktop}) {
+        @content;
+    }
+}
+
+// Flexbox helpers
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+// Typographie
+@mixin text-hero {
+    font-family: $font-hero;
+    font-size: $font-size-hero;
+}
+
+@mixin text-h1 {
+    font-family: $font-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-semibold;
+}
+
+@mixin text-body {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-regular;
+}
