@@ -1,0 +1,25 @@
+#!/bin/sh
+# Hook post-commit — mise à jour automatique du wiki
+# Déclenché après chaque git commit
+
+# Récupération des informations du commit
+COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+COMMIT_DATE=$(date +%Y-%m-%d)
+COMMIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+CHANGED_FILES=$(git diff-tree --no-commit-id -r --name-only HEAD)
+
+# Ne pas déclencher sur les branches de déploiement
+if [ "$COMMIT_BRANCH" = "main" ] || [ "$COMMIT_BRANCH" = "dev" ]; then
+  exit 0
+fi
+
+# Lancer le sous-agent Claude Code
+claude --print \
+  --system-prompt "$(cat docs/wiki/prompts/update-log.md)" \
+  "Commit message: $COMMIT_MESSAGE
+Date: $COMMIT_DATE
+Branch: $COMMIT_BRANCH
+Changed files:
+$CHANGED_FILES
+
+Mets à jour docs/wiki/log.md selon les instructions."

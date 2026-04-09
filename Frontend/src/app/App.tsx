@@ -1,5 +1,12 @@
+import { Routes, Route } from 'react-router-dom';
+import Home from '../pages/Home';
+
 function App() {
-    return <>hello world ! <button>Test</button> <button className="btn-cta">Test2</button></>;
+    return (
+        <Routes>
+            <Route path="/" element={<Home />} />
+        </Routes>
+    );
 }
 
 export default App;
