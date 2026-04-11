@@ -102,7 +102,9 @@ src/app/styles/
 ```
 
 Chaque composant possède son propre fichier `MonComposant.module.scss` colocalisé.
-Pour importer les variables dans un module : `@use 'src/app/styles/index' as *`
+Pour importer les variables dans un module : chemin relatif vers `app/styles/index`.
+Exemple depuis `src/features/auth/components/LoginForm/` : `@use '../../../../app/styles/index' as *;`
+Compter les `../` selon la profondeur du fichier par rapport à `src/`.
 
 **Toutes les valeurs du design system (couleurs, typographie, espacements) sont définies
 dans `src/app/styles/_variables.scss`. Toujours consulter ce fichier avant d'implémenter
@@ -112,7 +114,7 @@ un composant — ne jamais écrire de valeurs en dur.**
 
 - Un fichier `MonComposant.module.scss` par composant, colocalisé
 - Utiliser `composes` pour réutiliser des classes entre modules si besoin
-- Toujours importer les variables via `@use '../../../app/styles/variables' as *`
+- Toujours importer les variables via un chemin relatif vers `app/styles/index` (ex: `@use '../../../app/styles/index' as *;`)
 - Ne jamais écrire de styles globaux dans un module — uniquement dans `global.scss`
 - Nommage des classes en `camelCase` dans les modules (ex: `.headerWrapper`)
 

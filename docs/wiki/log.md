@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-09] configuration | Validation du hook post-commit wiki
+
+Vérification du bon fonctionnement du hook Git post-commit chargé de mettre à jour automatiquement `docs/wiki/log.md` après chaque commit.
+Fichiers concernés : `.claude/settings.json` (hook), `docs/wiki/log.md`
+
+---
+
 ## [2026-04-09] configuration | Mise en place de l'environnement IA
 
 Configuration de Claude Code CLI comme agent de développement principal.

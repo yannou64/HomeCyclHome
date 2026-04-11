@@ -14,7 +14,9 @@ if [ "$COMMIT_BRANCH" = "main" ] || [ "$COMMIT_BRANCH" = "dev" ]; then
 fi
 
 # Lancer le sous-agent Claude Code
-claude --print \
+# --dangerously-skip-permissions : nécessaire pour un hook non interactif
+# Le sous-agent n'a accès qu'à docs/wiki/log.md — risque limité et connu
+claude --print --dangerously-skip-permissions \
   --system-prompt "$(cat docs/wiki/prompts/update-log.md)" \
   "Commit message: $COMMIT_MESSAGE
 Date: $COMMIT_DATE

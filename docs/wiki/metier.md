@@ -10,20 +10,28 @@ Consulter ce fichier avant d'implémenter toute logique liée aux données.
 | Entité | Rôle |
 |---|---|
 | `Utilisateur` | Compte applicatif — client, technicien ou admin |
-| `Role` | Rôle associé à un utilisateur |
-| `Adresse` | Adresse d'intervention validée via Google Maps |
-| `Zone` | Secteur géographique couvert (centre + rayon en km) |
+| `Role` | Rôle associé à un utilisateur (`client`, `technicien`, `admin`) |
+| `Adresse` | Adresse d'intervention validée via Google Maps (lat/lng + google_id) |
+| `Ville` | Ville liée à une adresse (code postal, nom) |
+| `Pays` | Pays lié à une ville |
+| `Marque` | Marque d'un vélo (relation n-n avec Cycle) |
+| `Zone` | Secteur géographique couvert — défini par un polygone GPS |
+| `Zone_Point` | Point GPS ordonné constituant le polygone d'une zone |
 | `Cycle` | Vélo appartenant à un client |
-| `TypeCycle` | Catégorie de vélo (VAE, Route, VTT…) |
+| `Type_cycle` | Catégorie de vélo (VAE, Route, VTT…) |
 | `Forfait` | Prestation proposée avec durée estimée |
-| `HistoriquePrixForfait` | Historique des prix d'un forfait (date début/fin) |
+| `Prix_Forfait` | Historique des prix d'un forfait (date début/fin) |
 | `Creneau` | Plage horaire disponible dans une zone |
+| `Statut_Intervention` | Référentiel des statuts (`Planifiée`, `Annulée`, `Terminée`) |
 | `Intervention` | Rendez-vous créé suite à une réservation |
 | `Photo` | Photo avant/après déposée sur une intervention |
+| `Contexte_Photo` | Référentiel du contexte photo (`Avant`, `Après`) |
 | `Paiement` | Déclaration de paiement physique d'une intervention |
+| `Mode_Paiement` | Référentiel des modes (`Espèce`, `Carte`, `Chèque`) |
+| `Statut_Paiement` | Référentiel des statuts (`En_Attente`, `Payé`) |
 | `Produit` | Article additionnel proposable (V2) |
-| `LigneCommande` | Produit ajouté à une intervention |
-| `HistoriquePrixProduit` | Historique des prix d'un produit |
+| `Ligne_commande` | Produit ajouté à une intervention |
+| `Prix_Produit` | Historique des prix d'un produit |
 
 ---
 
@@ -51,8 +59,10 @@ Consulter ce fichier avant d'implémenter toute logique liée aux données.
 - La date de clôture est enregistrée quand le statut passe à `Terminée`
 
 ### Zones géographiques
-- Une zone est définie par un centre (latitude/longitude) et un rayon en km
-- Un technicien peut être affecté à plusieurs zones
+- Une zone est définie par un **polygone** : liste ordonnée de points GPS stockés dans `Zone_Point`
+- La vérification qu'une adresse est dans une zone se fait via `google.maps.geometry.poly.containsLocation()` côté applicatif
+- L'admin dessine les zones visuellement via Google Maps JavaScript API
+- Un technicien peut être affecté à plusieurs zones (`Technicien_Est_affecté`)
 - Une zone peut avoir plusieurs techniciens
 
 ### Prix
@@ -86,30 +96,37 @@ Consulter ce fichier avant d'implémenter toute logique liée aux données.
 | `Utilisateur.email` | Unique, format email |
 | `Utilisateur.password_hash` | Jamais exposé en réponse API |
 | `Adresse.latitude / longitude` | Obligatoires — issus du géocodage Google |
+| `Adresse.google_id` | Identifiant Google Places |
 | `Intervention.date_prevue` | >= date du jour |
 | `Intervention.duree_minutes` | Issue du forfait, non modifiable |
 | `Creneau.date_fin` | > date_debut |
-| `Zone.rayon_km` | > 0 |
+| `Zone_Point.ordre` | Obligatoire pour reconstituer le polygone dans l'ordre |
+| `Forfait.nom_forfait` | Unique |
+| `Zone.nom_zone` | Unique |
 | `Paiement` | Unique par intervention |
 
 ---
 
 ## Relations clés
 
+- Un `Utilisateur` possède un `Role` (client, technicien, admin)
 - Un `Utilisateur` (client) possède plusieurs `Cycle`
-- Un `Utilisateur` (client) habite à une `Adresse`
-- Un `Utilisateur` (technicien) est affecté à une ou plusieurs `Zone`
+- Un `Utilisateur` peut être lié à plusieurs `Adresse` (n-n via `Peut_se_situer`, avec `adresse_principale`, `isValide`…)
+- Un `Utilisateur` (technicien) est affecté à une ou plusieurs `Zone` (n-n via `Technicien_Est_affecté`)
+- Une `Adresse` est rattachée à une `Ville`, elle-même rattachée à un `Pays`
+- Un `Cycle` est lié à un `Type_cycle` et à une ou plusieurs `Marque` (n-n via `Asso_21`)
+- Une `Zone` est définie par plusieurs `Zone_Point` (polygone ordonné)
 - Une `Zone` possède plusieurs `Creneau`
 - Un `Creneau` est planifié pour une seule `Intervention`
-- Une `Intervention` est liée à un `Client`, un `Technicien`, un `Cycle`,
-  une `Adresse`, un `Forfait` et un `Creneau`
-- Une `Intervention` peut avoir plusieurs `Photo` et une `LigneCommande`
-- Une `Intervention` a au plus un `Paiement`
+- Une `Intervention` est liée à un client (`Id_Client`), un technicien (`Id_Technicien`),
+  un `Prix_Forfait` (prix figé), une `Adresse` (figée), un `Creneau` et un `Statut_Intervention`
+- Une `Intervention` peut avoir plusieurs `Photo` (avec `Contexte_Photo`) et plusieurs `Ligne_commande`
+- Une `Intervention` a au plus un `Paiement` (avec `Mode_Paiement` et `Statut_Paiement`)
 
 ---
 
 ## Ressources
 
-- MCD complet → `docs/annexes/Livrable_HomeCyclehome.pdf` Annexe C
-- MLD complet → `docs/annexes/Livrable_HomeCyclehome.pdf` Annexe D
-- Dictionnaire de données complet → `docs/annexes/Livrable_HomeCyclehome.pdf` Annexe B
+- MCD détaillé (entités + attributs + associations) → [[Modèle Conceptuel de Données.md]]
+- Cahier des charges fonctionnel initial → `docs/annexes/CDC HomeCycle'home.pdf`
+- Livrable complet (MCD, MLD, dictionnaire) → `docs/annexes/Livrable HomeCycle'home.pdf`

@@ -1,7 +1,7 @@
 // AuthContext.tsx
 // Responsabilité unique : gérer la SESSION active.
 // Ce composant ne sait pas qui est l'utilisateur (nom, prénom...),
-// il sait juste qu'une session existe, avec quel rôle et quel token.
+// il sait juste qu'une session existe, avec quel rôle.
 // Si un composant a besoin des données complètes de l'utilisateur,
 // il utilisera le userId de la session pour faire un appel API séparé.
 

@@ -1,0 +1,86 @@
+@use '../../../../app/styles/index' as *;
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    text-align: center;
+    color: black;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    font-weight: $font-regular;
+    color: $color-text-label;
+}
+
+.input {
+    background-color: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    padding: 9px $spacing-sm;
+    width: 100%;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: red;
+    text-align: center;
+}
+
+.button {
+    background-color: $color-myOrange;
+    border: none;
+    border-radius: $radius-md;
+    color: white;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    height: 71px;
+    width: 100%;
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
+
+.registerLink {
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    text-align: center;
+    color: black;
+
+    a {
+        color: $color-myOrange;
+        font-weight: $font-semibold;
+        text-decoration: none;
+    }
+}

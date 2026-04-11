@@ -1,0 +1,12 @@
+@use '../../../app/styles/index' as *; // ← 2 niveaux depuis shared/components/Card/
+
+.card {
+    background-color: $color-myGreen;
+    border-radius: $radius-lg;
+    box-shadow: 0 4px 4px $color-border;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: $spacing-sm $spacing-xs;
+    width: 359px;
+}

@@ -2,7 +2,8 @@
 
 Justification des choix techniques retenus pour le projet.
 Ces choix sont **définitifs** — ne pas les remettre en question sans raison majeure.
-Référence complète → `docs/annexes/Livrable_HomeCyclehome.pdf` section 2.
+Référence complète → `docs/annexes/Livrable_HomeCyclehome.pdf` section 2. 2.
+Cahier des charges initial → `docs/annexes/CDC_HomeCyclehome.pdf`
 
 ---
 

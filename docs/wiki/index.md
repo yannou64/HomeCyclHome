@@ -7,26 +7,43 @@ s'orienter avant toute session de travail.
 
 ## État du projet
 
-| Élément | Valeur |
-|---|---|
-| Phase actuelle | Phase 2 — Conception fonctionnelle & technique |
-| Sprint en cours | Sprint 0 — Fondations |
-| MVP cible | Cycle complet Réservation → Réalisation → Paiement → Clôture |
-| Déploiement | ✅ Infrastructure en place (prod + staging) |
-| Maquettage | 🔄 En cours (parcours client) |
-| Développement | ⏳ Démarre Sprint 1 (Avril) |
+| Élément         | Valeur                                                       |
+| --------------- | ------------------------------------------------------------ |
+| Phase actuelle  | Phase 2 — Conception fonctionnelle & technique               |
+| Sprint en cours | Sprint 0 — Fondations                                        |
+| MVP cible       | Cycle complet Réservation → Réalisation → Paiement → Clôture |
+| Déploiement     | ✅ Infrastructure en place (prod + staging)                   |
+| Maquettage      | 🔄 En cours (parcours client)                                |
+| Développement   | ⏳ Démarre Sprint 1 (Avril)                                   |
 
 ---
 
 ## Navigation
 
+| Fichier              | Contenu                                                    |
+| -------------------- | ---------------------------------------------------------- |
+| [[stack.md]]         | Justification des choix techniques                         |
+| [[architecture.md]]  | Structure des dossiers, modules NestJS, patterns           |
+| [[metier.md]]        | Entités, règles métier, relations, contraintes             |
+| [[Modèle Conceptuel de Données.md]] | MCD complet — entités, attributs, associations |
+| [[sprint-actuel.md]] | État et objectifs du sprint en cours                       |
+| [[log.md]]           | Journal chronologique des décisions (append-only)          |
+| [[ia.md]]            | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
+| [[AuthContext.md]]   | Contexte d'authentification React — architecture et fonctionnement |
+| [[9. Les protected routes.md]] | ProtectedRoute — sécuriser les routes par session et rôle |
+
+**Historique de développement (notes de session) :**
+
 | Fichier | Contenu |
-|---|---|
-| `stack.md` | Justification des choix techniques |
-| `architecture.md` | Structure des dossiers, modules NestJS, patterns |
-| `metier.md` | Entités, règles métier, MCD, dictionnaire de données |
-| `sprint-actuel.md` | État et objectifs du sprint en cours |
-| `log.md` | Journal chronologique des décisions (append-only) |
+| ------- | ------- |
+| [[Historique-Dev/1. AuthContext.md]] | Architecture du contexte auth |
+| [[Historique-Dev/2. apiClient.md]] | Instance Axios partagée |
+| [[Historique-Dev/3. Environnement-url.md]] | Variables d'environnement Vite |
+| [[Historique-Dev/4. Composant Auth.md]] | Index des composants auth |
+| [[Historique-Dev/5. Les types d'authentification.md]] | AuthSession vs payload de formulaire |
+| [[Historique-Dev/6. authService.ts.md]] | Service d'appels API auth |
+| [[Historique-Dev/7. Gestion des logs dans le front.md]] | Convention de logs frontend |
+| [[Historique-Dev/8. Le hook useLogin.md]] | Hook orchestrateur login |
 
 ---
 
