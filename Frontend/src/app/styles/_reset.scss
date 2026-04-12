@@ -20,6 +20,16 @@ body {
     color: $color-text-primary;
     background-color: $color-myLightGreen;
     -webkit-font-smoothing: antialiased; // meilleur rendu des fonts sur Mac
+    min-height: 100vh;      // le body occupe au minimum toute la hauteur du viewport
+    display: flex;
+    flex-direction: column;
+}
+
+// Le div racine de Vite/React s'étire pour remplir le body
+#root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 img {

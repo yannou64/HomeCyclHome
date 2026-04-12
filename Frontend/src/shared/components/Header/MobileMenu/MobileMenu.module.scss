@@ -1,0 +1,120 @@
+@use '../../../../app/styles/index' as *;
+
+// Fond semi-transparent derrière le drawer
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+// Panel qui slide depuis la droite
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 72%;
+    background-color: $color-myOrange;
+    z-index: 200;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-xs $spacing-sm $spacing-lg;
+
+    &.open {
+        transform: translateX(0);
+    }
+}
+
+// Logo + bouton X en haut du drawer
+.drawerHeader {
+    @include flex-between;
+    margin-bottom: $spacing-md;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: $spacing-xs;
+}
+
+// Liste des liens de navigation principaux
+.navList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.navLink {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: white;
+    text-decoration: none;
+    display: block;
+
+    &.active {
+        text-decoration: underline;
+    }
+}
+
+.logoutBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: white;
+    padding: 0;
+    text-align: left;
+}
+
+// Ligne de séparation entre nav principale et liens légaux
+.separator {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    width: 126px;
+    margin: $spacing-sm 0;
+}
+
+// Liens légaux (Mentions légales, CGU, Confidentialité)
+.legalList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.legalLink {
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    font-weight: $font-regular;
+    color: white;
+    text-decoration: none;
+}

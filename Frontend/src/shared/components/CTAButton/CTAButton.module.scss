@@ -1,0 +1,19 @@
+@use '../../../app/styles/index' as *;
+
+.button {
+    background-color: $color-myOrange;
+    border: none;
+    border-radius: $radius-md;
+    color: white;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    height: 71px;
+    width: 100%;
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
