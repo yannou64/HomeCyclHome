@@ -30,7 +30,7 @@ s'orienter avant toute session de travail.
 | [[log.md]]           | Journal chronologique des décisions (append-only)          |
 | [[ia.md]]            | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
 | [[AuthContext.md]]   | Contexte d'authentification React — architecture et fonctionnement |
-| [[9. Les protected routes.md]] | ProtectedRoute — sécuriser les routes par session et rôle |
+| [[9. Les protected routes]] | ProtectedRoute — sécuriser les routes par session et rôle |
 
 **Historique de développement (notes de session) :**
 

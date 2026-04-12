@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-11] changement | Ajout en cours du module d'authentification frontend
+
+Mise en place des fondations de l'authentification côté React : `AuthContext`, `ProtectedRoute`, `LoginForm`, hook `useLogin`, `authService` et client API centralisé (`apiClient.ts`).
+Fichiers concernés : `authContext/AuthContext.tsx`, `ProtectedRoute.tsx`, `features/auth/`, `shared/services/apiClient.ts`
+
+---
+
 ## [2026-04-09] configuration | Validation du hook post-commit wiki
 
 Vérification du bon fonctionnement du hook Git post-commit chargé de mettre à jour automatiquement `docs/wiki/log.md` après chaque commit.

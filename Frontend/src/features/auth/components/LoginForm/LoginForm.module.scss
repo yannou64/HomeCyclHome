@@ -28,13 +28,43 @@
     color: $color-text-label;
 }
 
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputIcon {
+    position: absolute;
+    right: $spacing-sm;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+}
+
+.eyeButton {
+    position: absolute;
+    right: $spacing-sm;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    img {
+        width: 22px;
+        height: 18px;
+    }
+}
+
 .input {
     background-color: white;
     border: 1px solid $color-border;
     border-radius: $radius-md;
     font-family: $font-primary;
     font-size: 0.875rem;
-    padding: 9px $spacing-sm;
+    padding: 9px 2.5rem 9px $spacing-sm;
     width: 100%;
 
     &::placeholder {

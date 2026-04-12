@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "9. Les protected routes.md",
+                "file": "Historique-Dev/11. Sous Composant MobileMenu.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "9. Les protected routes"
+              "title": "11. Sous Composant MobileMenu"
             }
           }
         ]
@@ -185,10 +185,14 @@
   },
   "active": "0f011b39ecc87304",
   "lastOpenFiles": [
-    "Historique-Dev/4. Composant Auth.md",
-    "9. Les protected routes.md",
-    "Historique-Dev/5. Les types d'authentification.md",
+    "Historique-Dev/10. Composant Header.md",
+    "Historique-Dev/11. Sous Composant MobileMenu.md",
+    "Historique-Dev/Sans titre.md",
     "Historique-Dev/6. authService.ts.md",
+    "log.md",
+    "Historique-Dev/9. Les protected routes.md",
+    "Historique-Dev/4. Composant Auth.md",
+    "Historique-Dev/5. Les types d'authentification.md",
     "Historique-Dev/8. Le hook useLogin.md",
     "Historique-Dev/3. Environnement-url.md",
     "Historique-Dev/7. Gestion des logs dans le front.md",
@@ -202,7 +206,6 @@
     "index.md",
     "Modèle Conceptuel de Données.md",
     "metier.md",
-    "log.md",
     "stack.md",
     "architecture.md",
     "prompts/update-log.md"
