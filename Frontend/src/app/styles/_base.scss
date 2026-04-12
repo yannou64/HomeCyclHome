@@ -2,6 +2,11 @@
 @use 'variables' as *;
 @use "sass:color";
 
+// Pousse le footer en bas quand le contenu est court
+main {
+    flex: 1;
+}
+
 h1 {
     font-size: $font-size-h1;
     font-weight: $font-semibold;

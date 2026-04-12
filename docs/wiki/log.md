@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-12] changement | Implémentation du composant Header et MobileMenu
+
+Création du header principal avec navigation responsive : version desktop (logo + liens Connexion/S'inscrire) et version mobile via un drawer orange (`MobileMenu`). Ajout d'icônes SVG utilitaires (email, téléphone, œil ouvert/fermé) et mise à jour du `LoginForm` associé.
+Fichiers concernés : `shared/components/Header/Header.tsx`, `MobileMenu/MobileMenu.tsx`, `features/auth/components/LoginForm/LoginForm.tsx`, `app/styles/_variables.scss`
+
+---
+
 ## [2026-04-11] changement | Ajout en cours du module d'authentification frontend
 
 Mise en place des fondations de l'authentification côté React : `AuthContext`, `ProtectedRoute`, `LoginForm`, hook `useLogin`, `authService` et client API centralisé (`apiClient.ts`).

@@ -1,0 +1,52 @@
+@use '../../../app/styles/index' as *;
+
+.footer {
+    background-color: $color-myBrown;
+    width: 100%;
+}
+
+.inner {
+    max-width: $max-width-content;
+    margin: 0 auto;
+    padding: $spacing-sm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+// Liens légaux sur une ligne, avec retour à la ligne sur très petits écrans
+.legalNav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-xs;
+}
+
+.legalLink {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: white;
+    }
+}
+
+// Séparateur · entre les liens — non lisible par les lecteurs d'écran (aria-hidden)
+.separator {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: $font-size-label;
+    user-select: none;
+}
+
+// Copyright plus discret que les liens
+.copyright {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}

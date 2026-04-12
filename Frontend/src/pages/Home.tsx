@@ -1,4 +1,5 @@
 import { LoginForm } from '../features/auth/components/LoginForm/LoginForm';
+import { Footer } from '../shared/components/Footer/Footer';
 import { Header } from '../shared/components/Header/Header';
 
 export default function Home() {
@@ -6,9 +7,9 @@ export default function Home() {
         <>
             <Header />
             <main>
-              <LoginForm/>
+                <LoginForm />
             </main>
+            <Footer />
         </>
     );
 }
-  

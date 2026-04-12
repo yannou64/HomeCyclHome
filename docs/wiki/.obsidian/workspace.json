@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Historique-Dev/11. Sous Composant MobileMenu.md",
+                "file": "Historique-Dev/12. Composant Footer.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "11. Sous Composant MobileMenu"
+              "title": "12. Composant Footer"
             }
           }
         ]
@@ -185,11 +185,12 @@
   },
   "active": "0f011b39ecc87304",
   "lastOpenFiles": [
-    "Historique-Dev/10. Composant Header.md",
+    "log.md",
+    "Historique-Dev/12. Composant Footer.md",
     "Historique-Dev/11. Sous Composant MobileMenu.md",
+    "Historique-Dev/10. Composant Header.md",
     "Historique-Dev/Sans titre.md",
     "Historique-Dev/6. authService.ts.md",
-    "log.md",
     "Historique-Dev/9. Les protected routes.md",
     "Historique-Dev/4. Composant Auth.md",
     "Historique-Dev/5. Les types d'authentification.md",
