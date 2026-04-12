@@ -1,0 +1,37 @@
+@use '../../../app/styles/index' as *;
+
+// Animation de défilement de droite à gauche
+// -50% car les images sont dupliquées : on défile exactement un jeu complet
+@keyframes scrollLeft {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+.carousel {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; // masque ce qui dépasse le conteneur
+
+    @include desktop {
+        border: solid white 10px;
+        border-radius: 16px;
+    }
+}
+
+.track {
+    display: flex;
+    height: 100%;
+    // La largeur est calculée par le navigateur (max-content)
+    // pour accommoder toutes les images côte à côte
+    width: max-content;
+    animation: scrollLeft linear infinite;
+    // La durée (animationDuration) est passée en style inline depuis le composant
+}
+
+.slide {
+    height: 100%;
+    width: auto;        // garde le ratio de l'image
+    object-fit: cover;
+    flex-shrink: 0;     // empêche la compression des slides
+    display: block;
+}

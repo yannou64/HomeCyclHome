@@ -1,0 +1,30 @@
+@use '../../../app/styles/index' as *;
+
+.heroBrand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    // Mobile : le logo remonte et empiète sur l'image de fond.
+    // margin-top négatif agit dans le flux flex : le logo est physiquement
+    // tiré vers le haut, dans la zone du topSection.
+    // position + z-index garantissent que le logo passe au-dessus du topSection.
+    margin-top: -200px;
+    position: relative;
+    z-index: 1;
+
+    @include desktop {
+        margin-top: 0;
+        position: static;
+        z-index: auto;
+    }
+}
+
+.logo {
+    width: 180px;
+    height: auto;
+
+    @include desktop {
+        width: 260px;
+    }
+}

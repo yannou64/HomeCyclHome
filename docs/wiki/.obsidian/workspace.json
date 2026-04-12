@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Historique-Dev/12. Composant Footer.md",
+                "file": "Historique-Dev/13. Composant PageLayout.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "12. Composant Footer"
+              "title": "13. Composant PageLayout"
             }
           }
         ]
@@ -185,6 +185,8 @@
   },
   "active": "0f011b39ecc87304",
   "lastOpenFiles": [
+    "Historique-Dev/14. Composant Carousel.md",
+    "Historique-Dev/13. Composant PageLayout.md",
     "log.md",
     "Historique-Dev/12. Composant Footer.md",
     "Historique-Dev/11. Sous Composant MobileMenu.md",

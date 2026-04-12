@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-12] changement | Intégration du composant Footer
+
+Création du composant Footer avec ses styles SCSS dédiés et intégration dans la page `Home`. Mise à jour des styles globaux (`_base.scss`, `_reset.scss`) pour assurer la cohérence visuelle (fond brun foncé, liens légaux, copyright LeCycleLyonnais).
+Fichiers concernés : `shared/components/Footer/Footer.tsx`, `Footer.module.scss`, `pages/Home.tsx`, `app/styles/_base.scss`, `app/styles/_reset.scss`
+
+---
+
 ## [2026-04-12] changement | Implémentation du composant Header et MobileMenu
 
 Création du header principal avec navigation responsive : version desktop (logo + liens Connexion/S'inscrire) et version mobile via un drawer orange (`MobileMenu`). Ajout d'icônes SVG utilitaires (email, téléphone, œil ouvert/fermé) et mise à jour du `LoginForm` associé.
