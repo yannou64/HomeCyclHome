@@ -52,23 +52,37 @@ et gérer ses cycles.
 
 ### User stories
 
-| ID    | Story                         | Points | Statut     |
-| ----- | ----------------------------- | ------ | ---------- |
-| US-01 | S'authentifier (login/logout) | 3      | ⏳ À faire |
-| US-02 | Créer un compte client        | 3      | ⏳ À faire |
-| US-03 | Gérer son profil              | 2      | ⏳ À faire |
-| US-04 | Ajouter / modifier un cycle   | 3      | ⏳ À faire |
-| US-05 | Lister ses cycles             | 1      | ⏳ À faire |
+| ID    | Story                         | Points | Statut              |
+| ----- | ----------------------------- | ------ | ------------------- |
+| US-01 | S'authentifier (login/logout) | 3      | 🔄 Backend ✅ / Frontend ⏳ |
+| US-02 | Créer un compte client        | 3      | 🔄 Backend ✅ / Frontend ⏳ |
+| US-03 | Gérer son profil              | 2      | ⏳ À faire          |
+| US-04 | Ajouter / modifier un cycle   | 3      | ⏳ À faire          |
+| US-05 | Lister ses cycles             | 1      | ⏳ À faire          |
 
 ---
 
 ### Objectifs techniques du sprint
 
-- Implémenter le module `auth` (backend) — JWT + cookies HttpOnly
-- Implémenter le module `cycle` (backend)
-- Implémenter les écrans login, inscription, profil (frontend)
-- Implémenter la liste et la gestion des cycles (frontend)
-- Écrire les tests Jest sur les règles d'authentification (TDD)
+**Backend (✅ Terminé)**
+- [x] Schéma Prisma — modèle `Utilisateur` + migration
+- [x] PrismaService injectable + DatabaseModule global
+- [x] Module auth — register, confirm-email, login, logout
+- [x] JWT access token (15min) + refresh token (7j) en cookies HttpOnly
+- [x] Email de confirmation via Nodemailer + Mailpit en dev
+- [x] Validation des DTOs via `class-validator`
+- [x] Guards JWT + Strategy Passport
+
+**Frontend (🔄 En cours)**
+- [ ] `authService.ts` — ajout de `register()`
+- [ ] Hook `useRegister`
+- [ ] Composant `RegisterForm` + SCSS
+- [ ] Page `ConfirmEmailPage`
+- [ ] Pages `LoginPage` + `RegisterPage`
+- [ ] Routing `App.tsx` — `/login`, `/inscription`, `/confirmer-email`
+
+**Tests**
+- [ ] Tests Jest sur les règles d'authentification (TDD)
 
 ---
 

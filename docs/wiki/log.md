@@ -8,6 +8,28 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-14] changement | Implémentation complète du backend authentification
+
+Mise en place de l'intégralité du module auth backend : schéma Prisma (modèle `Utilisateur`), PrismaService injectable, DatabaseModule global, configuration JWT/cookies, EmailModule (Nodemailer + Mailpit), DTOs de validation, JWT Strategy Passport, AuthService (register/confirmEmail/login/logout), AuthController et AuthModule. Mise à jour de `main.ts` (cookieParser, CORS, ValidationPipe) et `AppModule`.
+
+Points notables :
+- `tsconfig.json` migré de `nodenext` vers `commonjs` (incompatibilité NestJS CLI + webpack)
+- `nest-cli.json` — ajout de `entryFile: "app/main"` pour respecter l'architecture custom (`src/app/`)
+- `prisma.config.ts` exclu de la compilation NestJS via `tsconfig.build.json`
+- Architecture feature-based respectée : `controllers/`, `services/`, `modules/`, `strategies/`, `guards/` dans `features/auth/`
+- Flux testé manuellement et validé : register → email Mailpit → confirm → login → cookies posés
+
+Fichiers concernés : `prisma/schema.prisma`, `src/shared/prisma/`, `src/shared/database/`, `src/config/`, `src/features/email/`, `src/features/auth/`, `src/app/main.ts`, `src/app/app.module.ts`, `nest-cli.json`, `tsconfig.json`, `tsconfig.build.json`
+
+---
+
+## [2026-04-12] changement | Intégration de PageLayout, Carousel et HeroBrand
+
+Création et intégration de trois composants partagés : `PageLayout` (structure de mise en page commune), `Carousel` (galerie défilante) et `HeroBrand` (bloc hero identitaire). Assemblage dans la page `Home`.
+Fichiers concernés : `pages/Home.tsx`, `shared/components/PageLayout/`, `shared/components/Carousel/`, `shared/components/HeroBrand/`
+
+---
+
 ## [2026-04-12] changement | Intégration du composant Footer
 
 Création du composant Footer avec ses styles SCSS dédiés et intégration dans la page `Home`. Mise à jour des styles globaux (`_base.scss`, `_reset.scss`) pour assurer la cohérence visuelle (fond brun foncé, liens légaux, copyright LeCycleLyonnais).

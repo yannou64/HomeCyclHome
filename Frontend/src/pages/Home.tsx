@@ -10,7 +10,7 @@ export default function Home() {
             <Header />
             <PageLayout>
                 <HeroBrand />
-                <LoginForm />
+                <h1>Features Soon !</h1>
             </PageLayout>
             <Footer />
         </>
