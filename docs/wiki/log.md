@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-19] configuration | Correction du workflow CI/CD
+
+Correction d'un problème bloquant dans le fichier de workflow GitHub Actions.
+Fichiers concernés : `.github/workflows/ci-cd.yml`
+
+---
+
 ## [2026-04-19] configuration | Correction des problèmes de pipeline CI/CD
 
 Résolution des erreurs bloquant la pipeline GitHub Actions : ajustements du workflow `ci-cd.yml` et corrections dans `auth.service.spec.ts` pour que les tests Jest passent en environnement CI.

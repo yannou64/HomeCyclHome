@@ -13,6 +13,9 @@ RUN npm ci
 # Copie le code source
 COPY . .
 
+# Génère le client Prisma (types + runtime à partir du schéma)
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" npx prisma generate
+
 # Compile le TypeScript en JavaScript (génère le dossier dist/)
 RUN npm run build
 
@@ -22,8 +25,11 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-# Copie uniquement le code compilé depuis le stage builder
+# Copie le code compilé depuis le stage builder
 COPY --from=builder /app/dist ./dist
+
+# Copie le client Prisma généré (nécessaire au runtime)
+COPY --from=builder /app/generated ./generated
 
 # Copie les fichiers de dépendances
 COPY package*.json ./
