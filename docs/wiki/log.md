@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-19] fix | Suppression de l'import useNavigate inutilisé dans useRegister
+
+Retrait de l'import `useNavigate` non utilisé dans le hook `useRegister.ts`, corrigeant un warning TypeScript/ESLint. Le hook n'effectue pas de navigation après inscription — il délègue ce comportement au composant appelant.
+Fichiers concernés : `Frontend/src/features/auth/hooks/useRegister.ts`
+
+---
+
 ## [2026-04-19] changement | Authentification frontend complète + tests unitaires AuthService
 
 Intégration finale du cycle auth côté React : `RegisterForm` (mise en page 2 colonnes, SCSS dédié), hooks `useRegister` et `useLogout`, `authService`, pages `LoginPage` / `RegisterPage` / `ConfirmEmailPage`, routage dans `App.tsx`. Corrections backend associées : `main.ts` (prefix `/api`), `cookie.config.ts` (path refresh token), `PrismaService`. Tests unitaires Jest : 11 cas couvrant `register`, `confirmEmail`, `login`, `logout` dans `auth.service.spec.ts`.

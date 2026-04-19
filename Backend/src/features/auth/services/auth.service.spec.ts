@@ -264,7 +264,8 @@ describe('AuthService', () => {
 
             const updateSpy = jest
                 .spyOn(prismaMock.utilisateur, 'update')
-                .mockResolvedValue({} as Utilisateur);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                .mockResolvedValue({} as any);
 
             const res = mockRes();
             const result = await service.logout('uuid-utilisateur', res);

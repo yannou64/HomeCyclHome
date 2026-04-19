@@ -37,6 +37,7 @@ jobs:
               with:
                   node-version: '24'
             - run: cd Backend && npm ci
+            - run: cd Backend && npx prisma generate   
             - run: cd Backend && npm test
 
     # ----  BUILD AND PUSH GHCR
