@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 import type { RegisterPayload } from '../types/auth.types';
 

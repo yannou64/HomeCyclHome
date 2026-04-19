@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-19] changement | Authentification frontend complète + tests unitaires AuthService
+
+Intégration finale du cycle auth côté React : `RegisterForm` (mise en page 2 colonnes, SCSS dédié), hooks `useRegister` et `useLogout`, `authService`, pages `LoginPage` / `RegisterPage` / `ConfirmEmailPage`, routage dans `App.tsx`. Corrections backend associées : `main.ts` (prefix `/api`), `cookie.config.ts` (path refresh token), `PrismaService`. Tests unitaires Jest : 11 cas couvrant `register`, `confirmEmail`, `login`, `logout` dans `auth.service.spec.ts`.
+Fichiers concernés : `features/auth/hooks/useRegister.ts`, `useLogout.ts`, `authService.ts`, `RegisterForm/`, `pages/LoginPage.tsx`, `RegisterPage.tsx`, `ConfirmEmailPage.tsx`, `App.tsx`, `Header.tsx`, `auth.service.ts`, `auth.service.spec.ts`, `main.ts`, `cookie.config.ts`, `prisma.service.ts`
+
+---
+
 ## [2026-04-19] changement | Diagrammes de séquence — Login & Register
 
 Création des diagrammes de séquence pour les flux Login et Register dans le cadre de la préparation à la présentation CDA. Chaque diagramme couvre deux niveaux : macro (Navigateur / React App / NestJS API / BDD / SMTP) et micro (acteurs internes : LoginForm, useLogin, authService, apiClient, AuthController, AuthService, JwtService, PrismaService). Les flux d'erreurs sont représentés en fragments `alt` : email en double (409), DTO invalide (400), mot de passe incorrect (401), compte inactif (403). Stratégie retenue : 5-6 diagrammes pour les flux complexes uniquement (Login, Register, Créer intervention, Vérification zone).
