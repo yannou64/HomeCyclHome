@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../../app/providers/authContext/useAuth';
+import { useLogout } from '../../../features/auth/hooks/useLogout';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import logoMiniRondWhite from '../../../assets/images/logoMiniRondWhite.webp';
 import styles from './Header.module.scss';
@@ -8,7 +9,8 @@ import styles from './Header.module.scss';
 type NavLinkItem = { label: string; to: string };
 
 export function Header() {
-    const { session, isAuthenticated, logout } = useAuth();
+    const { session, isAuthenticated } = useAuth();
+    const { handleLogout } = useLogout();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Calcule les liens de navigation selon le rôle de l'utilisateur
@@ -61,7 +63,7 @@ export function Header() {
                             </NavLink>
                         ))}
                         {isAuthenticated && (
-                            <button className={styles.logoutBtn} onClick={logout}>
+                            <button className={styles.handleLogoutBtn} onClick={handleLogout}>
                                 Déconnexion
                             </button>
                         )}
@@ -88,7 +90,7 @@ export function Header() {
                 isOpen={isMenuOpen}
                 onClose={() => setIsMenuOpen(false)}
                 navLinks={navLinks}
-                onLogout={logout}
+                onLogout={handleLogout}
                 isAuthenticated={isAuthenticated}
             />
         </>

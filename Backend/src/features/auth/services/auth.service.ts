@@ -3,6 +3,7 @@ import {
     ConflictException,
     ForbiddenException,
     Injectable,
+    Logger,
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { ACCESS_COOKIE, REFRESH_COOKIE } from '../../../config/cookie.config';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         private readonly prisma: PrismaService,
         private readonly jwtService: JwtService,
@@ -27,11 +30,14 @@ export class AuthService {
     ) {}
 
     async register(dto: RegisterDto): Promise<{ message: string }> {
+        this.logger.log(`[register] tentative : ${dto.email}`);
+
         // Vérifie si l'email est déjà utilisé
         const existing = await this.prisma.utilisateur.findUnique({
             where: { email: dto.email },
         });
         if (existing) {
+            this.logger.warn(`[register] email déjà utilisé : ${dto.email}`);
             throw new ConflictException('Cet email est déjà utilisé.');
         }
 
@@ -62,6 +68,9 @@ export class AuthService {
             email_confirmation_token,
         );
 
+        this.logger.log(
+            `[register] succès : ${utilisateur.email} (id: ${utilisateur.id})`,
+        );
         return {
             message:
                 'Inscription réussie. Vérifie ton email pour confirmer ton compte.',
@@ -69,11 +78,18 @@ export class AuthService {
     }
 
     async confirmEmail(token: string): Promise<{ message: string }> {
+        this.logger.log(
+            `[confirmEmail] tentative : token=${token.slice(0, 8)}...`,
+        );
+
         // Recherche de l'utilisateur par son token
         const utilisateur = await this.prisma.utilisateur.findUnique({
             where: { email_confirmation_token: token },
         });
         if (!utilisateur) {
+            this.logger.warn(
+                `[confirmEmail] token invalide : ${token.slice(0, 8)}...`,
+            );
             throw new NotFoundException('Lien de confirmation invalide.');
         }
 
@@ -82,6 +98,9 @@ export class AuthService {
             utilisateur.token_expires_at &&
             utilisateur.token_expires_at < new Date()
         ) {
+            this.logger.warn(
+                `[confirmEmail] token expiré : ${utilisateur.email}`,
+            );
             throw new BadRequestException(
                 'Ce lien a expiré. Inscris-toi à nouveau.',
             );
@@ -97,15 +116,19 @@ export class AuthService {
             },
         });
 
+        this.logger.log(`[confirmEmail] succès : ${utilisateur.email}`);
         return { message: 'Email confirmé. Tu peux maintenant te connecter.' };
     }
 
     async login(dto: LoginDto, res: Response): Promise<AuthResponseDto> {
+        this.logger.log(`[login] tentative : ${dto.email}`);
+
         // Recherche de l'utilisateur
         const utilisateur = await this.prisma.utilisateur.findUnique({
             where: { email: dto.email },
         });
         if (!utilisateur) {
+            this.logger.warn(`[login] email inconnu : ${dto.email}`);
             throw new UnauthorizedException('Email ou mot de passe incorrect.');
         }
 
@@ -115,11 +138,13 @@ export class AuthService {
             utilisateur.password_hash,
         );
         if (!isPasswordValid) {
+            this.logger.warn(`[login] mot de passe incorrect : ${dto.email}`);
             throw new UnauthorizedException('Email ou mot de passe incorrect.');
         }
 
         // Bloque la connexion si le compte n'est pas confirmé
         if (!utilisateur.is_actif) {
+            this.logger.warn(`[login] compte non confirmé : ${dto.email}`);
             throw new ForbiddenException(
                 'Confirme ton email avant de te connecter.',
             );
@@ -141,10 +166,15 @@ export class AuthService {
         res.cookie('access_token', accessToken, ACCESS_COOKIE);
         res.cookie('refresh_token', refreshToken, REFRESH_COOKIE);
 
+        this.logger.log(
+            `[login] succès : ${utilisateur.email} (rôle: ${utilisateur.role})`,
+        );
         return { userId: utilisateur.id, role: utilisateur.role };
     }
 
     async logout(userId: string, res: Response): Promise<{ message: string }> {
+        this.logger.log(`[logout] appel : userId=${userId}`);
+
         // Invalide le refresh token en base
         await this.prisma.utilisateur.update({
             where: { id: userId },
@@ -155,6 +185,7 @@ export class AuthService {
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
 
+        this.logger.log(`[logout] succès : userId=${userId}`);
         return { message: 'Déconnecté.' };
     }
 }

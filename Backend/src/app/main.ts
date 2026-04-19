@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
+    app.setGlobalPrefix('api');
+
     // Lecture des cookies entrants (nécessaire pour la JWT strategy)
     app.use(cookieParser());
 

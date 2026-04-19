@@ -1,4 +1,3 @@
-import { LoginForm } from '../features/auth/components/LoginForm/LoginForm';
 import { Footer } from '../shared/components/Footer/Footer';
 import { Header } from '../shared/components/Header/Header';
 import { HeroBrand } from '../shared/components/HeroBrand/HeroBrand';
@@ -11,6 +10,7 @@ export default function Home() {
             <PageLayout>
                 <HeroBrand />
                 <h1>Features Soon !</h1>
+
             </PageLayout>
             <Footer />
         </>
