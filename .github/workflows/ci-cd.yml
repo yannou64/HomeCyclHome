@@ -21,23 +21,28 @@ jobs:
 
     lint-backend:
         runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: 'postgresql://dummy:dummy@localhost:5432/dummy'
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: '24'
             - run: cd Backend && npm ci
+            - run: cd Backend && npx prisma generate
             - run: cd Backend && npm run lint
 
     test-backend:
         runs-on: ubuntu-latest
+        env:
+          DATABASE_URL: 'postgresql://dummy:dummy@localhost:5432/dummy'
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: '24'
             - run: cd Backend && npm ci
-            - run: cd Backend && npx prisma generate   
+            - run: cd Backend && npx prisma generate
             - run: cd Backend && npm test
 
     # ----  BUILD AND PUSH GHCR

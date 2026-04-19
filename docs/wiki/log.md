@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-19] configuration | Correction des problèmes de pipeline CI/CD
+
+Résolution des erreurs bloquant la pipeline GitHub Actions : ajustements du workflow `ci-cd.yml` et corrections dans `auth.service.spec.ts` pour que les tests Jest passent en environnement CI.
+Fichiers concernés : `.github/workflows/ci-cd.yml`, `Backend/src/features/auth/services/auth.service.spec.ts`
+
+---
+
 ## [2026-04-19] fix | Suppression de l'import useNavigate inutilisé dans useRegister
 
 Retrait de l'import `useNavigate` non utilisé dans le hook `useRegister.ts`, corrigeant un warning TypeScript/ESLint. Le hook n'effectue pas de navigation après inscription — il délègue ce comportement au composant appelant.
