@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useLogin } from '../../hooks/useLogin';
 import type { LoginPayload } from '../../types/auth.types';
 import styles from './LoginForm.module.scss';
-import { Card } from '../../../../shared/components/Card/Card';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
 import emailIcon from '../../../../assets/icones/email.svg';
 import eyeOpenIcon from '../../../../assets/icones/oeilOuvert.svg';
@@ -27,7 +26,7 @@ export function LoginForm() {
     }
 
     return (
-        <Card>
+        <>
             <h2 className={styles.title}>Se Connecter</h2>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.field}>
@@ -79,6 +78,6 @@ export function LoginForm() {
             <p className={styles.registerLink}>
                 Pas de compte ? <Link to="/inscription">S'inscrire</Link>
             </p>
-        </Card>
+        </>
     );
 }

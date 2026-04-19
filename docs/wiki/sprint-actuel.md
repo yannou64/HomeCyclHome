@@ -50,25 +50,63 @@ et gérer ses cycles.
 
 ---
 
-### User stories
+### User stories — Gestion des utilisateurs (HOM-164)
 
-| ID    | Story                         | Points | Statut     |
-| ----- | ----------------------------- | ------ | ---------- |
-| US-01 | S'authentifier (login/logout) | 3      | ⏳ À faire |
-| US-02 | Créer un compte client        | 3      | ⏳ À faire |
-| US-03 | Gérer son profil              | 2      | ⏳ À faire |
-| US-04 | Ajouter / modifier un cycle   | 3      | ⏳ À faire |
-| US-05 | Lister ses cycles             | 1      | ⏳ À faire |
+| Ticket   | Story                          | Statut       |
+| -------- | ------------------------------ | ------------ |
+| HOM-221  | S'authentifier (login/logout)  | ✅ Terminé   |
+| HOM-226  | Créer un compte utilisateur    | ✅ Terminé   |
+| HOM-231  | Gérer son profil               | ⏳ À faire   |
+| HOM-236  | Administrer les utilisateurs   | ⏳ À faire   |
+| HOM-241  | Supprimer son compte           | ⏳ À faire   |
+
+### User stories — Gestion des cycles client (HOM-165)
+
+| Ticket   | Story                          | Statut       |
+| -------- | ------------------------------ | ------------ |
+| HOM-246  | Administrer les types de cycles| ⏳ À faire   |
+| HOM-251  | Gérer ses cycles               | ⏳ À faire   |
 
 ---
 
 ### Objectifs techniques du sprint
 
-- Implémenter le module `auth` (backend) — JWT + cookies HttpOnly
-- Implémenter le module `cycle` (backend)
-- Implémenter les écrans login, inscription, profil (frontend)
-- Implémenter la liste et la gestion des cycles (frontend)
-- Écrire les tests Jest sur les règles d'authentification (TDD)
+**HOM-221 + HOM-226 — Auth complète (✅ Terminé)**
+- [x] Schéma Prisma — modèle `Utilisateur` + migration
+- [x] PrismaService injectable + DatabaseModule global
+- [x] Module auth — register, confirm-email, login, logout
+- [x] JWT access token (15min) + refresh token (7j) en cookies HttpOnly
+- [x] Email de confirmation via Nodemailer + Mailpit en dev
+- [x] Validation des DTOs via `class-validator`
+- [x] Guards JWT + Strategy Passport
+- [x] `authService.ts` — register(), logout()
+- [x] Hooks `useRegister`, `useLogout`
+- [x] Composant `RegisterForm` + SCSS
+- [x] Pages `LoginPage`, `RegisterPage`, `ConfirmEmailPage`
+- [x] Routing `/login`, `/inscription`, `/confirmer-email`
+- [x] Header — logout câblé sur `useLogout`
+- [x] Tests Jest — AuthService (11 tests)
+
+**HOM-231 — Gérer son profil (⏳ À faire)**
+- [ ] Endpoint `GET /api/users/me` — retourner les infos du profil
+- [ ] Endpoint `PATCH /api/users/me` — modifier prénom, nom, téléphone
+- [ ] Page `ProfilPage` + formulaire frontend
+
+**HOM-236 — Administrer les utilisateurs (⏳ À faire)**
+- [ ] Endpoint `GET /api/admin/users` — lister tous les utilisateurs (admin only)
+- [ ] Endpoint `PATCH /api/admin/users/:id` — modifier rôle / statut
+
+**HOM-241 — Supprimer son compte (⏳ À faire)**
+- [ ] Endpoint `DELETE /api/users/me` — suppression + déconnexion
+
+**HOM-246 — Administrer les types de cycles (⏳ À faire)**
+- [ ] Schéma Prisma — modèle `TypeCycle`
+- [ ] CRUD `TypeCycle` (admin only)
+
+**HOM-251 — Gérer ses cycles (⏳ À faire)**
+- [ ] Schéma Prisma — modèle `Cycle`
+- [ ] Endpoints CRUD cycle (client authentifié)
+- [ ] Page frontend liste + formulaire ajout/modification
 
 ---
 
