@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 .env.*
+!.env.production
 coverage
 .eslintrc*
 *.md
