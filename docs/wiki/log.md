@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-20] fix | Ajout de la copie des schémas Prisma dans le Dockerfile Backend
+
+Le `Dockerfile` du backend ne copiait pas les schémas Prisma nécessaires à la génération du client, ce qui causait une erreur au build de l'image Docker.
+Fichiers concernés : `Backend/Dockerfile`, `Backend/package.json`
+
+---
+
 ## [2026-04-20] configuration | Retrait de .env.production du .dockerignore Frontend
 
 Le fichier `Frontend/.env.production` était ignoré par `.dockerignore`, ce qui empêchait Docker de l'inclure dans l'image et causait des variables d'environnement manquantes en production.
