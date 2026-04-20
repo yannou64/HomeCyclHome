@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-20] configuration | Mise à jour des variables d'environnement staging
+
+Correction et synchronisation des fichiers `.env` pour l'environnement staging : ajustement des variables dans `Frontend/.env.production` et des deux fichiers Docker Compose pour assurer la cohérence entre les stacks prod et staging.
+Fichiers concernés : `.gitignore`, `Frontend/.env.production`, `docker-compose.prod.yml`, `docker-compose.staging.yml`
+
+---
+
 ## [2026-04-20] fix | Correction d'un chemin erroné dans le Dockerfile Backend
 
 Résolution d'une erreur de chemin dans le `Dockerfile` du backend qui provoquait un échec au build de l'image Docker.
