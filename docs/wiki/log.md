@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-19] configuration | Correction du Dockerfile Backend pour la CI/CD
+
+Résolution d'un problème bloquant dans le Dockerfile du backend empêchant le bon déroulement de la pipeline CI/CD.
+Fichiers concernés : `Backend/Dockerfile`
+
+---
+
 ## [2026-04-19] configuration | Correction du workflow CI/CD
 
 Correction d'un problème bloquant dans le fichier de workflow GitHub Actions.
