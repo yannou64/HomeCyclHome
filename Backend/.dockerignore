@@ -5,4 +5,3 @@ dist
 coverage
 .eslintrc*
 *.md
-prisma/migrations
