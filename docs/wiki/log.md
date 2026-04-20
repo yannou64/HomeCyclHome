@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-20] configuration | Retrait de .env.production du .dockerignore Frontend
+
+Le fichier `Frontend/.env.production` était ignoré par `.dockerignore`, ce qui empêchait Docker de l'inclure dans l'image et causait des variables d'environnement manquantes en production.
+Fichiers concernés : `Frontend/.dockerignore`
+
+---
+
 ## [2026-04-20] configuration | Mise à jour des variables d'environnement staging
 
 Correction et synchronisation des fichiers `.env` pour l'environnement staging : ajustement des variables dans `Frontend/.env.production` et des deux fichiers Docker Compose pour assurer la cohérence entre les stacks prod et staging.

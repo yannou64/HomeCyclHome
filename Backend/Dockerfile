@@ -31,6 +31,9 @@ COPY --from=builder /app/dist ./dist
 # Copie le client Prisma généré (nécessaire au runtime)
 COPY --from=builder /app/generated ./generated
 
+# Copie le schéma et les migrations Prisma (nécessaires pour migrate deploy)
+COPY --from=builder /app/prisma ./prisma
+
 # Copie les fichiers de dépendances
 COPY package*.json ./
 
@@ -41,5 +44,5 @@ RUN npm ci --only=production
 # Indique que le conteneur écoute sur le port 3000
 EXPOSE 3000
 
-# Commande de démarrage de l'application
-CMD ["node", "dist/app/main"]
+# Applique les migrations puis démarre l'application
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/app/main"]
