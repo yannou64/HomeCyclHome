@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-20] fix | Inclusion des migrations Prisma dans le contexte Docker
+
+Le `.dockerignore` du backend excluait le dossier `prisma/migrations`, ce qui empêchait l'exécution de `prisma migrate deploy` au démarrage du conteneur.
+Fichiers concernés : `Backend/.dockerignore`
+
+---
+
 ## [2026-04-20] fix | Ajout de la copie des schémas Prisma dans le Dockerfile Backend
 
 Le `Dockerfile` du backend ne copiait pas les schémas Prisma nécessaires à la génération du client, ce qui causait une erreur au build de l'image Docker.
