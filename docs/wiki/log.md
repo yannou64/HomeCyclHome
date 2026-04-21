@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-20] configuration | Configuration Nginx SPA pour React Router
+
+Ajout d'une configuration Nginx dans le Frontend pour rediriger toutes les routes vers `index.html`, évitant les erreurs 404 lors du rechargement d'une page gérée par React Router.
+Fichiers concernés : `Frontend/nginx.conf`, `Frontend/Dockerfile`
+
+---
+
 ## [2026-04-20] fix | Inclusion des migrations Prisma dans le contexte Docker
 
 Le `.dockerignore` du backend excluait le dossier `prisma/migrations`, ce qui empêchait l'exécution de `prisma migrate deploy` au démarrage du conteneur.

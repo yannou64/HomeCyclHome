@@ -169,7 +169,7 @@ export class AuthService {
         this.logger.log(
             `[login] succès : ${utilisateur.email} (rôle: ${utilisateur.role})`,
         );
-        return { userId: utilisateur.id, role: utilisateur.role };
+        return { userId: utilisateur.id, role: utilisateur.role, prenom: utilisateur.prenom };
     }
 
     async logout(userId: string, res: Response): Promise<{ message: string }> {

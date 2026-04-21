@@ -11,6 +11,7 @@ export type Role = 'client' | 'technicien' | 'admin';
 export type AuthSession = {
     userId: string; // permet de récupérer les données User si besoin
     role: Role; // permet d'adapter l'UI et de protéger les routes
+    prenom: string; // affiché dans le header
 };
 
 // Ce que le AuthContext expose à toute l'application

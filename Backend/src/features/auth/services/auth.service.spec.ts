@@ -237,6 +237,7 @@ describe('AuthService', () => {
                 password_hash: await bcrypt.hash('motdepasse123', 12),
                 is_actif: true,
                 role: 'client',
+                prenom: 'Yannick',
             } as any);
 
             jest.spyOn(prismaMock.utilisateur, 'update').mockResolvedValue(
@@ -253,6 +254,7 @@ describe('AuthService', () => {
 
             expect(result.userId).toBe('uuid-valide');
             expect(result.role).toBe('client');
+            expect(result.prenom).toBe('Yannick');
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(res.cookie).toHaveBeenCalledTimes(2); // access_token + refresh_token
         });
