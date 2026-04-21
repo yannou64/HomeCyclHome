@@ -1,0 +1,74 @@
+@use '../../../app/styles/index' as *;
+
+// Barre orange pleine largeur, collante en haut au scroll
+.header {
+    background-color: $color-myOrange;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+// Contenu centré avec max-width pour les grands écrans
+.inner {
+    @include flex-between;
+    max-width: $max-width-content;
+    margin: 0 auto;
+    padding: $spacing-xs $spacing-sm;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    display: block;
+}
+
+// Navigation inline — visible uniquement sur desktop (≥ 1024px)
+.desktopNav {
+    display: none;
+    align-items: center;
+    gap: $spacing-md;
+
+    @include desktop {
+        display: flex;
+    }
+}
+
+.navLink {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    text-decoration: none;
+
+    &.active {
+        text-decoration: underline;
+    }
+}
+
+.logoutBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    padding: 0;
+}
+
+// Bouton hamburger — visible uniquement sur mobile (< 1024px)
+.hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: $spacing-xs;
+
+    @include desktop {
+        display: none;
+    }
+}

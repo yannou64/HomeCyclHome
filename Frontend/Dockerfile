@@ -26,5 +26,8 @@ FROM nginx:alpine
 # L'image finale ne contient pas Node, npm, ni les dépendances de dev
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Remplace la config Nginx par défaut pour gérer le routing React (SPA)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Indique que le conteneur écoute sur le port 80 (documentation)
 EXPOSE 80

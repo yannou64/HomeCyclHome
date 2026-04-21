@@ -1,0 +1,97 @@
+@use '../../../app/styles/index' as *;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOBILE — empilement vertical en 3 bandes
+// ─────────────────────────────────────────────────────────────────────────────
+
+.pageLayout {
+    display: flex;
+    flex-direction: column;
+    flex: 1; // s'étire entre Header et Footer (chaîne sticky footer)
+}
+
+// ── Section haute : image Lyon + dégradé vers le vert menthe ─────────────────
+.topSection {
+    height: 280px;
+    flex-shrink: 0;
+    background-image:
+        linear-gradient(to bottom, transparent 40%, #{$color-myLightGreen} 100%),
+        var(--bg-mobile); // URL injectée via style inline depuis le TSX
+    background-size: cover;
+    background-position: center top;
+}
+
+// ── Section centrale : fond vert menthe, contenu centré ──────────────────────
+.contentSection {
+    background-color: $color-myLightGreen;
+    flex: 1; // pousse les sections basse en bas
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-md; // espace entre HeroBrand et les autres enfants
+    padding: $spacing-md $spacing-sm;
+}
+
+// ── Section basse : carousel + dégradé depuis le vert menthe ─────────────────
+.bottomSection {
+    height: 200px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+
+    // Dégradé en pseudo-élément par-dessus le carousel
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 55%;
+        background: linear-gradient(to bottom, #{$color-myLightGreen}, transparent);
+        z-index: 1;
+        pointer-events: none; // ne bloque pas les interactions sous lui
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DESKTOP (≥ 1024px) — grille 2 colonnes
+// ─────────────────────────────────────────────────────────────────────────────
+
+@include desktop {
+    .pageLayout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr auto;
+    }
+
+    // Colonne gauche : image Lyon pleine hauteur (spanning les 2 lignes)
+    .topSection {
+        grid-column: 1;
+        grid-row: 1 / 3; // occupe toute la hauteur de la grille
+        height: auto;    // la grille détermine la hauteur
+        background-image: var(--bg-desktop);
+        background-size: cover;
+        background-position: center;
+    }
+
+    // Colonne droite, ligne haute : contenu de la page
+    .contentSection {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: center; // centré verticalement dans la colonne droite
+        padding: $spacing-xl $spacing-lg;
+    }
+
+    // Colonne droite, ligne basse : carousel
+    .bottomSection {
+        grid-column: 2;
+        grid-row: 2;
+        height: 280px;
+
+        // Pas de dégradé sur desktop
+        &::before {
+            display: none;
+        }
+    }
+}
