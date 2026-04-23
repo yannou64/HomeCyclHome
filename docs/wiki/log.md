@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-21] changement | Affichage du prénom et de l'indicateur de rôle dans le header
+
+Enrichissement du contexte d'authentification : `auth-response.dto.ts` expose désormais le prénom de l'utilisateur et son rôle. `AuthContext` et ses types sont mis à jour pour stocker ces données. Le `Header` affiche le prénom connecté et un badge de rôle, avec les styles SCSS associés.
+Fichiers concernés : `auth-response.dto.ts`, `auth.service.ts`, `auth.service.spec.ts`, `AuthContext.tsx`, `auth.types.ts`, `Header.tsx`, `Header.module.scss`, `_variables.scss`
+
+---
+
 ## [2026-04-20] configuration | Configuration Nginx SPA pour React Router
 
 Ajout d'une configuration Nginx dans le Frontend pour rediriger toutes les routes vers `index.html`, évitant les erreurs 404 lors du rechargement d'une page gérée par React Router.
