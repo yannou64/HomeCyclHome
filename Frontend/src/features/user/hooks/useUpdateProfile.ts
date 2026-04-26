@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../../app/providers/authContext/useAuth';
-import { updateProfile } from '../services/userService';
+import { userService } from '../services/userService';
 import type { UpdateProfilePayload } from '../types/user.types';
 
 export function useUpdateProfile() {
@@ -15,7 +15,7 @@ export function useUpdateProfile() {
         setIsSuccess(false);
 
         try {
-            const updated = await updateProfile(payload);
+            const updated = await userService.updateProfile(payload);
 
             // Synchronise le Header si le prénom a changé
             if (session) {

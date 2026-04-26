@@ -63,14 +63,23 @@ src/
 ```
 features/<nom>/
 ├── <nom>.module.ts
-├── <nom>.controller.ts      # Reçoit les requêtes HTTP, délègue au service
-├── <nom>.service.ts         # Logique applicative (use case)
-├── dto/                     # Data Transfer Objects (validation entrée/sortie)
-│   ├── create-<nom>.dto.ts
-│   └── update-<nom>.dto.ts
-├── entities/                # Entités du domaine
-└── <nom>.spec.ts            # Tests unitaires Jest
+├── controllers/
+│   └── <nom>.controller.ts              # HTTP uniquement — délègue aux use cases
+├── use-cases/
+│   ├── get-<nom>.use-case.ts            # 1 fichier = 1 opération métier
+│   ├── create-<nom>.use-case.ts
+│   ├── update-<nom>.use-case.ts
+│   ├── delete-<nom>.use-case.ts
+│   └── *.use-case.spec.ts               # Test unitaire colocalisé avec le use case
+├── repositories/
+│   ├── <nom>.repository.interface.ts    # Contrat TypeScript (interface)
+│   └── <nom>.prisma.repository.ts       # Implémentation Prisma
+└── dto/
+    ├── input/     # DTOs validés avec class-validator (données entrantes)
+    └── output/    # DTOs de réponse (jamais le modèle Prisma brut)
 ```
+
+**Référence :** le module `admin` est l'implémentation de référence de ce pattern.
 
 ---
 
@@ -91,14 +100,24 @@ features/<nom>/
 
 **Controllers :**
 
-- Responsabilité unique : recevoir la requête, appeler le service, retourner la réponse
+- Responsabilité unique : recevoir la requête HTTP, appeler le use case, retourner la réponse
 - Pas de logique métier dans un controller
+- Injectent les use cases (pas le repository directement)
 
-**Services :**
+**Use Cases :**
 
-- Contiennent la logique applicative (use cases)
-- Accèdent à la base de données uniquement via `PrismaService`
-- Lancent des exceptions NestJS (`NotFoundException`, `ForbiddenException`...)
+- Une classe = une opération métier (ex: `CreateUserUseCase`)
+- Dépendent d'une interface repository — jamais de `PrismaService` directement
+- Lancent des exceptions NestJS (`NotFoundException`, `ConflictException`...)
+- Contiennent toute la logique métier : vérifications, règles, transformations
+
+**Repository :**
+
+- L'interface (`<nom>.repository.interface.ts`) définit le contrat : quelles méthodes existent
+- L'implémentation (`<nom>.prisma.repository.ts`) contient les appels Prisma réels
+- Le module fait le lien via un token d'injection (voir `admin.module.ts` comme référence)
+- Ce découplage permet de remplacer Prisma par un appel HTTP (microservice futur)
+  sans toucher à la logique des use cases
 
 ---
 
