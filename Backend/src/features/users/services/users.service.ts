@@ -18,7 +18,9 @@ export class UsersService {
         });
 
         if (!utilisateur) {
-            this.logger.warn(`[getProfile] utilisateur introuvable : ${userId}`);
+            this.logger.warn(
+                `[getProfile] utilisateur introuvable : ${userId}`,
+            );
             throw new NotFoundException('Utilisateur introuvable.');
         }
 

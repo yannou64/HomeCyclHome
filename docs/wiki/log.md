@@ -8,6 +8,20 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-25] decision | Pattern architectural : Clean Architecture avec UseCases explicites
+
+Décision de maintenir le pattern UseCase + Repository Interface (Clean Architecture stricte) plutôt que le pattern Service NestJS classique, en vue d'une évolution future vers les microservices. Ce pattern permet de remplacer l'implémentation Prisma par un appel HTTP sans toucher à la logique métier.
+Dette technique identifiée : `users` et `auth` utilisent encore le pattern Service + PrismaService direct — à aligner sur le nouveau pattern lors d'un sprint dédié.
+
+---
+
+## [2026-04-23] changement | Intégration du flux complet de gestion des profils utilisateurs
+
+Ajout de l'endpoint `PATCH /users/me` (backend) avec DTO de mise à jour et `UserProfileDto` en réponse. `UsersService` expose `getProfile` et `updateProfile` ; `UsersController` est sécurisé par `JwtAuthGuard`. Côté frontend : hook `useProfile`, hook `useUpdateProfile`, `userService`, `ProfileForm` (composant + styles SCSS) et `ProfilPage` câblée dans `App.tsx`. Tests unitaires `users.service.spec.ts` mis à jour.
+Fichiers concernés : `users.controller.ts`, `users.service.ts`, `users.service.spec.ts`, `update-user.dto.ts`, `user-profile.dto.ts`, `useProfile.ts`, `useUpdateProfile.ts`, `userService.ts`, `ProfileForm.tsx`, `ProfilPage.tsx`, `App.tsx`
+
+---
+
 ## [2026-04-21] changement | Affichage du prénom et de l'indicateur de rôle dans le header
 
 Enrichissement du contexte d'authentification : `auth-response.dto.ts` expose désormais le prénom de l'utilisateur et son rôle. `AuthContext` et ses types sont mis à jour pour stocker ces données. Le `Header` affiche le prénom connecté et un badge de rôle, avec les styles SCSS associés.

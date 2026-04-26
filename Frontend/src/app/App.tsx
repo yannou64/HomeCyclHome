@@ -7,6 +7,7 @@ const LoginPage = lazy(() => import('../pages/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const ConfirmEmailPage = lazy(() => import('../pages/ConfirmEmailPage'));
 const ProfilPage = lazy(() => import('../pages/ProfilPage'));
+const AdminPage = lazy(() => import('../pages/AdminPage'));
 
 function App() {
     return (
@@ -19,6 +20,11 @@ function App() {
                 <Route path="/profil" element={
                     <ProtectedRoute>
                         <ProfilPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                    <ProtectedRoute roles={['admin']}>
+                        <AdminPage />
                     </ProtectedRoute>
                 } />
                 <Route path="*" element={<Navigate to="/" replace />} />

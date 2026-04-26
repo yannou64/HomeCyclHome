@@ -71,19 +71,21 @@
 
 // Pastille ronde — visible uniquement pour technicien et admin
 .badgeTechnicien {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background-color: #22c55e;
     flex-shrink: 0;
+    border: solid white 2px;
 }
 
 .badgeAdmin {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background-color: #ef4444;
     flex-shrink: 0;
+     border: solid white 2px;
 }
 
 .logoutBtn {

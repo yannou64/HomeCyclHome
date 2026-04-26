@@ -20,8 +20,19 @@
               "icon": "lucide-file",
               "title": "33. Les Tests"
             }
+          },
+          {
+            "id": "07bd7c5d76739239",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Nouvel onglet"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -183,10 +194,10 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "0f011b39ecc87304",
+  "active": "07bd7c5d76739239",
   "lastOpenFiles": [
-    "Historique-Dev/32. App.tsx.md",
     "Historique-Dev/33. Les Tests.md",
+    "Historique-Dev/32. App.tsx.md",
     "Historique-Dev/31. Les routes dans Pages.md",
     "Historique-Dev/30. RegisterForm.md",
     "Historique-Dev/29. Hook useRegister.md",
