@@ -27,7 +27,7 @@ describe('CreateUserUseCase', () => {
         useCase = new CreateUserUseCase(mockRepo);
     });
 
-    it('devrait créer un utilisateur si l\'email est disponible', async () => {
+    it("devrait créer un utilisateur si l'email est disponible", async () => {
         mockRepo.findByEmail.mockResolvedValue(null); // email libre
         mockRepo.create.mockResolvedValue({
             id: 'new-uuid',
@@ -43,7 +43,7 @@ describe('CreateUserUseCase', () => {
         expect(result.id).toBe('new-uuid');
     });
 
-    it('devrait lever ConflictException si l\'email est déjà utilisé', async () => {
+    it("devrait lever ConflictException si l'email est déjà utilisé", async () => {
         mockRepo.findByEmail.mockResolvedValue({
             id: 'existing-uuid',
             ...validPayload,

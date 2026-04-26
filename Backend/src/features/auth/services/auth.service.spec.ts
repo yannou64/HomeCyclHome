@@ -255,7 +255,7 @@ describe('AuthService', () => {
             expect(result.userId).toBe('uuid-valide');
             expect(result.role).toBe('client');
             expect(result.prenom).toBe('Yannick');
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(res.cookie).toHaveBeenCalledTimes(2); // access_token + refresh_token
         });
     });
@@ -277,9 +277,9 @@ describe('AuthService', () => {
                 where: { id: 'uuid-utilisateur' },
                 data: { refresh_token_hash: null },
             });
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(res.clearCookie).toHaveBeenCalledWith('access_token');
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             expect(res.clearCookie).toHaveBeenCalledWith('refresh_token');
         });
     });

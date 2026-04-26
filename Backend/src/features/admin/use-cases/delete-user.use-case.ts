@@ -4,7 +4,10 @@ import { IAdminUsersRepository } from '../repositories/admin-users.repository.in
 export class DeleteUserUseCase {
     constructor(private readonly repo: IAdminUsersRepository) {}
 
-    async execute(requestingAdminId: string, targetUserId: string): Promise<void> {
+    async execute(
+        requestingAdminId: string,
+        targetUserId: string,
+    ): Promise<void> {
         // Règle métier : un admin ne peut pas supprimer son propre compte
         if (requestingAdminId === targetUserId) {
             throw new ForbiddenException(

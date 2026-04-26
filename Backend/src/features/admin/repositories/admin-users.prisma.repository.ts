@@ -63,11 +63,13 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
             this.prisma.utilisateur.count({ where }),
         ]);
 
-        return { users: users.map(this.toDto), total };
+        return { users: users.map((u) => this.toDto(u)), total };
     }
 
     async findById(id: string): Promise<AdminUserDto | null> {
-        const user = await this.prisma.utilisateur.findUnique({ where: { id } });
+        const user = await this.prisma.utilisateur.findUnique({
+            where: { id },
+        });
         return user ? this.toDto(user) : null;
     }
 

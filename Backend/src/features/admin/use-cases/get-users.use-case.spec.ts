@@ -39,7 +39,12 @@ describe('GetUsersUseCase', () => {
         const result = await useCase.execute({ page: 1, limit: 10 });
 
         expect(result.data).toEqual(users);
-        expect(result.meta).toEqual({ total: 2, page: 1, limit: 10, totalPages: 1 });
+        expect(result.meta).toEqual({
+            total: 2,
+            page: 1,
+            limit: 10,
+            totalPages: 1,
+        });
     });
 
     it('devrait calculer correctement totalPages (24 résultats / 10 par page = 3)', async () => {

@@ -7,7 +7,6 @@ import {
 } from '../../../../shared/components/ui/dialog';
 import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../types/admin.types';
 import styles from './UserFormDialog.module.scss';
-import { Card } from '@/shared/components/Card/Card';
 
 interface UserFormDialogProps {
     isOpen: boolean;
@@ -73,8 +72,8 @@ export function UserFormDialog({ isOpen, onClose, onSubmit, user }: UserFormDial
         try {
             if (isEditing) {
                 // En édition, on n'envoie pas le mot de passe (champ ignoré)
-                const { password: _password, ...updatePayload } = form;
-                await onSubmit(updatePayload as UpdateUserPayload);
+                const { nom, prenom, email, telephone, role } = form;
+                await onSubmit({ nom, prenom, email, telephone, role } as UpdateUserPayload);
             } else {
                 await onSubmit(form as CreateUserPayload);
             }

@@ -32,4 +32,12 @@ export default tseslint.config(
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
+  {
+    // expect(mockRepo.fn).toHaveBeenCalledWith() est un faux positif Jest
+    // unbound-method ne s'applique pas aux mocks Jest
+    files: ['**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
 );

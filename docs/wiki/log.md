@@ -8,6 +8,13 @@ Types : `decision` | `changement` | `apprentissage` | `configuration`
 
 ---
 
+## [2026-04-26] changement | Intégration de l'administration des utilisateurs (CRUD complet)
+
+Mise en place du module `admin` backend (Clean Architecture) : use cases `GetUsers`, `CreateUser`, `UpdateUser`, `DeleteUser` avec leurs specs Jest, repository Prisma, DTOs de pagination et de validation, contrôleur sécurisé par `RolesGuard` (RBAC). Côté frontend : `AdminPage`, `AdminLayout`, `AdminSidebar`, `AdminMobileBlocker`, `UsersTable`, `UserFormDialog`, `DeleteConfirmDialog`, hook `useAdminUsers`, `adminUsersService`. Ajout de `shadcn/ui` (`dialog`, `table`) et du hook `useIsMobile`. L'accès est bloqué sur mobile via `AdminMobileBlocker`.
+Fichiers concernés : `admin.module.ts`, `admin-users.controller.ts`, `*use-case.ts`, `admin-users.prisma.repository.ts`, `roles.guard.ts`, `AdminPage.tsx`, `AdminLayout/`, `UsersTable/`, `UserFormDialog/`, `DeleteConfirmDialog/`, `useAdminUsers.ts`, `adminUsersService.ts`
+
+---
+
 ## [2026-04-25] decision | Pattern architectural : Clean Architecture avec UseCases explicites
 
 Décision de maintenir le pattern UseCase + Repository Interface (Clean Architecture stricte) plutôt que le pattern Service NestJS classique, en vue d'une évolution future vers les microservices. Ce pattern permet de remplacer l'implémentation Prisma par un appel HTTP sans toucher à la logique métier.

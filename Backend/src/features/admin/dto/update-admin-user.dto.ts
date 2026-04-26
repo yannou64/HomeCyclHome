@@ -1,10 +1,4 @@
-import {
-    IsEmail,
-    IsIn,
-    IsOptional,
-    IsString,
-    Matches,
-} from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, Matches } from 'class-validator';
 import { UserRole } from '../../users/dto/user-profile.dto';
 
 export class UpdateAdminUserDto {

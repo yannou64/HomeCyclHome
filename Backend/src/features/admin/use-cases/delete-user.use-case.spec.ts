@@ -44,7 +44,7 @@ describe('DeleteUserUseCase', () => {
         expect(mockRepo.delete).not.toHaveBeenCalled();
     });
 
-    it('devrait lever NotFoundException si l\'utilisateur cible n\'existe pas', async () => {
+    it("devrait lever NotFoundException si l'utilisateur cible n'existe pas", async () => {
         mockRepo.findById.mockResolvedValue(null);
 
         await expect(useCase.execute('admin-123', 'ghost-999')).rejects.toThrow(

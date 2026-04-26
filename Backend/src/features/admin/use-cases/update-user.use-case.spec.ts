@@ -37,11 +37,13 @@ describe('UpdateUserUseCase', () => {
 
         const result = await useCase.execute('user-123', { nom: 'Martin' });
 
-        expect(mockRepo.update).toHaveBeenCalledWith('user-123', { nom: 'Martin' });
+        expect(mockRepo.update).toHaveBeenCalledWith('user-123', {
+            nom: 'Martin',
+        });
         expect(result.nom).toBe('Martin');
     });
 
-    it('devrait lever NotFoundException si l\'utilisateur n\'existe pas', async () => {
+    it("devrait lever NotFoundException si l'utilisateur n'existe pas", async () => {
         mockRepo.findById.mockResolvedValue(null);
 
         await expect(
@@ -68,7 +70,7 @@ describe('UpdateUserUseCase', () => {
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 
-    it('devrait autoriser la mise à jour sans changer l\'email (pas de vérification)', async () => {
+    it("devrait autoriser la mise à jour sans changer l'email (pas de vérification)", async () => {
         mockRepo.findById.mockResolvedValue(existingUser);
         mockRepo.update.mockResolvedValue({ ...existingUser, nom: 'Martin' });
 

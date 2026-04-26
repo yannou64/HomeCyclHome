@@ -1,10 +1,4 @@
-import {
-    IsEmail,
-    IsIn,
-    IsString,
-    Matches,
-    MinLength,
-} from 'class-validator';
+import { IsEmail, IsIn, IsString, Matches, MinLength } from 'class-validator';
 import { UserRole } from '../../users/dto/user-profile.dto';
 
 export class CreateAdminUserDto {
@@ -27,6 +21,8 @@ export class CreateAdminUserDto {
     role: UserRole;
 
     @IsString()
-    @MinLength(8, { message: 'Le mot de passe doit faire au moins 8 caractères' })
+    @MinLength(8, {
+        message: 'Le mot de passe doit faire au moins 8 caractères',
+    })
     password: string;
 }
