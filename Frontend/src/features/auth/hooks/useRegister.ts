@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 // import { useNavigate } from 'react-router-dom';
-import { register } from '../services/authService';
+import { authService } from '../services/authService';
 import type { RegisterPayload } from '../types/auth.types';
 
 const isDev = import.meta.env.DEV
@@ -16,7 +16,7 @@ export function useRegister() {
         setError(null);
         if(isDev) console.log("[useRegister] Tentative de s'enregistrer : ", payload)
         try {
-            await register(payload);
+            await authService.register(payload);
             setIsSuccess(true);
             if(isDev) console.log("[useRegister] Enregistrement réussi")
         } catch (e) {

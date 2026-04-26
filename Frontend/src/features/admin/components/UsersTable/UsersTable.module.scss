@@ -1,0 +1,189 @@
+@use '../../../../app/styles/index' as *;
+
+.wrapper {
+    background: white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.addButton {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    cursor: pointer;
+    color: $color-text-primary;
+
+    &:hover {
+        background-color: $color-myLightGreen;
+    }
+}
+
+.filters {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+}
+
+.searchInput {
+    flex: 1;
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.select {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.badgeActif {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: $radius-full;
+    background-color: #d6f6dd;
+    color: #15803d;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+}
+
+.badgeInactif {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: $radius-full;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-xs;
+}
+
+.editButton,
+.deleteButton {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 72px;
+
+    &:hover {
+        background-color: $color-myLightGreen;
+    }
+}
+
+.deleteButton:hover {
+    background-color: #fee2e2;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $spacing-xs;
+}
+
+.paginationInfo {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+}
+
+.paginationControls {
+    display: flex;
+    gap: $spacing-xs;
+    align-items: center;
+}
+
+.pageBtn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    &.pageBtnActive {
+        border-color: $color-myOrange;
+        color: $color-myOrange;
+        font-weight: $font-bold;
+    }
+}
+
+.loading,
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    padding: $spacing-md;
+    text-align: center;
+}
+
+.error {
+    color: #b91c1c;
+}

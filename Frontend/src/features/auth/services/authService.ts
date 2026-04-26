@@ -2,24 +2,16 @@ import type { AuthSession } from '../../../app/providers/authContext/types/auth.
 import { apiClient } from '../../../shared/services/apiClient';
 import type { LoginPayload, RegisterPayload } from '../types/auth.types';
 
+export const authService = {
+    login(payload: LoginPayload): Promise<AuthSession> {
+        return apiClient.post<AuthSession>('/auth/login', payload).then((r) => r.data);
+    },
 
-const isDev = import.meta.env.DEV;
+    logout(): Promise<void> {
+        return apiClient.post('/auth/logout').then(() => undefined);
+    },
 
-export async function login(payload: LoginPayload): Promise<AuthSession> {
-    if (isDev) console.log('[authService] login appelé avec : ', payload.email);
-
-    const response = await apiClient.post<AuthSession>('/auth/login', payload);
-    if (isDev) console.log('[authService] login réussi : ', response.data)
-
-    return response.data;
-}
-
-export async function logout(): Promise<void> {
-    if (isDev) console.log('[authService] logout appelé')
-    await apiClient.post('/auth/logout');
-}
-
-export async function register(payload: RegisterPayload): Promise<void> {
-    if (isDev) console.log('[authService] register appelé avec : ', payload.email);
-    await apiClient.post('/auth/register', payload);
-}
+    register(payload: RegisterPayload): Promise<void> {
+        return apiClient.post('/auth/register', payload).then(() => undefined);
+    },
+};

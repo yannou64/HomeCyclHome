@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getProfile } from '../services/userService';
+import { userService } from '../services/userService';
 import type { UserProfile } from '../types/user.types';
 
 export function useProfile() {
@@ -10,7 +10,7 @@ export function useProfile() {
     useEffect(() => {
         async function fetchProfile() {
             try {
-                const data = await getProfile();
+                const data = await userService.getProfile();
                 setProfile(data);
             } catch {
                 setError('Impossible de charger le profil.');

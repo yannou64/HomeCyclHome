@@ -5,12 +5,15 @@ import styles from './PageLayout.module.scss';
 import fondEcranLyonMobile from '../../../assets/images/FondEcranLyonMobile.webp';
 import fondEcranLyonDesktop from '../../../assets/images/FondEcranLyonDesktop.webp';
 import reparationVeloMobile from '../../../assets/images/ReparationVeloMobile.webp';
-import reparationVeloDesktop from '../../../assets/images/ReparationVeloDesktop.webp';
-
+import reparationVeloMobile2 from '../../../assets/images/ReparationVeloMobile2.webp'
+import avis1 from '../../../assets/images/Avis1.jpg';
+import avis2 from '../../../assets/images/Avis2.jpg'
 // Images passées au carousel — à enrichir quand de nouvelles photos seront disponibles
 const CAROUSEL_IMAGES = [
     reparationVeloMobile,
-    reparationVeloDesktop,
+    avis1,
+    reparationVeloMobile2,
+    avis2
 ];
 
 type PageLayoutProps = {
