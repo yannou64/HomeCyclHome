@@ -3,7 +3,9 @@ import { UserProfileDto } from '../dto/user-profile.dto';
 import { IUsersRepository } from '../repositories/users.repository.interface';
 import { UpdateProfileUseCase } from './update-profile.use-case';
 
-const makeProfile = (override: Partial<UserProfileDto> = {}): UserProfileDto => ({
+const makeProfile = (
+    override: Partial<UserProfileDto> = {},
+): UserProfileDto => ({
     id: 'uuid-test',
     nom: 'Biot',
     prenom: 'Yannick',

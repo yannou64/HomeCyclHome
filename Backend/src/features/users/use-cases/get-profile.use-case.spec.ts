@@ -4,7 +4,9 @@ import { IUsersRepository } from '../repositories/users.repository.interface';
 import { GetProfileUseCase } from './get-profile.use-case';
 
 // Fabrique un profil fictif pour les tests
-const makeProfile = (override: Partial<UserProfileDto> = {}): UserProfileDto => ({
+const makeProfile = (
+    override: Partial<UserProfileDto> = {},
+): UserProfileDto => ({
     id: 'uuid-test',
     nom: 'Biot',
     prenom: 'Yannick',

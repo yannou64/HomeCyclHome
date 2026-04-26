@@ -6,7 +6,9 @@ import { RegisterUseCase } from './register.use-case';
 describe('RegisterUseCase', () => {
     let useCase: RegisterUseCase;
     let mockRepo: jest.Mocked<IAuthRepository>;
-    let mockEmailService: jest.Mocked<Pick<EmailService, 'sendConfirmationEmail'>>;
+    let mockEmailService: jest.Mocked<
+        Pick<EmailService, 'sendConfirmationEmail'>
+    >;
 
     beforeEach(() => {
         mockRepo = {

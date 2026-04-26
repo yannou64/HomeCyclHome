@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Utilisateur } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import { UserProfileDto } from '../dto/user-profile.dto';
-import {
-    IUsersRepository,
-    UpdateUserData,
-} from './users.repository.interface';
+import { IUsersRepository, UpdateUserData } from './users.repository.interface';
 
 @Injectable()
 export class UsersPrismaRepository implements IUsersRepository {
