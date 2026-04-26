@@ -1,0 +1,20 @@
+@use '../../../../app/styles/index' as *;
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 64px); // 64px = hauteur du header
+    background-color: $color-myLightGreen;
+}
+
+.content {
+    flex: 1;
+    padding: $spacing-lg;
+    overflow-y: auto;
+}
+
+.placeholder {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    padding: $spacing-lg;
+}

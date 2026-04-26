@@ -130,7 +130,7 @@ un composant — ne jamais écrire de valeurs en dur.**
 ## 5. Appels API
 
 - Les appels spécifiques à une feature → `features/<nom>/services/`
-- Les éléments transversaux (instance Axios, intercepteurs, gestion token JWT) → `shared/services/`
+- Les éléments transversaux (instance Axios, intercepteurs) → `shared/services/`
 - Ne jamais faire d'appel API directement dans un composant
 
 **Pattern à respecter :**
@@ -138,6 +138,24 @@ un composant — ne jamais écrire de valeurs en dur.**
 ```
 Composant → Hook → Service → API Backend
 ```
+
+**Forme du service (objet nommé — obligatoire) :**
+
+```typescript
+// featureService.ts
+export const featureService = {
+  getX(params: GetXParams): Promise<X> {
+    return apiClient.get<X>('/endpoint', { params }).then((r) => r.data);
+  },
+  createX(payload: CreateXPayload): Promise<X> {
+    return apiClient.post<X>('/endpoint', payload).then((r) => r.data);
+  },
+};
+```
+
+- Toujours exporter un objet nommé (jamais des fonctions isolées)
+- Toujours utiliser `.then((r) => r.data)` pour ne retourner que la donnée, pas la réponse Axios
+- **Référence :** `features/admin/services/adminUsersService.ts` est l'implémentation de référence
 
 ---
 

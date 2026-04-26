@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../app/providers/authContext/useAuth';
-import { logout as logoutService } from '../services/authService';
+import { authService } from '../services/authService';
 
 const isDev = import.meta.env.DEV
 
@@ -11,7 +11,7 @@ export function useLogout() {
       
     async function handleLogout() {
         try {
-            await logoutService();   // POST /auth/logout → efface cookies + refresh token en base
+            await authService.logout();   // POST /auth/logout → efface cookies + refresh token en base
             if(isDev) console.log("[useLogout] Logout réussi")
         } catch {
             console.error("[useLogout] Erreur backend pendant le logout")

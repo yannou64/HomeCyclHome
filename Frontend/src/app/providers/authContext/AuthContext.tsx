@@ -18,7 +18,14 @@ function readInitialSession(): AuthSession | null {
     if (!stored) return null;
 
     try {
-        return JSON.parse(stored) as AuthSession;
+        const parsed = JSON.parse(stored) as Partial<AuthSession>;
+        // Valide que tous les champs requis sont présents
+        // Si la session est incomplète (format ancien), on la supprime
+        if (!parsed.userId || !parsed.role || !parsed.prenom) {
+            localStorage.removeItem('session');
+            return null;
+        }
+        return parsed as AuthSession;
     } catch {
         localStorage.removeItem('session');
         return null;

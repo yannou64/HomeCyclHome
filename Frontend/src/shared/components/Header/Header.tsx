@@ -43,19 +43,48 @@ export function Header() {
         <>
             <header className={styles.header}>
                 <div className={styles.inner}>
-                    {/* Logo */}
-                    <Link to="/" aria-label="Retour à l'accueil">
-                        <img src={logoMiniRondWhite} alt="HomeCycl'Home" className={styles.logo} />
-                    </Link>
+                    {/* Logo + prénom (desktop uniquement) */}
+                    <div className={styles.logoGroup}>
+                        <Link to="/" aria-label="Retour à l'accueil">
+                            <img
+                                src={logoMiniRondWhite}
+                                alt="HomeCycl'Home"
+                                className={styles.logo}
+                            />
+                        </Link>
+                        {isAuthenticated && session && (
+                            <span className={styles.userInfo}>
+                                {(() => {
+                                  const prenom = session.prenom.charAt(0).toUpperCase() + session.prenom.slice(1);
+                                  return session.role === 'client' ? `Bienvenue ${prenom}` : prenom;
+                                })()}
+                                {session.role !== 'client' && (
+                                    <span
+                                        className={
+                                            session.role === 'technicien'
+                                                ? styles.badgeTechnicien
+                                                : styles.badgeAdmin
+                                        }
+                                        aria-hidden="true"
+                                    />
+                                )}
+                            </span>
+                        )}
+                    </div>
 
                     {/* Navigation desktop — masquée sur mobile */}
-                    <nav className={styles.desktopNav} aria-label="Navigation principale">
+                    <nav
+                        className={styles.desktopNav}
+                        aria-label="Navigation principale"
+                    >
                         {navLinks.map((link) => (
                             <NavLink
                                 key={link.to}
                                 to={link.to}
                                 className={({ isActive }) =>
-                                    isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+                                    isActive
+                                        ? `${styles.navLink} ${styles.active}`
+                                        : styles.navLink
                                 }
                                 end={link.to === '/'}
                             >
@@ -63,7 +92,10 @@ export function Header() {
                             </NavLink>
                         ))}
                         {isAuthenticated && (
-                            <button className={styles.handleLogoutBtn} onClick={handleLogout}>
+                            <button
+                                className={styles.handleLogoutBtn}
+                                onClick={handleLogout}
+                            >
                                 Déconnexion
                             </button>
                         )}
@@ -76,7 +108,15 @@ export function Header() {
                         aria-label="Ouvrir le menu"
                         aria-expanded={isMenuOpen}
                     >
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <svg
+                            width="28"
+                            height="28"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                        >
                             <line x1="3" y1="6" x2="21" y2="6" />
                             <line x1="3" y1="12" x2="21" y2="12" />
                             <line x1="3" y1="18" x2="21" y2="18" />

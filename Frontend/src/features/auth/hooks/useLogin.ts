@@ -1,7 +1,7 @@
   import { useState } from 'react';                                                                                                                                                                                                                                                                                                                                                 
   import { useNavigate } from 'react-router-dom';
   import { useAuth } from '../../../app/providers/authContext/useAuth';                                                                                                                                                                                                                                                                                                             
-  import { login as loginService } from '../services/authService';                                                                                                                                                                                                                                                                                                                  
+  import { authService } from '../services/authService';                                                                                                                                                                                                                                                                                                                  
   import type { LoginPayload } from '../types/auth.types';
   
   const isDev = import.meta.env.DEV                                                                                                                                                                                                                                                                                                                                        
@@ -18,7 +18,7 @@
           setError(null);
                                                                                                                                                                                                                                                                                                                                                                                     
           try {   
-              const session = await loginService(payload);
+              const session = await authService.login(payload);
               login(session);      
               if(isDev) console.log("[useLogin] session créé, redirection")     // met à jour le contexte + localStorage
               navigate('/');            // redirige vers l'accueil

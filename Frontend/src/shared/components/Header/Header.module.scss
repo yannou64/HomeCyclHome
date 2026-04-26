@@ -17,6 +17,13 @@
     padding: $spacing-xs $spacing-sm;
 }
 
+// Groupe logo + prénom — alignés horizontalement
+.logoGroup {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+}
+
 .logo {
     width: 50px;
     height: 50px;
@@ -45,6 +52,40 @@
     &.active {
         text-decoration: underline;
     }
+}
+
+// Bloc prénom + pastille de rôle — masqué sur mobile, visible sur desktop
+.userInfo {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+
+    @include desktop {
+        display: flex;
+    }
+}
+
+// Pastille ronde — visible uniquement pour technicien et admin
+.badgeTechnicien {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    flex-shrink: 0;
+    border: solid white 2px;
+}
+
+.badgeAdmin {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    flex-shrink: 0;
+     border: solid white 2px;
 }
 
 .logoutBtn {
