@@ -8,7 +8,10 @@ import {
 export class UpdateProfileUseCase {
     constructor(private readonly repo: IUsersRepository) {}
 
-    async execute(userId: string, data: UpdateUserData): Promise<UserProfileDto> {
+    async execute(
+        userId: string,
+        data: UpdateUserData,
+    ): Promise<UserProfileDto> {
         // Vérification d'existence avant modification — pattern identique à admin
         const existing = await this.repo.findById(userId);
 

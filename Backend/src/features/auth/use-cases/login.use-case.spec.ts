@@ -1,10 +1,10 @@
-import {
-    ForbiddenException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { AuthUserData, IAuthRepository } from '../repositories/auth.repository.interface';
+import {
+    AuthUserData,
+    IAuthRepository,
+} from '../repositories/auth.repository.interface';
 import { LoginUseCase } from './login.use-case';
 
 // bcrypt est un module natif — jest.spyOn ne peut pas redéfinir ses propriétés.
@@ -65,7 +65,10 @@ describe('LoginUseCase', () => {
 
         // ACT + ASSERT
         await expect(
-            useCase.execute({ email: 'test@gmail.com', password: 'mauvais-mdp' }),
+            useCase.execute({
+                email: 'test@gmail.com',
+                password: 'mauvais-mdp',
+            }),
         ).rejects.toThrow(UnauthorizedException);
     });
 
@@ -76,7 +79,10 @@ describe('LoginUseCase', () => {
 
         // ACT + ASSERT
         await expect(
-            useCase.execute({ email: 'test@gmail.com', password: 'motdepasse123' }),
+            useCase.execute({
+                email: 'test@gmail.com',
+                password: 'motdepasse123',
+            }),
         ).rejects.toThrow(ForbiddenException);
     });
 

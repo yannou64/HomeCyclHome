@@ -1,7 +1,4 @@
-import {
-    ForbiddenException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { jwtAccessConfig, jwtRefreshConfig } from '../../../config/jwt.config';

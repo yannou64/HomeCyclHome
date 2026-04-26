@@ -1,5 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { AuthUserData, IAuthRepository } from '../repositories/auth.repository.interface';
+import {
+    AuthUserData,
+    IAuthRepository,
+} from '../repositories/auth.repository.interface';
 import { ConfirmEmailUseCase } from './confirm-email.use-case';
 
 const makeUser = (override: Partial<AuthUserData> = {}): AuthUserData => ({

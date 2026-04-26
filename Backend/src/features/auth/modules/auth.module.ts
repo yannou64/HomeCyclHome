@@ -26,8 +26,10 @@ export const AUTH_REPO = 'AUTH_REPO';
 
         {
             provide: RegisterUseCase,
-            useFactory: (repo: AuthPrismaRepository, emailService: EmailService) =>
-                new RegisterUseCase(repo, emailService),
+            useFactory: (
+                repo: AuthPrismaRepository,
+                emailService: EmailService,
+            ) => new RegisterUseCase(repo, emailService),
             inject: [AUTH_REPO, EmailService],
         },
 
@@ -47,8 +49,7 @@ export const AUTH_REPO = 'AUTH_REPO';
 
         {
             provide: LogoutUseCase,
-            useFactory: (repo: AuthPrismaRepository) =>
-                new LogoutUseCase(repo),
+            useFactory: (repo: AuthPrismaRepository) => new LogoutUseCase(repo),
             inject: [AUTH_REPO],
         },
 
