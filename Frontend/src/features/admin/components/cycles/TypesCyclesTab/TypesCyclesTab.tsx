@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../../shared/components/ui/table';
-import { useAdminTypeCycles } from '../../hooks/useAdminTypeCycles';
-import type { TypeCycle } from '../../types/cycles.types';
+} from '../../../../../shared/components/ui/table';
+import { useAdminTypeCycles } from '../../../hooks/useAdminTypeCycles';
+import type { TypeCycle } from '../../../types/cycles.types';
 import { CycleItemDeleteDialog } from '../CycleItemDeleteDialog/CycleItemDeleteDialog';
 import { CycleItemFormDialog } from '../CycleItemFormDialog/CycleItemFormDialog';
 import styles from './TypesCyclesTab.module.scss';

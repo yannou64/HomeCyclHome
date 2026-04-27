@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { Roles } from '../../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../../shared/guards/roles.guard';
@@ -13,30 +22,30 @@ import { UpdateTypeCycleUseCase } from '../use-cases/update-type-cycle.use-case'
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminTypeCyclesController {
-  constructor(
-    private readonly getTypeCyclesUseCase: GetTypeCyclesUseCase,
-    private readonly createTypeCycleUseCase: CreateTypeCycleUseCase,
-    private readonly updateTypeCycleUseCase: UpdateTypeCycleUseCase,
-    private readonly deleteTypeCycleUseCase: DeleteTypeCycleUseCase,
-  ) {}
+    constructor(
+        private readonly getTypeCyclesUseCase: GetTypeCyclesUseCase,
+        private readonly createTypeCycleUseCase: CreateTypeCycleUseCase,
+        private readonly updateTypeCycleUseCase: UpdateTypeCycleUseCase,
+        private readonly deleteTypeCycleUseCase: DeleteTypeCycleUseCase,
+    ) {}
 
-  @Get()
-  findAll() {
-    return this.getTypeCyclesUseCase.execute();
-  }
+    @Get()
+    findAll() {
+        return this.getTypeCyclesUseCase.execute();
+    }
 
-  @Post()
-  create(@Body() dto: CreateTypeCycleDto) {
-    return this.createTypeCycleUseCase.execute(dto.libelle);
-  }
+    @Post()
+    create(@Body() dto: CreateTypeCycleDto) {
+        return this.createTypeCycleUseCase.execute(dto.libelle);
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateTypeCycleDto) {
-    return this.updateTypeCycleUseCase.execute(id, dto.libelle);
-  }
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() dto: UpdateTypeCycleDto) {
+        return this.updateTypeCycleUseCase.execute(id, dto.libelle);
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.deleteTypeCycleUseCase.execute(id);
-  }
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        return this.deleteTypeCycleUseCase.execute(id);
+    }
 }

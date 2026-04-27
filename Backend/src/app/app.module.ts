@@ -7,6 +7,13 @@ import { MarquesModule } from '../features/referentiel/marques/modules/admin-mar
 import { TypeCyclesModule } from '../features/referentiel/type-cycles/modules/admin-type-cycles.module';
 
 @Module({
-    imports: [DatabaseModule, AuthModule, UsersModule, AdminModule, MarquesModule, TypeCyclesModule],
+    imports: [
+        DatabaseModule,
+        AuthModule,
+        UsersModule,
+        AdminModule,
+        MarquesModule,
+        TypeCyclesModule,
+    ],
 })
 export class AppModule {}

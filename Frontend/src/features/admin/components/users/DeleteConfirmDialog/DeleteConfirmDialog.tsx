@@ -3,8 +3,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from '../../../../shared/components/ui/dialog';
-import type { AdminUser } from '../../types/admin.types';
+} from '../../../../../shared/components/ui/dialog';
+import type { AdminUser } from '../../../types/admin.types';
 import styles from './DeleteConfirmDialog.module.scss';
 
 interface DeleteConfirmDialogProps {

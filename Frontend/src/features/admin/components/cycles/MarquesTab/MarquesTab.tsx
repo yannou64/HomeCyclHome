@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../../shared/components/ui/table';
-import { useAdminMarques } from '../../hooks/useAdminMarques';
-import type { Marque } from '../../types/cycles.types';
+} from '../../../../../shared/components/ui/table';
+import { useAdminMarques } from '../../../hooks/useAdminMarques';
+import type { Marque } from '../../../types/cycles.types';
 import { CycleItemDeleteDialog } from '../CycleItemDeleteDialog/CycleItemDeleteDialog';
 import { CycleItemFormDialog } from '../CycleItemFormDialog/CycleItemFormDialog';
 import styles from './MarquesTab.module.scss';

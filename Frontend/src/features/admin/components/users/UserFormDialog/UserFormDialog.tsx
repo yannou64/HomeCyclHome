@@ -4,8 +4,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from '../../../../shared/components/ui/dialog';
-import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../types/admin.types';
+} from '../../../../../shared/components/ui/dialog';
+import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
 import styles from './UserFormDialog.module.scss';
 
 interface UserFormDialogProps {

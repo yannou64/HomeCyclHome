@@ -1,4 +1,4 @@
 export type MarqueDto = {
-  id: string;
-  libelle: string;
+    id: string;
+    libelle: string;
 };

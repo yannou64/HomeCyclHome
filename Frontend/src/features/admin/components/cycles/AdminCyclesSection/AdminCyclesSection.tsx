@@ -3,7 +3,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../../../../shared/components/ui/tabs';
+} from '../../../../../shared/components/ui/tabs';
 import { MarquesTab } from '../MarquesTab/MarquesTab';
 import { TypesCyclesTab } from '../TypesCyclesTab/TypesCyclesTab';
 import styles from './AdminCyclesSection.module.scss';

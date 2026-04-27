@@ -5,8 +5,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '../../../../shared/components/ui/table';
-import type { AdminUser, GetUsersParams, PaginationMeta } from '../../types/admin.types';
+} from '../../../../../shared/components/ui/table';
+import type { AdminUser, GetUsersParams, PaginationMeta } from '../../../types/admin.types';
 import styles from './UsersTable.module.scss';
 
 function StatutBadge({ isActif }: { isActif: boolean }) {

@@ -4,8 +4,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '../../../../shared/components/ui/dialog';
-import type { CycleItemPayload, Marque, TypeCycle } from '../../types/cycles.types';
+} from '../../../../../shared/components/ui/dialog';
+import type { CycleItemPayload, Marque, TypeCycle } from '../../../types/cycles.types';
 import styles from './CycleItemFormDialog.module.scss';
 
 interface CycleItemFormDialogProps {

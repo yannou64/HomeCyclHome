@@ -1,4 +1,4 @@
 export type TypeCycleDto = {
-  id: string;
-  libelle: string;
+    id: string;
+    libelle: string;
 };
