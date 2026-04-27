@@ -1,0 +1,62 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+  font-family: $font-primary !important;
+  max-width: 420px !important;
+  background-color: white !important;
+  padding: $spacing-lg !important;
+  border-radius: $radius-lg !important;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h2;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.message {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  line-height: 1.6;
+  margin-top: $spacing-sm;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+}
+
+.cancelButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.confirmButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
