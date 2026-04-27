@@ -1,0 +1,110 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+    font-family: $font-primary !important;
+    max-width: 500px !important;
+    background-color: white !important;
+    padding: $spacing-lg !important;
+    border-radius: $radius-lg !important;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    margin-top: $spacing-sm;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-sm;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+}
+
+.input {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.error {
+    font-size: $font-size-label;
+    color: #b91c1c;
+    text-align: center;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: flex-end;
+    margin-top: $spacing-xs;
+}
+
+.cancelButton {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    cursor: pointer;
+    color: $color-text-primary;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.submitButton {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

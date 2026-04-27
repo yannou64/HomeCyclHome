@@ -32,3 +32,17 @@ model Utilisateur {
 
   @@map("Utilisateurs")
 }
+
+model Marque {
+  id      String @id @default(uuid())
+  libelle String @unique
+
+  @@map("Marques")
+}
+
+model TypeCycle {
+  id      String @id @default(uuid())
+  libelle String @unique
+
+  @@map("TypesCycles")
+}
