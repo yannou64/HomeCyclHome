@@ -28,21 +28,43 @@ model Utilisateur {
   refresh_token_hash       String?
   date_creation            DateTime  @default(now())
   date_maj                 DateTime  @updatedAt
-  date_dernier_login       DateTime?  
+  date_dernier_login       DateTime?
+  cycles                   Cycle[]   // relation inverse : un utilisateur possède plusieurs cycles
 
   @@map("Utilisateurs")
 }
 
 model Marque {
-  id      String @id @default(uuid())
-  libelle String @unique
+  id      String  @id @default(uuid())
+  libelle String  @unique
+  cycles  Cycle[] // relation inverse : une marque peut être associée à plusieurs cycles
 
   @@map("Marques")
 }
 
 model TypeCycle {
-  id      String @id @default(uuid())
-  libelle String @unique
+  id      String  @id @default(uuid())
+  libelle String  @unique
+  cycles  Cycle[] // relation inverse : un type peut être associé à plusieurs cycles
 
   @@map("TypesCycles")
+}
+
+model Cycle {
+  id            String      @id @default(uuid())
+  libelle       String                           // nom choisi par l'utilisateur (ex: "Mon VTT de trail")
+  particularite String?                          // champ libre optionnel (ex: "roues 29 pouces")
+  date_creation DateTime    @default(now())
+
+  // Clés étrangères (colonnes réelles en base)
+  utilisateur_id String
+  marque_id      String
+  type_cycle_id  String
+
+  // Relations Prisma (navigation, pas de colonne créée)
+  utilisateur   Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  marque        Marque      @relation(fields: [marque_id], references: [id])
+  type_cycle    TypeCycle   @relation(fields: [type_cycle_id], references: [id])
+
+  @@map("Cycles")
 }

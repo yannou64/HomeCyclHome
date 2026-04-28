@@ -1,0 +1,162 @@
+@use '../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    width: 100%;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    text-align: center;
+    color: black;
+}
+
+// Ligne de chips horizontale avec scroll si débordement
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    align-items: center;
+}
+
+.chip {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    padding: 8px 18px;
+    border: 1.5px solid $color-border;
+    border-radius: $radius-full;
+    background-color: $color-myLightGreen;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+
+    &:hover {
+        border-color: $color-myOrange;
+    }
+}
+
+.chipActive {
+    background-color: $color-myOrange;
+    border-color: $color-myOrange;
+    color: white;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    width: 100%;
+    margin-top: $spacing-xs;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    font-weight: $font-regular;
+    color: $color-text-label;
+}
+
+.input,
+.select {
+    background-color: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    padding: 9px $spacing-sm;
+    width: 100%;
+    color: $color-text-primary;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.select {
+    appearance: none;
+    cursor: pointer;
+    // Flèche chevron SVG encodée en CSS — évite un import d'asset pour un simple indicateur
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238c7b74' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right $spacing-sm center;
+    padding-right: 2.5rem;
+}
+
+.textarea {
+    background-color: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    padding: 9px $spacing-sm;
+    width: 100%;
+    resize: vertical;
+    color: $color-text-primary;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.deleteBtn {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-myOrange;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}
+
+.loading {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    text-align: center;
+    color: $color-text-label;
+}
+
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: red;
+    text-align: center;
+}
+
+.success {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: green;
+    text-align: center;
+}
