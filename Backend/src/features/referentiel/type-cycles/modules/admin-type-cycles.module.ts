@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AdminTypeCyclesController } from '../controllers/admin-type-cycles.controller';
+import { ReferentielTypeCyclesController } from '../controllers/referentiel-type-cycles.controller';
 import { TypeCyclesPrismaRepository } from '../repositories/type-cycles.prisma.repository';
 import { CreateTypeCycleUseCase } from '../use-cases/create-type-cycle.use-case';
 import { DeleteTypeCycleUseCase } from '../use-cases/delete-type-cycle.use-case';
@@ -9,7 +10,7 @@ import { UpdateTypeCycleUseCase } from '../use-cases/update-type-cycle.use-case'
 export const TYPE_CYCLES_REPO = 'TYPE_CYCLES_REPO';
 
 @Module({
-    controllers: [AdminTypeCyclesController],
+    controllers: [AdminTypeCyclesController, ReferentielTypeCyclesController],
     providers: [
         { provide: TYPE_CYCLES_REPO, useClass: TypeCyclesPrismaRepository },
         {

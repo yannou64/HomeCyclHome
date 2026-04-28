@@ -3,6 +3,7 @@ import { PageLayout } from '../shared/components/PageLayout/PageLayout';
 import { Footer } from '../shared/components/Footer/Footer';
 import { Card } from '../shared/components/Card/Card';
 import { ProfileForm } from '../features/user/components/ProfileForm/ProfileForm';
+import { MesCycles } from '../features/cycle/components/MesCycles/MesCycles';
 
 export default function ProfilPage() {
     return (
@@ -11,6 +12,9 @@ export default function ProfilPage() {
             <PageLayout>
                 <Card>
                     <ProfileForm />
+                </Card>
+                <Card>
+                    <MesCycles />
                 </Card>
             </PageLayout>
             <Footer />

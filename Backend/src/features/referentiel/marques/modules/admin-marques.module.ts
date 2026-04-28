@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AdminMarquesController } from '../controllers/admin-marques.controller';
+import { ReferentielMarquesController } from '../controllers/referentiel-marques.controller';
 import { MarquesPrismaRepository } from '../repositories/marques.prisma.repository';
 import { CreateMarqueUseCase } from '../use-cases/create-marque.use-case';
 import { DeleteMarqueUseCase } from '../use-cases/delete-marque.use-case';
@@ -9,7 +10,7 @@ import { UpdateMarqueUseCase } from '../use-cases/update-marque.use-case';
 export const MARQUES_REPO = 'MARQUES_REPO';
 
 @Module({
-    controllers: [AdminMarquesController],
+    controllers: [AdminMarquesController, ReferentielMarquesController],
     providers: [
         { provide: MARQUES_REPO, useClass: MarquesPrismaRepository },
         {
