@@ -25,11 +25,23 @@ body {
     flex-direction: column;
 }
 
+// Sur desktop : on verrouille html ET body à 100vh.
+// Sans html, les navigateurs propagent le scroll sur l'élément html
+// et body { overflow: hidden } seul ne suffit pas à bloquer le scroll de page.
+@media (min-width: $bp-desktop) {
+    html,
+    body {
+        height: 100vh;
+        overflow: hidden;
+    }
+}
+
 // Le div racine de Vite/React s'étire pour remplir le body
 #root {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0; // permet au flex item de se comprimer dans la chaîne 100vh
 }
 
 img {

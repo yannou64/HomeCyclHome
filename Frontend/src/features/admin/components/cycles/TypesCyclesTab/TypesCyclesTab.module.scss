@@ -1,0 +1,86 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.addButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.actionsHead {
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+}
+
+.editButton {
+  padding: 4px $spacing-xs;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.deleteButton {
+  padding: 4px $spacing-xs;
+  border: 1px solid #fecaca;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  color: #b91c1c;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #fee2e2;
+  }
+}
+
+.empty {
+  text-align: center;
+  color: $color-text-label;
+  font-style: italic;
+  padding: $spacing-lg;
+}
+
+.loading {
+  color: $color-text-label;
+  font-family: $font-primary;
+}
+
+.error {
+  color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+}
