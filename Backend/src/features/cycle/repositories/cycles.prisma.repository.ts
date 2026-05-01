@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { CreateCycleInput, UpdateCycleInput } from '../dto/input/cycle-input.dto';
+import {
+    CreateCycleInput,
+    UpdateCycleInput,
+} from '../dto/input/cycle-input.dto';
 import { CycleDto } from '../dto/output/cycle.dto';
 import { ICyclesRepository } from './cycles.repository.interface';
 
@@ -39,7 +42,10 @@ export class CyclesPrismaRepository implements ICyclesRepository {
         return cycle ? this.toDto(cycle) : null;
     }
 
-    async create(utilisateurId: string, data: CreateCycleInput): Promise<CycleDto> {
+    async create(
+        utilisateurId: string,
+        data: CreateCycleInput,
+    ): Promise<CycleDto> {
         const cycle = await this.prisma.cycle.create({
             data: {
                 libelle: data.libelle,
@@ -60,7 +66,9 @@ export class CyclesPrismaRepository implements ICyclesRepository {
                 ...(data.libelle !== undefined && { libelle: data.libelle }),
                 ...(data.marqueId && { marque_id: data.marqueId }),
                 ...(data.typeCycleId && { type_cycle_id: data.typeCycleId }),
-                ...(data.particularite !== undefined && { particularite: data.particularite }),
+                ...(data.particularite !== undefined && {
+                    particularite: data.particularite,
+                }),
             },
             include: INCLUDE,
         });

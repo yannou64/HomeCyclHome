@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from '../controllers/users.controller';
 import { UsersPrismaRepository } from '../repositories/users.prisma.repository';
+import { DeleteAccountUseCase } from '../use-cases/delete-account.use-case';
 import { GetProfileUseCase } from '../use-cases/get-profile.use-case';
 import { UpdateProfileUseCase } from '../use-cases/update-profile.use-case';
 
@@ -29,6 +30,12 @@ export const USERS_REPO = 'USERS_REPO';
             provide: UpdateProfileUseCase,
             useFactory: (repo: UsersPrismaRepository) =>
                 new UpdateProfileUseCase(repo),
+            inject: [USERS_REPO],
+        },
+        {
+            provide: DeleteAccountUseCase,
+            useFactory: (repo: UsersPrismaRepository) =>
+                new DeleteAccountUseCase(repo),
             inject: [USERS_REPO],
         },
     ],

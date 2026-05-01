@@ -28,7 +28,12 @@ describe('CreateCycleUseCase', () => {
     });
 
     it("devrait créer un cycle pour l'utilisateur", async () => {
-        const payload = { libelle: 'Mon VTT', marqueId: 'marque-1', typeCycleId: 'type-1', particularite: 'roues 29"' };
+        const payload = {
+            libelle: 'Mon VTT',
+            marqueId: 'marque-1',
+            typeCycleId: 'type-1',
+            particularite: 'roues 29"',
+        };
         const created = makeCycle({ particularite: 'roues 29"' });
         mockRepo.create.mockResolvedValue(created);
 
@@ -39,7 +44,11 @@ describe('CreateCycleUseCase', () => {
     });
 
     it('devrait créer un cycle sans particularité', async () => {
-        const payload = { libelle: 'Mon VTT', marqueId: 'marque-1', typeCycleId: 'type-1' };
+        const payload = {
+            libelle: 'Mon VTT',
+            marqueId: 'marque-1',
+            typeCycleId: 'type-1',
+        };
         const created = makeCycle();
         mockRepo.create.mockResolvedValue(created);
 

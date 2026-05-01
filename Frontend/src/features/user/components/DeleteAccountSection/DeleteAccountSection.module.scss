@@ -1,0 +1,119 @@
+@use '../../../../app/styles/index' as *;
+
+// Card de la section "zone de danger"
+.card {
+    border: 1px solid #fecaca !important; // bordure rouge pâle pour signaler la dangerosité
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: #b91c1c;
+    margin-bottom: $spacing-xs;
+}
+
+.description {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    line-height: 1.6;
+    margin-bottom: $spacing-md;
+}
+
+.deleteButton {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid #b91c1c;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: #b91c1c;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #b91c1c;
+        color: white;
+    }
+}
+
+// Dialog
+.dialogContent {
+    font-family: $font-primary !important;
+    max-width: 400px !important;
+    background-color: white !important;
+    padding: $spacing-lg !important;
+    border-radius: $radius-lg !important;
+}
+
+.dialogTitle {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.dialogMessage {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    line-height: 1.6;
+    margin-top: $spacing-sm;
+}
+
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #b91c1c;
+    margin-top: $spacing-xs;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: flex-end;
+    margin-top: $spacing-md;
+}
+
+.cancelButton {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    cursor: pointer;
+    color: $color-text-primary;
+
+    &:hover {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.confirmButton {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: #b91c1c;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

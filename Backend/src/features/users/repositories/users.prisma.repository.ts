@@ -23,6 +23,10 @@ export class UsersPrismaRepository implements IUsersRepository {
         return this.toDto(user);
     }
 
+    async deleteById(id: string): Promise<void> {
+        await this.prisma.utilisateur.delete({ where: { id } });
+    }
+
     // Garantit qu'on n'expose jamais password_hash ni refresh_token_hash
     private toDto(user: Utilisateur): UserProfileDto {
         return {

@@ -46,6 +46,14 @@ export class AuthPrismaRepository implements IAuthRepository {
         });
     }
 
+    async findRefreshHashById(userId: string): Promise<string | null> {
+        const user = await this.prisma.utilisateur.findUnique({
+            where: { id: userId },
+            select: { refresh_token_hash: true },
+        });
+        return user?.refresh_token_hash ?? null;
+    }
+
     async saveRefreshTokenHash(userId: string, hash: string): Promise<void> {
         await this.prisma.utilisateur.update({
             where: { id: userId },

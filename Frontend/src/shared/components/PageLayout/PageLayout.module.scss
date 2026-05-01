@@ -7,7 +7,8 @@
 .pageLayout {
     display: flex;
     flex-direction: column;
-    flex: 1; // s'étire entre Header et Footer (chaîne sticky footer)
+    flex: 1;      // s'étire entre Header et Footer (chaîne sticky footer)
+    min-height: 0; // permet au flex item de se comprimer en dessous de son contenu
 }
 
 // ── Section haute : image Lyon + dégradé vers le vert menthe ─────────────────
@@ -77,11 +78,15 @@
     }
 
     // Colonne droite, ligne haute : contenu de la page
+    // overflow-y: auto → le scroll se fait dans cette cellule uniquement,
+    // l'image (gauche) et le carousel (bas) restent visibles en permanence
     .contentSection {
         grid-column: 2;
         grid-row: 1;
-        justify-content: center; // centré verticalement dans la colonne droite
+        justify-content: flex-start; // le contenu part du haut quand il scrolle
         padding: $spacing-xl $spacing-lg;
+        overflow-y: auto;
+        min-height: 300px; // évite un affichage trop compressé si peu de contenu
     }
 
     // Colonne droite, ligne basse : carousel
