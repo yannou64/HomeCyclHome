@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Req,
+    UseGuards,
+} from '@nestjs/common';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CreateCycleDto, UpdateCycleDto } from '../dto/input/cycle-input.dto';
@@ -30,7 +40,11 @@ export class CyclesController {
     }
 
     @Patch(':id')
-    update(@Req() req: Request, @Param('id') id: string, @Body() dto: UpdateCycleDto) {
+    update(
+        @Req() req: Request,
+        @Param('id') id: string,
+        @Body() dto: UpdateCycleDto,
+    ) {
         const { userId } = req.user as { userId: string };
         return this.updateCycleUseCase.execute(id, userId, dto);
     }

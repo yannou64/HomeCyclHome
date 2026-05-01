@@ -6,7 +6,11 @@ import { ICyclesRepository } from '../repositories/cycles.repository.interface';
 export class UpdateCycleUseCase {
     constructor(private readonly repo: ICyclesRepository) {}
 
-    async execute(id: string, utilisateurId: string, data: UpdateCycleInput): Promise<CycleDto> {
+    async execute(
+        id: string,
+        utilisateurId: string,
+        data: UpdateCycleInput,
+    ): Promise<CycleDto> {
         const cycle = await this.repo.findById(id);
 
         if (!cycle) {

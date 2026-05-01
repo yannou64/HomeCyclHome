@@ -11,4 +11,5 @@ export type UpdateUserData = {
 export interface IUsersRepository {
     findById(id: string): Promise<UserProfileDto | null>;
     update(id: string, data: UpdateUserData): Promise<UserProfileDto>;
+    deleteById(id: string): Promise<void>;
 }

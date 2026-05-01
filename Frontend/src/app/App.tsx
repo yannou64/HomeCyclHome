@@ -8,6 +8,9 @@ const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const ConfirmEmailPage = lazy(() => import('../pages/ConfirmEmailPage'));
 const ProfilPage = lazy(() => import('../pages/ProfilPage'));
 const AdminPage = lazy(() => import('../pages/AdminPage'));
+const MentionsLegalesPage = lazy(() => import('../pages/MentionsLegalesPage'));
+const CguPage = lazy(() => import('../pages/CguPage'));
+const ConfidentialitePage = lazy(() => import('../pages/ConfidentialitePage'));
 
 function App() {
     return (
@@ -27,6 +30,9 @@ function App() {
                         <AdminPage />
                     </ProtectedRoute>
                 } />
+                <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
+                <Route path="/cgu" element={<CguPage />} />
+                <Route path="/confidentialite" element={<ConfidentialitePage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Suspense>

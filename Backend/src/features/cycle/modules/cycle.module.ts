@@ -14,22 +14,26 @@ export const CYCLES_REPO = 'CYCLES_REPO';
         { provide: CYCLES_REPO, useClass: CyclesPrismaRepository },
         {
             provide: GetCyclesUseCase,
-            useFactory: (repo: CyclesPrismaRepository) => new GetCyclesUseCase(repo),
+            useFactory: (repo: CyclesPrismaRepository) =>
+                new GetCyclesUseCase(repo),
             inject: [CYCLES_REPO],
         },
         {
             provide: CreateCycleUseCase,
-            useFactory: (repo: CyclesPrismaRepository) => new CreateCycleUseCase(repo),
+            useFactory: (repo: CyclesPrismaRepository) =>
+                new CreateCycleUseCase(repo),
             inject: [CYCLES_REPO],
         },
         {
             provide: UpdateCycleUseCase,
-            useFactory: (repo: CyclesPrismaRepository) => new UpdateCycleUseCase(repo),
+            useFactory: (repo: CyclesPrismaRepository) =>
+                new UpdateCycleUseCase(repo),
             inject: [CYCLES_REPO],
         },
         {
             provide: DeleteCycleUseCase,
-            useFactory: (repo: CyclesPrismaRepository) => new DeleteCycleUseCase(repo),
+            useFactory: (repo: CyclesPrismaRepository) =>
+                new DeleteCycleUseCase(repo),
             inject: [CYCLES_REPO],
         },
     ],

@@ -9,4 +9,8 @@ export const userService = {
     updateProfile(payload: UpdateProfilePayload): Promise<UserProfile> {
         return apiClient.patch<UserProfile>('/users/me', payload).then((r) => r.data);
     },
+
+    deleteAccount(): Promise<void> {
+        return apiClient.delete('/users/me').then(() => undefined);
+    },
 };

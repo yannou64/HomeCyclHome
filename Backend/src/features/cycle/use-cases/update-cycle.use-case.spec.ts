@@ -33,24 +33,34 @@ describe('UpdateCycleUseCase', () => {
         const updated = makeCycle({ particularite: 'nouveau commentaire' });
         mockRepo.update.mockResolvedValue(updated);
 
-        const result = await useCase.execute('uuid-1', 'user-1', { particularite: 'nouveau commentaire' });
+        const result = await useCase.execute('uuid-1', 'user-1', {
+            particularite: 'nouveau commentaire',
+        });
 
-        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', { particularite: 'nouveau commentaire' });
+        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
+            particularite: 'nouveau commentaire',
+        });
         expect(result).toEqual(updated);
     });
 
     it('devrait lever NotFoundException si le cycle est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
-        await expect(useCase.execute('ghost-id', 'user-1', {})).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('ghost-id', 'user-1', {})).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 
     it('devrait lever ForbiddenException si le cycle appartient à un autre utilisateur', async () => {
         // Le cycle appartient à 'user-1' mais 'user-2' tente de le modifier
-        mockRepo.findById.mockResolvedValue(makeCycle({ utilisateurId: 'user-1' }));
+        mockRepo.findById.mockResolvedValue(
+            makeCycle({ utilisateurId: 'user-1' }),
+        );
 
-        await expect(useCase.execute('uuid-1', 'user-2', {})).rejects.toThrow(ForbiddenException);
+        await expect(useCase.execute('uuid-1', 'user-2', {})).rejects.toThrow(
+            ForbiddenException,
+        );
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 });

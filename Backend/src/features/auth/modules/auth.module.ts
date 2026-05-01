@@ -9,6 +9,7 @@ import { JwtStrategy } from '../strategies/jwt.strategy';
 import { ConfirmEmailUseCase } from '../use-cases/confirm-email.use-case';
 import { LoginUseCase } from '../use-cases/login.use-case';
 import { LogoutUseCase } from '../use-cases/logout.use-case';
+import { RefreshTokenUseCase } from '../use-cases/refresh-token.use-case';
 import { RegisterUseCase } from '../use-cases/register.use-case';
 
 // Token utilisé pour injecter l'interface IAuthRepository
@@ -51,6 +52,13 @@ export const AUTH_REPO = 'AUTH_REPO';
             provide: LogoutUseCase,
             useFactory: (repo: AuthPrismaRepository) => new LogoutUseCase(repo),
             inject: [AUTH_REPO],
+        },
+
+        {
+            provide: RefreshTokenUseCase,
+            useFactory: (repo: AuthPrismaRepository, jwtService: JwtService) =>
+                new RefreshTokenUseCase(repo, jwtService),
+            inject: [AUTH_REPO, JwtService],
         },
 
         JwtStrategy,

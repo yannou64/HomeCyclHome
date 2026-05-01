@@ -1,5 +1,8 @@
 import { CycleDto } from '../dto/output/cycle.dto';
-import { CreateCycleInput, UpdateCycleInput } from '../dto/input/cycle-input.dto';
+import {
+    CreateCycleInput,
+    UpdateCycleInput,
+} from '../dto/input/cycle-input.dto';
 
 export interface ICyclesRepository {
     findAllByUser(utilisateurId: string): Promise<CycleDto[]>;

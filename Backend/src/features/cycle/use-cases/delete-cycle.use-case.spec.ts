@@ -39,14 +39,20 @@ describe('DeleteCycleUseCase', () => {
     it('devrait lever NotFoundException si le cycle est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
-        await expect(useCase.execute('ghost-id', 'user-1')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('ghost-id', 'user-1')).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.delete).not.toHaveBeenCalled();
     });
 
     it('devrait lever ForbiddenException si le cycle appartient à un autre utilisateur', async () => {
-        mockRepo.findById.mockResolvedValue(makeCycle({ utilisateurId: 'user-1' }));
+        mockRepo.findById.mockResolvedValue(
+            makeCycle({ utilisateurId: 'user-1' }),
+        );
 
-        await expect(useCase.execute('uuid-1', 'user-2')).rejects.toThrow(ForbiddenException);
+        await expect(useCase.execute('uuid-1', 'user-2')).rejects.toThrow(
+            ForbiddenException,
+        );
         expect(mockRepo.delete).not.toHaveBeenCalled();
     });
 });

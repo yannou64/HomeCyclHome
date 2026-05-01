@@ -6,6 +6,7 @@ import {
     Query,
     Req,
     Res,
+    UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ConfirmEmailUseCase } from '../use-cases/confirm-email.use-case';
 import { LoginUseCase } from '../use-cases/login.use-case';
 import { LogoutUseCase } from '../use-cases/logout.use-case';
+import { RefreshTokenUseCase } from '../use-cases/refresh-token.use-case';
 import { RegisterUseCase } from '../use-cases/register.use-case';
 
 @Controller('auth')
@@ -25,6 +27,7 @@ export class AuthController {
         private readonly confirmEmailUseCase: ConfirmEmailUseCase,
         private readonly loginUseCase: LoginUseCase,
         private readonly logoutUseCase: LogoutUseCase,
+        private readonly refreshTokenUseCase: RefreshTokenUseCase,
     ) {}
 
     @Post('register')
@@ -53,6 +56,22 @@ export class AuthController {
             role: result.role,
             prenom: result.prenom,
         };
+    }
+
+    @Post('refresh')
+    async refresh(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const refreshToken = req.cookies?.refresh_token as string | undefined;
+        if (!refreshToken) {
+            throw new UnauthorizedException('Refresh token manquant.');
+        }
+
+        const result = await this.refreshTokenUseCase.execute(refreshToken);
+        res.cookie('access_token', result.accessToken, ACCESS_COOKIE);
+
+        return { message: 'Token renouvelé.' };
     }
 
     @UseGuards(JwtAuthGuard)

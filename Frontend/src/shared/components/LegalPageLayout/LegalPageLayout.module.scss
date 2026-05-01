@@ -1,0 +1,72 @@
+@use '../../../app/styles/index' as *;
+
+.main {
+    background-color: $color-myLightGreen;
+    min-height: calc(100vh - 120px); // mobile : pousse le footer vers le bas
+    padding: $spacing-lg $spacing-sm;
+}
+
+@include desktop {
+    .main {
+        min-height: 0;    // annule le min-height mobile
+        flex: 1;          // remplit l'espace entre Header et Footer
+        overflow-y: auto; // scroll localisé ici, Header et Footer restent visibles
+    }
+}
+
+.wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: $font-primary;
+    color: $color-text-primary;
+}
+
+.title {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    margin-bottom: $spacing-md;
+    color: $color-myBrown;
+}
+
+// Styles du composant LegalSection
+.updated {
+    font-size: $font-size-label;
+    color: $color-text-placeholder;
+    margin-bottom: $spacing-lg;
+    font-family: $font-primary;
+}
+
+.section {
+    margin-bottom: $spacing-lg;
+}
+
+.sectionTitle {
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    margin-bottom: $spacing-xs;
+    color: $color-myBrown;
+    border-bottom: 2px solid $color-myGreen;
+    padding-bottom: $spacing-xs;
+    font-family: $font-primary;
+}
+
+.text {
+    font-size: $font-size-body;
+    line-height: 1.7;
+    color: $color-text-label;
+    margin-bottom: $spacing-xs;
+    font-family: $font-primary;
+}
+
+.list {
+    font-size: $font-size-body;
+    line-height: 1.7;
+    color: $color-text-label;
+    padding-left: $spacing-md;
+    margin-bottom: $spacing-xs;
+    font-family: $font-primary;
+
+    li {
+        margin-bottom: 0.25rem;
+    }
+}
