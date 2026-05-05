@@ -8,6 +8,7 @@ import reparationVeloMobile from '../../../assets/images/ReparationVeloMobile.we
 import reparationVeloMobile2 from '../../../assets/images/ReparationVeloMobile2.webp'
 import avis1 from '../../../assets/images/Avis1.webp';
 import avis2 from '../../../assets/images/Avis2.webp'
+
 // Images passées au carousel — à enrichir quand de nouvelles photos seront disponibles
 const CAROUSEL_IMAGES = [
     reparationVeloMobile,

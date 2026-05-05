@@ -7,16 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from '../../../../../shared/components/ui/table';
-import { useAdminTypeCycles } from '../../../hooks/useAdminTypeCycles';
-import type { TypeCycle } from '../../../types/cycles.types';
-import { CycleItemDeleteDialog } from '../CycleItemDeleteDialog/CycleItemDeleteDialog';
-import { CycleItemFormDialog } from '../CycleItemFormDialog/CycleItemFormDialog';
-import styles from './TypesCyclesTab.module.scss';
+import { useAdminForfaits } from '../../../hooks/useAdminForfaits';
+import type { Forfait } from '../../../types/forfaits.types';
+import { ForfaitDeleteDialog } from '../ForfaitDeleteDialog/ForfaitDeleteDialog';
+import { ForfaitFormDialog } from '../ForfaitFormDialog/ForfaitFormDialog';
+import { ForfaitPrixDialog } from '../ForfaitPrixDialog/ForfaitPrixDialog';
+import styles from './AdminForfaitsSection.module.scss';
 
-export function TypesCyclesTab() {
-  const { items, isLoading, error, createItem, updateItem, deleteItem } = useAdminTypeCycles();
-  const [editingItem, setEditingItem] = useState<TypeCycle | null>(null);
-  const [deletingItem, setDeletingItem] = useState<TypeCycle | null>(null);
+export function AdminForfaitsSection() {
+  const { items, isLoading, error, createItem, updateItem, deleteItem, setPrix } = useAdminForfaits();
+  const [editingItem, setEditingItem] = useState<Forfait | null>(null);
+  const [deletingItem, setDeletingItem] = useState<Forfait | null>(null);
+  const [prixItem, setPrixItem] = useState<Forfait | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleAdd = () => {
@@ -24,7 +26,7 @@ export function TypesCyclesTab() {
     setIsFormOpen(true);
   };
 
-  const handleEdit = (item: TypeCycle) => {
+  const handleEdit = (item: Forfait) => {
     setEditingItem(item);
     setIsFormOpen(true);
   };
@@ -37,8 +39,9 @@ export function TypesCyclesTab() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
+        <h2 className={styles.title}>Forfaits</h2>
         <button className={styles.addButton} onClick={handleAdd}>
-          + Nouveau type
+          + Nouveau forfait
         </button>
       </div>
 
@@ -50,33 +53,58 @@ export function TypesCyclesTab() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Libellé</TableHead>
+              <TableHead>Nom</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Durée</TableHead>
+              <TableHead>Prix actuel</TableHead>
+              <TableHead>Statut</TableHead>
               <TableHead className={styles.actionsHead}>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={2} className={styles.empty}>
-                  Aucun type de cycle enregistré.
+                <TableCell colSpan={6} className={styles.empty}>
+                  Aucun forfait enregistré.
                 </TableCell>
               </TableRow>
             ) : (
               items.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.libelle}</TableCell>
+                  <TableCell className={styles.nomCell}>{item.nom}</TableCell>
+                  <TableCell className={styles.descriptionCell}>
+                    {item.description ?? <span className={styles.none}>—</span>}
+                  </TableCell>
+                  <TableCell>{item.duree_minutes} min</TableCell>
+                  <TableCell>
+                    {item.prix_actif !== null
+                      ? `${item.prix_actif} €`
+                      : <span className={styles.none}>—</span>}
+                  </TableCell>
+                  <TableCell>
+                    <span className={item.is_actif ? styles.badgeActif : styles.badgeInactif}>
+                      {item.is_actif ? 'Actif' : 'Inactif'}
+                    </span>
+                  </TableCell>
                   <TableCell className={styles.actions}>
+                    <button
+                      className={styles.prixButton}
+                      onClick={() => setPrixItem(item)}
+                      aria-label={`Définir le prix de ${item.nom}`}
+                    >
+                      💰 Prix
+                    </button>
                     <button
                       className={styles.editButton}
                       onClick={() => handleEdit(item)}
-                      aria-label={`Modifier ${item.libelle}`}
+                      aria-label={`Modifier ${item.nom}`}
                     >
                       ✏️ Modifier
                     </button>
                     <button
                       className={styles.deleteButton}
                       onClick={() => setDeletingItem(item)}
-                      aria-label={`Supprimer ${item.libelle}`}
+                      aria-label={`Supprimer ${item.nom}`}
                     >
                       🗑️ Supprimer
                     </button>
@@ -99,20 +127,25 @@ export function TypesCyclesTab() {
         </div>
       </div>
 
-      <CycleItemFormDialog
+      <ForfaitFormDialog
         isOpen={isFormOpen}
         onClose={handleFormClose}
         onSubmit={editingItem ? (p) => updateItem(editingItem.id, p) : createItem}
         item={editingItem ?? undefined}
-        entityLabel="un type de cycle"
       />
 
-      <CycleItemDeleteDialog
+      <ForfaitDeleteDialog
         isOpen={!!deletingItem}
         onClose={() => setDeletingItem(null)}
         onConfirm={() => deleteItem(deletingItem!.id)}
         item={deletingItem}
-        entityLabel="le type de cycle"
+      />
+
+      <ForfaitPrixDialog
+        isOpen={!!prixItem}
+        onClose={() => setPrixItem(null)}
+        onSubmit={(payload) => setPrix(prixItem!.id, payload)}
+        item={prixItem}
       />
     </div>
   );

@@ -29,7 +29,6 @@ export interface IAuthRepository {
     create(data: CreateUserData): Promise<AuthUserData>;
     activate(userId: string): Promise<void>;
     findRefreshHashById(userId: string): Promise<string | null>;
-    findRefreshHashById(userId: string): Promise<string | null>;
     saveRefreshTokenHash(userId: string, hash: string): Promise<void>;
     clearRefreshTokenHash(userId: string): Promise<void>;
 }

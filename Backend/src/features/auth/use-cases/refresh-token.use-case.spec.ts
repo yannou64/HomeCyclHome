@@ -44,9 +44,9 @@ describe('RefreshTokenUseCase', () => {
         });
 
         // ACT + ASSERT
-        await expect(
-            useCase.execute('token-falsifie'),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(useCase.execute('token-falsifie')).rejects.toThrow(
+            UnauthorizedException,
+        );
     });
 
     it('devrait lever UnauthorizedException si le refresh token est expiré', async () => {
@@ -56,9 +56,9 @@ describe('RefreshTokenUseCase', () => {
         });
 
         // ACT + ASSERT
-        await expect(
-            useCase.execute('token-expire'),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(useCase.execute('token-expire')).rejects.toThrow(
+            UnauthorizedException,
+        );
     });
 
     it('devrait lever UnauthorizedException si aucun hash en base (session révoquée)', async () => {
@@ -67,9 +67,9 @@ describe('RefreshTokenUseCase', () => {
         mockRepo.findRefreshHashById.mockResolvedValue(null);
 
         // ACT + ASSERT
-        await expect(
-            useCase.execute('token-jwt-valide'),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(useCase.execute('token-jwt-valide')).rejects.toThrow(
+            UnauthorizedException,
+        );
     });
 
     it('devrait lever UnauthorizedException si le token ne correspond pas au hash stocké', async () => {
@@ -80,9 +80,9 @@ describe('RefreshTokenUseCase', () => {
         (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
         // ACT + ASSERT
-        await expect(
-            useCase.execute('token-revoque'),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(useCase.execute('token-revoque')).rejects.toThrow(
+            UnauthorizedException,
+        );
     });
 
     it('devrait retourner un nouveau accessToken si tout est valide', async () => {

@@ -6,6 +6,7 @@ import { AdminModule } from '../features/admin/modules/admin.module';
 import { MarquesModule } from '../features/referentiel/marques/modules/admin-marques.module';
 import { TypeCyclesModule } from '../features/referentiel/type-cycles/modules/admin-type-cycles.module';
 import { CycleModule } from '../features/cycle/modules/cycle.module';
+import { ForfaitsModule } from '../features/forfaits/modules/forfaits.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { CycleModule } from '../features/cycle/modules/cycle.module';
         MarquesModule,
         TypeCyclesModule,
         CycleModule,
+        ForfaitsModule,
     ],
 })
 export class AppModule {}

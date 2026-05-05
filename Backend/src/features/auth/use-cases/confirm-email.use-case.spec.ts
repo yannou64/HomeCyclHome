@@ -28,6 +28,7 @@ describe('ConfirmEmailUseCase', () => {
             findByConfirmationToken: jest.fn(),
             create: jest.fn(),
             activate: jest.fn(),
+            findRefreshHashById: jest.fn(),
             saveRefreshTokenHash: jest.fn(),
             clearRefreshTokenHash: jest.fn(),
         };
