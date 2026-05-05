@@ -38,7 +38,7 @@ export function MarquesTab() {
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <button className={styles.addButton} onClick={handleAdd}>
-          + Ajouter une marque
+          + Nouvelle marque
         </button>
       </div>
 
@@ -87,6 +87,17 @@ export function MarquesTab() {
           </TableBody>
         </Table>
       )}
+
+      <div className={styles.pagination}>
+        <span className={styles.paginationInfo}>
+          {items.length} résultat{items.length > 1 ? 's' : ''}
+        </span>
+        <div className={styles.paginationControls}>
+          <button className={styles.pageBtn} disabled aria-label="Page précédente">←</button>
+          <button className={`${styles.pageBtn} ${styles.pageBtnActive}`} aria-current="page">1</button>
+          <button className={styles.pageBtn} disabled aria-label="Page suivante">→</button>
+        </div>
+      </div>
 
       <CycleItemFormDialog
         isOpen={isFormOpen}

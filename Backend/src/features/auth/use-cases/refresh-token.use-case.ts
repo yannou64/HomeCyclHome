@@ -18,7 +18,9 @@ export class RefreshTokenUseCase {
                 secret: process.env.JWT_REFRESH_SECRET,
             });
         } catch {
-            throw new UnauthorizedException('Refresh token invalide ou expiré.');
+            throw new UnauthorizedException(
+                'Refresh token invalide ou expiré.',
+            );
         }
 
         // 2. Vérifier que la session est toujours active en base

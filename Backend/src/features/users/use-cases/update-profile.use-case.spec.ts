@@ -23,6 +23,7 @@ describe('UpdateProfileUseCase', () => {
         mockRepo = {
             findById: jest.fn(),
             update: jest.fn(),
+            deleteById: jest.fn(),
         };
         useCase = new UpdateProfileUseCase(mockRepo);
     });

@@ -4,13 +4,23 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  padding-top: $spacing-md;
+  background: white;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  padding: $spacing-lg;
 }
 
 .header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h1;
+  font-weight: $font-bold;
+  color: $color-text-primary;
 }
 
 .addButton {
@@ -39,6 +49,43 @@
   gap: $spacing-xs;
 }
 
+.nomCell {
+  font-weight: $font-semibold;
+}
+
+.descriptionCell {
+  color: $color-text-label;
+  font-size: $font-size-body;
+  max-width: 240px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.none {
+  color: $color-text-placeholder;
+}
+
+.badgeActif {
+  display: inline-block;
+  padding: 2px $spacing-xs;
+  border-radius: $radius-full;
+  background-color: #d1fae5;
+  color: #065f46;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+}
+
+.badgeInactif {
+  display: inline-block;
+  padding: 2px $spacing-xs;
+  border-radius: $radius-full;
+  background-color: #f3f4f6;
+  color: $color-text-label;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+}
+
+.prixButton,
 .editButton,
 .deleteButton {
   padding: $spacing-xs $spacing-sm;

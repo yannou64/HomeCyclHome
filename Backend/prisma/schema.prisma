@@ -68,3 +68,26 @@ model Cycle {
 
   @@map("Cycles")
 }
+
+model Forfait {
+  id              String                   @id @default(uuid())
+  nom             String                   @unique
+  description     String?
+  duree_minutes   Int
+  is_actif        Boolean                  @default(true)
+  date_creation   DateTime                 @default(now())
+  historique_prix HistoriquePrixForfait[]  // relation virtuelle — aucune colonne créée
+
+  @@map("Forfaits")
+}
+
+model HistoriquePrixForfait {
+  id         String    @id @default(uuid())
+  montant    Decimal   @db.Decimal(10, 2)
+  date_debut DateTime
+  date_fin   DateTime?
+  forfait_id String
+  forfait    Forfait   @relation(fields: [forfait_id], references: [id])
+
+  @@map("HistoriquePrixForfaits")
+}
