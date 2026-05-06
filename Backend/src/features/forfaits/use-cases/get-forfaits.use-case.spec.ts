@@ -20,8 +20,22 @@ describe('GetForfaitsUseCase', () => {
 
     it('devrait retourner la liste complète des forfaits', async () => {
         const forfaits = [
-            { id: 'uuid-1', nom: 'Révision Express', description: null, duree_minutes: 45, is_actif: true, prix_actif: null },
-            { id: 'uuid-2', nom: 'Révision Standard', description: 'Entretien complet', duree_minutes: 90, is_actif: true, prix_actif: 49.90 },
+            {
+                id: 'uuid-1',
+                nom: 'Révision Express',
+                description: null,
+                duree_minutes: 45,
+                is_actif: true,
+                prix_actif: null,
+            },
+            {
+                id: 'uuid-2',
+                nom: 'Révision Standard',
+                description: 'Entretien complet',
+                duree_minutes: 90,
+                is_actif: true,
+                prix_actif: 49.9,
+            },
         ];
         mockRepo.findAll.mockResolvedValue(forfaits);
 

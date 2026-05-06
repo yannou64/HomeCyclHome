@@ -15,6 +15,10 @@ RUN npm ci
 # Copie le reste du code source
 COPY . .
 
+# Reçoit la clé API depuis le build-arg CI/CD et l'expose à Vite au moment du build
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
+
 # Compile l'application React (génère le dossier dist/)
 RUN npm run build
 

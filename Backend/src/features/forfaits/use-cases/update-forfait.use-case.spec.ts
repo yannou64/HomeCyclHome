@@ -30,20 +30,25 @@ describe('UpdateForfaitUseCase', () => {
 
     it('devrait mettre à jour un forfait existant', async () => {
         mockRepo.findById.mockResolvedValue(existingForfait);
-        mockRepo.update.mockResolvedValue({ ...existingForfait, duree_minutes: 60 });
+        mockRepo.update.mockResolvedValue({
+            ...existingForfait,
+            duree_minutes: 60,
+        });
 
         const result = await useCase.execute('uuid-1', { duree_minutes: 60 });
 
-        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', { duree_minutes: 60 });
+        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
+            duree_minutes: 60,
+        });
         expect(result.duree_minutes).toBe(60);
     });
 
     it('devrait lever NotFoundException si le forfait est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
-        await expect(useCase.execute('ghost-uuid', { duree_minutes: 60 })).rejects.toThrow(
-            NotFoundException,
-        );
+        await expect(
+            useCase.execute('ghost-uuid', { duree_minutes: 60 }),
+        ).rejects.toThrow(NotFoundException);
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 
@@ -64,11 +69,14 @@ describe('UpdateForfaitUseCase', () => {
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 
-    it('devrait autoriser la mise à jour du nom si c\'est le même forfait', async () => {
+    it("devrait autoriser la mise à jour du nom si c'est le même forfait", async () => {
         mockRepo.findById.mockResolvedValue(existingForfait);
         // findByNom retourne le même forfait (même id) → pas de conflit
         mockRepo.findByNom.mockResolvedValue(existingForfait);
-        mockRepo.update.mockResolvedValue({ ...existingForfait, nom: 'Révision Express' });
+        mockRepo.update.mockResolvedValue({
+            ...existingForfait,
+            nom: 'Révision Express',
+        });
 
         await useCase.execute('uuid-1', { nom: 'Révision Express' });
 
