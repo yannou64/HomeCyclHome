@@ -4,14 +4,18 @@ import { IForfaitsRepository } from '../repositories/forfaits.repository.interfa
 
 @Injectable()
 export class SetForfaitPrixUseCase {
-  constructor(
-    @Inject(FORFAITS_REPO)
-    private readonly repo: IForfaitsRepository,
-  ) {}
+    constructor(
+        @Inject(FORFAITS_REPO)
+        private readonly repo: IForfaitsRepository,
+    ) {}
 
-  async execute(forfaitId: string, montant: number, dateDebut: Date): Promise<void> {
-    const forfait = await this.repo.findById(forfaitId);
-    if (!forfait) throw new NotFoundException('Forfait introuvable');
-    await this.repo.setPrix(forfaitId, montant, dateDebut);
-  }
+    async execute(
+        forfaitId: string,
+        montant: number,
+        dateDebut: Date,
+    ): Promise<void> {
+        const forfait = await this.repo.findById(forfaitId);
+        if (!forfait) throw new NotFoundException('Forfait introuvable');
+        await this.repo.setPrix(forfaitId, montant, dateDebut);
+    }
 }

@@ -91,3 +91,24 @@ model HistoriquePrixForfait {
 
   @@map("HistoriquePrixForfaits")
 }
+
+model Zone {
+  id            String      @id @default(uuid())
+  nom_zone      String      @unique
+  is_active     Boolean     @default(true)
+  date_creation DateTime    @default(now())
+  points        ZonePoint[]
+
+  @@map("Zones")
+}
+
+model ZonePoint {
+  id        String  @id @default(uuid())
+  latitude  Decimal @db.Decimal(10, 8)
+  longitude Decimal @db.Decimal(11, 8)
+  ordre     Int
+  zone_id   String
+  zone      Zone    @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+
+  @@map("ZonesPoints")
+}

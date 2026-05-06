@@ -54,6 +54,10 @@ export class AdminForfaitsController {
 
     @Post(':id/prix')
     setPrix(@Param('id') id: string, @Body() dto: SetForfaitPrixDto) {
-        return this.setForfaitPrixUseCase.execute(id, dto.montant, new Date(dto.date_debut));
+        return this.setForfaitPrixUseCase.execute(
+            id,
+            dto.montant,
+            new Date(dto.date_debut),
+        );
     }
 }

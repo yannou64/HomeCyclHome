@@ -1,0 +1,60 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.hint {
+  font-size: $font-size-label;
+  color: $color-text-label;
+}
+
+.clearBtn {
+  padding: 0.375rem $spacing-sm;
+  font-size: $font-size-label;
+  font-family: $font-primary;
+  font-weight: $font-medium;
+  color: $color-myBrown;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: $color-myGreen;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.map {
+  width: 100%;
+  height: 480px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  overflow: hidden;
+}
+
+.counter {
+  font-size: $font-size-label;
+  color: $color-text-label;
+  margin: 0;
+}
+
+.warning {
+  color: #c0392b;
+  font-weight: $font-medium;
+}

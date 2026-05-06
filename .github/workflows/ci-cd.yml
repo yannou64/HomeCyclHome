@@ -74,6 +74,8 @@ jobs:
                   context: ./Frontend
                   push: true
                   tags: ghcr.io/yannou64/homecyclhome-frontend:staging
+                  build-args: |
+                      VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
 
     build-and-push-prod:
         runs-on: ubuntu-latest
@@ -103,6 +105,8 @@ jobs:
                   context: ./Frontend
                   push: true
                   tags: ghcr.io/yannou64/homecyclhome-frontend:prod
+                  build-args: |
+                      VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
 
     # ---- DÉPLOIEMENT STAGING ----
     deploy-staging:

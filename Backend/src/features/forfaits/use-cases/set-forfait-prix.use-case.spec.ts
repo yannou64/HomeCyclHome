@@ -33,17 +33,21 @@ describe('SetForfaitPrixUseCase', () => {
         mockRepo.findById.mockResolvedValue(existingForfait);
         mockRepo.setPrix.mockResolvedValue(undefined);
 
-        await useCase.execute('uuid-1', 49.90, dateDebut);
+        await useCase.execute('uuid-1', 49.9, dateDebut);
 
         expect(mockRepo.findById).toHaveBeenCalledWith('uuid-1');
-        expect(mockRepo.setPrix).toHaveBeenCalledWith('uuid-1', 49.90, dateDebut);
+        expect(mockRepo.setPrix).toHaveBeenCalledWith(
+            'uuid-1',
+            49.9,
+            dateDebut,
+        );
     });
 
     it('devrait lever NotFoundException si le forfait est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
         await expect(
-            useCase.execute('ghost-uuid', 49.90, new Date()),
+            useCase.execute('ghost-uuid', 49.9, new Date()),
         ).rejects.toThrow(NotFoundException);
         expect(mockRepo.setPrix).not.toHaveBeenCalled();
     });
