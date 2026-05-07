@@ -1,0 +1,157 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+  font-family: $font-primary !important;
+  max-width: 480px !important;
+  background-color: white !important;
+  padding: $spacing-lg !important;
+  border-radius: $radius-lg !important;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h2;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.loading {
+  color: $color-text-label;
+  font-family: $font-primary;
+  padding: $spacing-md 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+}
+
+.select {
+  width: 100%;
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  background: white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: $color-myOrange;
+  }
+}
+
+.technicienFixed {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+  padding: $spacing-xs 0;
+}
+
+.zonesList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: $spacing-xs;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+}
+
+.zoneItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+  padding: 2px 0;
+
+  &:hover {
+    color: $color-myOrange;
+  }
+}
+
+.checkbox {
+  accent-color: $color-myOrange;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.inactiveTag {
+  font-size: $font-size-label;
+  color: $color-text-placeholder;
+  font-style: italic;
+}
+
+.noZones {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
+  font-style: italic;
+}
+
+.error {
+  color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+}
+
+.cancelButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.submitButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: $color-myOrange;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}

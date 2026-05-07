@@ -8,6 +8,7 @@ import { TypeCyclesModule } from '../features/referentiel/type-cycles/modules/ad
 import { CycleModule } from '../features/cycle/modules/cycle.module';
 import { ForfaitsModule } from '../features/forfaits/modules/forfaits.module';
 import { ZonesModule } from '../features/zones/modules/zones.module';
+import { AffectationsModule } from '../features/affectations/affectations.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { ZonesModule } from '../features/zones/modules/zones.module';
         CycleModule,
         ForfaitsModule,
         ZonesModule,
+        AffectationsModule,
     ],
 })
 export class AppModule {}

@@ -1,0 +1,138 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: white;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  padding: $spacing-lg;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h1;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.addButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: $color-myOrange;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.actionsHead {
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+}
+
+.technicienCell {
+  font-weight: $font-semibold;
+}
+
+.zonesBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.badgeZone {
+  display: inline-block;
+  padding: 2px $spacing-xs;
+  border-radius: $radius-full;
+  background-color: #dbeafe;
+  color: #1e40af;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+}
+
+.badgeZoneInactive {
+  display: inline-block;
+  padding: 2px $spacing-xs;
+  border-radius: $radius-full;
+  background-color: #f3f4f6;
+  color: $color-text-label;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+}
+
+.none {
+  color: $color-text-placeholder;
+  font-style: italic;
+}
+
+.editButton,
+.deleteButton {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  padding-top: $spacing-xs;
+}
+
+.paginationInfo {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
+}
+
+.empty {
+  text-align: center;
+  color: $color-text-label;
+  font-style: italic;
+  padding: $spacing-lg;
+}
+
+.loading {
+  color: $color-text-label;
+  font-family: $font-primary;
+}
+
+.error {
+  color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+}

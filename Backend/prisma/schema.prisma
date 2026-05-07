@@ -29,7 +29,8 @@ model Utilisateur {
   date_creation            DateTime  @default(now())
   date_maj                 DateTime  @updatedAt
   date_dernier_login       DateTime?
-  cycles                   Cycle[]   // relation inverse : un utilisateur possède plusieurs cycles
+  cycles                   Cycle[]          // relation inverse : un utilisateur possède plusieurs cycles
+  zones_affectees          TechnicienZone[] // relation inverse : zones affectées au technicien
 
   @@map("Utilisateurs")
 }
@@ -97,7 +98,8 @@ model Zone {
   nom_zone      String      @unique
   is_active     Boolean     @default(true)
   date_creation DateTime    @default(now())
-  points        ZonePoint[]
+  points                ZonePoint[]
+  techniciens_affectes  TechnicienZone[] // relation inverse : techniciens affectés à cette zone
 
   @@map("Zones")
 }
@@ -111,4 +113,15 @@ model ZonePoint {
   zone      Zone    @relation(fields: [zone_id], references: [id], onDelete: Cascade)
 
   @@map("ZonesPoints")
+}
+
+model TechnicienZone {
+  technicien_id    String
+  zone_id          String
+  date_affectation DateTime    @default(now())
+  technicien       Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+  zone             Zone        @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+
+  @@id([technicien_id, zone_id])
+  @@map("TechnicienZones")
 }

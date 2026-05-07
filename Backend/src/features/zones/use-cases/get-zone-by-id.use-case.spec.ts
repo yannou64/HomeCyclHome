@@ -30,7 +30,7 @@ describe('GetZoneByIdUseCase', () => {
         useCase = new GetZoneByIdUseCase(mockRepo);
     });
 
-    it('devrait retourner la zone correspondant à l\'id', async () => {
+    it("devrait retourner la zone correspondant à l'id", async () => {
         mockRepo.findById.mockResolvedValue(mockZone);
 
         const result = await useCase.execute('uuid-1');
@@ -42,6 +42,8 @@ describe('GetZoneByIdUseCase', () => {
     it('devrait lever NotFoundException si la zone est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
-        await expect(useCase.execute('ghost-uuid')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('ghost-uuid')).rejects.toThrow(
+            NotFoundException,
+        );
     });
 });
