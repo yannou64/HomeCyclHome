@@ -38,7 +38,9 @@ describe('CreateZoneUseCase', () => {
 
         const result = await useCase.execute(validPayload);
 
-        expect(mockRepo.existsByNom).toHaveBeenCalledWith(validPayload.nom_zone);
+        expect(mockRepo.existsByNom).toHaveBeenCalledWith(
+            validPayload.nom_zone,
+        );
         expect(mockRepo.create).toHaveBeenCalledWith(validPayload);
         expect(result.id).toBe('new-uuid');
     });
@@ -46,7 +48,9 @@ describe('CreateZoneUseCase', () => {
     it('devrait lever ConflictException si le nom est déjà utilisé', async () => {
         mockRepo.existsByNom.mockResolvedValue(true);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(ConflictException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            ConflictException,
+        );
         expect(mockRepo.create).not.toHaveBeenCalled();
     });
 });

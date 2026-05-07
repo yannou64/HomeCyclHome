@@ -77,7 +77,9 @@ export class ZonesPrismaRepository implements IZonesRepository {
                 where: { id },
                 data: {
                     ...(data.nom_zone && { nom_zone: data.nom_zone }),
-                    ...(data.is_active !== undefined && { is_active: data.is_active }),
+                    ...(data.is_active !== undefined && {
+                        is_active: data.is_active,
+                    }),
                 },
                 include: { points: { orderBy: { ordre: 'asc' } } },
             });

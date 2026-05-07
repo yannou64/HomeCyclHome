@@ -21,7 +21,7 @@ const mockZones = [
         points: [
             { latitude: 45.77, longitude: 4.88, ordre: 0 },
             { latitude: 45.78, longitude: 4.89, ordre: 1 },
-            { latitude: 45.76, longitude: 4.90, ordre: 2 },
+            { latitude: 45.76, longitude: 4.9, ordre: 2 },
         ],
     },
 ];

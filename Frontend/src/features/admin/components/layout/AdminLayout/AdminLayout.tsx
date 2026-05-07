@@ -6,6 +6,7 @@ import { DeleteConfirmDialog } from '../../users/DeleteConfirmDialog/DeleteConfi
 import { AdminCyclesSection } from '../../cycles/AdminCyclesSection/AdminCyclesSection';
 import { AdminForfaitsSection } from '../../forfaits/AdminForfaitsSection/AdminForfaitsSection';
 import { AdminZonesSection } from '../../zones/AdminZonesSection/AdminZonesSection';
+import { AdminAffectationsSection } from '../../affectations/AdminAffectationsSection/AdminAffectationsSection';
 import { useAdminUsers } from '../../../hooks/useAdminUsers';
 import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
 import styles from './AdminLayout.module.scss';
@@ -88,6 +89,8 @@ export function AdminLayout() {
                     <AdminCyclesSection />
                 ) : activeSection === 'zones' ? (
                     <AdminZonesSection />
+                ) : activeSection === 'affectations' ? (
+                    <AdminAffectationsSection />
                 ) : activeSection === 'forfaits' ? (
                     <AdminForfaitsSection />
                 ) : (

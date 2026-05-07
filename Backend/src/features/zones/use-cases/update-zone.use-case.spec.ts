@@ -32,11 +32,16 @@ describe('UpdateZoneUseCase', () => {
 
     it('devrait mettre à jour une zone existante', async () => {
         mockRepo.findById.mockResolvedValue(existingZone);
-        mockRepo.update.mockResolvedValue({ ...existingZone, is_active: false });
+        mockRepo.update.mockResolvedValue({
+            ...existingZone,
+            is_active: false,
+        });
 
         const result = await useCase.execute('uuid-1', { is_active: false });
 
-        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', { is_active: false });
+        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
+            is_active: false,
+        });
         expect(result.is_active).toBe(false);
     });
 
@@ -60,30 +65,41 @@ describe('UpdateZoneUseCase', () => {
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
 
-    it('devrait autoriser la mise à jour du nom si c\'est la même zone', async () => {
+    it("devrait autoriser la mise à jour du nom si c'est la même zone", async () => {
         mockRepo.findById.mockResolvedValue(existingZone);
         // excludeId='uuid-1' → aucun autre conflit trouvé
         mockRepo.existsByNom.mockResolvedValue(false);
-        mockRepo.update.mockResolvedValue({ ...existingZone, nom_zone: 'Lyon Centre v2' });
+        mockRepo.update.mockResolvedValue({
+            ...existingZone,
+            nom_zone: 'Lyon Centre v2',
+        });
 
         await useCase.execute('uuid-1', { nom_zone: 'Lyon Centre v2' });
 
-        expect(mockRepo.existsByNom).toHaveBeenCalledWith('Lyon Centre v2', 'uuid-1');
+        expect(mockRepo.existsByNom).toHaveBeenCalledWith(
+            'Lyon Centre v2',
+            'uuid-1',
+        );
         expect(mockRepo.update).toHaveBeenCalled();
     });
 
     it('devrait remplacer les points si de nouveaux points sont fournis', async () => {
         const newPoints = [
-            { latitude: 45.80, longitude: 4.90, ordre: 0 },
+            { latitude: 45.8, longitude: 4.9, ordre: 0 },
             { latitude: 45.81, longitude: 4.91, ordre: 1 },
             { latitude: 45.79, longitude: 4.92, ordre: 2 },
         ];
         mockRepo.findById.mockResolvedValue(existingZone);
-        mockRepo.update.mockResolvedValue({ ...existingZone, points: newPoints });
+        mockRepo.update.mockResolvedValue({
+            ...existingZone,
+            points: newPoints,
+        });
 
         const result = await useCase.execute('uuid-1', { points: newPoints });
 
-        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', { points: newPoints });
+        expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
+            points: newPoints,
+        });
         expect(result.points).toEqual(newPoints);
     });
 });

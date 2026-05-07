@@ -39,7 +39,9 @@ describe('DeleteZoneUseCase', () => {
     it('devrait lever NotFoundException si la zone est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
-        await expect(useCase.execute('ghost-uuid')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('ghost-uuid')).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.delete).not.toHaveBeenCalled();
     });
 });
