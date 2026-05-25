@@ -3,6 +3,7 @@ import { AdminAffectationsController } from './controllers/admin-affectations.co
 import { AffectationsPrismaRepository } from './repositories/affectations.prisma.repository';
 import { AFFECTATIONS_REPO } from './repositories/affectations.repository.interface';
 import { DeleteTechnicienAffectationsUseCase } from './use-cases/delete-technicien-affectations.use-case';
+import { GetAffectationByTechnicienUseCase } from './use-cases/get-affectation-by-technicien.use-case';
 import { GetAffectationsUseCase } from './use-cases/get-affectations.use-case';
 import { SetTechnicienZonesUseCase } from './use-cases/set-technicien-zones.use-case';
 
@@ -29,6 +30,12 @@ import { SetTechnicienZonesUseCase } from './use-cases/set-technicien-zones.use-
             provide: DeleteTechnicienAffectationsUseCase,
             useFactory: (repo: AffectationsPrismaRepository) =>
                 new DeleteTechnicienAffectationsUseCase(repo),
+            inject: [AFFECTATIONS_REPO],
+        },
+        {
+            provide: GetAffectationByTechnicienUseCase,
+            useFactory: (repo: AffectationsPrismaRepository) =>
+                new GetAffectationByTechnicienUseCase(repo),
             inject: [AFFECTATIONS_REPO],
         },
     ],

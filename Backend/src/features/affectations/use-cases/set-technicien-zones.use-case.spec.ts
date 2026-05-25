@@ -41,27 +41,36 @@ describe('SetTechnicienZonesUseCase', () => {
 
         expect(mockRepo.technicienExists).toHaveBeenCalledWith(TECH_ID);
         expect(mockRepo.zonesExist).toHaveBeenCalledWith(ZONE_IDS);
-        expect(mockRepo.setZonesForTechnicien).toHaveBeenCalledWith(TECH_ID, ZONE_IDS);
+        expect(mockRepo.setZonesForTechnicien).toHaveBeenCalledWith(
+            TECH_ID,
+            ZONE_IDS,
+        );
         expect(result.zones).toHaveLength(2);
     });
 
-    it('devrait lever NotFoundException si le technicien est introuvable ou n\'a pas le bon rôle', async () => {
+    it("devrait lever NotFoundException si le technicien est introuvable ou n'a pas le bon rôle", async () => {
         mockRepo.technicienExists.mockResolvedValue(false);
 
-        await expect(useCase.execute(TECH_ID, ZONE_IDS)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(TECH_ID, ZONE_IDS)).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.setZonesForTechnicien).not.toHaveBeenCalled();
     });
 
-    it('devrait lever NotFoundException si une ou plusieurs zones n\'existent pas', async () => {
+    it("devrait lever NotFoundException si une ou plusieurs zones n'existent pas", async () => {
         mockRepo.technicienExists.mockResolvedValue(true);
         mockRepo.zonesExist.mockResolvedValue(false);
 
-        await expect(useCase.execute(TECH_ID, ZONE_IDS)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(TECH_ID, ZONE_IDS)).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.setZonesForTechnicien).not.toHaveBeenCalled();
     });
 
     it('devrait lever BadRequestException si zone_ids est vide', async () => {
-        await expect(useCase.execute(TECH_ID, [])).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(TECH_ID, [])).rejects.toThrow(
+            BadRequestException,
+        );
         expect(mockRepo.technicienExists).not.toHaveBeenCalled();
     });
 });

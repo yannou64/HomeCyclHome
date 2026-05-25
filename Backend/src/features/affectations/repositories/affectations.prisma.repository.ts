@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Role, TechnicienZone, Utilisateur, Zone } from '../../../../generated/prisma';
+import {
+    Role,
+    TechnicienZone,
+    Utilisateur,
+    Zone,
+} from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import { AffectationDto, ZoneAffecteeDto } from '../dto/affectation.dto';
 import { IAffectationsRepository } from './affectations.repository.interface';
@@ -26,7 +31,9 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
         return techniciens.map((t) => this.toDto(t));
     }
 
-    async findByTechnicienId(technicienId: string): Promise<AffectationDto | null> {
+    async findByTechnicienId(
+        technicienId: string,
+    ): Promise<AffectationDto | null> {
         const technicien = await this.prisma.utilisateur.findFirst({
             where: { id: technicienId, role: Role.technicien },
             include: {
@@ -53,14 +60,22 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
         return count === zoneIds.length;
     }
 
-    async setZonesForTechnicien(technicienId: string, zoneIds: string[]): Promise<AffectationDto> {
+    async setZonesForTechnicien(
+        technicienId: string,
+        zoneIds: string[],
+    ): Promise<AffectationDto> {
         const technicien = await this.prisma.$transaction(async (tx) => {
             // Supprime toutes les affectations existantes pour ce technicien
-            await tx.technicienZone.deleteMany({ where: { technicien_id: technicienId } });
+            await tx.technicienZone.deleteMany({
+                where: { technicien_id: technicienId },
+            });
 
             // Crée les nouvelles affectations
             await tx.technicienZone.createMany({
-                data: zoneIds.map((zone_id) => ({ technicien_id: technicienId, zone_id })),
+                data: zoneIds.map((zone_id) => ({
+                    technicien_id: technicienId,
+                    zone_id,
+                })),
             });
 
             // Retourne le technicien avec ses nouvelles zones pour construire le DTO
@@ -90,7 +105,9 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
             nom: technicien.nom,
             prenom: technicien.prenom,
             email: technicien.email,
-            zones: technicien.zones_affectees.map((a) => this.toZoneDto(a.zone)),
+            zones: technicien.zones_affectees.map((a) =>
+                this.toZoneDto(a.zone),
+            ),
         };
     }
 

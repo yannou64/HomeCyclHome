@@ -29,8 +29,11 @@ model Utilisateur {
   date_creation            DateTime  @default(now())
   date_maj                 DateTime  @updatedAt
   date_dernier_login       DateTime?
-  cycles                   Cycle[]          // relation inverse : un utilisateur possède plusieurs cycles
-  zones_affectees          TechnicienZone[] // relation inverse : zones affectées au technicien
+  cycles                   Cycle[]               // relation inverse : un utilisateur possède plusieurs cycles
+  zones_affectees          TechnicienZone[]      // relation inverse : zones affectées au technicien
+  modeles_planification    ModelePlanification[] // relation inverse : modèles de planification du technicien
+  pauses_recurrentes       PauseRecurrente[]     // relation inverse : pauses récurrentes du technicien
+  indisponibilites         Indisponibilite[]     // relation inverse : absences ponctuelles du technicien
 
   @@map("Utilisateurs")
 }
@@ -99,7 +102,9 @@ model Zone {
   is_active     Boolean     @default(true)
   date_creation DateTime    @default(now())
   points                ZonePoint[]
-  techniciens_affectes  TechnicienZone[] // relation inverse : techniciens affectés à cette zone
+  techniciens_affectes  TechnicienZone[]      // relation inverse : techniciens affectés à cette zone
+  modeles_planification ModelePlanification[] // relation inverse : modèles de planification sur cette zone
+  creneaux              Creneau[]             // relation inverse : créneaux générés sur cette zone
 
   @@map("Zones")
 }
@@ -124,4 +129,79 @@ model TechnicienZone {
 
   @@id([technicien_id, zone_id])
   @@map("TechnicienZones")
+}
+
+// ─── Planification ───────────────────────────────────────────────────────────
+
+model ModelePlanification {
+  id                   String    @id @default(uuid())
+  // 0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche
+  jour_semaine         Int
+  // Heures stockées en minutes depuis minuit pour simplifier les calculs d'overlap
+  // Exemples : 8h30 → 510, 17h00 → 1020
+  heure_debut          Int
+  heure_fin            Int
+  // Durée de chaque créneau généré (ex: 60 = créneaux d'une heure)
+  intervalle_minutes   Int
+  is_actif             Boolean   @default(true)
+  date_debut_validite  DateTime
+  date_fin_validite    DateTime? // null = valable indéfiniment
+  date_creation        DateTime  @default(now())
+
+  technicien_id        String
+  zone_id              String
+
+  technicien           Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+  zone                 Zone        @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+  creneaux             Creneau[]   // relation inverse : créneaux générés depuis ce modèle
+
+  @@map("ModelesPlanification")
+}
+
+model PauseRecurrente {
+  id            String    @id @default(uuid())
+  // null = la pause s'applique tous les jours de la semaine
+  jour_semaine  Int?
+  heure_debut   Int       // minutes depuis minuit
+  heure_fin     Int       // minutes depuis minuit
+  description   String?
+  date_creation DateTime  @default(now())
+
+  technicien_id String
+  technicien    Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+
+  @@map("PausesRecurrentes")
+}
+
+model Indisponibilite {
+  id            String   @id @default(uuid())
+  date_debut    DateTime
+  date_fin      DateTime
+  motif         String?
+  date_creation DateTime @default(now())
+
+  technicien_id String
+  technicien    Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+
+  @@map("Indisponibilites")
+}
+
+// Creneau : entité cible de la génération (HOM-285)
+// Défini maintenant pour stabiliser le schéma — les use cases de génération arrivent au sprint suivant
+model Creneau {
+  id            String    @id @default(uuid())
+  date_debut    DateTime
+  date_fin      DateTime? // null à la génération, calculé lors de la réservation
+  is_disponible Boolean   @default(true)
+  date_creation DateTime  @default(now())
+
+  // FK nullable : null pour les créneaux manuels (futur), renseigné pour les créneaux générés
+  modele_planification_id String?
+  // Snapshot de la zone — dénormalisé intentionnellement pour la stabilité des requêtes client
+  zone_id                 String
+
+  modele_planification ModelePlanification? @relation(fields: [modele_planification_id], references: [id], onDelete: SetNull)
+  zone                 Zone                 @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+
+  @@map("Creneaux")
 }
