@@ -7,6 +7,7 @@ import { AdminCyclesSection } from '../../cycles/AdminCyclesSection/AdminCyclesS
 import { AdminForfaitsSection } from '../../forfaits/AdminForfaitsSection/AdminForfaitsSection';
 import { AdminZonesSection } from '../../zones/AdminZonesSection/AdminZonesSection';
 import { AdminAffectationsSection } from '../../affectations/AdminAffectationsSection/AdminAffectationsSection';
+import { AdminPlanningSection } from '../../planning/AdminPlanningSection/AdminPlanningSection';
 import { useAdminUsers } from '../../../hooks/useAdminUsers';
 import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
 import styles from './AdminLayout.module.scss';
@@ -91,6 +92,8 @@ export function AdminLayout() {
                     <AdminZonesSection />
                 ) : activeSection === 'affectations' ? (
                     <AdminAffectationsSection />
+                ) : activeSection === 'planning' ? (
+                    <AdminPlanningSection />
                 ) : activeSection === 'forfaits' ? (
                     <AdminForfaitsSection />
                 ) : (

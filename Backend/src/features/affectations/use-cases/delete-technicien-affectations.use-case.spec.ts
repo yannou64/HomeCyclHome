@@ -33,7 +33,9 @@ describe('DeleteTechnicienAffectationsUseCase', () => {
     it('devrait lever NotFoundException si le technicien est introuvable', async () => {
         mockRepo.technicienExists.mockResolvedValue(false);
 
-        await expect(useCase.execute(TECH_ID)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(TECH_ID)).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.deleteForTechnicien).not.toHaveBeenCalled();
     });
 });

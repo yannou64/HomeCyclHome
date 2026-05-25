@@ -18,8 +18,8 @@ const MENU_ITEMS: { label: string; section: AdminSection }[] = [
     { label: 'Zones', section: 'zones' },
     { label: 'Affectations', section: 'affectations' },
     { label: 'Forfaits', section: 'forfaits' },
-    { label: 'Créneaux', section: 'creneaux' },
     { label: 'Planning', section: 'planning' },
+    { label: 'Créneaux', section: 'creneaux' },
     { label: 'Interventions', section: 'interventions' },
 ];
 

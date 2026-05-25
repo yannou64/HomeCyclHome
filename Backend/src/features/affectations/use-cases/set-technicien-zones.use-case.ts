@@ -1,8 +1,4 @@
-import {
-    BadRequestException,
-    Inject,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { AffectationDto } from '../dto/affectation.dto';
 import {
     AFFECTATIONS_REPO,
@@ -15,9 +11,14 @@ export class SetTechnicienZonesUseCase {
         private readonly repo: IAffectationsRepository,
     ) {}
 
-    async execute(technicienId: string, zoneIds: string[]): Promise<AffectationDto> {
+    async execute(
+        technicienId: string,
+        zoneIds: string[],
+    ): Promise<AffectationDto> {
         if (zoneIds.length === 0) {
-            throw new BadRequestException('Au moins une zone doit être affectée.');
+            throw new BadRequestException(
+                'Au moins une zone doit être affectée.',
+            );
         }
 
         const technicienValide = await this.repo.technicienExists(technicienId);
@@ -27,7 +28,9 @@ export class SetTechnicienZonesUseCase {
 
         const zonesValides = await this.repo.zonesExist(zoneIds);
         if (!zonesValides) {
-            throw new NotFoundException('Une ou plusieurs zones sont introuvables.');
+            throw new NotFoundException(
+                'Une ou plusieurs zones sont introuvables.',
+            );
         }
 
         return this.repo.setZonesForTechnicien(technicienId, zoneIds);

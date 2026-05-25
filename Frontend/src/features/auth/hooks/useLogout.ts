@@ -7,9 +7,8 @@ const isDev = import.meta.env.DEV
 export function useLogout() {
     const { logout } = useAuth();
     const navigate = useNavigate();
-    if(isDev) console.log("[useLogout] Tentative de logout")
-      
     async function handleLogout() {
+        if(isDev) console.log("[useLogout] Tentative de logout")
         try {
             await authService.logout();   // POST /auth/logout → efface cookies + refresh token en base
             if(isDev) console.log("[useLogout] Logout réussi")
