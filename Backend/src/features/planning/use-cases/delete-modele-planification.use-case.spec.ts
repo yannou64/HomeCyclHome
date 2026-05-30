@@ -54,7 +54,9 @@ describe('DeleteModelePlanificationUseCase', () => {
     it('devrait lever NotFoundException si le modèle est introuvable', async () => {
         mockRepo.findModeleById.mockResolvedValue(null);
 
-        await expect(useCase.execute('inconnu-uuid')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('inconnu-uuid')).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.deleteModele).not.toHaveBeenCalled();
     });

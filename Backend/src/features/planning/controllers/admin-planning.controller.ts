@@ -28,6 +28,13 @@ import { DeletePauseRecurrenteUseCase } from '../use-cases/delete-pause-recurren
 import { CreateIndisponibiliteUseCase } from '../use-cases/create-indisponibilite.use-case';
 import { GetIndisponibilitesUseCase } from '../use-cases/get-indisponibilites.use-case';
 import { DeleteIndisponibiliteUseCase } from '../use-cases/delete-indisponibilite.use-case';
+import { GenerateCreneauxDto } from '../dto/generate-creneaux.dto';
+import { GenerateAllCreneauxDto } from '../dto/generate-all-creneaux.dto';
+import { GenerateCreneauxUseCase } from '../use-cases/generate-creneaux.use-case';
+import { GenerateAllCreneauxUseCase } from '../use-cases/generate-all-creneaux.use-case';
+import { GetCreneauxUseCase } from '../use-cases/get-creneaux.use-case';
+import { DeleteCreneauUseCase } from '../use-cases/delete-creneau.use-case';
+import { DeleteCreneauxDisponiblesUseCase } from '../use-cases/delete-creneaux-disponibles.use-case';
 
 @Controller('admin/planning')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -47,6 +54,12 @@ export class AdminPlanningController {
         private readonly getIndisponibilitesUseCase: GetIndisponibilitesUseCase,
         private readonly createIndisponibiliteUseCase: CreateIndisponibiliteUseCase,
         private readonly deleteIndisponibiliteUseCase: DeleteIndisponibiliteUseCase,
+        // Créneaux
+        private readonly generateCreneauxUseCase: GenerateCreneauxUseCase,
+        private readonly generateAllCreneauxUseCase: GenerateAllCreneauxUseCase,
+        private readonly getCreneauxUseCase: GetCreneauxUseCase,
+        private readonly deleteCreneauUseCase: DeleteCreneauUseCase,
+        private readonly deleteCreneauxDisponiblesUseCase: DeleteCreneauxDisponiblesUseCase,
     ) {}
 
     // ── Modèles de planification ─────────────────────────────────────────────
@@ -109,5 +122,55 @@ export class AdminPlanningController {
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteIndisponibilite(@Param('id') id: string) {
         return this.deleteIndisponibiliteUseCase.execute(id);
+    }
+
+    // ── Créneaux ─────────────────────────────────────────────────────────────
+
+    // Routes statiques déclarées avant les routes paramétrées (:id)
+    // pour éviter que NestJS les interprète comme des identifiants.
+    @Post('creneaux/generate')
+    generateCreneaux(@Body() dto: GenerateCreneauxDto) {
+        return this.generateCreneauxUseCase.execute(dto);
+    }
+
+    @Post('creneaux/generate-all')
+    generateAllCreneaux(@Body() dto: GenerateAllCreneauxDto) {
+        return this.generateAllCreneauxUseCase.execute({
+            technicienId: dto.technicien_id,
+            date_fin_generation: dto.date_fin_generation,
+        });
+    }
+
+    @Get('creneaux')
+    getCreneaux(
+        @Query('technicienId') technicienId: string,
+        @Query('dateDebut') dateDebut: string,
+        @Query('dateFin') dateFin: string,
+    ) {
+        return this.getCreneauxUseCase.execute({
+            technicienId,
+            dateDebut,
+            dateFin,
+        });
+    }
+
+    @Delete('creneaux/disponibles')
+    @HttpCode(HttpStatus.OK)
+    deleteCreneauxDisponibles(
+        @Query('technicienId') technicienId: string,
+        @Query('dateDebut') dateDebut: string,
+        @Query('dateFin') dateFin: string,
+    ) {
+        return this.deleteCreneauxDisponiblesUseCase.execute({
+            technicienId,
+            dateDebut,
+            dateFin,
+        });
+    }
+
+    @Delete('creneaux/:id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    deleteCreneau(@Param('id') id: string) {
+        return this.deleteCreneauUseCase.execute(id);
     }
 }

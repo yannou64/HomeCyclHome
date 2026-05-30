@@ -58,7 +58,10 @@ describe('CreateModelePlanificationUseCase', () => {
         const result = await useCase.execute(validPayload);
 
         expect(mockRepo.technicienExists).toHaveBeenCalledWith('tech-uuid-1');
-        expect(mockRepo.isAffecteAZone).toHaveBeenCalledWith('tech-uuid-1', 'zone-uuid-1');
+        expect(mockRepo.isAffecteAZone).toHaveBeenCalledWith(
+            'tech-uuid-1',
+            'zone-uuid-1',
+        );
         expect(mockRepo.findModelesChevauchants).toHaveBeenCalled();
         expect(mockRepo.createModele).toHaveBeenCalled();
         expect(result.id).toBe('modele-uuid-1');
@@ -67,7 +70,9 @@ describe('CreateModelePlanificationUseCase', () => {
     it('devrait lever BadRequestException si heure_fin <= heure_debut', async () => {
         const payload = { ...validPayload, heure_debut: 720, heure_fin: 480 };
 
-        await expect(useCase.execute(payload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(payload)).rejects.toThrow(
+            BadRequestException,
+        );
 
         // Aucun appel au repo — validation bloquante en premier
         expect(mockRepo.technicienExists).not.toHaveBeenCalled();
@@ -77,13 +82,17 @@ describe('CreateModelePlanificationUseCase', () => {
     it('devrait lever BadRequestException si heure_fin === heure_debut', async () => {
         const payload = { ...validPayload, heure_debut: 480, heure_fin: 480 };
 
-        await expect(useCase.execute(payload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(payload)).rejects.toThrow(
+            BadRequestException,
+        );
     });
 
     it('devrait lever NotFoundException si le technicien est introuvable', async () => {
         mockRepo.technicienExists.mockResolvedValue(false);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.isAffecteAZone).not.toHaveBeenCalled();
         expect(mockRepo.createModele).not.toHaveBeenCalled();
@@ -93,7 +102,9 @@ describe('CreateModelePlanificationUseCase', () => {
         mockRepo.technicienExists.mockResolvedValue(true);
         mockRepo.isAffecteAZone.mockResolvedValue(false);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            BadRequestException,
+        );
 
         expect(mockRepo.findModelesChevauchants).not.toHaveBeenCalled();
         expect(mockRepo.createModele).not.toHaveBeenCalled();
@@ -105,7 +116,9 @@ describe('CreateModelePlanificationUseCase', () => {
         // Le repo signale un conflit
         mockRepo.findModelesChevauchants.mockResolvedValue([mockModeleDto]);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(ConflictException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            ConflictException,
+        );
 
         expect(mockRepo.createModele).not.toHaveBeenCalled();
     });

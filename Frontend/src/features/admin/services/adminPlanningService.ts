@@ -2,9 +2,13 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type { ZoneAffectee } from '../types/affectations.types';
 import type {
+  Creneau,
   CreateIndisponibilitePayload,
   CreateModelePlanificationPayload,
   CreatePauseRecurrentePayload,
+  GenerateAllCreneauxPayload,
+  GenerateCreneauxPayload,
+  GenerationRapport,
   Indisponibilite,
   ModelePlanification,
   PauseRecurrente,
@@ -70,6 +74,42 @@ export const adminPlanningService = {
 
   deleteIndisponibilite(id: string): Promise<void> {
     return apiClient.delete(`/admin/planning/indisponibilites/${id}`).then(() => undefined);
+  },
+
+  // ── Créneaux ────────────────────────────────────────────────────────────────
+
+  generateCreneaux(payload: GenerateCreneauxPayload): Promise<GenerationRapport> {
+    return apiClient
+      .post<GenerationRapport>('/admin/planning/creneaux/generate', payload)
+      .then((r) => r.data);
+  },
+
+  getCreneaux(technicienId: string, dateDebut: string, dateFin: string): Promise<Creneau[]> {
+    return apiClient
+      .get<Creneau[]>('/admin/planning/creneaux', { params: { technicienId, dateDebut, dateFin } })
+      .then((r) => r.data);
+  },
+
+  deleteCreneau(id: string): Promise<void> {
+    return apiClient.delete(`/admin/planning/creneaux/${id}`).then(() => undefined);
+  },
+
+  generateAllCreneaux(payload: GenerateAllCreneauxPayload): Promise<GenerationRapport> {
+    return apiClient
+      .post<GenerationRapport>('/admin/planning/creneaux/generate-all', payload)
+      .then((r) => r.data);
+  },
+
+  deleteCreneauxDisponibles(
+    technicienId: string,
+    dateDebut: string,
+    dateFin: string,
+  ): Promise<{ deleted: number }> {
+    return apiClient
+      .delete<{ deleted: number }>('/admin/planning/creneaux/disponibles', {
+        params: { technicienId, dateDebut, dateFin },
+      })
+      .then((r) => r.data);
   },
 
   // ── Données pour les formulaires ────────────────────────────────────────────

@@ -30,21 +30,26 @@ export type IndisponibiliteDto = {
     id: string;
     technicien_id: string;
     date_debut: string; // ISO 8601
-    date_fin: string;   // ISO 8601
+    date_fin: string; // ISO 8601
     motif: string | null;
 };
 
 // Types intermédiaires utilisés par l'interface repository
 // Séparés des DTOs d'entrée HTTP pour que le repository reste indépendant de NestJS
 
-export type CreateModeleData =
-    Omit<ModelePlanificationDto, 'id' | 'date_debut_validite' | 'date_fin_validite'> & {
-        date_debut_validite: Date;
-        date_fin_validite: Date | null;
-    };
+export type CreateModeleData = Omit<
+    ModelePlanificationDto,
+    'id' | 'date_debut_validite' | 'date_fin_validite'
+> & {
+    date_debut_validite: Date;
+    date_fin_validite: Date | null;
+};
 
 export type UpdateModeleData = Partial<
-    Omit<ModelePlanificationDto, 'id' | 'technicien_id' | 'date_debut_validite' | 'date_fin_validite'> & {
+    Omit<
+        ModelePlanificationDto,
+        'id' | 'technicien_id' | 'date_debut_validite' | 'date_fin_validite'
+    > & {
         date_debut_validite: Date;
         date_fin_validite: Date | null;
     }
@@ -57,4 +62,31 @@ export type CreateIndisponibiliteData = {
     date_debut: Date;
     date_fin: Date;
     motif?: string;
+};
+
+// ── Créneaux ─────────────────────────────────────────────────────────────────
+
+export type CreneauDto = {
+    id: string;
+    date_debut: string; // ISO 8601
+    date_fin: string | null; // null à la génération, rempli à la réservation
+    is_disponible: boolean;
+    zone_id: string;
+    modele_planification_id: string | null;
+};
+
+// Réponse de l'endpoint POST /admin/planning/creneaux/generate
+export type GenerationRapportDto = {
+    created: number; // créneaux nouvellement insérés
+    skipped: number; // slots sautés (pause, indisponibilité, doublon)
+    conflicts: number; // créneaux is_disponible=false dans la période (déjà réservés)
+};
+
+// Données envoyées au repository pour créer un créneau (type interne, pas de décorateurs)
+export type CreateCreneauData = {
+    date_debut: Date; // Date native — Prisma attend une Date, pas un string ISO
+    date_fin: null; // toujours null à la génération
+    is_disponible: true; // toujours disponible à la génération
+    zone_id: string;
+    modele_planification_id: string;
 };

@@ -45,12 +45,14 @@ describe('GetModelesPlanificationUseCase', () => {
 
         const result = await useCase.execute('tech-uuid-1');
 
-        expect(mockRepo.findModelesByTechnicien).toHaveBeenCalledWith('tech-uuid-1');
+        expect(mockRepo.findModelesByTechnicien).toHaveBeenCalledWith(
+            'tech-uuid-1',
+        );
         expect(result).toHaveLength(1);
         expect(result[0].id).toBe('modele-uuid-1');
     });
 
-    it('devrait retourner un tableau vide si le technicien n\'a pas de modèle', async () => {
+    it("devrait retourner un tableau vide si le technicien n'a pas de modèle", async () => {
         mockRepo.findModelesByTechnicien.mockResolvedValue([]);
 
         const result = await useCase.execute('tech-uuid-2');

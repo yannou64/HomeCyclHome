@@ -29,7 +29,14 @@ describe('DeletePauseRecurrenteUseCase', () => {
     });
 
     it('devrait supprimer la pause si elle existe', async () => {
-        const pause = { id: 'pause-1', technicien_id: 'tech-1', jour_semaine: null, heure_debut: 720, heure_fin: 810, description: null };
+        const pause = {
+            id: 'pause-1',
+            technicien_id: 'tech-1',
+            jour_semaine: null,
+            heure_debut: 720,
+            heure_fin: 810,
+            description: null,
+        };
         mockRepo.findPauseById.mockResolvedValue(pause);
         mockRepo.deletePause.mockResolvedValue(undefined);
 
@@ -42,7 +49,9 @@ describe('DeletePauseRecurrenteUseCase', () => {
     it('devrait lever NotFoundException si la pause est introuvable', async () => {
         mockRepo.findPauseById.mockResolvedValue(null);
 
-        await expect(useCase.execute('inconnu')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('inconnu')).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.deletePause).not.toHaveBeenCalled();
     });

@@ -48,19 +48,28 @@ describe('UpdateModelePlanificationUseCase', () => {
     it('devrait mettre à jour le modèle si aucun conflit', async () => {
         mockRepo.findModeleById.mockResolvedValue(existingModele);
         mockRepo.findModelesChevauchants.mockResolvedValue([]);
-        mockRepo.updateModele.mockResolvedValue({ ...existingModele, intervalle_minutes: 90 });
+        mockRepo.updateModele.mockResolvedValue({
+            ...existingModele,
+            intervalle_minutes: 90,
+        });
 
-        const result = await useCase.execute('modele-uuid-1', { intervalle_minutes: 90 });
+        const result = await useCase.execute('modele-uuid-1', {
+            intervalle_minutes: 90,
+        });
 
         expect(mockRepo.findModeleById).toHaveBeenCalledWith('modele-uuid-1');
-        expect(mockRepo.updateModele).toHaveBeenCalledWith('modele-uuid-1', { intervalle_minutes: 90 });
+        expect(mockRepo.updateModele).toHaveBeenCalledWith('modele-uuid-1', {
+            intervalle_minutes: 90,
+        });
         expect(result.intervalle_minutes).toBe(90);
     });
 
     it('devrait lever NotFoundException si le modèle est introuvable', async () => {
         mockRepo.findModeleById.mockResolvedValue(null);
 
-        await expect(useCase.execute('inconnu-uuid', {})).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('inconnu-uuid', {})).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.updateModele).not.toHaveBeenCalled();
     });
@@ -91,13 +100,13 @@ describe('UpdateModelePlanificationUseCase', () => {
         // on vérifie simplement que la fonction a été appelée avec le bon excludeId.
         // Les 5 premiers args sont des valeurs dérivées de existant/dto, le 6e est null (pas de date_fin).
         expect(mockRepo.findModelesChevauchants).toHaveBeenCalledWith(
-            'tech-uuid-1',    // technicien_id
-            1,                // jour_semaine (inchangé)
-            400,              // heure_debut (du dto)
-            1020,             // heure_fin (de existant)
+            'tech-uuid-1', // technicien_id
+            1, // jour_semaine (inchangé)
+            400, // heure_debut (du dto)
+            1020, // heure_fin (de existant)
             expect.any(Date), // dateDebutValidite
-            null,             // dateFinValidite — null car indéfinie dans existant
-            'modele-uuid-1',  // excludeId : clé de la règle à tester
+            null, // dateFinValidite — null car indéfinie dans existant
+            'modele-uuid-1', // excludeId : clé de la règle à tester
         );
     });
 });

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import {
+    CreateCreneauData,
     CreateIndisponibiliteData,
     CreateModeleData,
     CreatePauseData,
+    CreneauDto,
     IndisponibiliteDto,
     ModelePlanificationDto,
     PauseRecurrenteDto,
@@ -11,6 +13,7 @@ import {
 } from '../dto/planning.dto';
 import { IPlanningRepository } from './planning.repository.interface';
 import {
+    Creneau,
     Indisponibilite,
     ModelePlanification,
     PauseRecurrente,
@@ -23,7 +26,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     // ── ModelePlanification ──────────────────────────────────────────────────
 
-    async findModelesByTechnicien(technicienId: string): Promise<ModelePlanificationDto[]> {
+    async findModelesByTechnicien(
+        technicienId: string,
+    ): Promise<ModelePlanificationDto[]> {
         const modeles = await this.prisma.modelePlanification.findMany({
             where: { technicien_id: technicienId },
             orderBy: [{ jour_semaine: 'asc' }, { heure_debut: 'asc' }],
@@ -32,7 +37,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     }
 
     async findModeleById(id: string): Promise<ModelePlanificationDto | null> {
-        const modele = await this.prisma.modelePlanification.findUnique({ where: { id } });
+        const modele = await this.prisma.modelePlanification.findUnique({
+            where: { id },
+        });
         return modele ? this.toModeleDto(modele) : null;
     }
 
@@ -74,7 +81,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return modeles.map((m) => this.toModeleDto(m));
     }
 
-    async createModele(data: CreateModeleData): Promise<ModelePlanificationDto> {
+    async createModele(
+        data: CreateModeleData,
+    ): Promise<ModelePlanificationDto> {
         const modele = await this.prisma.modelePlanification.create({
             data: {
                 technicien_id: data.technicien_id,
@@ -91,18 +100,33 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return this.toModeleDto(modele);
     }
 
-    async updateModele(id: string, data: UpdateModeleData): Promise<ModelePlanificationDto> {
+    async updateModele(
+        id: string,
+        data: UpdateModeleData,
+    ): Promise<ModelePlanificationDto> {
         const modele = await this.prisma.modelePlanification.update({
             where: { id },
             data: {
-                ...(data.jour_semaine !== undefined && { jour_semaine: data.jour_semaine }),
-                ...(data.heure_debut !== undefined && { heure_debut: data.heure_debut }),
-                ...(data.heure_fin !== undefined && { heure_fin: data.heure_fin }),
-                ...(data.intervalle_minutes !== undefined && { intervalle_minutes: data.intervalle_minutes }),
+                ...(data.jour_semaine !== undefined && {
+                    jour_semaine: data.jour_semaine,
+                }),
+                ...(data.heure_debut !== undefined && {
+                    heure_debut: data.heure_debut,
+                }),
+                ...(data.heure_fin !== undefined && {
+                    heure_fin: data.heure_fin,
+                }),
+                ...(data.intervalle_minutes !== undefined && {
+                    intervalle_minutes: data.intervalle_minutes,
+                }),
                 ...(data.is_actif !== undefined && { is_actif: data.is_actif }),
-                ...(data.date_debut_validite !== undefined && { date_debut_validite: data.date_debut_validite }),
+                ...(data.date_debut_validite !== undefined && {
+                    date_debut_validite: data.date_debut_validite,
+                }),
                 // date_fin_validite peut être explicitement null (suppression de la date de fin)
-                ...(data.date_fin_validite !== undefined && { date_fin_validite: data.date_fin_validite }),
+                ...(data.date_fin_validite !== undefined && {
+                    date_fin_validite: data.date_fin_validite,
+                }),
             },
         });
         return this.toModeleDto(modele);
@@ -114,7 +138,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     // ── PauseRecurrente ──────────────────────────────────────────────────────
 
-    async findPausesByTechnicien(technicienId: string): Promise<PauseRecurrenteDto[]> {
+    async findPausesByTechnicien(
+        technicienId: string,
+    ): Promise<PauseRecurrenteDto[]> {
         const pauses = await this.prisma.pauseRecurrente.findMany({
             where: { technicien_id: technicienId },
             orderBy: { heure_debut: 'asc' },
@@ -123,7 +149,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     }
 
     async findPauseById(id: string): Promise<PauseRecurrenteDto | null> {
-        const pause = await this.prisma.pauseRecurrente.findUnique({ where: { id } });
+        const pause = await this.prisma.pauseRecurrente.findUnique({
+            where: { id },
+        });
         return pause ? this.toPauseDto(pause) : null;
     }
 
@@ -146,7 +174,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     // ── Indisponibilite ──────────────────────────────────────────────────────
 
-    async findIndisponibilitesByTechnicien(technicienId: string): Promise<IndisponibiliteDto[]> {
+    async findIndisponibilitesByTechnicien(
+        technicienId: string,
+    ): Promise<IndisponibiliteDto[]> {
         const indispos = await this.prisma.indisponibilite.findMany({
             where: { technicien_id: technicienId },
             orderBy: { date_debut: 'asc' },
@@ -154,12 +184,18 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return indispos.map((i) => this.toIndisponibiliteDto(i));
     }
 
-    async findIndisponibiliteById(id: string): Promise<IndisponibiliteDto | null> {
-        const indispo = await this.prisma.indisponibilite.findUnique({ where: { id } });
+    async findIndisponibiliteById(
+        id: string,
+    ): Promise<IndisponibiliteDto | null> {
+        const indispo = await this.prisma.indisponibilite.findUnique({
+            where: { id },
+        });
         return indispo ? this.toIndisponibiliteDto(indispo) : null;
     }
 
-    async createIndisponibilite(data: CreateIndisponibiliteData): Promise<IndisponibiliteDto> {
+    async createIndisponibilite(
+        data: CreateIndisponibiliteData,
+    ): Promise<IndisponibiliteDto> {
         const indispo = await this.prisma.indisponibilite.create({
             data: {
                 technicien_id: data.technicien_id,
@@ -184,11 +220,98 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return count > 0;
     }
 
-    async isAffecteAZone(technicienId: string, zoneId: string): Promise<boolean> {
+    async isAffecteAZone(
+        technicienId: string,
+        zoneId: string,
+    ): Promise<boolean> {
         const count = await this.prisma.technicienZone.count({
             where: { technicien_id: technicienId, zone_id: zoneId },
         });
         return count > 0;
+    }
+
+    // ── Creneau ──────────────────────────────────────────────────────────────
+
+    async findCreneauxDateDebutByModele(
+        modeleId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<string[]> {
+        // fin est exclusive dans l'algorithme de génération → lt (strictly less than)
+        const creneaux = await this.prisma.creneau.findMany({
+            where: {
+                modele_planification_id: modeleId,
+                date_debut: { gte: debut, lt: fin },
+            },
+            select: { date_debut: true },
+        });
+        return creneaux.map((c) => c.date_debut.toISOString());
+    }
+
+    async countCreneauxConflits(
+        modeleId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<number> {
+        return this.prisma.creneau.count({
+            where: {
+                modele_planification_id: modeleId,
+                date_debut: { gte: debut, lt: fin },
+                is_disponible: false,
+            },
+        });
+    }
+
+    async createManyCreneaux(data: CreateCreneauData[]): Promise<number> {
+        const result = await this.prisma.creneau.createMany({
+            data: data.map((c) => ({
+                date_debut: c.date_debut,
+                date_fin: c.date_fin,
+                is_disponible: c.is_disponible,
+                zone_id: c.zone_id,
+                modele_planification_id: c.modele_planification_id,
+            })),
+        });
+        return result.count;
+    }
+
+    async findCreneauxByTechnicien(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<CreneauDto[]> {
+        const creneaux = await this.prisma.creneau.findMany({
+            where: {
+                modele_planification: { technicien_id: technicienId },
+                date_debut: { gte: debut, lte: fin },
+            },
+            orderBy: { date_debut: 'asc' },
+        });
+        return creneaux.map((c) => this.toCreneauDto(c));
+    }
+
+    async findCreneauById(id: string): Promise<CreneauDto | null> {
+        const creneau = await this.prisma.creneau.findUnique({ where: { id } });
+        return creneau ? this.toCreneauDto(creneau) : null;
+    }
+
+    async deleteCreneau(id: string): Promise<void> {
+        await this.prisma.creneau.delete({ where: { id } });
+    }
+
+    async deleteCreneauxDisponibles(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<number> {
+        const result = await this.prisma.creneau.deleteMany({
+            where: {
+                modele_planification: { technicien_id: technicienId },
+                date_debut: { gte: debut, lte: fin },
+                is_disponible: true,
+            },
+        });
+        return result.count;
     }
 
     // ── Transformations privées ──────────────────────────────────────────────
@@ -226,6 +349,17 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             date_debut: i.date_debut.toISOString(),
             date_fin: i.date_fin.toISOString(),
             motif: i.motif,
+        };
+    }
+
+    private toCreneauDto(c: Creneau): CreneauDto {
+        return {
+            id: c.id,
+            date_debut: c.date_debut.toISOString(),
+            date_fin: c.date_fin?.toISOString() ?? null,
+            is_disponible: c.is_disponible,
+            zone_id: c.zone_id,
+            modele_planification_id: c.modele_planification_id,
         };
     }
 }

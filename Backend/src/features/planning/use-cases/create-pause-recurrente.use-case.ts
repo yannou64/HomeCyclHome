@@ -1,8 +1,4 @@
-import {
-    BadRequestException,
-    Inject,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { CreatePauseRecurrenteDto } from '../dto/create-pause-recurrente.dto';
 import { PauseRecurrenteDto } from '../dto/planning.dto';
 import {
@@ -23,7 +19,9 @@ export class CreatePauseRecurrenteUseCase {
             );
         }
 
-        const technicienExiste = await this.repo.technicienExists(dto.technicien_id);
+        const technicienExiste = await this.repo.technicienExists(
+            dto.technicien_id,
+        );
         if (!technicienExiste) {
             throw new NotFoundException(
                 `Technicien introuvable : ${dto.technicien_id}`,

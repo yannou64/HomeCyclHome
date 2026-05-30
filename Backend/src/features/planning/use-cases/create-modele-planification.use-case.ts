@@ -17,7 +17,9 @@ export class CreateModelePlanificationUseCase {
         private readonly repo: IPlanningRepository,
     ) {}
 
-    async execute(dto: CreateModelePlanificationDto): Promise<ModelePlanificationDto> {
+    async execute(
+        dto: CreateModelePlanificationDto,
+    ): Promise<ModelePlanificationDto> {
         // 1. Validation métier : les heures doivent former une plage valide
         if (dto.heure_fin <= dto.heure_debut) {
             throw new BadRequestException(
@@ -26,7 +28,9 @@ export class CreateModelePlanificationUseCase {
         }
 
         // 2. Le technicien doit exister avec le rôle approprié
-        const technicienExiste = await this.repo.technicienExists(dto.technicien_id);
+        const technicienExiste = await this.repo.technicienExists(
+            dto.technicien_id,
+        );
         if (!technicienExiste) {
             throw new NotFoundException(
                 `Technicien introuvable : ${dto.technicien_id}`,
@@ -34,7 +38,10 @@ export class CreateModelePlanificationUseCase {
         }
 
         // 3. Le technicien doit être affecté à cette zone
-        const estAffecte = await this.repo.isAffecteAZone(dto.technicien_id, dto.zone_id);
+        const estAffecte = await this.repo.isAffecteAZone(
+            dto.technicien_id,
+            dto.zone_id,
+        );
         if (!estAffecte) {
             throw new BadRequestException(
                 `Le technicien ${dto.technicien_id} n'est pas affecté à la zone ${dto.zone_id}.`,
@@ -43,7 +50,9 @@ export class CreateModelePlanificationUseCase {
 
         // 4. Détection de chevauchement : même technicien + même jour + horaires qui se recoupent
         const dateDebut = new Date(dto.date_debut_validite);
-        const dateFin = dto.date_fin_validite ? new Date(dto.date_fin_validite) : null;
+        const dateFin = dto.date_fin_validite
+            ? new Date(dto.date_fin_validite)
+            : null;
 
         const chevauchements = await this.repo.findModelesChevauchants(
             dto.technicien_id,

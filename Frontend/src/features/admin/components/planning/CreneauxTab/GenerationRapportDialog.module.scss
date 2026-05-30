@@ -1,0 +1,83 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+  max-width: 400px;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h2;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.stats {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: center;
+  padding: $spacing-md 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  background-color: $color-myLightGreen;
+  min-width: 80px;
+}
+
+.statConflict {
+  background-color: #fee2e2;
+}
+
+.statValue {
+  font-family: $font-primary;
+  font-size: $font-size-h1;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.statConflict .statValue {
+  color: #b91c1c;
+}
+
+.statLabel {
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  color: $color-text-label;
+  text-align: center;
+}
+
+.conflictWarning {
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  color: #b91c1c;
+  background-color: #fee2e2;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: $spacing-sm;
+}
+
+.closeButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: $color-myOrange;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
