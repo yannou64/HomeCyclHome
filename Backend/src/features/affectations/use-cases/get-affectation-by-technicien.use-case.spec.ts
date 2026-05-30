@@ -42,6 +42,8 @@ describe('GetAffectationByTechnicienUseCase', () => {
         await expect(useCase.execute('inconnu-uuid')).rejects.toThrow(
             NotFoundException,
         );
-        expect(mockRepo.findByTechnicienId).toHaveBeenCalledWith('inconnu-uuid');
+        expect(mockRepo.findByTechnicienId).toHaveBeenCalledWith(
+            'inconnu-uuid',
+        );
     });
 });

@@ -29,20 +29,32 @@ describe('DeleteIndisponibiliteUseCase', () => {
     });
 
     it("devrait supprimer l'indisponibilité si elle existe", async () => {
-        const indispo = { id: 'indispo-1', technicien_id: 'tech-1', date_debut: '2026-07-14T00:00:00.000Z', date_fin: '2026-07-21T00:00:00.000Z', motif: null };
+        const indispo = {
+            id: 'indispo-1',
+            technicien_id: 'tech-1',
+            date_debut: '2026-07-14T00:00:00.000Z',
+            date_fin: '2026-07-21T00:00:00.000Z',
+            motif: null,
+        };
         mockRepo.findIndisponibiliteById.mockResolvedValue(indispo);
         mockRepo.deleteIndisponibilite.mockResolvedValue(undefined);
 
         await useCase.execute('indispo-1');
 
-        expect(mockRepo.findIndisponibiliteById).toHaveBeenCalledWith('indispo-1');
-        expect(mockRepo.deleteIndisponibilite).toHaveBeenCalledWith('indispo-1');
+        expect(mockRepo.findIndisponibiliteById).toHaveBeenCalledWith(
+            'indispo-1',
+        );
+        expect(mockRepo.deleteIndisponibilite).toHaveBeenCalledWith(
+            'indispo-1',
+        );
     });
 
     it("devrait lever NotFoundException si l'indisponibilité est introuvable", async () => {
         mockRepo.findIndisponibiliteById.mockResolvedValue(null);
 
-        await expect(useCase.execute('inconnu')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('inconnu')).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.deleteIndisponibilite).not.toHaveBeenCalled();
     });

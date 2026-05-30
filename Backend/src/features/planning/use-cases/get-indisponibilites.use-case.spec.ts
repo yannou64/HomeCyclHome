@@ -28,12 +28,20 @@ describe('GetIndisponibilitesUseCase', () => {
     });
 
     it('devrait retourner les indisponibilités du technicien', async () => {
-        const indispo = { id: 'indispo-1', technicien_id: 'tech-1', date_debut: '2026-07-14T00:00:00.000Z', date_fin: '2026-07-21T00:00:00.000Z', motif: 'Congés' };
+        const indispo = {
+            id: 'indispo-1',
+            technicien_id: 'tech-1',
+            date_debut: '2026-07-14T00:00:00.000Z',
+            date_fin: '2026-07-21T00:00:00.000Z',
+            motif: 'Congés',
+        };
         mockRepo.findIndisponibilitesByTechnicien.mockResolvedValue([indispo]);
 
         const result = await useCase.execute('tech-1');
 
-        expect(mockRepo.findIndisponibilitesByTechnicien).toHaveBeenCalledWith('tech-1');
+        expect(mockRepo.findIndisponibilitesByTechnicien).toHaveBeenCalledWith(
+            'tech-1',
+        );
         expect(result).toHaveLength(1);
     });
 

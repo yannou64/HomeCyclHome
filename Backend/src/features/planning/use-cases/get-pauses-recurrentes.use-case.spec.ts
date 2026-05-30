@@ -28,7 +28,14 @@ describe('GetPausesRecurrentesUseCase', () => {
     });
 
     it('devrait retourner les pauses du technicien', async () => {
-        const pause = { id: 'pause-1', technicien_id: 'tech-1', jour_semaine: null, heure_debut: 720, heure_fin: 810, description: 'Déjeuner' };
+        const pause = {
+            id: 'pause-1',
+            technicien_id: 'tech-1',
+            jour_semaine: null,
+            heure_debut: 720,
+            heure_fin: 810,
+            description: 'Déjeuner',
+        };
         mockRepo.findPausesByTechnicien.mockResolvedValue([pause]);
 
         const result = await useCase.execute('tech-1');

@@ -1,15 +1,12 @@
-import {
-    BadRequestException,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { CreatePauseRecurrenteUseCase } from './create-pause-recurrente.use-case';
 
 const validPayload = {
     technicien_id: 'tech-uuid-1',
     jour_semaine: null, // tous les jours
-    heure_debut: 720,  // 12h00
-    heure_fin: 810,    // 13h30
+    heure_debut: 720, // 12h00
+    heure_fin: 810, // 13h30
     description: 'Pause déjeuner',
 };
 
@@ -55,7 +52,9 @@ describe('CreatePauseRecurrenteUseCase', () => {
     it('devrait lever BadRequestException si heure_fin <= heure_debut', async () => {
         const payload = { ...validPayload, heure_debut: 810, heure_fin: 720 };
 
-        await expect(useCase.execute(payload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(payload)).rejects.toThrow(
+            BadRequestException,
+        );
 
         expect(mockRepo.technicienExists).not.toHaveBeenCalled();
     });
@@ -63,7 +62,9 @@ describe('CreatePauseRecurrenteUseCase', () => {
     it('devrait lever NotFoundException si le technicien est introuvable', async () => {
         mockRepo.technicienExists.mockResolvedValue(false);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.createPause).not.toHaveBeenCalled();
     });

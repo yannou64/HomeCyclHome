@@ -1,7 +1,4 @@
-import {
-    BadRequestException,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { CreateIndisponibiliteUseCase } from './create-indisponibilite.use-case';
 
@@ -52,9 +49,15 @@ describe('CreateIndisponibiliteUseCase', () => {
     });
 
     it('devrait lever BadRequestException si date_fin <= date_debut', async () => {
-        const payload = { ...validPayload, date_debut: '2026-07-21T00:00:00.000Z', date_fin: '2026-07-14T00:00:00.000Z' };
+        const payload = {
+            ...validPayload,
+            date_debut: '2026-07-21T00:00:00.000Z',
+            date_fin: '2026-07-14T00:00:00.000Z',
+        };
 
-        await expect(useCase.execute(payload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(payload)).rejects.toThrow(
+            BadRequestException,
+        );
 
         expect(mockRepo.technicienExists).not.toHaveBeenCalled();
     });
@@ -62,13 +65,17 @@ describe('CreateIndisponibiliteUseCase', () => {
     it('devrait lever BadRequestException si date_fin === date_debut', async () => {
         const payload = { ...validPayload, date_fin: validPayload.date_debut };
 
-        await expect(useCase.execute(payload)).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute(payload)).rejects.toThrow(
+            BadRequestException,
+        );
     });
 
     it('devrait lever NotFoundException si le technicien est introuvable', async () => {
         mockRepo.technicienExists.mockResolvedValue(false);
 
-        await expect(useCase.execute(validPayload)).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute(validPayload)).rejects.toThrow(
+            NotFoundException,
+        );
 
         expect(mockRepo.createIndisponibilite).not.toHaveBeenCalled();
     });

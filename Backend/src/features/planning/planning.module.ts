@@ -12,6 +12,11 @@ import { DeletePauseRecurrenteUseCase } from './use-cases/delete-pause-recurrent
 import { CreateIndisponibiliteUseCase } from './use-cases/create-indisponibilite.use-case';
 import { GetIndisponibilitesUseCase } from './use-cases/get-indisponibilites.use-case';
 import { DeleteIndisponibiliteUseCase } from './use-cases/delete-indisponibilite.use-case';
+import { GenerateCreneauxUseCase } from './use-cases/generate-creneaux.use-case';
+import { GenerateAllCreneauxUseCase } from './use-cases/generate-all-creneaux.use-case';
+import { GetCreneauxUseCase } from './use-cases/get-creneaux.use-case';
+import { DeleteCreneauUseCase } from './use-cases/delete-creneau.use-case';
+import { DeleteCreneauxDisponiblesUseCase } from './use-cases/delete-creneaux-disponibles.use-case';
 
 @Module({
     controllers: [AdminPlanningController],
@@ -83,6 +88,39 @@ import { DeleteIndisponibiliteUseCase } from './use-cases/delete-indisponibilite
             provide: DeleteIndisponibiliteUseCase,
             useFactory: (repo: PlanningPrismaRepository) =>
                 new DeleteIndisponibiliteUseCase(repo),
+            inject: [PLANNING_REPO],
+        },
+        // Créneaux
+        {
+            provide: GenerateCreneauxUseCase,
+            useFactory: (repo: PlanningPrismaRepository) =>
+                new GenerateCreneauxUseCase(repo),
+            inject: [PLANNING_REPO],
+        },
+        {
+            provide: GenerateAllCreneauxUseCase,
+            useFactory: (
+                repo: PlanningPrismaRepository,
+                generate: GenerateCreneauxUseCase,
+            ) => new GenerateAllCreneauxUseCase(repo, generate),
+            inject: [PLANNING_REPO, GenerateCreneauxUseCase],
+        },
+        {
+            provide: GetCreneauxUseCase,
+            useFactory: (repo: PlanningPrismaRepository) =>
+                new GetCreneauxUseCase(repo),
+            inject: [PLANNING_REPO],
+        },
+        {
+            provide: DeleteCreneauUseCase,
+            useFactory: (repo: PlanningPrismaRepository) =>
+                new DeleteCreneauUseCase(repo),
+            inject: [PLANNING_REPO],
+        },
+        {
+            provide: DeleteCreneauxDisponiblesUseCase,
+            useFactory: (repo: PlanningPrismaRepository) =>
+                new DeleteCreneauxDisponiblesUseCase(repo),
             inject: [PLANNING_REPO],
         },
     ],

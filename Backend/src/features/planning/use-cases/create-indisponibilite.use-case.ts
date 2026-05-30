@@ -1,8 +1,4 @@
-import {
-    BadRequestException,
-    Inject,
-    NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { CreateIndisponibiliteDto } from '../dto/create-indisponibilite.dto';
 import { IndisponibiliteDto } from '../dto/planning.dto';
 import {
@@ -26,7 +22,9 @@ export class CreateIndisponibiliteUseCase {
             );
         }
 
-        const technicienExiste = await this.repo.technicienExists(dto.technicien_id);
+        const technicienExiste = await this.repo.technicienExists(
+            dto.technicien_id,
+        );
         if (!technicienExiste) {
             throw new NotFoundException(
                 `Technicien introuvable : ${dto.technicien_id}`,

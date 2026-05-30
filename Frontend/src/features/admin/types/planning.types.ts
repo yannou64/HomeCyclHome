@@ -56,3 +56,30 @@ export type CreateIndisponibilitePayload = {
   date_fin: string;
   motif?: string | null;
 };
+
+// ── Créneaux ──────────────────────────────────────────────────────────────────
+
+export type Creneau = {
+  id: string;
+  date_debut: string;               // ISO 8601
+  date_fin: string | null;          // null à la génération, rempli à la réservation
+  is_disponible: boolean;
+  zone_id: string;
+  modele_planification_id: string | null;
+};
+
+export type GenerateCreneauxPayload = {
+  modele_id: string;
+  date_fin_generation?: string;     // borne exclusive (ISO date) — optionnel
+};
+
+export type GenerateAllCreneauxPayload = {
+  technicien_id: string;
+  date_fin_generation?: string;
+};
+
+export type GenerationRapport = {
+  created: number;
+  skipped: number;
+  conflicts: number;
+};

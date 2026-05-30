@@ -5,6 +5,7 @@ import {
   TabsTrigger,
 } from '../../../../../shared/components/ui/tabs';
 import { useAdminPlanning } from '../../../hooks/useAdminPlanning';
+import { CreneauxTab } from '../CreneauxTab/CreneauxTab';
 import { IndisponibiliteList } from '../IndisponibiliteList/IndisponibiliteList';
 import { ModelePlanificationList } from '../ModelePlanificationList/ModelePlanificationList';
 import { PauseRecurrenteList } from '../PauseRecurrenteList/PauseRecurrenteList';
@@ -18,8 +19,11 @@ export function AdminPlanningSection() {
     modeles,
     pauses,
     indisponibilites,
+    creneaux,
     isLoading,
     error,
+    isLoadingCreneaux,
+    creneauxError,
     createModele,
     updateModele,
     deleteModele,
@@ -27,6 +31,11 @@ export function AdminPlanningSection() {
     deletePause,
     createIndisponibilite,
     deleteIndisponibilite,
+    loadCreneaux,
+    generateCreneaux,
+    generateAllCreneaux,
+    deleteCreneau,
+    deleteCreneauxDisponibles,
   } = useAdminPlanning();
 
   return (
@@ -69,6 +78,9 @@ export function AdminPlanningSection() {
             <TabsTrigger value="indisponibilites" className={styles.tabsTrigger}>
               Indisponibilités
             </TabsTrigger>
+            <TabsTrigger value="creneaux" className={styles.tabsTrigger}>
+              Créneaux
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="modeles">
@@ -102,6 +114,20 @@ export function AdminPlanningSection() {
               error={error}
               onCreate={createIndisponibilite}
               onDelete={deleteIndisponibilite}
+            />
+          </TabsContent>
+
+          <TabsContent value="creneaux">
+            <CreneauxTab
+              modeles={modeles}
+              creneaux={creneaux}
+              isLoading={isLoadingCreneaux}
+              error={creneauxError}
+              onGenerate={generateCreneaux}
+              onGenerateAll={generateAllCreneaux}
+              onLoad={loadCreneaux}
+              onDelete={deleteCreneau}
+              onDeleteDisponibles={deleteCreneauxDisponibles}
             />
           </TabsContent>
         </Tabs>
