@@ -10,6 +10,7 @@ import { ForfaitsModule } from '../features/forfaits/modules/forfaits.module';
 import { ZonesModule } from '../features/zones/modules/zones.module';
 import { AffectationsModule } from '../features/affectations/affectations.module';
 import { PlanningModule } from '../features/planning/planning.module';
+import { AdressesModule } from '../features/adresses/adresses.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { PlanningModule } from '../features/planning/planning.module';
         ZonesModule,
         AffectationsModule,
         PlanningModule,
+        AdressesModule,
     ],
 })
 export class AppModule {}

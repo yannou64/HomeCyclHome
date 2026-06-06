@@ -1,0 +1,201 @@
+@use '../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    width: 100%;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    text-align: center;
+    color: black;
+}
+
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    align-items: center;
+}
+
+.chip {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    padding: 8px 18px;
+    border: 1.5px solid $color-border;
+    border-radius: $radius-full;
+    background-color: $color-myLightGreen;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+
+    &:hover {
+        border-color: $color-myOrange;
+    }
+}
+
+.chipActive {
+    background-color: $color-myOrange;
+    border-color: $color-myOrange;
+    color: white;
+}
+
+.chipPrincipal {
+    border-color: $color-myOrange;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    width: 100%;
+    margin-top: $spacing-xs;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    font-weight: $font-regular;
+    color: $color-text-label;
+}
+
+.input {
+    background-color: white;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    padding: 9px $spacing-sm;
+    width: 100%;
+    color: $color-text-primary;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+// Adresse physique affichée en lecture seule dans le mode édition
+.addressReadonly {
+    background-color: $color-myLightGreen;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: 9px $spacing-sm;
+    font-family: $font-primary;
+    font-size: 0.875rem;
+    color: $color-text-primary;
+}
+
+// Ligne toggle adresse principale
+.toggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-sm;
+}
+
+.toggleLabel {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+// Toggle switch natif masqué — remplacé par un switch stylisé
+.toggleWrapper {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+}
+
+.toggleSlider {
+    position: absolute;
+    inset: 0;
+    background-color: $color-border;
+    border-radius: $radius-full;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &::before {
+        content: '';
+        position: absolute;
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.2s;
+    }
+}
+
+.toggleSliderActive {
+    background-color: $color-myOrange;
+
+    &::before {
+        transform: translateX(20px);
+    }
+}
+
+.deleteBtn {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-myOrange;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}
+
+.loading {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    text-align: center;
+    color: $color-text-label;
+}
+
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: red;
+    text-align: center;
+}
+
+.success {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: green;
+    text-align: center;
+}

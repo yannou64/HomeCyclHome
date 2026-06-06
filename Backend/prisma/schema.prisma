@@ -30,12 +30,52 @@ model Utilisateur {
   date_maj                 DateTime  @updatedAt
   date_dernier_login       DateTime?
   cycles                   Cycle[]               // relation inverse : un utilisateur possède plusieurs cycles
+  adresses                 PeutSeSituer[]        // relation inverse : adresses liées au client
   zones_affectees          TechnicienZone[]      // relation inverse : zones affectées au technicien
   modeles_planification    ModelePlanification[] // relation inverse : modèles de planification du technicien
   pauses_recurrentes       PauseRecurrente[]     // relation inverse : pauses récurrentes du technicien
   indisponibilites         Indisponibilite[]     // relation inverse : absences ponctuelles du technicien
 
   @@map("Utilisateurs")
+}
+
+// ─── Adresses ────────────────────────────────────────────────────────────────
+
+model Adresse {
+  id              String   @id @default(uuid())
+  numero          String?
+  rue             String
+  code_postal     String
+  ville           String
+  pays            String   @default("France")
+  latitude        Decimal  @db.Decimal(10, 8)
+  longitude       Decimal  @db.Decimal(11, 8)
+  // Identifiant unique Google Places — permet la déduplication lors de la création
+  google_place_id String   @unique
+  date_creation   DateTime @default(now())
+
+  utilisateurs PeutSeSituer[] // relation inverse : liaisons utilisateur ↔ adresse
+
+  @@map("Adresses")
+}
+
+// Table de liaison n-n Utilisateur ↔ Adresse
+// Porte les métadonnées propres à la relation (label, statut, adresse principale)
+model PeutSeSituer {
+  id                String    @id @default(uuid())
+  titre_description String?                      // label personnalisé affiché dans le dropdown (nullable)
+  adresse_principal Boolean   @default(false)    // une seule adresse principale par client (règle enforced par transaction)
+  is_valide         Boolean   @default(true)     // soft-delete : false = désactivée, ligne conservée pour l'historique
+  date_creation     DateTime  @default(now())
+  date_invalidite   DateTime?                    // renseigné lors du soft-delete
+
+  utilisateur_id String
+  adresse_id     String
+
+  utilisateur Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  adresse     Adresse     @relation(fields: [adresse_id], references: [id], onDelete: Cascade)
+
+  @@map("PeutSeSituer")
 }
 
 model Marque {
