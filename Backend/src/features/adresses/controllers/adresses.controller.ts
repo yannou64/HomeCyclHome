@@ -15,7 +15,10 @@ import { GetAdressesUseCase } from '../use-cases/get-adresses.use-case';
 import { CreateAdresseUseCase } from '../use-cases/create-adresse.use-case';
 import { UpdateAdresseUseCase } from '../use-cases/update-adresse.use-case';
 import { DeleteAdresseUseCase } from '../use-cases/delete-adresse.use-case';
-import { CreateAdresseDto, UpdateAdresseDto } from '../dto/input/adresse-input.dto';
+import {
+    CreateAdresseDto,
+    UpdateAdresseDto,
+} from '../dto/input/adresse-input.dto';
 
 @Controller('adresses')
 @UseGuards(JwtAuthGuard)
@@ -40,7 +43,11 @@ export class AdressesController {
     }
 
     @Patch(':id')
-    update(@Req() req: Request, @Param('id') id: string, @Body() dto: UpdateAdresseDto) {
+    update(
+        @Req() req: Request,
+        @Param('id') id: string,
+        @Body() dto: UpdateAdresseDto,
+    ) {
         const { userId } = req.user as { userId: string };
         return this.updateAdresseUseCase.execute(id, userId, dto);
     }

@@ -39,7 +39,10 @@ describe('GetAdressesUseCase', () => {
     });
 
     it("devrait retourner les adresses actives de l'utilisateur", async () => {
-        const adresses = [makeAdresse(), makeAdresse({ id: 'pss-2', adresseId: 'adr-2' })];
+        const adresses = [
+            makeAdresse(),
+            makeAdresse({ id: 'pss-2', adresseId: 'adr-2' }),
+        ];
         mockRepo.findAllByUser.mockResolvedValue(adresses);
 
         const result = await useCase.execute('user-1');

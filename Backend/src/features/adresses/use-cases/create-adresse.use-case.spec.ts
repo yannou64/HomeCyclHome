@@ -22,7 +22,9 @@ const makeAdresse = (overrides: Partial<AdresseDto> = {}): AdresseDto => ({
     ...overrides,
 });
 
-const makeInput = (overrides: Partial<CreateAdresseInput> = {}): CreateAdresseInput => ({
+const makeInput = (
+    overrides: Partial<CreateAdresseInput> = {},
+): CreateAdresseInput => ({
     numero: '12',
     rue: 'Rue de la Paix',
     codePostal: '69001',
@@ -70,19 +72,27 @@ describe('CreateAdresseUseCase', () => {
     it('devrait lever une ConflictException si le google_place_id est déjà actif pour cet utilisateur', async () => {
         const input = makeInput();
         const existingAdresse = { id: 'adr-1' };
-        const existingLiaison = makeAdresse({ adresseId: 'adr-1', isValide: true });
+        const existingLiaison = makeAdresse({
+            adresseId: 'adr-1',
+            isValide: true,
+        });
 
         mockRepo.findAdresseByGooglePlaceId.mockResolvedValue(existingAdresse);
         mockRepo.findAllByUser.mockResolvedValue([existingLiaison]);
 
-        await expect(useCase.execute('user-1', input)).rejects.toThrow(ConflictException);
+        await expect(useCase.execute('user-1', input)).rejects.toThrow(
+            ConflictException,
+        );
         expect(mockRepo.create).not.toHaveBeenCalled();
     });
 
     it('devrait appeler setPrincipal si adressePrincipal est true à la création', async () => {
         const input = makeInput({ adressePrincipal: true });
         const created = makeAdresse({ id: 'pss-1' });
-        const withPrincipal = makeAdresse({ id: 'pss-1', adressePrincipal: true });
+        const withPrincipal = makeAdresse({
+            id: 'pss-1',
+            adressePrincipal: true,
+        });
 
         mockRepo.findAdresseByGooglePlaceId.mockResolvedValue(null);
         mockRepo.create.mockResolvedValue(created);

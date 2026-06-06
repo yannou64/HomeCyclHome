@@ -42,16 +42,20 @@ describe('DeleteAdresseUseCase', () => {
     it('devrait lever une NotFoundException si la liaison est introuvable', async () => {
         mockRepo.findByIdAndUser.mockResolvedValue(null);
 
-        await expect(useCase.execute('pss-inconnu', 'user-1')).rejects.toThrow(NotFoundException);
+        await expect(useCase.execute('pss-inconnu', 'user-1')).rejects.toThrow(
+            NotFoundException,
+        );
         expect(mockRepo.softDelete).not.toHaveBeenCalled();
     });
 
-    it('devrait lever une BadRequestException si c\'est la dernière adresse active', async () => {
+    it("devrait lever une BadRequestException si c'est la dernière adresse active", async () => {
         const existing = makeAdresse();
         mockRepo.findByIdAndUser.mockResolvedValue(existing);
         mockRepo.findAllByUser.mockResolvedValue([existing]); // une seule adresse
 
-        await expect(useCase.execute('pss-1', 'user-1')).rejects.toThrow(BadRequestException);
+        await expect(useCase.execute('pss-1', 'user-1')).rejects.toThrow(
+            BadRequestException,
+        );
         expect(mockRepo.softDelete).not.toHaveBeenCalled();
     });
 
@@ -64,7 +68,10 @@ describe('DeleteAdresseUseCase', () => {
 
         await useCase.execute('pss-1', 'user-1');
 
-        expect(mockRepo.findByIdAndUser).toHaveBeenCalledWith('pss-1', 'user-1');
+        expect(mockRepo.findByIdAndUser).toHaveBeenCalledWith(
+            'pss-1',
+            'user-1',
+        );
         expect(mockRepo.softDelete).toHaveBeenCalledWith('pss-1');
     });
 });

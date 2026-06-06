@@ -14,22 +14,26 @@ export const ADRESSES_REPO = 'ADRESSES_REPO';
         { provide: ADRESSES_REPO, useClass: AdressesPrismaRepository },
         {
             provide: GetAdressesUseCase,
-            useFactory: (repo: AdressesPrismaRepository) => new GetAdressesUseCase(repo),
+            useFactory: (repo: AdressesPrismaRepository) =>
+                new GetAdressesUseCase(repo),
             inject: [ADRESSES_REPO],
         },
         {
             provide: CreateAdresseUseCase,
-            useFactory: (repo: AdressesPrismaRepository) => new CreateAdresseUseCase(repo),
+            useFactory: (repo: AdressesPrismaRepository) =>
+                new CreateAdresseUseCase(repo),
             inject: [ADRESSES_REPO],
         },
         {
             provide: UpdateAdresseUseCase,
-            useFactory: (repo: AdressesPrismaRepository) => new UpdateAdresseUseCase(repo),
+            useFactory: (repo: AdressesPrismaRepository) =>
+                new UpdateAdresseUseCase(repo),
             inject: [ADRESSES_REPO],
         },
         {
             provide: DeleteAdresseUseCase,
-            useFactory: (repo: AdressesPrismaRepository) => new DeleteAdresseUseCase(repo),
+            useFactory: (repo: AdressesPrismaRepository) =>
+                new DeleteAdresseUseCase(repo),
             inject: [ADRESSES_REPO],
         },
     ],
