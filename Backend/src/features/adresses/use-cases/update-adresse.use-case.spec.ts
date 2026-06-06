@@ -44,7 +44,9 @@ describe('UpdateAdresseUseCase', () => {
         mockRepo.findByIdAndUser.mockResolvedValue(null);
 
         await expect(
-            useCase.execute('pss-inconnu', 'user-1', { titreDescription: 'Test' }),
+            useCase.execute('pss-inconnu', 'user-1', {
+                titreDescription: 'Test',
+            }),
         ).rejects.toThrow(NotFoundException);
     });
 
@@ -58,7 +60,9 @@ describe('UpdateAdresseUseCase', () => {
         const input: UpdateAdresseInput = { titreDescription: 'Bureau' };
         const result = await useCase.execute('pss-1', 'user-1', input);
 
-        expect(mockRepo.updateMetadata).toHaveBeenCalledWith('pss-1', { titreDescription: 'Bureau' });
+        expect(mockRepo.updateMetadata).toHaveBeenCalledWith('pss-1', {
+            titreDescription: 'Bureau',
+        });
         expect(mockRepo.setPrincipal).not.toHaveBeenCalled();
         expect(result).toEqual(updated);
     });
@@ -78,7 +82,7 @@ describe('UpdateAdresseUseCase', () => {
         expect(result).toEqual(updated);
     });
 
-    it("devrait appeler unsetPrincipal quand adressePrincipal passe à false", async () => {
+    it('devrait appeler unsetPrincipal quand adressePrincipal passe à false', async () => {
         const existing = makeAdresse({ adressePrincipal: true });
         const updated = makeAdresse({ adressePrincipal: false });
 
@@ -96,17 +100,25 @@ describe('UpdateAdresseUseCase', () => {
     it('devrait gérer la mise à jour simultanée du titre et du statut principal', async () => {
         const existing = makeAdresse({ adressePrincipal: false });
         const afterPrincipal = makeAdresse({ adressePrincipal: true });
-        const afterMeta = makeAdresse({ adressePrincipal: true, titreDescription: 'Maison' });
+        const afterMeta = makeAdresse({
+            adressePrincipal: true,
+            titreDescription: 'Maison',
+        });
 
         mockRepo.findByIdAndUser.mockResolvedValue(existing);
         mockRepo.setPrincipal.mockResolvedValue(afterPrincipal);
         mockRepo.updateMetadata.mockResolvedValue(afterMeta);
 
-        const input: UpdateAdresseInput = { adressePrincipal: true, titreDescription: 'Maison' };
+        const input: UpdateAdresseInput = {
+            adressePrincipal: true,
+            titreDescription: 'Maison',
+        };
         const result = await useCase.execute('pss-1', 'user-1', input);
 
         expect(mockRepo.setPrincipal).toHaveBeenCalledWith('pss-1', 'user-1');
-        expect(mockRepo.updateMetadata).toHaveBeenCalledWith('pss-1', { titreDescription: 'Maison' });
+        expect(mockRepo.updateMetadata).toHaveBeenCalledWith('pss-1', {
+            titreDescription: 'Maison',
+        });
         expect(result).toEqual(afterMeta);
     });
 });

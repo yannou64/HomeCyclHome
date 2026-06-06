@@ -12,7 +12,9 @@ export class DeleteAdresseUseCase {
 
         const adressesActives = await this.repo.findAllByUser(utilisateurId);
         if (adressesActives.length <= 1) {
-            throw new BadRequestException('Vous devez conserver au moins une adresse.');
+            throw new BadRequestException(
+                'Vous devez conserver au moins une adresse.',
+            );
         }
 
         await this.repo.softDelete(id);

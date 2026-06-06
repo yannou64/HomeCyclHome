@@ -21,6 +21,7 @@ export const ZONES_REPO = 'ZONES_REPO';
 
 export interface IZonesRepository {
     findAll(): Promise<ZoneDto[]>;
+    findAllActive(): Promise<ZoneDto[]>;
     findById(id: string): Promise<ZoneDto | null>;
     existsByNom(nom: string, excludeId?: string): Promise<boolean>;
     create(data: CreateZoneData): Promise<ZoneDto>;

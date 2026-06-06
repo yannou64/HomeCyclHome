@@ -1,6 +1,6 @@
 export class AdresseDto {
-    id: string;              // PeutSeSituer.id — identifiant de la liaison
-    adresseId: string;       // Adresse.id — identifiant de l'adresse physique
+    id: string; // PeutSeSituer.id — identifiant de la liaison
+    adresseId: string; // Adresse.id — identifiant de l'adresse physique
     numero: string | null;
     rue: string;
     codePostal: string;

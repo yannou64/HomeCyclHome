@@ -22,6 +22,14 @@ export class ZonesPrismaRepository implements IZonesRepository {
         return zones.map((z) => this.toDto(z));
     }
 
+    async findAllActive(): Promise<ZoneDto[]> {
+        const zones = await this.prisma.zone.findMany({
+            where: { is_active: true },
+            include: { points: { orderBy: { ordre: 'asc' } } },
+        });
+        return zones.map((z) => this.toDto(z));
+    }
+
     async findById(id: string): Promise<ZoneDto | null> {
         const zone = await this.prisma.zone.findUnique({
             where: { id },

@@ -6,14 +6,24 @@ import type { CreateAdresseInput } from '../dto/input/adresse-input.dto';
 export class CreateAdresseUseCase {
     constructor(private readonly repo: IAdressesRepository) {}
 
-    async execute(utilisateurId: string, data: CreateAdresseInput): Promise<AdresseDto> {
+    async execute(
+        utilisateurId: string,
+        data: CreateAdresseInput,
+    ): Promise<AdresseDto> {
         // Vérifier si cette adresse physique est déjà liée et active pour cet utilisateur
-        const existingAdresse = await this.repo.findAdresseByGooglePlaceId(data.googlePlaceId);
+        const existingAdresse = await this.repo.findAdresseByGooglePlaceId(
+            data.googlePlaceId,
+        );
         if (existingAdresse) {
-            const liaisonsActives = await this.repo.findAllByUser(utilisateurId);
-            const dejaLiee = liaisonsActives.some((a) => a.adresseId === existingAdresse.id);
+            const liaisonsActives =
+                await this.repo.findAllByUser(utilisateurId);
+            const dejaLiee = liaisonsActives.some(
+                (a) => a.adresseId === existingAdresse.id,
+            );
             if (dejaLiee) {
-                throw new ConflictException('Cette adresse est déjà enregistrée dans votre profil.');
+                throw new ConflictException(
+                    'Cette adresse est déjà enregistrée dans votre profil.',
+                );
             }
         }
 

@@ -6,7 +6,11 @@ import type { UpdateAdresseInput } from '../dto/input/adresse-input.dto';
 export class UpdateAdresseUseCase {
     constructor(private readonly repo: IAdressesRepository) {}
 
-    async execute(id: string, utilisateurId: string, data: UpdateAdresseInput): Promise<AdresseDto> {
+    async execute(
+        id: string,
+        utilisateurId: string,
+        data: UpdateAdresseInput,
+    ): Promise<AdresseDto> {
         const liaison = await this.repo.findByIdAndUser(id, utilisateurId);
         if (!liaison) {
             throw new NotFoundException('Adresse introuvable.');
@@ -23,7 +27,9 @@ export class UpdateAdresseUseCase {
 
         // Mise à jour du titre_description si fourni
         if (data.titreDescription !== undefined) {
-            result = await this.repo.updateMetadata(id, { titreDescription: data.titreDescription });
+            result = await this.repo.updateMetadata(id, {
+                titreDescription: data.titreDescription,
+            });
         }
 
         // result est toujours défini : au moins l'un des deux champs a été traité
