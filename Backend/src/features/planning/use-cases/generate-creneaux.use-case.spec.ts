@@ -60,7 +60,9 @@ function buildMockRepo(
         countCreneauxConflits: jest.fn().mockResolvedValue(0),
         createManyCreneaux: jest
             .fn()
-            .mockImplementation((data: CreateCreneauData[]) => Promise.resolve(data.length)),
+            .mockImplementation((data: CreateCreneauData[]) =>
+                Promise.resolve(data.length),
+            ),
         findCreneauxByTechnicien: jest.fn(),
         findCreneauById: jest.fn(),
         deleteCreneau: jest.fn(),

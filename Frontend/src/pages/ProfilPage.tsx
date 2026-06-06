@@ -5,6 +5,7 @@ import { Card } from '../shared/components/Card/Card';
 import { ProfileForm } from '../features/user/components/ProfileForm/ProfileForm';
 import { DeleteAccountSection } from '../features/user/components/DeleteAccountSection/DeleteAccountSection';
 import { MesCycles } from '../features/cycle/components/MesCycles/MesCycles';
+import { MesAdresses } from '../features/adresse/components/MesAdresses/MesAdresses';
 
 export default function ProfilPage() {
     return (
@@ -16,6 +17,9 @@ export default function ProfilPage() {
                 </Card>
                 <Card>
                     <MesCycles />
+                </Card>
+                <Card>
+                    <MesAdresses />
                 </Card>
                 <DeleteAccountSection />
             </PageLayout>
