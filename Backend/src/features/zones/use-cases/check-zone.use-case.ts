@@ -7,7 +7,10 @@ import type { ZonePointDto } from '../dto/zone.dto';
 export class CheckZoneUseCase {
     constructor(private readonly repo: IZonesRepository) {}
 
-    async execute(latitude: number, longitude: number): Promise<CheckZoneResultDto> {
+    async execute(
+        latitude: number,
+        longitude: number,
+    ): Promise<CheckZoneResultDto> {
         const zones = await this.repo.findAllActive();
 
         for (const zone of zones) {
@@ -40,7 +43,7 @@ export class CheckZoneUseCase {
             const lngJ = points[j].longitude;
 
             // L'arête (i, j) traverse-t-elle la latitude du point ?
-            const crossesLatitude = (latI > lat) !== (latJ > lat);
+            const crossesLatitude = latI > lat !== latJ > lat;
             // Si oui, l'intersection est-elle à l'est (droite) du point ?
             const intersectionLng =
                 ((lngJ - lngI) * (lat - latI)) / (latJ - latI) + lngI;

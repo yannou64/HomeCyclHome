@@ -79,7 +79,7 @@ describe('CheckZoneUseCase', () => {
         mockRepo.findAllActive.mockResolvedValue([zoneLyon, zoneVilleurbanne]);
 
         // Point dans Villeurbanne uniquement
-        const result = await useCase.execute(45.78, 4.90);
+        const result = await useCase.execute(45.78, 4.9);
 
         expect(result).toEqual({ zoneId: 'zone-2', nomZone: 'Villeurbanne' });
     });

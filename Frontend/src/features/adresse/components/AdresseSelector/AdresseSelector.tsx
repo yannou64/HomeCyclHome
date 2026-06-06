@@ -84,10 +84,11 @@ function AuthSelector() {
 
     // Présélectionne l'adresse principale dès que les adresses sont chargées
     useEffect(() => {
-        if (activeAdresses.length === 0) return;
-        const principal = activeAdresses.find((a) => a.adressePrincipal);
-        setSelectedId(principal?.id ?? activeAdresses[0].id);
-    }, [adresses]); // déclenché quand les adresses arrivent du serveur
+        const active = adresses.filter((a) => a.isValide);
+        if (active.length === 0) return;
+        const principal = active.find((a) => a.adressePrincipal);
+        setSelectedId(principal?.id ?? active[0].id);
+    }, [adresses]);
 
     const handleSubmit = async () => {
         setIsLoading(true);
