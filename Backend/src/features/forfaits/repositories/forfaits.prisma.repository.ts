@@ -29,6 +29,20 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         return forfaits.map((f) => this.toDto(f));
     }
 
+    async findAllActifs(): Promise<ForfaitDto[]> {
+        const forfaits = await this.prisma.forfait.findMany({
+            where: { is_actif: true },
+            orderBy: { nom: 'asc' },
+            include: {
+                historique_prix: {
+                    where: { date_fin: null },
+                    take: 1,
+                },
+            },
+        });
+        return forfaits.map((f) => this.toDto(f));
+    }
+
     async findById(id: string): Promise<ForfaitDto | null> {
         const forfait = await this.prisma.forfait.findUnique({
             where: { id },

@@ -11,6 +11,7 @@ export type UpdateForfaitData = Partial<CreateForfaitData>;
 
 export interface IForfaitsRepository {
     findAll(): Promise<ForfaitDto[]>;
+    findAllActifs(): Promise<ForfaitDto[]>;
     findById(id: string): Promise<ForfaitDto | null>;
     findByNom(nom: string): Promise<ForfaitDto | null>;
     create(data: CreateForfaitData): Promise<ForfaitDto>;
