@@ -1,0 +1,40 @@
+@use '../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    background-color: $color-myGreen;
+    border-radius: $radius-md;
+    padding: $spacing-sm;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-medium;
+    color: $color-text-label;
+}
+
+.select {
+    width: 100%;
+    padding: 0.75rem $spacing-xs;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    font-size: $font-size-body;
+    font-family: $font-primary;
+    color: $color-text-primary;
+    background-color: #fff;
+    outline: none;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238c7b74' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+    cursor: pointer;
+
+    &:focus {
+        border-color: $color-myOrange;
+        box-shadow: 0 0 0 2px rgba($color-myOrange, 0.2);
+    }
+}

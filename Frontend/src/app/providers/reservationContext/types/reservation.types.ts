@@ -13,6 +13,24 @@ export type ZoneInfo = {
     nomZone: string;
 };
 
+// Cycle choisi pour cette réservation (existant depuis le profil ou nouveau)
+export type CycleBooking = {
+    source: 'existing' | 'new';
+    cycleId?: string; // renseigné uniquement si source === 'existing'
+    typeCycleId: string;
+    typeCycleLibelle: string;
+    marqueId: string;
+    marqueLibelle: string;
+};
+
+// Forfait choisi pour cette réservation
+export type ForfaitInfo = {
+    forfaitId: string;
+    nom: string;
+    dureeMinutes: number;
+    prix: number | null;
+};
+
 export type ReservationStep =
     | 'adresse'
     | 'cycle'
@@ -25,12 +43,16 @@ export type ReservationContextType = {
     // Données du tunnel (null = étape pas encore complétée)
     adresse: AdresseBooking | null;
     zone: ZoneInfo | null;
+    cycle: CycleBooking | null;
+    forfait: ForfaitInfo | null;
 
     // Navigation
     currentStep: ReservationStep;
 
     // Actions
     setAdresseAndZone: (adresse: AdresseBooking, zone: ZoneInfo) => void;
+    setCycle: (cycle: CycleBooking) => void;
+    setForfait: (forfait: ForfaitInfo) => void;
     goToStep: (step: ReservationStep) => void;
     reset: () => void;
 };

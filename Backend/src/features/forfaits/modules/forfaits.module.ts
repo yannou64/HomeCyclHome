@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AdminForfaitsController } from '../controllers/admin-forfaits.controller';
+import { ClientForfaitsController } from '../controllers/client-forfaits.controller';
 import { ForfaitsPrismaRepository } from '../repositories/forfaits.prisma.repository';
 import { CreateForfaitUseCase } from '../use-cases/create-forfait.use-case';
 import { DeleteForfaitUseCase } from '../use-cases/delete-forfait.use-case';
+import { GetForfaitsActifsUseCase } from '../use-cases/get-forfaits-actifs.use-case';
 import { GetForfaitsUseCase } from '../use-cases/get-forfaits.use-case';
 import { SetForfaitPrixUseCase } from '../use-cases/set-forfait-prix.use-case';
 import { UpdateForfaitUseCase } from '../use-cases/update-forfait.use-case';
@@ -10,7 +12,7 @@ import { UpdateForfaitUseCase } from '../use-cases/update-forfait.use-case';
 export const FORFAITS_REPO = 'FORFAITS_REPO';
 
 @Module({
-    controllers: [AdminForfaitsController],
+    controllers: [AdminForfaitsController, ClientForfaitsController],
     providers: [
         {
             provide: FORFAITS_REPO,
@@ -44,6 +46,12 @@ export const FORFAITS_REPO = 'FORFAITS_REPO';
             provide: SetForfaitPrixUseCase,
             useFactory: (repo: ForfaitsPrismaRepository) =>
                 new SetForfaitPrixUseCase(repo),
+            inject: [FORFAITS_REPO],
+        },
+        {
+            provide: GetForfaitsActifsUseCase,
+            useFactory: (repo: ForfaitsPrismaRepository) =>
+                new GetForfaitsActifsUseCase(repo),
             inject: [FORFAITS_REPO],
         },
     ],
