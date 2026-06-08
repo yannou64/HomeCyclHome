@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ReservationContext } from './reservation.context';
 import type {
     AdresseBooking,
+    CommentaireInfo,
     CreneauInfo,
     CycleBooking,
     ForfaitInfo,
@@ -20,6 +21,7 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
     const [cycle, setCycleState] = useState<CycleBooking | null>(null);
     const [forfait, setForfaitState] = useState<ForfaitInfo | null>(null);
     const [creneau, setCreneauState] = useState<CreneauInfo | null>(null);
+    const [commentaire, setCommentaireState] = useState<CommentaireInfo | null>(null);
     const [currentStep, setCurrentStep] = useState<ReservationStep>('adresse');
 
     const setAdresseAndZone = (a: AdresseBooking, z: ZoneInfo) => {
@@ -33,6 +35,8 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
 
     const setCreneau = (c: CreneauInfo) => setCreneauState(c);
 
+    const setCommentaire = (c: CommentaireInfo) => setCommentaireState(c);
+
     const goToStep = (step: ReservationStep) => setCurrentStep(step);
 
     const reset = () => {
@@ -41,6 +45,7 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
         setCycleState(null);
         setForfaitState(null);
         setCreneauState(null);
+        setCommentaireState(null);
         setCurrentStep('adresse');
     };
 
@@ -50,11 +55,13 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
         cycle,
         forfait,
         creneau,
+        commentaire,
         currentStep,
         setAdresseAndZone,
         setCycle,
         setForfait,
         setCreneau,
+        setCommentaire,
         goToStep,
         reset,
     };

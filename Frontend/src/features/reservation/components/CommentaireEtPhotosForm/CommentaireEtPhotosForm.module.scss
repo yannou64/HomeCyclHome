@@ -1,0 +1,183 @@
+@use '../../../../app/styles/index' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    width: 100%;
+}
+
+.sectionTitle {
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    margin: 0;
+}
+
+.facultatif {
+    font-size: $font-size-label;
+    font-weight: $font-regular;
+    color: $color-text-label;
+}
+
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-size: $font-size-body;
+    font-weight: $font-medium;
+    color: $color-text-primary;
+}
+
+.textarea {
+    width: 100%;
+    padding: $spacing-sm;
+    border: 1.5px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+
+    &::placeholder {
+        color: $color-text-placeholder;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.uploadActions {
+    display: flex;
+    gap: $spacing-xs;
+}
+
+.uploadBtn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-xs;
+    border: 2px dashed $color-border;
+    border-radius: $radius-md;
+    background-color: #fff;
+    cursor: pointer;
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease;
+
+    &:hover {
+        border-color: $color-myOrange;
+        background-color: rgba($color-myOrange, 0.04);
+    }
+}
+
+// Le bouton caméra n'a de sens que sur mobile (appareil photo disponible)
+.cameraBtn {
+    @media (min-width: $bp-tablet) {
+        display: none;
+    }
+}
+
+.uploadIcon {
+    width: 24px;
+    height: 24px;
+    color: $color-text-primary;
+    flex-shrink: 0;
+}
+
+.uploadText {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    text-align: center;
+}
+
+// Input file caché — activé via fileInputRef.current.click()
+.hiddenInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.previewGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: $spacing-xs;
+    margin-top: $spacing-xs;
+    width: 100%;
+}
+
+.previewItem {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: $radius-sm;
+    overflow: hidden;
+    border: 1.5px solid $color-border;
+}
+
+.previewImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.removeBtn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: $radius-full;
+    background-color: $color-myBrown;
+    color: #fff;
+    border: none;
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: $color-text-label;
+    font-size: $font-size-body;
+    font-family: $font-primary;
+    cursor: pointer;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-text-primary;
+    }
+}

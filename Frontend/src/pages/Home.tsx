@@ -5,6 +5,7 @@ import { PageLayout } from '../shared/components/PageLayout/PageLayout';
 import { AdresseSelector } from '../features/adresse/components/AdresseSelector/AdresseSelector';
 import { CycleEtForfaitForm } from '../features/reservation/components/CycleEtForfaitForm/CycleEtForfaitForm';
 import { CreneauSelector } from '../features/reservation/components/CreneauSelector/CreneauSelector';
+import { CommentaireEtPhotosForm } from '../features/reservation/components/CommentaireEtPhotosForm/CommentaireEtPhotosForm';
 import { useReservation } from '../app/providers/reservationContext/useReservation';
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
                 {currentStep === 'adresse' && <AdresseSelector />}
                 {currentStep === 'cycle' && <CycleEtForfaitForm />}
                 {currentStep === 'creneau' && <CreneauSelector />}
+                {currentStep === 'commentaire' && <CommentaireEtPhotosForm />}
             </PageLayout>
             <Footer />
         </>
