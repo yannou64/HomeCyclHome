@@ -126,7 +126,7 @@ describe('GetCreneauxDisponiblesUseCase', () => {
 
     // ── Règles buffer ─────────────────────────────────────────────────────────
 
-    it("devrait exclure un créneau quand le buffer avant est réservé", async () => {
+    it('devrait exclure un créneau quand le buffer avant est réservé', async () => {
         // [08:00 RÉSERVÉ] [09:00 dispo] [10:00 dispo]
         // → pas de buffer avant pour 09:00
         const creneaux = [
@@ -146,7 +146,7 @@ describe('GetCreneauxDisponiblesUseCase', () => {
         expect(result).toHaveLength(0);
     });
 
-    it("devrait exclure un créneau quand le buffer après est réservé", async () => {
+    it('devrait exclure un créneau quand le buffer après est réservé', async () => {
         // [08:00 dispo] [09:00 dispo] [10:00 RÉSERVÉ]
         // → pas de buffer après pour 09:00
         const creneaux = [

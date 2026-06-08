@@ -39,11 +39,19 @@ export type CreneauInfo = {
     technicienId: string | null;
 };
 
+// Données optionnelles saisies avant la confirmation
+// photos : File[] en mémoire — uploadés lors du POST /interventions (HOM-315)
+export type CommentaireInfo = {
+    commentaire: string;
+    photos: File[];
+};
+
 export type ReservationStep =
     | 'adresse'
     | 'cycle'
     | 'forfait'
     | 'creneau'
+    | 'commentaire'
     | 'auth'
     | 'confirmation';
 
@@ -54,6 +62,7 @@ export type ReservationContextType = {
     cycle: CycleBooking | null;
     forfait: ForfaitInfo | null;
     creneau: CreneauInfo | null;
+    commentaire: CommentaireInfo | null;
 
     // Navigation
     currentStep: ReservationStep;
@@ -63,6 +72,7 @@ export type ReservationContextType = {
     setCycle: (cycle: CycleBooking) => void;
     setForfait: (forfait: ForfaitInfo) => void;
     setCreneau: (creneau: CreneauInfo) => void;
+    setCommentaire: (commentaire: CommentaireInfo) => void;
     goToStep: (step: ReservationStep) => void;
     reset: () => void;
 };
