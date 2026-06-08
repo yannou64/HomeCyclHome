@@ -17,9 +17,11 @@ import { GenerateAllCreneauxUseCase } from './use-cases/generate-all-creneaux.us
 import { GetCreneauxUseCase } from './use-cases/get-creneaux.use-case';
 import { DeleteCreneauUseCase } from './use-cases/delete-creneau.use-case';
 import { DeleteCreneauxDisponiblesUseCase } from './use-cases/delete-creneaux-disponibles.use-case';
+import { GetCreneauxDisponiblesUseCase } from './use-cases/get-creneaux-disponibles.use-case';
+import { ClientCreneauxController } from './controllers/client-creneaux.controller';
 
 @Module({
-    controllers: [AdminPlanningController],
+    controllers: [AdminPlanningController, ClientCreneauxController],
     providers: [
         // Le repository Prisma est enregistré derrière un token string.
         // Les use cases reçoivent l'interface IPlanningRepository, pas la classe Prisma.
@@ -121,6 +123,12 @@ import { DeleteCreneauxDisponiblesUseCase } from './use-cases/delete-creneaux-di
             provide: DeleteCreneauxDisponiblesUseCase,
             useFactory: (repo: PlanningPrismaRepository) =>
                 new DeleteCreneauxDisponiblesUseCase(repo),
+            inject: [PLANNING_REPO],
+        },
+        {
+            provide: GetCreneauxDisponiblesUseCase,
+            useFactory: (repo: PlanningPrismaRepository) =>
+                new GetCreneauxDisponiblesUseCase(repo),
             inject: [PLANNING_REPO],
         },
     ],

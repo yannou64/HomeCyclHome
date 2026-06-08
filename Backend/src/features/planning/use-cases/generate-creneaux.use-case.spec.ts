@@ -65,7 +65,9 @@ function buildMockRepo(
             ),
         findCreneauxByTechnicien: jest.fn(),
         findCreneauById: jest.fn(),
+        findCreneauxByZone: jest.fn(),
         deleteCreneau: jest.fn(),
+        deleteCreneauxDisponibles: jest.fn(),
         ...overrides,
     };
 }

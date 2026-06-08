@@ -3,6 +3,7 @@ import {
     CreateIndisponibiliteData,
     CreateModeleData,
     CreatePauseData,
+    CreneauAvecTechnicienDto,
     CreneauDto,
     IndisponibiliteDto,
     ModelePlanificationDto,
@@ -93,6 +94,15 @@ export interface IPlanningRepository {
     ): Promise<CreneauDto[]>;
 
     findCreneauById(id: string): Promise<CreneauDto | null>;
+
+    // Retourne TOUS les créneaux d'une zone sur une période (disponibles ET non disponibles)
+    // Inclut technicien_id via la relation modele_planification — utilisé par le tunnel client
+    findCreneauxByZone(
+        zoneId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<CreneauAvecTechnicienDto[]>;
+
     deleteCreneau(id: string): Promise<void>;
 
     // Suppression en masse des créneaux disponibles sur une période

@@ -5,6 +5,7 @@ import {
     CreateIndisponibiliteData,
     CreateModeleData,
     CreatePauseData,
+    CreneauAvecTechnicienDto,
     CreneauDto,
     IndisponibiliteDto,
     ModelePlanificationDto,
@@ -295,6 +296,26 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return creneau ? this.toCreneauDto(creneau) : null;
     }
 
+    async findCreneauxByZone(
+        zoneId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<CreneauAvecTechnicienDto[]> {
+        const creneaux = await this.prisma.creneau.findMany({
+            where: {
+                zone_id: zoneId,
+                date_debut: { gte: debut, lte: fin },
+            },
+            include: {
+                modele_planification: {
+                    select: { technicien_id: true },
+                },
+            },
+            orderBy: { date_debut: 'asc' },
+        });
+        return creneaux.map((c) => this.toCreneauAvecTechnicienDto(c));
+    }
+
     async deleteCreneau(id: string): Promise<void> {
         await this.prisma.creneau.delete({ where: { id } });
     }
@@ -360,6 +381,15 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             is_disponible: c.is_disponible,
             zone_id: c.zone_id,
             modele_planification_id: c.modele_planification_id,
+        };
+    }
+
+    private toCreneauAvecTechnicienDto(
+        c: Creneau & { modele_planification: { technicien_id: string } | null },
+    ): CreneauAvecTechnicienDto {
+        return {
+            ...this.toCreneauDto(c),
+            technicien_id: c.modele_planification?.technicien_id ?? null,
         };
     }
 }

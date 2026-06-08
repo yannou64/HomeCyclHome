@@ -31,6 +31,14 @@ export type ForfaitInfo = {
     prix: number | null;
 };
 
+// Créneau choisi pour cette réservation
+export type CreneauInfo = {
+    creneauId: string;
+    dateDebut: string; // ISO 8601
+    dateFin: string; // ISO 8601 — dateDebut + dureeMinutes
+    technicienId: string | null;
+};
+
 export type ReservationStep =
     | 'adresse'
     | 'cycle'
@@ -45,6 +53,7 @@ export type ReservationContextType = {
     zone: ZoneInfo | null;
     cycle: CycleBooking | null;
     forfait: ForfaitInfo | null;
+    creneau: CreneauInfo | null;
 
     // Navigation
     currentStep: ReservationStep;
@@ -53,6 +62,7 @@ export type ReservationContextType = {
     setAdresseAndZone: (adresse: AdresseBooking, zone: ZoneInfo) => void;
     setCycle: (cycle: CycleBooking) => void;
     setForfait: (forfait: ForfaitInfo) => void;
+    setCreneau: (creneau: CreneauInfo) => void;
     goToStep: (step: ReservationStep) => void;
     reset: () => void;
 };

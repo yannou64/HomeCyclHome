@@ -42,7 +42,9 @@ function buildMockRepo(
         createManyCreneaux: jest.fn(),
         findCreneauxByTechnicien: jest.fn(),
         findCreneauById: jest.fn().mockResolvedValue(mockCreneauDisponible),
+        findCreneauxByZone: jest.fn(),
         deleteCreneau: jest.fn().mockResolvedValue(undefined),
+        deleteCreneauxDisponibles: jest.fn(),
         ...overrides,
     };
 }
