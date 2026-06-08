@@ -75,6 +75,23 @@ export type CreneauDto = {
     modele_planification_id: string | null;
 };
 
+// Type intermédiaire utilisé par le repository findCreneauxByZone
+// Étend CreneauDto avec technicien_id résolu depuis la relation modele_planification
+export type CreneauAvecTechnicienDto = CreneauDto & {
+    technicien_id: string | null;
+};
+
+// Créneau retourné au client dans le tunnel de réservation
+// date_fin est toujours renseigné (calculé : date_debut + dureeMinutes du forfait)
+// technicien_id est le snapshot qui sera stocké sur l'intervention
+export type CreneauDisponibleDto = {
+    id: string;
+    date_debut: string; // ISO 8601
+    date_fin: string; // ISO 8601 — date_debut + dureeMinutes
+    technicien_id: string | null; // null si créneau manuel (sans modèle de planification)
+    zone_id: string;
+};
+
 // Réponse de l'endpoint POST /admin/planning/creneaux/generate
 export type GenerationRapportDto = {
     created: number; // créneaux nouvellement insérés
