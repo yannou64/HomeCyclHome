@@ -14,6 +14,12 @@ enum Role {
   admin
 }
 
+enum StatutIntervention {
+  Planifiee
+  Terminee
+  Annulee
+}
+
 model Utilisateur {
   id                       String    @id @default(uuid())
   nom                      String
@@ -35,6 +41,7 @@ model Utilisateur {
   modeles_planification    ModelePlanification[] // relation inverse : modèles de planification du technicien
   pauses_recurrentes       PauseRecurrente[]     // relation inverse : pauses récurrentes du technicien
   indisponibilites         Indisponibilite[]     // relation inverse : absences ponctuelles du technicien
+  interventions            Intervention[]        // relation inverse : interventions du client
 
   @@map("Utilisateurs")
 }
@@ -54,7 +61,8 @@ model Adresse {
   google_place_id String   @unique
   date_creation   DateTime @default(now())
 
-  utilisateurs PeutSeSituer[] // relation inverse : liaisons utilisateur ↔ adresse
+  utilisateurs  PeutSeSituer[] // relation inverse : liaisons utilisateur ↔ adresse
+  interventions Intervention[] // relation inverse : interventions à cette adresse
 
   @@map("Adresses")
 }
@@ -106,9 +114,10 @@ model Cycle {
   type_cycle_id  String
 
   // Relations Prisma (navigation, pas de colonne créée)
-  utilisateur   Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
-  marque        Marque      @relation(fields: [marque_id], references: [id])
-  type_cycle    TypeCycle   @relation(fields: [type_cycle_id], references: [id])
+  utilisateur   Utilisateur  @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  marque        Marque       @relation(fields: [marque_id], references: [id])
+  type_cycle    TypeCycle    @relation(fields: [type_cycle_id], references: [id])
+  interventions Intervention[] // relation inverse : interventions pour ce cycle
 
   @@map("Cycles")
 }
@@ -121,6 +130,7 @@ model Forfait {
   is_actif        Boolean                  @default(true)
   date_creation   DateTime                 @default(now())
   historique_prix HistoriquePrixForfait[]  // relation virtuelle — aucune colonne créée
+  interventions   Intervention[]           // relation inverse : interventions pour ce forfait
 
   @@map("Forfaits")
 }
@@ -130,8 +140,9 @@ model HistoriquePrixForfait {
   montant    Decimal   @db.Decimal(10, 2)
   date_debut DateTime
   date_fin   DateTime?
-  forfait_id String
-  forfait    Forfait   @relation(fields: [forfait_id], references: [id])
+  forfait_id    String
+  forfait       Forfait        @relation(fields: [forfait_id], references: [id])
+  interventions Intervention[] // relation inverse : interventions ayant ce snapshot de prix
 
   @@map("HistoriquePrixForfaits")
 }
@@ -242,6 +253,35 @@ model Creneau {
 
   modele_planification ModelePlanification? @relation(fields: [modele_planification_id], references: [id], onDelete: SetNull)
   zone                 Zone                 @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+  intervention         Intervention?        // relation inverse 1-1 : un créneau → au plus une intervention
 
   @@map("Creneaux")
+}
+
+// ─── Interventions ───────────────────────────────────────────────────────────
+
+model Intervention {
+  id                         String             @id @default(uuid())
+  statut                     StatutIntervention @default(Planifiee)
+  commentaire                String?
+  duree_minutes_snapshot     Int                // snapshot de Forfait.duree_minutes au moment de la réservation
+  date_creation              DateTime           @default(now())
+  date_maj                   DateTime           @updatedAt
+
+  client_id                  String
+  cycle_id                   String
+  forfait_id                 String
+  creneau_id                 String             @unique // unicité : 1 créneau = 1 seule intervention possible
+  adresse_id                 String
+  historique_prix_forfait_id String             // snapshot du prix actif au moment de la réservation
+  technicien_id              String?            // snapshot depuis ModelePlanification (nullable si créneau manuel)
+
+  client          Utilisateur           @relation(fields: [client_id],                   references: [id])
+  cycle           Cycle                 @relation(fields: [cycle_id],                    references: [id])
+  forfait         Forfait               @relation(fields: [forfait_id],                  references: [id])
+  creneau         Creneau               @relation(fields: [creneau_id],                  references: [id])
+  adresse         Adresse               @relation(fields: [adresse_id],                  references: [id])
+  historique_prix HistoriquePrixForfait @relation(fields: [historique_prix_forfait_id],  references: [id])
+
+  @@map("Interventions")
 }
