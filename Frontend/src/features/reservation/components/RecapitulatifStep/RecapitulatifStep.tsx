@@ -1,10 +1,21 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useReservation } from '../../../../app/providers/reservationContext/useReservation';
-import { PENDING_RESERVATION_KEY } from '../../../../app/providers/reservationContext/types/reservation.types';
+import {
+    PENDING_RESERVATION_KEY,
+    type ForfaitInfo,
+    type CreneauInfo,
+} from '../../../../app/providers/reservationContext/types/reservation.types';
 import { useCreateIntervention } from '../../hooks/useCreateIntervention';
 import { CommentaireEtPhotosForm } from '../CommentaireEtPhotosForm/CommentaireEtPhotosForm';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
 import styles from './RecapitulatifStep.module.scss';
+
+type ConfirmationData = {
+    forfait: ForfaitInfo;
+    creneau: CreneauInfo;
+    adresseLabel: string;
+};
 
 function formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString('fr-FR', {
@@ -30,12 +41,20 @@ function formatDuree(minutes: number): string {
 export function RecapitulatifStep() {
     const { adresse, cycle, forfait, creneau, commentaire, reset, goToStep } = useReservation();
     const { createIntervention, isLoading, error } = useCreateIntervention();
+    const navigate = useNavigate();
 
     const [showCommentForm, setShowCommentForm] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [confirmationData, setConfirmationData] = useState<ConfirmationData | null>(null);
 
     const handleSubmit = async () => {
         if (!adresse || !cycle || !forfait || !creneau) return;
+
+        const snapshot: ConfirmationData = {
+            forfait,
+            creneau,
+            adresseLabel: `${adresse.data.rue}, ${adresse.data.ville}`,
+        };
 
         try {
             await createIntervention({
@@ -46,22 +65,57 @@ export function RecapitulatifStep() {
                 commentaire: commentaire?.commentaire || undefined,
             });
             localStorage.removeItem(PENDING_RESERVATION_KEY);
-            reset();
+            // reset() est volontairement déplacé dans le bouton "Retour à l'accueil"
+            // — l'appeler ici changerait currentStep et démonterait ce composant
+            // avant que l'écran de succès ne soit affiché.
+            setConfirmationData(snapshot);
             setIsSuccess(true);
         } catch {
             // error est exposé par useCreateIntervention
         }
     };
 
-    if (isSuccess) {
+    if (isSuccess && confirmationData) {
+        const { forfait: f, creneau: c, adresseLabel } = confirmationData;
         return (
             <div className={styles.successContainer}>
                 <div className={styles.successIcon}>✓</div>
                 <h2 className={styles.successTitle}>Intervention confirmée !</h2>
                 <p className={styles.successText}>
-                    Votre demande a bien été enregistrée. Vous recevrez une confirmation
-                    par email.
+                    Votre demande a bien été enregistrée.
+                    Un email de confirmation vous a été envoyé.
                 </p>
+
+                <div className={styles.summaryCard}>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.summaryLabel}>Date</span>
+                        <span className={styles.summaryValue}>{formatDate(c.dateDebut)}</span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.summaryLabel}>Horaire</span>
+                        <span className={styles.summaryValue}>
+                            {formatTime(c.dateDebut)} → {formatTime(c.dateFin)}
+                        </span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.summaryLabel}>Forfait</span>
+                        <span className={styles.summaryValue}>
+                            {f.nom}
+                            <span className={styles.summaryMeta}>
+                                {formatDuree(f.dureeMinutes)}
+                                {f.prix !== null && ` · ${f.prix.toFixed(2)} €`}
+                            </span>
+                        </span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.summaryLabel}>Adresse</span>
+                        <span className={styles.summaryValue}>{adresseLabel}</span>
+                    </div>
+                </div>
+
+                <CTAButton onClick={() => { reset(); navigate('/'); }}>
+                    Retour à l'accueil
+                </CTAButton>
             </div>
         );
     }

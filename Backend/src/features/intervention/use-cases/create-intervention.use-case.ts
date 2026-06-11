@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
+import type { EmailService } from '../../email/email.service';
 
 // Type plat compatible avec CreateInterventionDto (class-validator).
 // Les champs conditionnels sont optionnels ici — les gardes runtime dans execute()
@@ -34,7 +35,10 @@ export type CreateInterventionInput = {
 };
 
 export class CreateInterventionUseCase {
-    constructor(private readonly repo: IInterventionsRepository) {}
+    constructor(
+        private readonly repo: IInterventionsRepository,
+        private readonly emailService: Pick<EmailService, 'sendInterventionConfirmationEmail'>,
+    ) {}
 
     async execute(
         utilisateurId: string,
@@ -71,7 +75,7 @@ export class CreateInterventionUseCase {
         );
 
         // 7. Transaction atomique : INSERT Intervention + UPDATE Creneau.is_disponible = false
-        return this.repo.createInterventionTransaction({
+        const intervention = await this.repo.createInterventionTransaction({
             clientId: utilisateurId,
             cycleId,
             forfaitId: dto.forfaitId,
@@ -82,6 +86,22 @@ export class CreateInterventionUseCase {
             technicienId,
             commentaire: dto.commentaire,
         });
+
+        // 8. Email de confirmation — best-effort, échec non bloquant
+        try {
+            const client = await this.repo.findClientById(utilisateurId);
+            if (client) {
+                await this.emailService.sendInterventionConfirmationEmail(
+                    client.email,
+                    client.prenom,
+                    intervention.dateCreation,
+                );
+            }
+        } catch {
+            // L'email est best-effort — une erreur SMTP ne doit pas annuler la réservation
+        }
+
+        return intervention;
     }
 
     private async resoudreCycleId(

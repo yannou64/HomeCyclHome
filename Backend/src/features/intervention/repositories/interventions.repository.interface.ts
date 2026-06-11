@@ -21,6 +21,11 @@ export type PrixForfait = {
     montant: number;
 };
 
+export type ClientInfo = {
+    email: string;
+    prenom: string;
+};
+
 export type CreateInterventionData = {
     clientId: string;
     cycleId: string;
@@ -43,4 +48,5 @@ export interface IInterventionsRepository {
     createInterventionTransaction(
         data: CreateInterventionData,
     ): Promise<InterventionCreatedDto>;
+    findClientById(clientId: string): Promise<ClientInfo | null>;
 }

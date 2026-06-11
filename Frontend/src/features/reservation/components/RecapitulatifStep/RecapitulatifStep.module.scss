@@ -146,7 +146,7 @@
 .successIcon {
     width: 64px;
     height: 64px;
-    background-color: #27ae60;
+    background-color: $color-myOrange;
     color: #fff;
     border-radius: 50%;
     display: flex;
@@ -166,4 +166,52 @@
     font-size: $font-size-body;
     color: $color-text-label;
     line-height: 1.6;
+}
+
+// ── Récapitulatif succès ───────────────────────────────────────────────────────
+
+.summaryCard {
+    width: 100%;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    overflow: hidden;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background-color: #fff;
+
+    & + & {
+        border-top: 1px solid $color-border;
+    }
+}
+
+.summaryLabel {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.summaryValue {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: $font-size-body;
+    font-weight: $font-medium;
+    color: $color-text-primary;
+    text-align: right;
+}
+
+.summaryMeta {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    font-weight: $font-regular;
 }

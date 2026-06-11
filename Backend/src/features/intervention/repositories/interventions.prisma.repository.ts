@@ -6,6 +6,7 @@ import type {
     CreateCycleInput,
     CreateInterventionData,
     PrixForfait,
+    ClientInfo,
 } from './interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 
@@ -116,5 +117,13 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             statut: intervention.statut,
             dateCreation: intervention.date_creation.toISOString(),
         };
+    }
+
+    async findClientById(clientId: string): Promise<ClientInfo | null> {
+        const user = await this.prisma.utilisateur.findUnique({
+            where: { id: clientId },
+            select: { email: true, prenom: true },
+        });
+        return user ?? null;
     }
 }
