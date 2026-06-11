@@ -1,0 +1,217 @@
+@use '../../../../app/styles/index' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    padding: $spacing-md $spacing-sm;
+    max-width: 560px;
+    width: 100%; // ancre la largeur pour que les children % aient une référence fixe
+    margin: 0 auto;
+}
+
+.title {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+// ── Recap ──────────────────────────────────────────────────────────────────────
+
+.recap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.recapRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background-color: #fff;
+
+    & + & {
+        border-top: 1px solid $color-border;
+    }
+}
+
+.recapLabel {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.recapValue {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: $font-size-body;
+    font-weight: $font-medium;
+    color: $color-text-primary;
+    text-align: right;
+}
+
+.recapMeta {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    font-weight: $font-regular;
+}
+
+// ── Commentaire ────────────────────────────────────────────────────────────────
+
+.addCommentBtn {
+    background: none;
+    border: 1px dashed $color-border;
+    border-radius: 8px;
+    color: $color-myOrange;
+    font-size: $font-size-body;
+    font-weight: $font-medium;
+    padding: $spacing-sm;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $color-myGreen;
+    }
+}
+
+.commentSection {
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: $spacing-sm;
+    background-color: #fff;
+    overflow: hidden; // empêche les photos d'élargir la section au-delà du container
+}
+
+// ── Erreur ─────────────────────────────────────────────────────────────────────
+
+.errorText {
+    font-size: $font-size-body;
+    color: #c0392b;
+    background-color: #fdecea;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: $spacing-xs $spacing-sm;
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────────
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-top: $spacing-xs;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: $color-text-label;
+    font-size: $font-size-body;
+    font-family: $font-primary;
+    cursor: pointer;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-text-primary;
+    }
+}
+
+// ── Succès ─────────────────────────────────────────────────────────────────────
+
+.successContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xl $spacing-sm;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.successIcon {
+    width: 64px;
+    height: 64px;
+    background-color: $color-myOrange;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: $font-bold;
+}
+
+.successTitle {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.successText {
+    font-size: $font-size-body;
+    color: $color-text-label;
+    line-height: 1.6;
+}
+
+// ── Récapitulatif succès ───────────────────────────────────────────────────────
+
+.summaryCard {
+    width: 100%;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    overflow: hidden;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    background-color: #fff;
+
+    & + & {
+        border-top: 1px solid $color-border;
+    }
+}
+
+.summaryLabel {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.summaryValue {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: $font-size-body;
+    font-weight: $font-medium;
+    color: $color-text-primary;
+    text-align: right;
+}
+
+.summaryMeta {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    font-weight: $font-regular;
+}

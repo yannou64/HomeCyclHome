@@ -6,10 +6,12 @@ import type {
     CreneauInfo,
     CycleBooking,
     ForfaitInfo,
+    PendingReservationStorage,
     ReservationContextType,
     ReservationStep,
     ZoneInfo,
 } from './types/reservation.types';
+import { PENDING_RESERVATION_KEY } from './types/reservation.types';
 
 type ReservationProviderProps = {
     children: ReactNode;
@@ -49,6 +51,20 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
         setCurrentStep('adresse');
     };
 
+    const savePendingToStorage = () => {
+        if (!adresse || !zone || !cycle || !forfait || !creneau) return;
+        const data: PendingReservationStorage = { adresse, zone, cycle, forfait, creneau };
+        localStorage.setItem(PENDING_RESERVATION_KEY, JSON.stringify(data));
+    };
+
+    const restoreFromStorage = (data: PendingReservationStorage) => {
+        setAdresse(data.adresse);
+        setZone(data.zone);
+        setCycleState(data.cycle);
+        setForfaitState(data.forfait);
+        setCreneauState(data.creneau);
+    };
+
     const value: ReservationContextType = {
         adresse,
         zone,
@@ -64,6 +80,8 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
         setCommentaire,
         goToStep,
         reset,
+        savePendingToStorage,
+        restoreFromStorage,
     };
 
     return (

@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
+    width: 100%;
 }
 
 .sectionTitle {
@@ -37,6 +38,15 @@
             display: none;
         }
     }
+
+    @include desktop {
+        :global {
+            // Slots plus compacts sur desktop : ~7h visibles dans les 360px du conteneur
+            .fc-timegrid-slot {
+                height: 28px;
+            }
+        }
+    }
 }
 
 // Toolbar custom
@@ -45,23 +55,27 @@
     display: flex;
     align-items: center;
     gap: $spacing-xs;
-    padding: 16px $spacing-sm;
+    padding: 10px $spacing-sm;
     background-color: #fff;
     border-bottom: 1px solid $color-border;
+
+    @include desktop {
+        padding: 16px $spacing-sm;
+    }
 }
 
 .navButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
     background-color: $color-myOrange;
     color: #fff;
     border: none;
     border-radius: $radius-sm;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
     transition: background-color 0.15s;
@@ -97,23 +111,35 @@
 }
 
 .dateText {
-    font-size: $font-size-h2;
+    font-size: $font-size-body;
     font-weight: $font-semibold;
     color: $color-text-primary;
     white-space: nowrap;
+
+    @include desktop {
+        font-size: $font-size-h2;
+    }
 }
 
 .dateSeparator {
-    font-size: $font-size-h2;
+    font-size: $font-size-body;
     color: $color-text-label;
+
+    @include desktop {
+        font-size: $font-size-h2;
+    }
 }
 
 .dayName {
-    font-size: $font-size-h1;
+    font-size: $font-size-h2;
     font-weight: $font-bold;
     color: $color-myYellow;
     text-transform: capitalize;
     white-space: nowrap;
+
+    @include desktop {
+        font-size: $font-size-h1;
+    }
 }
 
 // Input date masqué — fonctionne via showPicker() déclenché par .dateTrigger
@@ -128,6 +154,15 @@
     height: 1px;
     overflow: hidden;
     tabindex: -1;
+}
+
+// Conteneur scrollable du calendrier — mobile : page scrolle / desktop : div scrolle
+// (un div CSS ne remet jamais son scroll à zéro sur un re-render React)
+.calendarScrollArea {
+    @include desktop {
+        max-height: 360px;
+        overflow-y: auto;
+    }
 }
 
 // Contenu du créneau sélectionné

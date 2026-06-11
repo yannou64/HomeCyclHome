@@ -8,7 +8,13 @@ const MAX_PHOTOS = 5;
 
 type PhotoEntry = { file: File; preview: string };
 
-export function CommentaireEtPhotosForm() {
+type Props = {
+    // En mode embarqué (dans RecapitulatifStep), masque les boutons de navigation
+    // et sauvegarde les données dans le context à chaque changement
+    embedded?: boolean;
+};
+
+export function CommentaireEtPhotosForm({ embedded = false }: Props) {
     const { setCommentaire, goToStep } = useReservation();
     const { isAuthenticated } = useAuth();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -21,6 +27,13 @@ export function CommentaireEtPhotosForm() {
     useEffect(() => {
         return () => photos.forEach((p) => URL.revokeObjectURL(p.preview));
     }, [photos]);
+
+    // En mode embarqué : sauvegarde dans le context à chaque modification
+    // (RecapitulatifStep lira `commentaire` depuis le context au submit)
+    useEffect(() => {
+        if (!embedded) return;
+        setCommentaire({ commentaire, photos: photos.map((p) => p.file) });
+    }, [embedded, commentaire, photos]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selected = Array.from(e.target.files ?? []);
@@ -45,7 +58,6 @@ export function CommentaireEtPhotosForm() {
 
     const handleContinue = () => {
         setCommentaire({ commentaire, photos: photos.map((p) => p.file) });
-        console.log('[ReservationContext] commentaire :', commentaire, '— photos :', photos.length);
         goToStep(isAuthenticated ? 'confirmation' : 'auth');
     };
 
@@ -149,16 +161,18 @@ export function CommentaireEtPhotosForm() {
                 )}
             </div>
 
-            <div className={styles.actions}>
-                <CTAButton onClick={handleContinue}>Continuer</CTAButton>
-                <button
-                    type="button"
-                    className={styles.backButton}
-                    onClick={() => goToStep('creneau')}
-                >
-                    Retour
-                </button>
-            </div>
+            {!embedded && (
+                <div className={styles.actions}>
+                    <CTAButton onClick={handleContinue}>Continuer</CTAButton>
+                    <button
+                        type="button"
+                        className={styles.backButton}
+                        onClick={() => goToStep('creneau')}
+                    >
+                        Retour
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

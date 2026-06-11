@@ -4,6 +4,10 @@
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
+
+    @include desktop {
+        padding-top: $spacing-lg;
+    }
 }
 
 .sectionTitle {
@@ -23,6 +27,28 @@
     font-size: $font-size-label;
     font-weight: $font-medium;
     color: $color-text-label;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: $color-text-label;
+    font-size: $font-size-body;
+    font-family: $font-primary;
+    cursor: pointer;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-text-primary;
+    }
 }
 
 .loadingText,

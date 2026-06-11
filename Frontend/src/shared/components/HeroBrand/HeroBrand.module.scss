@@ -5,15 +5,14 @@
     flex-direction: column;
     align-items: center;
 
-    // Mobile : le logo remonte et empiète sur l'image de fond.
-    // margin-top négatif agit dans le flux flex : le logo est physiquement
-    // tiré vers le haut, dans la zone du topSection.
-    // position + z-index garantissent que le logo passe au-dessus du topSection.
-    margin-top: -200px;
+    // Mobile : 75% de l'inner width de contentSection — même valeur que la card adresse.
+    width: 75%;
+    margin-top: -275px;
     position: relative;
     z-index: 1;
 
     @include desktop {
+        align-self: auto;
         margin-top: 0;
         position: static;
         z-index: auto;
@@ -21,7 +20,7 @@
 }
 
 .logo {
-    width: 180px;
+    width: 100%; // 100% de heroBrand (qui fait align-self:stretch = inner width de contentSection)
     height: auto;
 
     @include desktop {

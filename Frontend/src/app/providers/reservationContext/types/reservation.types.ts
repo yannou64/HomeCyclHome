@@ -51,9 +51,20 @@ export type ReservationStep =
     | 'cycle'
     | 'forfait'
     | 'creneau'
-    | 'commentaire'
     | 'auth'
     | 'confirmation';
+
+// Clé localStorage pour persister le tunnel entre l'auth et le retour sur /
+export const PENDING_RESERVATION_KEY = 'homecyclhome_pending_reservation';
+
+// Sous-ensemble sérialisable du state — pas de File[] (photos collectées après l'auth)
+export type PendingReservationStorage = {
+    adresse: AdresseBooking;
+    zone: ZoneInfo;
+    cycle: CycleBooking;
+    forfait: ForfaitInfo;
+    creneau: CreneauInfo;
+};
 
 export type ReservationContextType = {
     // Données du tunnel (null = étape pas encore complétée)
@@ -75,4 +86,7 @@ export type ReservationContextType = {
     setCommentaire: (commentaire: CommentaireInfo) => void;
     goToStep: (step: ReservationStep) => void;
     reset: () => void;
+    // Persistance localStorage pour le tunnel inter-auth
+    savePendingToStorage: () => void;
+    restoreFromStorage: (data: PendingReservationStorage) => void;
 };
