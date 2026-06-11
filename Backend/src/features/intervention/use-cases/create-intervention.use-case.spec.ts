@@ -57,7 +57,10 @@ describe('CreateInterventionUseCase', () => {
         const created = makeInterventionCreated();
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
@@ -103,7 +106,10 @@ describe('CreateInterventionUseCase', () => {
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
         mockRepo.createCycle.mockResolvedValue('cyc-new');
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
@@ -150,7 +156,10 @@ describe('CreateInterventionUseCase', () => {
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
         mockRepo.upsertAdresse.mockResolvedValue('adr-new');
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
@@ -180,7 +189,7 @@ describe('CreateInterventionUseCase', () => {
 
     // ── Prix forfait ─────────────────────────────────────────────────────────
 
-    it('devrait lever UnprocessableEntityException si le forfait n\'a pas de prix actif', async () => {
+    it("devrait lever UnprocessableEntityException si le forfait n'a pas de prix actif", async () => {
         const input = makeInput();
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
@@ -194,13 +203,16 @@ describe('CreateInterventionUseCase', () => {
 
     // ── Technicien nullable ──────────────────────────────────────────────────
 
-    it('devrait passer technicienId à null si le créneau n\'a pas de modèle de planification', async () => {
+    it("devrait passer technicienId à null si le créneau n'a pas de modèle de planification", async () => {
         const input = makeInput();
         const created = makeInterventionCreated();
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
         mockRepo.getTechnicienFromCreneau.mockResolvedValue(null); // créneau manuel
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
 

@@ -19,14 +19,17 @@ const CAROUSEL_IMAGES = [
 
 type PageLayoutProps = {
     children: React.ReactNode;
+    leftContent?: React.ReactNode;
+    compact?: boolean;
+    noContentScroll?: boolean;
 };
 
-export function PageLayout({ children }: PageLayoutProps) {
+export function PageLayout({ children, leftContent, compact = true, noContentScroll = false }: PageLayoutProps) {
     return (
-        <div className={styles.pageLayout}>
+        <div className={`${styles.pageLayout} ${compact ? styles.compact : ''} ${noContentScroll ? styles.noContentScroll : ''}`}>
             {/* ── Section HAUTE ─────────────────────────────────────────────
                 Mobile  : image Lyon + dégradé vers le vert menthe (bas)
-                Desktop : image Lyon couvrant toute la hauteur (colonne gauche)
+                Desktop : image Lyon pleine hauteur (colonne gauche) + logo centré
             ─────────────────────────────────────────────────────────────── */}
             <div
                 className={styles.topSection}
@@ -34,14 +37,21 @@ export function PageLayout({ children }: PageLayoutProps) {
                     '--bg-mobile': `url(${fondEcranLyonMobile})`,
                     '--bg-desktop': `url(${fondEcranLyonDesktop})`,
                 } as React.CSSProperties}
-                aria-hidden="true"
-            />
+                aria-hidden={leftContent ? undefined : true}
+            >
+                {leftContent && (
+                    <div className={styles.leftOverlay}>{leftContent}</div>
+                )}
+            </div>
 
             {/* ── Section CENTRALE ──────────────────────────────────────────
                 Contenu de la page (enfants)
                 flex: 1 → remplit l'espace vertical disponible
             ─────────────────────────────────────────────────────────────── */}
             <main className={styles.contentSection}>
+                {leftContent && (
+                    <div className={styles.mobileHero}>{leftContent}</div>
+                )}
                 {children}
             </main>
 

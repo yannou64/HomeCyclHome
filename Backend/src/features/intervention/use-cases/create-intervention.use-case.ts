@@ -43,7 +43,7 @@ export class CreateInterventionUseCase {
         // 1. Vérifier la disponibilité du créneau — garde critique contre les double-réservations
         const disponible = await this.repo.isCreneauDisponible(dto.creneauId);
         if (!disponible) {
-            throw new ConflictException('Ce créneau n\'est plus disponible.');
+            throw new ConflictException("Ce créneau n'est plus disponible.");
         }
 
         // 2. Résoudre le cycleId selon la source
@@ -61,10 +61,14 @@ export class CreateInterventionUseCase {
         }
 
         // 5. Snapshot technicien depuis le modèle du créneau (null si créneau manuel)
-        const technicienId = await this.repo.getTechnicienFromCreneau(dto.creneauId);
+        const technicienId = await this.repo.getTechnicienFromCreneau(
+            dto.creneauId,
+        );
 
         // 6. Snapshot durée du forfait
-        const dureeMinutesSnapshot = await this.repo.getForfaitDuree(dto.forfaitId);
+        const dureeMinutesSnapshot = await this.repo.getForfaitDuree(
+            dto.forfaitId,
+        );
 
         // 7. Transaction atomique : INSERT Intervention + UPDATE Creneau.is_disponible = false
         return this.repo.createInterventionTransaction({

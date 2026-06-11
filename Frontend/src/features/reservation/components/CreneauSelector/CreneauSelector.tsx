@@ -5,6 +5,7 @@ import frLocale from '@fullcalendar/core/locales/fr';
 import type { EventClickArg } from '@fullcalendar/core';
 import { useRef, useState } from 'react';
 import { useReservation } from '../../../../app/providers/reservationContext/useReservation';
+import { useAuth } from '../../../../app/providers/authContext/useAuth';
 import { useCreneaux } from '../../hooks/useCreneaux';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
 import type { CreneauInfo } from '../../../../app/providers/reservationContext/types/reservation.types';
@@ -35,6 +36,7 @@ function formatDayName(dateStr: string): string {
 
 export function CreneauSelector() {
     const { zone, forfait, setCreneau, goToStep } = useReservation();
+    const { isAuthenticated } = useAuth();
     const calendarRef = useRef<FullCalendar>(null);
     const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -93,8 +95,7 @@ export function CreneauSelector() {
         };
 
         setCreneau(creneauInfo);
-        console.log('[ReservationContext] créneau :', creneauInfo);
-        goToStep('commentaire');
+        goToStep(isAuthenticated ? 'confirmation' : 'auth');
     };
 
     // Filtre défensif : exclut les créneaux dont date_fin déborde dans un gap (ex: pause déjeuner).
@@ -182,6 +183,7 @@ export function CreneauSelector() {
                         </button>
                     </div>
 
+                    <div className={styles.calendarScrollArea}>
                     <FullCalendar
                         ref={calendarRef}
                         plugins={[timeGridPlugin, interactionPlugin]}
@@ -212,6 +214,7 @@ export function CreneauSelector() {
                             );
                         }}
                     />
+                    </div>
                 </div>
             )}
 

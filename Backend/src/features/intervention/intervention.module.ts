@@ -8,7 +8,10 @@ export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
 @Module({
     controllers: [InterventionsController],
     providers: [
-        { provide: INTERVENTIONS_REPO, useClass: InterventionsPrismaRepository },
+        {
+            provide: INTERVENTIONS_REPO,
+            useClass: InterventionsPrismaRepository,
+        },
         {
             provide: CreateInterventionUseCase,
             useFactory: (repo: InterventionsPrismaRepository) =>

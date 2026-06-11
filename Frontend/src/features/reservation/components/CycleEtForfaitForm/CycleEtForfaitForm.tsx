@@ -60,9 +60,14 @@ export function CycleEtForfaitForm() {
                 )}
             </div>
 
-            <CTAButton onClick={handleSubmit} disabled={!canSubmit}>
-                Choisir un créneau
-            </CTAButton>
+            <div className={styles.actions}>
+                <CTAButton onClick={handleSubmit} disabled={!canSubmit}>
+                    Choisir un créneau
+                </CTAButton>
+                <button className={styles.backButton} onClick={() => goToStep('adresse')}>
+                    Retour
+                </button>
+            </div>
         </div>
     );
 }

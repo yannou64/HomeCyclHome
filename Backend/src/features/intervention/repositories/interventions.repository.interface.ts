@@ -40,5 +40,7 @@ export interface IInterventionsRepository {
     getPrixActuelForfait(forfaitId: string): Promise<PrixForfait | null>;
     getTechnicienFromCreneau(creneauId: string): Promise<string | null>;
     getForfaitDuree(forfaitId: string): Promise<number>;
-    createInterventionTransaction(data: CreateInterventionData): Promise<InterventionCreatedDto>;
+    createInterventionTransaction(
+        data: CreateInterventionData,
+    ): Promise<InterventionCreatedDto>;
 }
