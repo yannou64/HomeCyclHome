@@ -52,12 +52,17 @@ describe('CreateInterventionUseCase', () => {
         };
 
         mockEmailService = {
-            sendInterventionConfirmationEmail: jest.fn().mockResolvedValue(undefined),
+            sendInterventionConfirmationEmail: jest
+                .fn()
+                .mockResolvedValue(undefined),
         };
 
         useCase = new CreateInterventionUseCase(
             mockRepo,
-            mockEmailService as unknown as Pick<EmailService, 'sendInterventionConfirmationEmail'>,
+            mockEmailService as unknown as Pick<
+                EmailService,
+                'sendInterventionConfirmationEmail'
+            >,
         );
     });
 
@@ -241,8 +246,14 @@ describe('CreateInterventionUseCase', () => {
         const created = makeInterventionCreated();
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
-        mockRepo.findClientById.mockResolvedValue({ email: 'marie@test.fr', prenom: 'Marie' });
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.findClientById.mockResolvedValue({
+            email: 'marie@test.fr',
+            prenom: 'Marie',
+        });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
@@ -250,12 +261,12 @@ describe('CreateInterventionUseCase', () => {
         const result = await useCase.execute('user-1', input);
 
         expect(result).toEqual(created);
-        expect(mockEmailService.sendInterventionConfirmationEmail).toHaveBeenCalledTimes(1);
-        expect(mockEmailService.sendInterventionConfirmationEmail).toHaveBeenCalledWith(
-            'marie@test.fr',
-            'Marie',
-            created.dateCreation,
-        );
+        expect(
+            mockEmailService.sendInterventionConfirmationEmail,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+            mockEmailService.sendInterventionConfirmationEmail,
+        ).toHaveBeenCalledWith('marie@test.fr', 'Marie', created.dateCreation);
     });
 
     it("devrait retourner l'intervention même si l'envoi d'email échoue", async () => {
@@ -263,8 +274,14 @@ describe('CreateInterventionUseCase', () => {
         const created = makeInterventionCreated();
 
         mockRepo.isCreneauDisponible.mockResolvedValue(true);
-        mockRepo.findClientById.mockResolvedValue({ email: 'marie@test.fr', prenom: 'Marie' });
-        mockRepo.getPrixActuelForfait.mockResolvedValue({ id: 'prix-1', montant: 49.9 });
+        mockRepo.findClientById.mockResolvedValue({
+            email: 'marie@test.fr',
+            prenom: 'Marie',
+        });
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
         mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
         mockRepo.getForfaitDuree.mockResolvedValue(60);
         mockRepo.createInterventionTransaction.mockResolvedValue(created);
@@ -275,6 +292,8 @@ describe('CreateInterventionUseCase', () => {
         const result = await useCase.execute('user-1', input);
 
         expect(result).toEqual(created);
-        expect(mockEmailService.sendInterventionConfirmationEmail).toHaveBeenCalledTimes(1);
+        expect(
+            mockEmailService.sendInterventionConfirmationEmail,
+        ).toHaveBeenCalledTimes(1);
     });
 });

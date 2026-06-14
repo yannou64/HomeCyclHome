@@ -37,7 +37,10 @@ export type CreateInterventionInput = {
 export class CreateInterventionUseCase {
     constructor(
         private readonly repo: IInterventionsRepository,
-        private readonly emailService: Pick<EmailService, 'sendInterventionConfirmationEmail'>,
+        private readonly emailService: Pick<
+            EmailService,
+            'sendInterventionConfirmationEmail'
+        >,
     ) {}
 
     async execute(

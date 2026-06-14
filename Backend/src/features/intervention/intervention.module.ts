@@ -17,8 +17,10 @@ export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
         },
         {
             provide: CreateInterventionUseCase,
-            useFactory: (repo: InterventionsPrismaRepository, emailService: EmailService) =>
-                new CreateInterventionUseCase(repo, emailService),
+            useFactory: (
+                repo: InterventionsPrismaRepository,
+                emailService: EmailService,
+            ) => new CreateInterventionUseCase(repo, emailService),
             inject: [INTERVENTIONS_REPO, EmailService],
         },
     ],
