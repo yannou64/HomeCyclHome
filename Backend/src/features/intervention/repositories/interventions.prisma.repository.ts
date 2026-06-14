@@ -92,11 +92,16 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         const intervention = await this.prisma.$transaction(async (tx) => {
             const premierCreneau = await tx.creneau.findUniqueOrThrow({
                 where: { id: data.creneauId },
-                select: { date_debut: true, zone_id: true, modele_planification_id: true },
+                select: {
+                    date_debut: true,
+                    zone_id: true,
+                    modele_planification_id: true,
+                },
             });
 
             const dateFinBloc = new Date(
-                premierCreneau.date_debut.getTime() + data.dureeMinutesSnapshot * 60 * 1000,
+                premierCreneau.date_debut.getTime() +
+                    data.dureeMinutesSnapshot * 60 * 1000,
             );
 
             const created = await tx.intervention.create({
@@ -118,8 +123,12 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             await tx.creneau.updateMany({
                 where: {
                     zone_id: premierCreneau.zone_id,
-                    modele_planification_id: premierCreneau.modele_planification_id,
-                    date_debut: { gte: premierCreneau.date_debut, lt: dateFinBloc },
+                    modele_planification_id:
+                        premierCreneau.modele_planification_id,
+                    date_debut: {
+                        gte: premierCreneau.date_debut,
+                        lt: dateFinBloc,
+                    },
                 },
                 data: { is_disponible: false },
             });
@@ -142,7 +151,9 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         return user ?? null;
     }
 
-    async getInterventionsByClientId(clientId: string): Promise<InterventionListItemDto[]> {
+    async getInterventionsByClientId(
+        clientId: string,
+    ): Promise<InterventionListItemDto[]> {
         const interventions = await this.prisma.intervention.findMany({
             where: { client_id: clientId },
             orderBy: { date_creation: 'desc' },
@@ -154,7 +165,14 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 commentaire: true,
                 creneau: { select: { date_debut: true, date_fin: true } },
                 forfait: { select: { nom: true } },
-                adresse: { select: { numero: true, rue: true, code_postal: true, ville: true } },
+                adresse: {
+                    select: {
+                        numero: true,
+                        rue: true,
+                        code_postal: true,
+                        ville: true,
+                    },
+                },
                 cycle: {
                     select: {
                         libelle: true,
@@ -188,7 +206,9 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         }));
     }
 
-    async findInterventionForCancel(id: string): Promise<InterventionForCancel | null> {
+    async findInterventionForCancel(
+        id: string,
+    ): Promise<InterventionForCancel | null> {
         const intervention = await this.prisma.intervention.findUnique({
             where: { id },
             select: { client_id: true, statut: true, creneau_id: true },
@@ -201,7 +221,10 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         };
     }
 
-    async cancelInterventionTransaction(interventionId: string, creneauId: string): Promise<void> {
+    async cancelInterventionTransaction(
+        interventionId: string,
+        creneauId: string,
+    ): Promise<void> {
         await this.prisma.$transaction(async (tx) => {
             const intervention = await tx.intervention.findUniqueOrThrow({
                 where: { id: interventionId },
@@ -210,11 +233,16 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
             const creneau = await tx.creneau.findUniqueOrThrow({
                 where: { id: creneauId },
-                select: { date_debut: true, zone_id: true, modele_planification_id: true },
+                select: {
+                    date_debut: true,
+                    zone_id: true,
+                    modele_planification_id: true,
+                },
             });
 
             const dateFinBloc = new Date(
-                creneau.date_debut.getTime() + intervention.duree_minutes_snapshot * 60 * 1000,
+                creneau.date_debut.getTime() +
+                    intervention.duree_minutes_snapshot * 60 * 1000,
             );
 
             await tx.intervention.update({

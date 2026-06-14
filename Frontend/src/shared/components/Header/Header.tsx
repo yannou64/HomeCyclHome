@@ -109,8 +109,8 @@ export function Header() {
                         aria-expanded={isMenuOpen}
                     >
                         <svg
-                            width="28"
-                            height="28"
+                            width="42"
+                            height="42"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"

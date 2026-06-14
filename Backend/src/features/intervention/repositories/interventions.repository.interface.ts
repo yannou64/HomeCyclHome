@@ -56,7 +56,14 @@ export interface IInterventionsRepository {
         data: CreateInterventionData,
     ): Promise<InterventionCreatedDto>;
     findClientById(clientId: string): Promise<ClientInfo | null>;
-    getInterventionsByClientId(clientId: string): Promise<InterventionListItemDto[]>;
-    findInterventionForCancel(id: string): Promise<InterventionForCancel | null>;
-    cancelInterventionTransaction(interventionId: string, creneauId: string): Promise<void>;
+    getInterventionsByClientId(
+        clientId: string,
+    ): Promise<InterventionListItemDto[]>;
+    findInterventionForCancel(
+        id: string,
+    ): Promise<InterventionForCancel | null>;
+    cancelInterventionTransaction(
+        interventionId: string,
+        creneauId: string,
+    ): Promise<void>;
 }

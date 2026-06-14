@@ -385,13 +385,19 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     }
 
     private toCreneauAvecTechnicienDto(
-        c: Creneau & { modele_planification: { technicien_id: string; intervalle_minutes: number } | null },
+        c: Creneau & {
+            modele_planification: {
+                technicien_id: string;
+                intervalle_minutes: number;
+            } | null;
+        },
     ): CreneauAvecTechnicienDto {
         return {
             ...this.toCreneauDto(c),
             technicien_id: c.modele_planification?.technicien_id ?? null,
             // Infinity pour les créneaux manuels (sans modèle) → pas de restriction de contiguïté
-            intervalleMinutes: c.modele_planification?.intervalle_minutes ?? Infinity,
+            intervalleMinutes:
+                c.modele_planification?.intervalle_minutes ?? Infinity,
         };
     }
 }

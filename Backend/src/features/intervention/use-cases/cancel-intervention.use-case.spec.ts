@@ -52,9 +52,9 @@ describe('CancelInterventionUseCase', () => {
     it("lève NotFoundException si l'intervention n'existe pas", async () => {
         mockRepo.findInterventionForCancel.mockResolvedValue(null);
 
-        await expect(useCase.execute('int-inexistant', 'client-1')).rejects.toThrow(
-            NotFoundException,
-        );
+        await expect(
+            useCase.execute('int-inexistant', 'client-1'),
+        ).rejects.toThrow(NotFoundException);
         expect(mockRepo.cancelInterventionTransaction).not.toHaveBeenCalled();
     });
 
