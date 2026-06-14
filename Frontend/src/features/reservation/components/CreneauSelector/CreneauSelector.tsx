@@ -51,10 +51,21 @@ export function CreneauSelector() {
     const [currentDate, setCurrentDate] = useState(today);
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
+    // Durée d'un slot individuel = espacement minimum entre créneaux consécutifs.
+    // On prend le minimum (et non les deux premiers) car la liste peut contenir des trous
+    // (créneaux réservés, pauses) qui fausseraient le calcul si on se basait uniquement
+    // sur creneaux[0] et creneaux[1].
     const slotDurationMs =
         creneaux.length >= 2
-            ? new Date(creneaux[1].date_debut).getTime() -
-              new Date(creneaux[0].date_debut).getTime()
+            ? Math.min(
+                  ...creneaux
+                      .slice(0, -1)
+                      .map(
+                          (c, i) =>
+                              new Date(creneaux[i + 1].date_debut).getTime() -
+                              new Date(c.date_debut).getTime(),
+                      ),
+              )
             : 30 * 60 * 1000;
 
     const navigate = (direction: 'prev' | 'next') => {

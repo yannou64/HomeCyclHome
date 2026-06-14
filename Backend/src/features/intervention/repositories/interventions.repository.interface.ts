@@ -1,4 +1,11 @@
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
+import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
+
+export type InterventionForCancel = {
+    clientId: string;
+    statut: string;
+    creneauId: string;
+};
 
 export type UpsertAdresseInput = {
     rue: string;
@@ -49,4 +56,7 @@ export interface IInterventionsRepository {
         data: CreateInterventionData,
     ): Promise<InterventionCreatedDto>;
     findClientById(clientId: string): Promise<ClientInfo | null>;
+    getInterventionsByClientId(clientId: string): Promise<InterventionListItemDto[]>;
+    findInterventionForCancel(id: string): Promise<InterventionForCancel | null>;
+    cancelInterventionTransaction(interventionId: string, creneauId: string): Promise<void>;
 }

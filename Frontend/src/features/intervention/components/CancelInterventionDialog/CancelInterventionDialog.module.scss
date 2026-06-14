@@ -1,0 +1,78 @@
+@use '../../../../app/styles/index' as *;
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 150;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+    padding: $spacing-md;
+    width: min(420px, calc(100vw - #{$spacing-lg} * 2));
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.title {
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+    margin: 0;
+}
+
+.message {
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: flex-end;
+    margin-top: $spacing-xs;
+}
+
+.cancelButton {
+    background: none;
+    border: 1px solid $color-border;
+    color: $color-text-label;
+    padding: 8px 16px;
+    border-radius: $radius-sm;
+    font-size: $font-size-body;
+    cursor: pointer;
+
+    &:hover {
+        border-color: $color-text-label;
+        background: none;
+        color: $color-text-label;
+    }
+}
+
+.confirmButton {
+    background: $color-myOrange;
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: $radius-sm;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+        background: $color-myOrange;
+        color: #fff;
+    }
+}

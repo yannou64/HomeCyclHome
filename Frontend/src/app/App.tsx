@@ -11,6 +11,7 @@ const AdminPage = lazy(() => import('../pages/AdminPage'));
 const MentionsLegalesPage = lazy(() => import('../pages/MentionsLegalesPage'));
 const CguPage = lazy(() => import('../pages/CguPage'));
 const ConfidentialitePage = lazy(() => import('../pages/ConfidentialitePage'));
+const InterventionsPage = lazy(() => import('../pages/InterventionsPage'));
 
 function App() {
     return (
@@ -23,6 +24,11 @@ function App() {
                 <Route path="/profil" element={
                     <ProtectedRoute>
                         <ProfilPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/interventions" element={
+                    <ProtectedRoute>
+                        <InterventionsPage />
                     </ProtectedRoute>
                 } />
                 <Route path="/admin" element={

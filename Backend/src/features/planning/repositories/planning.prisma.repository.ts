@@ -308,7 +308,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             },
             include: {
                 modele_planification: {
-                    select: { technicien_id: true },
+                    select: { technicien_id: true, intervalle_minutes: true },
                 },
             },
             orderBy: { date_debut: 'asc' },
@@ -385,11 +385,13 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     }
 
     private toCreneauAvecTechnicienDto(
-        c: Creneau & { modele_planification: { technicien_id: string } | null },
+        c: Creneau & { modele_planification: { technicien_id: string; intervalle_minutes: number } | null },
     ): CreneauAvecTechnicienDto {
         return {
             ...this.toCreneauDto(c),
             technicien_id: c.modele_planification?.technicien_id ?? null,
+            // Infinity pour les créneaux manuels (sans modèle) → pas de restriction de contiguïté
+            intervalleMinutes: c.modele_planification?.intervalle_minutes ?? Infinity,
         };
     }
 }

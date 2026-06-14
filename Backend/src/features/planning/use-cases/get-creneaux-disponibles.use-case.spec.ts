@@ -10,6 +10,7 @@ function makeCreneau(
     heure: string,
     disponible = true,
     id?: string,
+    intervalleMinutes = 60,
 ): CreneauAvecTechnicienDto {
     return {
         id: id ?? `creneau-${heure}`,
@@ -19,6 +20,7 @@ function makeCreneau(
         zone_id: 'zone-uuid',
         modele_planification_id: 'modele-uuid',
         technicien_id: 'tech-uuid',
+        intervalleMinutes,
     };
 }
 
@@ -185,6 +187,29 @@ describe('GetCreneauxDisponiblesUseCase', () => {
         });
 
         expect(result).toHaveLength(0);
+    });
+
+    it('devrait exclure un créneau dont le buffer avant est séparé par un trou (pause)', async () => {
+        // Pause 12h-14h → [11:00, 11:30, 14:00, 14:30] (trou de 2h30 entre 11:30 et 14:00)
+        // 14:00 ne doit PAS être proposé : le buffer avant (11:30) n'est pas contigu
+        // 11:30 DOIT être proposé : buffer avant=11:00 (30 min ≤ 30 min ✓), buffer après=14:00 (disponible ✓)
+        const creneaux = [
+            makeCreneau('11:00', true, undefined, 30),
+            makeCreneau('11:30', true, undefined, 30),
+            makeCreneau('14:00', true, undefined, 30),
+            makeCreneau('14:30', true, undefined, 30),
+        ];
+        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
+
+        const result = await useCase.execute({
+            zoneId: 'zone-uuid',
+            dureeMinutes: 30,
+            dateDebut: '2026-06-01',
+            dateFin: '2026-06-01',
+        });
+
+        expect(result).toHaveLength(1);
+        expect(result[0].id).toBe('creneau-11:30');
     });
 
     // ── Validations ───────────────────────────────────────────────────────────

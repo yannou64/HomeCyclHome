@@ -77,8 +77,10 @@ export type CreneauDto = {
 
 // Type intermédiaire utilisé par le repository findCreneauxByZone
 // Étend CreneauDto avec technicien_id résolu depuis la relation modele_planification
+// intervalleMinutes = durée d'un slot selon le modèle (utilisé pour vérifier la contiguïté des buffers)
 export type CreneauAvecTechnicienDto = CreneauDto & {
     technicien_id: string | null;
+    intervalleMinutes: number;
 };
 
 // Créneau retourné au client dans le tunnel de réservation
