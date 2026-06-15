@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { InterventionsController } from './controllers/interventions.controller';
+import { AdminInterventionsController } from './controllers/admin-interventions.controller';
 import { InterventionsPrismaRepository } from './repositories/interventions.prisma.repository';
 import { CreateInterventionUseCase } from './use-cases/create-intervention.use-case';
 import { GetClientInterventionsUseCase } from './use-cases/get-client-interventions.use-case';
 import { CancelInterventionUseCase } from './use-cases/cancel-intervention.use-case';
+import { GetAdminInterventionsUseCase } from './use-cases/get-admin-interventions.use-case';
+import { GetAdminInterventionDetailUseCase } from './use-cases/get-admin-intervention-detail.use-case';
 import { EmailModule } from '../email/email.module';
 import { EmailService } from '../email/email.service';
 
@@ -11,7 +14,7 @@ export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
 
 @Module({
     imports: [EmailModule],
-    controllers: [InterventionsController],
+    controllers: [InterventionsController, AdminInterventionsController],
     providers: [
         {
             provide: INTERVENTIONS_REPO,
@@ -35,6 +38,18 @@ export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
             provide: CancelInterventionUseCase,
             useFactory: (repo: InterventionsPrismaRepository) =>
                 new CancelInterventionUseCase(repo),
+            inject: [INTERVENTIONS_REPO],
+        },
+        {
+            provide: GetAdminInterventionsUseCase,
+            useFactory: (repo: InterventionsPrismaRepository) =>
+                new GetAdminInterventionsUseCase(repo),
+            inject: [INTERVENTIONS_REPO],
+        },
+        {
+            provide: GetAdminInterventionDetailUseCase,
+            useFactory: (repo: InterventionsPrismaRepository) =>
+                new GetAdminInterventionDetailUseCase(repo),
             inject: [INTERVENTIONS_REPO],
         },
     ],

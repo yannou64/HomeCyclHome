@@ -8,9 +8,12 @@ import type {
     PrixForfait,
     ClientInfo,
     InterventionForCancel,
+    GetAdminInterventionsParams,
 } from './interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
+import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
+import type { AdminInterventionDetailDto } from '../dto/output/admin-intervention-detail.dto';
 
 @Injectable()
 export class InterventionsPrismaRepository implements IInterventionsRepository {
@@ -260,5 +263,159 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 data: { is_disponible: true },
             });
         });
+    }
+
+    async findAllInterventions(
+        params: GetAdminInterventionsParams,
+    ): Promise<AdminInterventionListItemDto[]> {
+        const { statut, zoneId, technicienId } = params;
+
+        const interventions = await this.prisma.intervention.findMany({
+            where: {
+                ...(statut === 'archivees'
+                    ? { statut: { in: ['Terminee', 'Annulee'] } }
+                    : statut
+                      ? { statut }
+                      : {}),
+                ...(zoneId ? { creneau: { zone_id: zoneId } } : {}),
+                ...(technicienId ? { technicien_id: technicienId } : {}),
+            },
+            select: {
+                id: true,
+                statut: true,
+                technicien_id: true,
+                creneau: {
+                    select: {
+                        date_debut: true,
+                        zone: { select: { id: true, nom_zone: true } },
+                    },
+                },
+                forfait: { select: { nom: true } },
+            },
+            orderBy: { creneau: { date_debut: 'asc' } },
+        });
+
+        // technicien_id est un snapshot scalaire sans @relation Prisma → requête séparée
+        const technicienIds = [
+            ...new Set(
+                interventions
+                    .map((i) => i.technicien_id)
+                    .filter((id): id is string => id !== null),
+            ),
+        ];
+        const techniciens =
+            technicienIds.length > 0
+                ? await this.prisma.utilisateur.findMany({
+                      where: { id: { in: technicienIds } },
+                      select: { id: true, prenom: true, nom: true },
+                  })
+                : [];
+        const technicienMap = new Map<
+            string,
+            { id: string; prenom: string; nom: string }
+        >(techniciens.map((t) => [t.id, t]));
+
+        return interventions.map((i) => ({
+            id: i.id,
+            statut: i.statut as AdminInterventionListItemDto['statut'],
+            dateDebut: i.creneau.date_debut.toISOString(),
+            forfaitNom: i.forfait.nom,
+            zone: { id: i.creneau.zone.id, nom: i.creneau.zone.nom_zone },
+            technicien: i.technicien_id
+                ? (technicienMap.get(i.technicien_id) ?? null)
+                : null,
+        }));
+    }
+
+    async findInterventionDetailById(
+        id: string,
+    ): Promise<AdminInterventionDetailDto | null> {
+        const intervention = await this.prisma.intervention.findUnique({
+            where: { id },
+            select: {
+                id: true,
+                statut: true,
+                date_creation: true,
+                duree_minutes_snapshot: true,
+                commentaire: true,
+                technicien_id: true,
+                creneau: {
+                    select: {
+                        date_debut: true,
+                        date_fin: true,
+                        zone: { select: { id: true, nom_zone: true } },
+                    },
+                },
+                forfait: { select: { nom: true } },
+                client: {
+                    select: {
+                        id: true,
+                        prenom: true,
+                        nom: true,
+                        email: true,
+                        telephone: true,
+                    },
+                },
+                adresse: {
+                    select: {
+                        numero: true,
+                        rue: true,
+                        code_postal: true,
+                        ville: true,
+                    },
+                },
+                cycle: {
+                    select: {
+                        libelle: true,
+                        marque: { select: { libelle: true } },
+                        type_cycle: { select: { libelle: true } },
+                    },
+                },
+            },
+        });
+
+        if (!intervention) return null;
+
+        // technicien_id est un snapshot scalaire sans @relation Prisma → requête séparée
+        const technicien = intervention.technicien_id
+            ? await this.prisma.utilisateur.findUnique({
+                  where: { id: intervention.technicien_id },
+                  select: { id: true, prenom: true, nom: true },
+              })
+            : null;
+
+        return {
+            id: intervention.id,
+            statut: intervention.statut as AdminInterventionDetailDto['statut'],
+            dateDebut: intervention.creneau.date_debut.toISOString(),
+            forfaitNom: intervention.forfait.nom,
+            zone: {
+                id: intervention.creneau.zone.id,
+                nom: intervention.creneau.zone.nom_zone,
+            },
+            technicien,
+            dateCreation: intervention.date_creation.toISOString(),
+            dateFin: intervention.creneau.date_fin?.toISOString() ?? null,
+            dureeMinutesSnapshot: intervention.duree_minutes_snapshot,
+            commentaire: intervention.commentaire,
+            client: {
+                id: intervention.client.id,
+                prenom: intervention.client.prenom,
+                nom: intervention.client.nom,
+                email: intervention.client.email,
+                telephone: intervention.client.telephone,
+            },
+            adresse: {
+                numero: intervention.adresse.numero,
+                rue: intervention.adresse.rue,
+                codePostal: intervention.adresse.code_postal,
+                ville: intervention.adresse.ville,
+            },
+            cycle: {
+                libelle: intervention.cycle.libelle,
+                marque: intervention.cycle.marque.libelle,
+                type: intervention.cycle.type_cycle.libelle,
+            },
+        };
     }
 }
