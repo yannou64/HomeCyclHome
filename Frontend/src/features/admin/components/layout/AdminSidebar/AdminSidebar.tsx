@@ -7,7 +7,6 @@ export type AdminSection =
     | 'zones'
     | 'affectations'
     | 'forfaits'
-    | 'creneaux'
     | 'planning'
     | 'interventions';
 
@@ -19,7 +18,6 @@ const MENU_ITEMS: { label: string; section: AdminSection }[] = [
     { label: 'Affectations', section: 'affectations' },
     { label: 'Forfaits', section: 'forfaits' },
     { label: 'Planning', section: 'planning' },
-    { label: 'Créneaux', section: 'creneaux' },
     { label: 'Interventions', section: 'interventions' },
 ];
 

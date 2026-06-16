@@ -1,0 +1,64 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+    padding: $spacing-lg;
+}
+
+.title {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-lg;
+}
+
+.error {
+    color: #c0392b;
+    margin-bottom: $spacing-md;
+    font-size: $font-size-body;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+
+    @media (min-width: $bp-tablet) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-lg;
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+    text-align: center;
+}
+
+.icon {
+    width: 3rem;
+    height: 3rem;
+}
+
+.colorBrown  { color: $color-myBrown; }
+.colorViolet { color: $color-myViolet; }
+.colorYellow { color: $color-myYellow; }
+
+.value {
+    font-size: 2.5rem;
+    font-weight: $font-bold;
+    line-height: 1;
+}
+
+.label {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    font-weight: $font-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

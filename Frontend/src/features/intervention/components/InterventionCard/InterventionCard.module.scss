@@ -1,0 +1,117 @@
+@use '../../../../app/styles/index' as *;
+
+.card {
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    overflow: hidden;
+    background: #fff;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+    background: $color-myLightGreen;
+    border-bottom: 1px solid $color-border;
+}
+
+.dateBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.date {
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: capitalize;
+}
+
+.time {
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+.badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: $radius-full;
+    font-size: $font-size-caption;
+    font-weight: $font-semibold;
+
+    &.badgePlanifiee {
+        background: rgba($color-myOrange, 0.12);
+        color: $color-myOrange;
+    }
+
+    &.badgeTerminee {
+        background: rgba(#15803d, 0.1);
+        color: #15803d;
+    }
+
+    &.badgeAnnulee {
+        background: rgba($color-text-label, 0.12);
+        color: $color-text-label;
+    }
+
+    &.badgePassee {
+        background: rgba($color-text-label, 0.12);
+        color: $color-text-label;
+    }
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-md;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: $spacing-xs;
+    align-items: baseline;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.value {
+    font-size: $font-size-body;
+    color: $color-text-primary;
+}
+
+.footer {
+    padding: $spacing-xs $spacing-md $spacing-sm;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid $color-border;
+}
+
+.cancelButton {
+    background: none;
+    border: 1px solid $color-myOrange;
+    color: $color-myOrange;
+    padding: 6px 16px;
+    border-radius: $radius-sm;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: $color-myOrange;
+        color: #fff;
+    }
+}

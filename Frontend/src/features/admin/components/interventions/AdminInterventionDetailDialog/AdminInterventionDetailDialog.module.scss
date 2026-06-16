@@ -1,0 +1,158 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+    max-width: 700px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    background-color: white;
+    color: #1a1a1a;
+    padding: $spacing-lg;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-myBrown;
+    margin-bottom: $spacing-xs;
+}
+
+.loading,
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    text-align: center;
+    padding: $spacing-lg 0;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    margin-top: $spacing-md;
+}
+
+// Ligne statut + date en haut de la modale
+.header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.dateDebut {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #444;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px $spacing-sm;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: $font-semibold;
+    font-family: $font-primary;
+}
+
+.badgePlanifiee {
+    background: #fff4e5;
+    color: #c76b00;
+}
+
+.badgeTerminee {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badgeAnnulee {
+    background: #f5f5f5;
+    color: #757575;
+}
+
+// Grille 2 colonnes (client / intervention)
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+
+    @media (max-width: 560px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Chaque bloc de la modale
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: $spacing-sm $spacing-md;
+}
+
+.sectionTitle {
+    font-family: $font-primary;
+    font-size: 0.75rem;
+    font-weight: $font-bold;
+    color: $color-myOrange;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0;
+}
+
+// Définitions clé / valeur
+.dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: $spacing-xs $spacing-sm;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+
+    dt {
+        font-weight: $font-semibold;
+        color: #666;
+        white-space: nowrap;
+        padding-top: 1px;
+    }
+
+    dd {
+        margin: 0;
+        color: #1a1a1a;
+        line-height: 1.5;
+    }
+}
+
+.unassigned {
+    color: #999;
+    font-style: italic;
+}
+
+// Section commentaire pleine largeur
+.commentaire {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #333;
+    line-height: 1.6;
+    background: #fafafa;
+    border-left: 3px solid $color-myOrange;
+    padding: $spacing-sm $spacing-md;
+    border-radius: 0 6px 6px 0;
+    margin: 0;
+}
+
+.photosPlaceholder {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #aaa;
+    font-style: italic;
+    margin: 0;
+    padding: $spacing-xs 0;
+}

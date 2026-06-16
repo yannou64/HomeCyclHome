@@ -24,6 +24,6 @@
     height: auto;
 
     @include desktop {
-        width: 260px;
+        width: clamp(320px, 32vw, 580px);
     }
 }

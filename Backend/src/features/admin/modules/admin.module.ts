@@ -1,26 +1,26 @@
 import { Module } from '@nestjs/common';
 import { AdminUsersController } from '../controllers/admin-users.controller';
+import { AdminStatsController } from '../controllers/admin-stats.controller';
 import { AdminUsersPrismaRepository } from '../repositories/admin-users.prisma.repository';
+import { AdminStatsPrismaRepository } from '../repositories/admin-stats.prisma.repository';
 import { CreateUserUseCase } from '../use-cases/create-user.use-case';
 import { DeleteUserUseCase } from '../use-cases/delete-user.use-case';
 import { GetUsersUseCase } from '../use-cases/get-users.use-case';
 import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
+import { GetAdminStatsUseCase } from '../use-cases/get-admin-stats.use-case';
 
-// Token utilisé pour injecter l'interface IAdminUsersRepository
-// Les interfaces disparaissent à la compilation — le token est l'identifiant runtime
+// Les interfaces disparaissent à la compilation — les tokens sont les identifiants runtime
 export const ADMIN_USERS_REPO = 'ADMIN_USERS_REPO';
+export const ADMIN_STATS_REPO = 'ADMIN_STATS_REPO';
 
 @Module({
-    controllers: [AdminUsersController],
+    controllers: [AdminUsersController, AdminStatsController],
     providers: [
-        // Lie le token à l'implémentation Prisma
-        // Pour les tests ou un futur microservice : changer useClass suffit
+        // --- Utilisateurs ---
         {
             provide: ADMIN_USERS_REPO,
             useClass: AdminUsersPrismaRepository,
         },
-
-        // Chaque UseCase reçoit le repository via le token
         {
             provide: GetUsersUseCase,
             useFactory: (repo: AdminUsersPrismaRepository) =>
@@ -44,6 +44,18 @@ export const ADMIN_USERS_REPO = 'ADMIN_USERS_REPO';
             useFactory: (repo: AdminUsersPrismaRepository) =>
                 new DeleteUserUseCase(repo),
             inject: [ADMIN_USERS_REPO],
+        },
+
+        // --- Statistiques dashboard ---
+        {
+            provide: ADMIN_STATS_REPO,
+            useClass: AdminStatsPrismaRepository,
+        },
+        {
+            provide: GetAdminStatsUseCase,
+            useFactory: (repo: AdminStatsPrismaRepository) =>
+                new GetAdminStatsUseCase(repo),
+            inject: [ADMIN_STATS_REPO],
         },
     ],
 })

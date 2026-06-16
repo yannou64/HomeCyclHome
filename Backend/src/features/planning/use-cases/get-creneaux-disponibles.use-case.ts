@@ -50,8 +50,15 @@ export class GetCreneauxDisponiblesUseCase {
 
             if (!creneau.is_disponible) continue;
 
-            // Buffer avant : le slot précédent doit exister et être disponible
-            if (i === 0 || !creneaux[i - 1].is_disponible) continue;
+            // Buffer avant : le slot précédent doit exister, être disponible ET adjacent
+            // Un gap > intervalleMinutes = trou causé par une pause → pas de buffer de déplacement
+            if (i === 0) continue;
+            const prevCreneau = creneaux[i - 1];
+            if (!prevCreneau.is_disponible) continue;
+            const ecartMs =
+                new Date(creneau.date_debut).getTime() -
+                new Date(prevCreneau.date_debut).getTime();
+            if (ecartMs > creneau.intervalleMinutes * 60 * 1000) continue;
 
             const dateDebutIntervention = new Date(creneau.date_debut);
             const dateFinIntervention = new Date(

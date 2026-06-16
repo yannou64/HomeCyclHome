@@ -107,7 +107,8 @@
     color: white;
     display: flex;
     align-items: center;
-    padding: $spacing-xs;
+    padding: 0 $spacing-xs;
+    height: 50px; // aligné sur la hauteur du logo — empêche le header de grandir
 
     @include desktop {
         display: none;

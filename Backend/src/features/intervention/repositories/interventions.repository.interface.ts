@@ -1,4 +1,13 @@
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
+import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
+import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
+import type { AdminInterventionDetailDto } from '../dto/output/admin-intervention-detail.dto';
+
+export type InterventionForCancel = {
+    clientId: string;
+    statut: string;
+    creneauId: string;
+};
 
 export type UpsertAdresseInput = {
     rue: string;
@@ -26,6 +35,12 @@ export type ClientInfo = {
     prenom: string;
 };
 
+export type GetAdminInterventionsParams = {
+    statut?: 'Planifiee' | 'archivees';
+    zoneId?: string;
+    technicienId?: string;
+};
+
 export type CreateInterventionData = {
     clientId: string;
     cycleId: string;
@@ -49,4 +64,20 @@ export interface IInterventionsRepository {
         data: CreateInterventionData,
     ): Promise<InterventionCreatedDto>;
     findClientById(clientId: string): Promise<ClientInfo | null>;
+    getInterventionsByClientId(
+        clientId: string,
+    ): Promise<InterventionListItemDto[]>;
+    findInterventionForCancel(
+        id: string,
+    ): Promise<InterventionForCancel | null>;
+    cancelInterventionTransaction(
+        interventionId: string,
+        creneauId: string,
+    ): Promise<void>;
+    findAllInterventions(
+        params: GetAdminInterventionsParams,
+    ): Promise<AdminInterventionListItemDto[]>;
+    findInterventionDetailById(
+        id: string,
+    ): Promise<AdminInterventionDetailDto | null>;
 }

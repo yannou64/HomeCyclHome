@@ -1,4 +1,5 @@
 import { Carousel } from '../Carousel/Carousel';
+import { HeroBrand } from '../HeroBrand/HeroBrand';
 import styles from './PageLayout.module.scss';
 
 // Images de fond — mobile et desktop
@@ -37,11 +38,10 @@ export function PageLayout({ children, leftContent, compact = true, noContentScr
                     '--bg-mobile': `url(${fondEcranLyonMobile})`,
                     '--bg-desktop': `url(${fondEcranLyonDesktop})`,
                 } as React.CSSProperties}
-                aria-hidden={leftContent ? undefined : true}
             >
-                {leftContent && (
-                    <div className={styles.leftOverlay}>{leftContent}</div>
-                )}
+                <div className={styles.leftOverlay}>
+                    <HeroBrand />
+                </div>
             </div>
 
             {/* ── Section CENTRALE ──────────────────────────────────────────

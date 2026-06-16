@@ -253,7 +253,7 @@ model Creneau {
 
   modele_planification ModelePlanification? @relation(fields: [modele_planification_id], references: [id], onDelete: SetNull)
   zone                 Zone                 @relation(fields: [zone_id], references: [id], onDelete: Cascade)
-  intervention         Intervention?        // relation inverse 1-1 : un créneau → au plus une intervention
+  interventions        Intervention[]       // relation inverse 1-n : un créneau peut être re-réservé après annulation
 
   @@map("Creneaux")
 }
@@ -271,7 +271,7 @@ model Intervention {
   client_id                  String
   cycle_id                   String
   forfait_id                 String
-  creneau_id                 String             @unique // unicité : 1 créneau = 1 seule intervention possible
+  creneau_id                 String             // un créneau peut être re-réservé après annulation ; l'unicité active est garantie par is_disponible
   adresse_id                 String
   historique_prix_forfait_id String             // snapshot du prix actif au moment de la réservation
   technicien_id              String?            // snapshot depuis ModelePlanification (nullable si créneau manuel)

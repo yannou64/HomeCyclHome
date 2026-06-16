@@ -1,0 +1,46 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    background: white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    padding: $spacing-lg;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.tabs {
+    width: 100%;
+}
+
+.tabsList {
+    background-color: $color-myLightGreen !important;
+    border-radius: $radius-md !important;
+    padding: 6px !important;
+    gap: 4px !important;
+    height: auto !important;
+}
+
+.tabsTrigger {
+    font-family: $font-primary !important;
+    font-size: $font-size-body !important;
+    font-weight: $font-medium !important;
+    color: $color-text-label !important;
+    border-radius: $radius-md !important;
+    padding: 8px 20px !important;
+
+    &[data-state='active'] {
+        background-color: white !important;
+        color: $color-myOrange !important;
+        font-weight: $font-bold !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+}

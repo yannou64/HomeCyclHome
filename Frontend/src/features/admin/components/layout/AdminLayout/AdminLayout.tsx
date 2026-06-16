@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AdminSidebar, type AdminSection } from '../AdminSidebar/AdminSidebar';
+import { AdminDashboardSection } from '../../dashboard/AdminDashboardSection/AdminDashboardSection';
 import { UsersTable } from '../../users/UsersTable/UsersTable';
 import { UserFormDialog } from '../../users/UserFormDialog/UserFormDialog';
 import { DeleteConfirmDialog } from '../../users/DeleteConfirmDialog/DeleteConfirmDialog';
@@ -8,6 +9,7 @@ import { AdminForfaitsSection } from '../../forfaits/AdminForfaitsSection/AdminF
 import { AdminZonesSection } from '../../zones/AdminZonesSection/AdminZonesSection';
 import { AdminAffectationsSection } from '../../affectations/AdminAffectationsSection/AdminAffectationsSection';
 import { AdminPlanningSection } from '../../planning/AdminPlanningSection/AdminPlanningSection';
+import { AdminInterventionsSection } from '../../interventions/AdminInterventionsSection/AdminInterventionsSection';
 import { useAdminUsers } from '../../../hooks/useAdminUsers';
 import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
 import styles from './AdminLayout.module.scss';
@@ -16,7 +18,7 @@ import styles from './AdminLayout.module.scss';
 import '../../../../../app/styles/tailwind.css';
 
 export function AdminLayout() {
-    const [activeSection, setActiveSection] = useState<AdminSection>('utilisateurs');
+    const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
     const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
     const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -71,7 +73,9 @@ export function AdminLayout() {
                 onSectionChange={setActiveSection}
             />
             <main className={styles.content}>
-                {activeSection === 'utilisateurs' ? (
+                {activeSection === 'dashboard' ? (
+                    <AdminDashboardSection />
+                ) : activeSection === 'utilisateurs' ? (
                     <UsersTable
                         users={users}
                         meta={meta}
@@ -96,6 +100,8 @@ export function AdminLayout() {
                     <AdminPlanningSection />
                 ) : activeSection === 'forfaits' ? (
                     <AdminForfaitsSection />
+                ) : activeSection === 'interventions' ? (
+                    <AdminInterventionsSection />
                 ) : (
                     <p className={styles.placeholder}>
                         Section « {activeSection} » — à venir
