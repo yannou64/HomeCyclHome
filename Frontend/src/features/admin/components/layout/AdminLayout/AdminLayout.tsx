@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AdminSidebar, type AdminSection } from '../AdminSidebar/AdminSidebar';
+import { AdminDashboardSection } from '../../dashboard/AdminDashboardSection/AdminDashboardSection';
 import { UsersTable } from '../../users/UsersTable/UsersTable';
 import { UserFormDialog } from '../../users/UserFormDialog/UserFormDialog';
 import { DeleteConfirmDialog } from '../../users/DeleteConfirmDialog/DeleteConfirmDialog';
@@ -17,7 +18,7 @@ import styles from './AdminLayout.module.scss';
 import '../../../../../app/styles/tailwind.css';
 
 export function AdminLayout() {
-    const [activeSection, setActiveSection] = useState<AdminSection>('utilisateurs');
+    const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
     const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
     const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -72,7 +73,9 @@ export function AdminLayout() {
                 onSectionChange={setActiveSection}
             />
             <main className={styles.content}>
-                {activeSection === 'utilisateurs' ? (
+                {activeSection === 'dashboard' ? (
+                    <AdminDashboardSection />
+                ) : activeSection === 'utilisateurs' ? (
                     <UsersTable
                         users={users}
                         meta={meta}
