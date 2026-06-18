@@ -23,4 +23,6 @@ export type AdminInterventionDetailDto = AdminInterventionListItemDto & {
         marque: string;
         type: string;
     };
+    photosClient: { id: string; url_s3: string }[];
+    photosTechnicien: { id: string; url_s3: string }[];
 };

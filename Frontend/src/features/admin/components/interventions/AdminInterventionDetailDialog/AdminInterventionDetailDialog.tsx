@@ -143,11 +143,53 @@ export function AdminInterventionDetailDialog({
                             </section>
                         )}
 
-                        {/* Photos — feature à venir */}
-                        <section className={styles.section}>
-                            <h3 className={styles.sectionTitle}>Photos</h3>
-                            <p className={styles.photosPlaceholder}>Gestion des photos — à venir</p>
-                        </section>
+                        {/* Photos client */}
+                        {detail.photosClient.length > 0 && (
+                            <section className={styles.section}>
+                                <h3 className={styles.sectionTitle}>Photos client</h3>
+                                <div className={styles.photosGrid}>
+                                    {detail.photosClient.map((p) => (
+                                        <a
+                                            key={p.id}
+                                            href={p.url_s3}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={styles.photoLink}
+                                        >
+                                            <img
+                                                src={p.url_s3}
+                                                alt="Photo client"
+                                                className={styles.photo}
+                                            />
+                                        </a>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Photos technicien */}
+                        {detail.photosTechnicien.length > 0 && (
+                            <section className={styles.section}>
+                                <h3 className={styles.sectionTitle}>Photos technicien</h3>
+                                <div className={styles.photosGrid}>
+                                    {detail.photosTechnicien.map((p) => (
+                                        <a
+                                            key={p.id}
+                                            href={p.url_s3}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={styles.photoLink}
+                                        >
+                                            <img
+                                                src={p.url_s3}
+                                                alt="Photo technicien"
+                                                className={styles.photo}
+                                            />
+                                        </a>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                     </div>
                 )}
             </DialogContent>

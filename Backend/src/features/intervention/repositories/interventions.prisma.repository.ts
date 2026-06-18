@@ -327,6 +327,37 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         }));
     }
 
+    async isInterventionOwnedByClient(
+        interventionId: string,
+        clientId: string,
+    ): Promise<boolean> {
+        const count = await this.prisma.intervention.count({
+            where: { id: interventionId, client_id: clientId },
+        });
+        return count > 0;
+    }
+
+    async getPhotosCount(interventionId: string): Promise<number> {
+        return this.prisma.photo.count({
+            where: { intervention_id: interventionId },
+        });
+    }
+
+    async createPhotos(
+        interventionId: string,
+        photos: { url_s3: string; cle_s3: string }[],
+        contexte: 'client' | 'technicien',
+    ): Promise<void> {
+        await this.prisma.photo.createMany({
+            data: photos.map((p) => ({
+                url_s3: p.url_s3,
+                cle_s3: p.cle_s3,
+                contexte,
+                intervention_id: interventionId,
+            })),
+        });
+    }
+
     async findInterventionDetailById(
         id: string,
     ): Promise<AdminInterventionDetailDto | null> {
@@ -370,6 +401,10 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                         marque: { select: { libelle: true } },
                         type_cycle: { select: { libelle: true } },
                     },
+                },
+                photos: {
+                    select: { id: true, url_s3: true, contexte: true },
+                    orderBy: { date_creation: 'asc' },
                 },
             },
         });
@@ -416,6 +451,12 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 marque: intervention.cycle.marque.libelle,
                 type: intervention.cycle.type_cycle.libelle,
             },
+            photosClient: intervention.photos
+                .filter((p) => p.contexte === 'client')
+                .map((p) => ({ id: p.id, url_s3: p.url_s3 })),
+            photosTechnicien: intervention.photos
+                .filter((p) => p.contexte === 'technicien')
+                .map((p) => ({ id: p.id, url_s3: p.url_s3 })),
         };
     }
 }

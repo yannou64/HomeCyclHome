@@ -80,4 +80,15 @@ export interface IInterventionsRepository {
     findInterventionDetailById(
         id: string,
     ): Promise<AdminInterventionDetailDto | null>;
+    // --- Photos ---
+    isInterventionOwnedByClient(
+        interventionId: string,
+        clientId: string,
+    ): Promise<boolean>;
+    getPhotosCount(interventionId: string): Promise<number>;
+    createPhotos(
+        interventionId: string,
+        photos: { url_s3: string; cle_s3: string }[],
+        contexte: 'client' | 'technicien',
+    ): Promise<void>;
 }
