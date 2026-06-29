@@ -8,8 +8,8 @@ export type AdminUserDto = {
     email: string;
     telephone: string;
     role: UserRole;
-    is_actif: boolean;
-    date_creation: Date;
+    isActif: boolean;
+    dateCreation: Date;
 };
 
 // Réponse paginée : les données + les métadonnées de pagination

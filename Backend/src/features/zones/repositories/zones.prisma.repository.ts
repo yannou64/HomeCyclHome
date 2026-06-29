@@ -52,7 +52,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
     async create(data: CreateZoneData): Promise<ZoneDto> {
         const zone = await this.prisma.zone.create({
             data: {
-                nom_zone: data.nom_zone,
+                nom_zone: data.nomZone,
                 points: {
                     create: data.points.map((p) => ({
                         latitude: p.latitude,
@@ -84,9 +84,9 @@ export class ZonesPrismaRepository implements IZonesRepository {
             return tx.zone.update({
                 where: { id },
                 data: {
-                    ...(data.nom_zone && { nom_zone: data.nom_zone }),
-                    ...(data.is_active !== undefined && {
-                        is_active: data.is_active,
+                    ...(data.nomZone && { nom_zone: data.nomZone }),
+                    ...(data.isActive !== undefined && {
+                        is_active: data.isActive,
                     }),
                 },
                 include: { points: { orderBy: { ordre: 'asc' } } },
@@ -103,9 +103,9 @@ export class ZonesPrismaRepository implements IZonesRepository {
     private toDto(zone: ZoneWithPoints): ZoneDto {
         return {
             id: zone.id,
-            nom_zone: zone.nom_zone,
-            is_active: zone.is_active,
-            date_creation: zone.date_creation,
+            nomZone: zone.nom_zone,
+            isActive: zone.is_active,
+            dateCreation: zone.date_creation,
             points: zone.points.map((p) => this.toPointDto(p)),
         };
     }

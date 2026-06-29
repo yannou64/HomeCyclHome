@@ -11,10 +11,10 @@ export class ClientCreneauxController {
     @Get()
     findDisponibles(@Query() query: GetCreneauxDisponiblesQueryDto) {
         return this.getCreneauxDisponiblesUseCase.execute({
-            zoneId: query.zone_id,
-            dureeMinutes: query.duree_minutes,
-            dateDebut: query.date_debut,
-            dateFin: query.date_fin,
+            zoneId: query.zoneId,
+            dureeMinutes: query.dureeMinutes,
+            dateDebut: query.dateDebut,
+            dateFin: query.dateFin,
         });
     }
 }

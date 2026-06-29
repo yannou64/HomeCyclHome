@@ -6,9 +6,9 @@ const existingForfait = {
     id: 'uuid-1',
     nom: 'Révision Express',
     description: null,
-    duree_minutes: 45,
-    is_actif: true,
-    prix_actif: null,
+    dureeMinutes: 45,
+    isActif: true,
+    prixActif: null,
 };
 
 describe('UpdateForfaitUseCase', () => {
@@ -32,22 +32,22 @@ describe('UpdateForfaitUseCase', () => {
         mockRepo.findById.mockResolvedValue(existingForfait);
         mockRepo.update.mockResolvedValue({
             ...existingForfait,
-            duree_minutes: 60,
+            dureeMinutes: 60,
         });
 
-        const result = await useCase.execute('uuid-1', { duree_minutes: 60 });
+        const result = await useCase.execute('uuid-1', { dureeMinutes: 60 });
 
         expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
-            duree_minutes: 60,
+            dureeMinutes: 60,
         });
-        expect(result.duree_minutes).toBe(60);
+        expect(result.dureeMinutes).toBe(60);
     });
 
     it('devrait lever NotFoundException si le forfait est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
         await expect(
-            useCase.execute('ghost-uuid', { duree_minutes: 60 }),
+            useCase.execute('ghost-uuid', { dureeMinutes: 60 }),
         ).rejects.toThrow(NotFoundException);
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
@@ -58,9 +58,9 @@ describe('UpdateForfaitUseCase', () => {
             id: 'uuid-2', // autre forfait
             nom: 'Révision Standard',
             description: null,
-            duree_minutes: 90,
-            is_actif: true,
-            prix_actif: null,
+            dureeMinutes: 90,
+            isActif: true,
+            prixActif: null,
         });
 
         await expect(

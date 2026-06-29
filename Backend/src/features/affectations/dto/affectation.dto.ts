@@ -1,11 +1,11 @@
 export type ZoneAffecteeDto = {
     id: string;
-    nom_zone: string;
-    is_active: boolean;
+    nomZone: string;
+    isActive: boolean;
 };
 
 export type AffectationDto = {
-    technicien_id: string;
+    technicienId: string;
     nom: string;
     prenom: string;
     email: string;

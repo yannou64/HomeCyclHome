@@ -2,11 +2,11 @@ import { IAffectationsRepository } from '../repositories/affectations.repository
 import { GetAffectationsUseCase } from './get-affectations.use-case';
 
 const mockAffectation = {
-    technicien_id: 'tech-uuid-1',
+    technicienId: 'tech-uuid-1',
     nom: 'Dupont',
     prenom: 'Marie',
     email: 'marie.dupont@example.com',
-    zones: [{ id: 'zone-uuid-1', nom_zone: 'Lyon Centre', is_active: true }],
+    zones: [{ id: 'zone-uuid-1', nomZone: 'Lyon Centre', isActive: true }],
 };
 
 describe('GetAffectationsUseCase', () => {
@@ -32,7 +32,7 @@ describe('GetAffectationsUseCase', () => {
 
         expect(mockRepo.findAll).toHaveBeenCalled();
         expect(result).toHaveLength(1);
-        expect(result[0].technicien_id).toBe('tech-uuid-1');
+        expect(result[0].technicienId).toBe('tech-uuid-1');
     });
 
     it('devrait retourner un tableau vide si aucune affectation', async () => {

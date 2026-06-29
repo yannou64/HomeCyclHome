@@ -2,14 +2,14 @@ export type Forfait = {
   id: string;
   nom: string;
   description: string | null;
-  duree_minutes: number;
-  is_actif: boolean;
-  prix_actif: number | null;
+  dureeMinutes: number;
+  isActif: boolean;
+  prixActif: number | null;
 };
 
 export type ForfaitPayload = {
   nom: string;
   description?: string;
-  duree_minutes: number;
-  is_actif?: boolean;
+  dureeMinutes: number;
+  isActif?: boolean;
 };

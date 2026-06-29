@@ -46,7 +46,7 @@ export class AdminAffectationsController {
     ) {
         return this.setTechnicienZonesUseCase.execute(
             technicienId,
-            dto.zone_ids,
+            dto.zoneIds,
         );
     }
 

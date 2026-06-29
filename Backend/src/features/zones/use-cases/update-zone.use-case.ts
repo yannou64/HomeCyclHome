@@ -14,12 +14,12 @@ export class UpdateZoneUseCase {
             throw new NotFoundException(`Zone avec l'id ${id} introuvable`);
         }
 
-        if (data.nom_zone) {
+        if (data.nomZone) {
             // excludeId = id courant → ne se détecte pas soi-même comme conflit
-            const exists = await this.repo.existsByNom(data.nom_zone, id);
+            const exists = await this.repo.existsByNom(data.nomZone, id);
             if (exists) {
                 throw new ConflictException(
-                    `Une zone avec le nom "${data.nom_zone}" existe déjà`,
+                    `Une zone avec le nom "${data.nomZone}" existe déjà`,
                 );
             }
         }

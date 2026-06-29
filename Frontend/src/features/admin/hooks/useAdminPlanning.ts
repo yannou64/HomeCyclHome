@@ -130,8 +130,8 @@ export function useAdminPlanning() {
 
   const generateAllCreneaux = async (dateFinGeneration?: string): Promise<GenerationRapport> => {
     return adminPlanningService.generateAllCreneaux({
-      technicien_id: selectedTechnicienId,
-      date_fin_generation: dateFinGeneration,
+      technicienId: selectedTechnicienId,
+      dateFinGeneration: dateFinGeneration,
     });
   };
 

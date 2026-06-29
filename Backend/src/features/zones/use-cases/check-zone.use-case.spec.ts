@@ -6,9 +6,9 @@ import type { ZoneDto } from '../dto/zone.dto';
 // Carré autour de Lyon-centre (lat 45.74–45.76, lng 4.83–4.87)
 const makeZone = (overrides: Partial<ZoneDto> = {}): ZoneDto => ({
     id: 'zone-1',
-    nom_zone: 'Lyon Centre',
-    is_active: true,
-    date_creation: new Date(),
+    nomZone: 'Lyon Centre',
+    isActive: true,
+    dateCreation: new Date(),
     points: [
         { latitude: 45.76, longitude: 4.83, ordre: 0 },
         { latitude: 45.76, longitude: 4.87, ordre: 1 },
@@ -62,12 +62,12 @@ describe('CheckZoneUseCase', () => {
     });
 
     it('devrait retourner la bonne zone parmi plusieurs zones actives', async () => {
-        const zoneLyon = makeZone({ id: 'zone-1', nom_zone: 'Lyon Centre' });
+        const zoneLyon = makeZone({ id: 'zone-1', nomZone: 'Lyon Centre' });
 
         // Deuxième zone : carré autour de Villeurbanne (lat 45.77–45.79, lng 4.88–4.92)
         const zoneVilleurbanne = makeZone({
             id: 'zone-2',
-            nom_zone: 'Villeurbanne',
+            nomZone: 'Villeurbanne',
             points: [
                 { latitude: 45.79, longitude: 4.88, ordre: 0 },
                 { latitude: 45.79, longitude: 4.92, ordre: 1 },

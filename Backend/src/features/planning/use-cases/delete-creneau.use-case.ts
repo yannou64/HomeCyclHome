@@ -18,7 +18,7 @@ export class DeleteCreneauUseCase {
         }
 
         // Un créneau réservé est lié à une Intervention — le supprimer créerait une incohérence
-        if (!creneau.is_disponible) {
+        if (!creneau.isDisponible) {
             throw new ConflictException(
                 "Ce créneau est déjà réservé. Annulez l'intervention associée avant de le supprimer.",
             );

@@ -122,7 +122,7 @@ export const adminPlanningService = {
 
   getZonesForTechnicien(technicienId: string): Promise<ZoneAffectee[]> {
     return apiClient
-      .get<{ technicien_id: string; zones: ZoneAffectee[] }>(`/admin/affectations/${technicienId}`)
+      .get<{ technicienId: string; zones: ZoneAffectee[] }>(`/admin/affectations/${technicienId}`)
       .then((r) => r.data.zones)
       .catch((err: { response?: { status?: number } }) => {
         // 404 = technicien sans affectation → pas de zones disponibles

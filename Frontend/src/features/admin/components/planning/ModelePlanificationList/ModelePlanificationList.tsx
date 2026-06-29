@@ -110,21 +110,21 @@ export function ModelePlanificationList({
               modeles.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={styles.jour}>
-                    {JOURS[item.jour_semaine]}
+                    {JOURS[item.jourSemaine]}
                   </TableCell>
                   <TableCell>
-                    {minutesToTime(item.heure_debut)} – {minutesToTime(item.heure_fin)}
+                    {minutesToTime(item.heureDebut)} – {minutesToTime(item.heureFin)}
                   </TableCell>
-                  <TableCell>{item.intervalle_minutes} min</TableCell>
+                  <TableCell>{item.intervalleMinutes} min</TableCell>
                   <TableCell>
-                    <span className={item.is_actif ? styles.badgeActif : styles.badgeInactif}>
-                      {item.is_actif ? 'Actif' : 'Inactif'}
+                    <span className={item.isActif ? styles.badgeActif : styles.badgeInactif}>
+                      {item.isActif ? 'Actif' : 'Inactif'}
                     </span>
                   </TableCell>
                   <TableCell className={styles.validite}>
-                    {formatDate(item.date_debut_validite)}
-                    {item.date_fin_validite
-                      ? ` → ${formatDate(item.date_fin_validite)}`
+                    {formatDate(item.dateDebutValidite)}
+                    {item.dateFinValidite
+                      ? ` → ${formatDate(item.dateFinValidite)}`
                       : ' → ∞'}
                   </TableCell>
                   <TableCell className={styles.actions}>

@@ -5,7 +5,7 @@ import { CreateForfaitUseCase } from './create-forfait.use-case';
 const validPayload = {
     nom: 'Révision Express',
     description: 'Contrôle rapide des points de sécurité',
-    duree_minutes: 45,
+    dureeMinutes: 45,
 };
 
 describe('CreateForfaitUseCase', () => {
@@ -30,8 +30,8 @@ describe('CreateForfaitUseCase', () => {
         mockRepo.create.mockResolvedValue({
             id: 'new-uuid',
             ...validPayload,
-            is_actif: true,
-            prix_actif: null,
+            isActif: true,
+            prixActif: null,
         });
 
         const result = await useCase.execute(validPayload);
@@ -45,8 +45,8 @@ describe('CreateForfaitUseCase', () => {
         mockRepo.findByNom.mockResolvedValue({
             id: 'existing-uuid',
             ...validPayload,
-            is_actif: true,
-            prix_actif: null,
+            isActif: true,
+            prixActif: null,
         });
 
         await expect(useCase.execute(validPayload)).rejects.toThrow(

@@ -32,8 +32,8 @@ describe('CreateUserUseCase', () => {
         mockRepo.create.mockResolvedValue({
             id: 'new-uuid',
             ...validPayload,
-            is_actif: true,
-            date_creation: new Date(),
+            isActif: true,
+            dateCreation: new Date(),
         });
 
         const result = await useCase.execute(validPayload);
@@ -47,8 +47,8 @@ describe('CreateUserUseCase', () => {
         mockRepo.findByEmail.mockResolvedValue({
             id: 'existing-uuid',
             ...validPayload,
-            is_actif: true,
-            date_creation: new Date(),
+            isActif: true,
+            dateCreation: new Date(),
         });
 
         await expect(useCase.execute(validPayload)).rejects.toThrow(

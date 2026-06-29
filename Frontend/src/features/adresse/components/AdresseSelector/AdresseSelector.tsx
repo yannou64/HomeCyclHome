@@ -32,7 +32,6 @@ function NonAuthSelector() {
                 decomposedAddress.latitude,
                 decomposedAddress.longitude,
             );
-            console.log('[AdresseSelector] Zone trouvée :', zone.nomZone, '— id :', zone.zoneId);
             setAdresseAndZone({ source: 'autocomplete', data: decomposedAddress }, zone);
             goToStep('cycle');
         } catch {
@@ -101,7 +100,6 @@ function AuthSelector() {
                     decomposedAddress.latitude,
                     decomposedAddress.longitude,
                 );
-                console.log('[AdresseSelector] Zone trouvée :', zone.nomZone, '— id :', zone.zoneId);
                 setAdresseAndZone({ source: 'autocomplete', data: decomposedAddress }, zone);
             } else {
                 // Mode adresse enregistrée
@@ -111,7 +109,6 @@ function AuthSelector() {
                     adresse.latitude,
                     adresse.longitude,
                 );
-                console.log('[AdresseSelector] Zone trouvée :', zone.nomZone, '— id :', zone.zoneId);
                 setAdresseAndZone({ source: 'saved', data: adresse }, zone);
             }
             goToStep('cycle');

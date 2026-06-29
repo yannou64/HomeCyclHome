@@ -13,35 +13,35 @@ export class UpdateModelePlanificationDto {
     @IsInt()
     @Min(0)
     @Max(6)
-    jour_semaine?: number;
+    jourSemaine?: number;
 
     @IsOptional()
     @IsInt()
     @Min(0)
     @Max(1439)
-    heure_debut?: number;
+    heureDebut?: number;
 
     @IsOptional()
     @IsInt()
     @Min(1)
     @Max(1440)
-    heure_fin?: number;
+    heureFin?: number;
 
     @IsOptional()
     @IsInt()
     @Min(15)
     @Max(480)
-    intervalle_minutes?: number;
+    intervalleMinutes?: number;
 
     @IsOptional()
     @IsBoolean()
-    is_actif?: boolean;
+    isActif?: boolean;
 
     @IsOptional()
     @IsDateString()
-    date_debut_validite?: string;
+    dateDebutValidite?: string;
 
     @IsOptional()
     @IsDateString()
-    date_fin_validite?: string | null;
+    dateFinValidite?: string | null;
 }

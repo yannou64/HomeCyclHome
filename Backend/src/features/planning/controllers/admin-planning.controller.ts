@@ -136,8 +136,8 @@ export class AdminPlanningController {
     @Post('creneaux/generate-all')
     generateAllCreneaux(@Body() dto: GenerateAllCreneauxDto) {
         return this.generateAllCreneauxUseCase.execute({
-            technicienId: dto.technicien_id,
-            date_fin_generation: dto.date_fin_generation,
+            technicienId: dto.technicienId,
+            dateFinGeneration: dto.dateFinGeneration,
         });
     }
 

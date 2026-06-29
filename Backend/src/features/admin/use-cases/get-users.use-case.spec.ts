@@ -10,8 +10,8 @@ const makeUser = (override: Partial<AdminUserDto> = {}): AdminUserDto => ({
     email: 'jean.dupont@email.com',
     telephone: '0601020304',
     role: 'technicien',
-    is_actif: true,
-    date_creation: new Date('2025-01-01'),
+    isActif: true,
+    dateCreation: new Date('2025-01-01'),
     ...override,
 });
 
@@ -71,7 +71,7 @@ describe('GetUsersUseCase', () => {
             limit: 5,
             search: 'jean',
             role: 'technicien',
-            is_actif: true,
+            isActif: true,
         });
 
         expect(mockRepo.findMany).toHaveBeenCalledWith({
@@ -79,7 +79,7 @@ describe('GetUsersUseCase', () => {
             limit: 5,
             search: 'jean',
             role: 'technicien',
-            is_actif: true,
+            isActif: true,
         });
     });
 });

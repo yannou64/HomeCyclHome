@@ -3,15 +3,15 @@ import { GetModelesPlanificationUseCase } from './get-modeles-planification.use-
 
 const mockModele = {
     id: 'modele-uuid-1',
-    technicien_id: 'tech-uuid-1',
-    zone_id: 'zone-uuid-1',
-    jour_semaine: 1,
-    heure_debut: 480,
-    heure_fin: 1020,
-    intervalle_minutes: 60,
-    is_actif: true,
-    date_debut_validite: '2026-06-01T00:00:00.000Z',
-    date_fin_validite: null,
+    technicienId: 'tech-uuid-1',
+    zoneId: 'zone-uuid-1',
+    jourSemaine: 1,
+    heureDebut: 480,
+    heureFin: 1020,
+    intervalleMinutes: 60,
+    isActif: true,
+    dateDebutValidite: '2026-06-01T00:00:00.000Z',
+    dateFinValidite: null,
 };
 
 describe('GetModelesPlanificationUseCase', () => {

@@ -37,5 +37,5 @@ export class PaginationQueryDto {
     @IsOptional()
     @Transform(({ value }: { value: unknown }) => value === 'true')
     @IsBoolean()
-    is_actif?: boolean;
+    isActif?: boolean;
 }

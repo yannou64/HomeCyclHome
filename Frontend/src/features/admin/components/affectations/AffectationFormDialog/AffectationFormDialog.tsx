@@ -63,7 +63,7 @@ export function AffectationFormDialog({
 
     // Pré-remplissage en mode édition
     if (isEditMode) {
-      setSelectedTechnicienId(item.technicien_id);
+      setSelectedTechnicienId(item.technicienId);
       setSelectedZoneIds(item.zones.map((z) => z.id));
     } else {
       setSelectedTechnicienId('');
@@ -144,8 +144,8 @@ export function AffectationFormDialog({
                         onChange={() => toggleZone(zone.id)}
                         className={styles.checkbox}
                       />
-                      <span>{zone.nom_zone}</span>
-                      {!zone.is_active && (
+                      <span>{zone.nomZone}</span>
+                      {!zone.isActive && (
                         <span className={styles.inactiveTag}>inactif</span>
                       )}
                     </label>

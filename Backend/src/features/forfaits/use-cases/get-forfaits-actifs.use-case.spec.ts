@@ -25,17 +25,17 @@ describe('GetForfaitsActifsUseCase', () => {
                 id: 'uuid-1',
                 nom: 'Révision Express',
                 description: null,
-                duree_minutes: 45,
-                is_actif: true,
-                prix_actif: 29.9,
+                dureeMinutes: 45,
+                isActif: true,
+                prixActif: 29.9,
             },
             {
                 id: 'uuid-2',
                 nom: 'Révision Standard',
                 description: 'Entretien complet du vélo',
-                duree_minutes: 90,
-                is_actif: true,
-                prix_actif: 49.9,
+                dureeMinutes: 90,
+                isActif: true,
+                prixActif: 49.9,
             },
         ];
         mockRepo.findAllActifs.mockResolvedValue(forfaitsActifs);

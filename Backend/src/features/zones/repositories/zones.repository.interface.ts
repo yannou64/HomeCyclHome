@@ -7,13 +7,13 @@ export type ZonePointData = {
 };
 
 export type CreateZoneData = {
-    nom_zone: string;
+    nomZone: string;
     points: ZonePointData[];
 };
 
 export type UpdateZoneData = {
-    nom_zone?: string;
-    is_active?: boolean;
+    nomZone?: string;
+    isActive?: boolean;
     points?: ZonePointData[];
 };
 

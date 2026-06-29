@@ -52,9 +52,9 @@ export function IndisponibiliteFormDialog({
     setFormError(null);
     try {
       await onSubmit({
-        technicien_id: technicienId,
-        date_debut: debut.toISOString(),
-        date_fin: fin.toISOString(),
+        technicienId: technicienId,
+        dateDebut: debut.toISOString(),
+        dateFin: fin.toISOString(),
         motif: motif.trim() || null,
       });
       handleClose();

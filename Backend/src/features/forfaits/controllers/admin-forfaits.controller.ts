@@ -57,7 +57,7 @@ export class AdminForfaitsController {
         return this.setForfaitPrixUseCase.execute(
             id,
             dto.montant,
-            new Date(dto.date_debut),
+            new Date(dto.dateDebut),
         );
     }
 }

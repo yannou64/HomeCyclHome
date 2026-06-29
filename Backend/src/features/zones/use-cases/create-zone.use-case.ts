@@ -9,10 +9,10 @@ export class CreateZoneUseCase {
     constructor(private readonly repo: IZonesRepository) {}
 
     async execute(data: CreateZoneData): Promise<ZoneDto> {
-        const exists = await this.repo.existsByNom(data.nom_zone);
+        const exists = await this.repo.existsByNom(data.nomZone);
         if (exists) {
             throw new ConflictException(
-                `Une zone avec le nom "${data.nom_zone}" existe déjà`,
+                `Une zone avec le nom "${data.nomZone}" existe déjà`,
             );
         }
         return this.repo.create(data);

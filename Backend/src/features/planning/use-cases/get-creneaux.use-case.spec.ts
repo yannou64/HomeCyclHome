@@ -5,11 +5,11 @@ import { GetCreneauxUseCase } from './get-creneaux.use-case';
 
 const mockCreneau: CreneauDto = {
     id: 'creneau-uuid-1',
-    date_debut: '2026-06-01T09:00:00.000Z',
-    date_fin: null,
-    is_disponible: true,
-    zone_id: 'zone-uuid',
-    modele_planification_id: 'modele-uuid',
+    dateDebut: '2026-06-01T09:00:00.000Z',
+    dateFin: null,
+    isDisponible: true,
+    zoneId: 'zone-uuid',
+    modelePlanificationId: 'modele-uuid',
 };
 
 function buildMockRepo(

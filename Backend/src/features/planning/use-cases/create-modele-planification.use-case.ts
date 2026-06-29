@@ -21,7 +21,7 @@ export class CreateModelePlanificationUseCase {
         dto: CreateModelePlanificationDto,
     ): Promise<ModelePlanificationDto> {
         // 1. Validation métier : les heures doivent former une plage valide
-        if (dto.heure_fin <= dto.heure_debut) {
+        if (dto.heureFin <= dto.heureDebut) {
             throw new BadRequestException(
                 "L'heure de fin doit être strictement supérieure à l'heure de début.",
             );
@@ -29,36 +29,36 @@ export class CreateModelePlanificationUseCase {
 
         // 2. Le technicien doit exister avec le rôle approprié
         const technicienExiste = await this.repo.technicienExists(
-            dto.technicien_id,
+            dto.technicienId,
         );
         if (!technicienExiste) {
             throw new NotFoundException(
-                `Technicien introuvable : ${dto.technicien_id}`,
+                `Technicien introuvable : ${dto.technicienId}`,
             );
         }
 
         // 3. Le technicien doit être affecté à cette zone
         const estAffecte = await this.repo.isAffecteAZone(
-            dto.technicien_id,
-            dto.zone_id,
+            dto.technicienId,
+            dto.zoneId,
         );
         if (!estAffecte) {
             throw new BadRequestException(
-                `Le technicien ${dto.technicien_id} n'est pas affecté à la zone ${dto.zone_id}.`,
+                `Le technicien ${dto.technicienId} n'est pas affecté à la zone ${dto.zoneId}.`,
             );
         }
 
         // 4. Détection de chevauchement : même technicien + même jour + horaires qui se recoupent
-        const dateDebut = new Date(dto.date_debut_validite);
-        const dateFin = dto.date_fin_validite
-            ? new Date(dto.date_fin_validite)
+        const dateDebut = new Date(dto.dateDebutValidite);
+        const dateFin = dto.dateFinValidite
+            ? new Date(dto.dateFinValidite)
             : null;
 
         const chevauchements = await this.repo.findModelesChevauchants(
-            dto.technicien_id,
-            dto.jour_semaine,
-            dto.heure_debut,
-            dto.heure_fin,
+            dto.technicienId,
+            dto.jourSemaine,
+            dto.heureDebut,
+            dto.heureFin,
             dateDebut,
             dateFin,
         );
@@ -71,15 +71,15 @@ export class CreateModelePlanificationUseCase {
 
         // 5. Toutes les règles sont respectées — on crée
         return this.repo.createModele({
-            technicien_id: dto.technicien_id,
-            zone_id: dto.zone_id,
-            jour_semaine: dto.jour_semaine,
-            heure_debut: dto.heure_debut,
-            heure_fin: dto.heure_fin,
-            intervalle_minutes: dto.intervalle_minutes,
-            is_actif: dto.is_actif ?? true,
-            date_debut_validite: dateDebut,
-            date_fin_validite: dateFin,
+            technicienId: dto.technicienId,
+            zoneId: dto.zoneId,
+            jourSemaine: dto.jourSemaine,
+            heureDebut: dto.heureDebut,
+            heureFin: dto.heureFin,
+            intervalleMinutes: dto.intervalleMinutes,
+            isActif: dto.isActif ?? true,
+            dateDebutValidite: dateDebut,
+            dateFinValidite: dateFin,
         });
     }
 }

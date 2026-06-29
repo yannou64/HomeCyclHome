@@ -14,12 +14,12 @@ function makeCreneau(
 ): CreneauAvecTechnicienDto {
     return {
         id: id ?? `creneau-${heure}`,
-        date_debut: `2026-06-01T${heure}:00.000Z`,
-        date_fin: null,
-        is_disponible: disponible,
-        zone_id: 'zone-uuid',
-        modele_planification_id: 'modele-uuid',
-        technicien_id: 'tech-uuid',
+        dateDebut: `2026-06-01T${heure}:00.000Z`,
+        dateFin: null,
+        isDisponible: disponible,
+        zoneId: 'zone-uuid',
+        modelePlanificationId: 'modele-uuid',
+        technicienId: 'tech-uuid',
         intervalleMinutes,
     };
 }
@@ -108,9 +108,9 @@ describe('GetCreneauxDisponiblesUseCase', () => {
             dateFin: '2026-06-01',
         });
 
-        // date_fin = 09:00 + 60min = 10:00
+        // dateFin = 09:00 + 60min = 10:00
         expect(result).toHaveLength(1);
-        expect(result[0].date_fin).toBe('2026-06-01T10:00:00.000Z');
+        expect(result[0].dateFin).toBe('2026-06-01T10:00:00.000Z');
     });
 
     it('devrait retourner un tableau vide si aucun créneau dans la zone', async () => {

@@ -3,11 +3,11 @@ import { IAffectationsRepository } from '../repositories/affectations.repository
 import { GetAffectationByTechnicienUseCase } from './get-affectation-by-technicien.use-case';
 
 const mockAffectation = {
-    technicien_id: 'tech-uuid-1',
+    technicienId: 'tech-uuid-1',
     nom: 'Dupont',
     prenom: 'Marie',
     email: 'marie.dupont@example.com',
-    zones: [{ id: 'zone-uuid-1', nom_zone: 'Lyon Centre', is_active: true }],
+    zones: [{ id: 'zone-uuid-1', nomZone: 'Lyon Centre', isActive: true }],
 };
 
 describe('GetAffectationByTechnicienUseCase', () => {
@@ -32,7 +32,7 @@ describe('GetAffectationByTechnicienUseCase', () => {
         const result = await useCase.execute('tech-uuid-1');
 
         expect(mockRepo.findByTechnicienId).toHaveBeenCalledWith('tech-uuid-1');
-        expect(result.technicien_id).toBe('tech-uuid-1');
+        expect(result.technicienId).toBe('tech-uuid-1');
         expect(result.zones).toHaveLength(1);
     });
 

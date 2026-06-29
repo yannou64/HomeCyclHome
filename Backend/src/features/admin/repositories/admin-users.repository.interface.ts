@@ -7,7 +7,7 @@ export type FindManyUsersParams = {
     limit: number;
     search?: string;
     role?: UserRole;
-    is_actif?: boolean;
+    isActif?: boolean;
 };
 
 // Données nécessaires pour créer un utilisateur côté admin

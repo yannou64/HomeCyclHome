@@ -6,8 +6,8 @@ export type ZonePointDto = {
 
 export type ZoneDto = {
     id: string;
-    nom_zone: string;
-    is_active: boolean;
-    date_creation: Date;
+    nomZone: string;
+    isActive: boolean;
+    dateCreation: Date;
     points: ZonePointDto[];
 };

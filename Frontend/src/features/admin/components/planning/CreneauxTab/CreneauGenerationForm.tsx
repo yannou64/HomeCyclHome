@@ -24,8 +24,8 @@ export function CreneauGenerationForm({ modeles, onGenerate, onGenerateAll, onRa
     setError(null);
     try {
       const payload: GenerateCreneauxPayload = {
-        modele_id: modeleId,
-        ...(dateFinGeneration ? { date_fin_generation: dateFinGeneration } : {}),
+        modeleId: modeleId,
+        ...(dateFinGeneration ? { dateFinGeneration: dateFinGeneration } : {}),
       };
       const rapport = await onGenerate(payload);
       onRapport(rapport);
@@ -74,12 +74,12 @@ export function CreneauGenerationForm({ modeles, onGenerate, onGenerateAll, onRa
             <option value="">— Choisir un modèle —</option>
             {modeles.map((m) => (
               <option key={m.id} value={m.id}>
-                {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][m.jour_semaine]} —{' '}
-                {String(Math.floor(m.heure_debut / 60)).padStart(2, '0')}:
-                {String(m.heure_debut % 60).padStart(2, '0')} →{' '}
-                {String(Math.floor(m.heure_fin / 60)).padStart(2, '0')}:
-                {String(m.heure_fin % 60).padStart(2, '0')}{' '}
-                (/{m.intervalle_minutes}min)
+                {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][m.jourSemaine]} —{' '}
+                {String(Math.floor(m.heureDebut / 60)).padStart(2, '0')}:
+                {String(m.heureDebut % 60).padStart(2, '0')} →{' '}
+                {String(Math.floor(m.heureFin / 60)).padStart(2, '0')}:
+                {String(m.heureFin % 60).padStart(2, '0')}{' '}
+                (/{m.intervalleMinutes}min)
               </option>
             ))}
           </select>

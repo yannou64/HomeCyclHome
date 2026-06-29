@@ -28,8 +28,8 @@ export function ForfaitSelector({ forfaits, onChange }: IForfaitSelectorProps) {
         onChange({
             forfaitId: forfait.id,
             nom: forfait.nom,
-            dureeMinutes: forfait.duree_minutes,
-            prix: forfait.prix_actif,
+            dureeMinutes: forfait.dureeMinutes,
+            prix: forfait.prixActif,
         });
     };
 
@@ -57,8 +57,8 @@ export function ForfaitSelector({ forfaits, onChange }: IForfaitSelectorProps) {
                             <p className={styles.cardDescription}>{f.description}</p>
                         )}
                         <div className={styles.cardMeta}>
-                            <span>{formatDuree(f.duree_minutes)}</span>
-                            <span>{formatPrix(f.prix_actif)}</span>
+                            <span>{formatDuree(f.dureeMinutes)}</span>
+                            <span>{formatPrix(f.prixActif)}</span>
                         </div>
                     </div>
                 </label>

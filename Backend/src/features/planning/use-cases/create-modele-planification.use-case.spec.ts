@@ -7,15 +7,15 @@ import { IPlanningRepository } from '../repositories/planning.repository.interfa
 import { CreateModelePlanificationUseCase } from './create-modele-planification.use-case';
 
 const validPayload = {
-    technicien_id: 'tech-uuid-1',
-    zone_id: 'zone-uuid-1',
-    jour_semaine: 1, // mardi
-    heure_debut: 480, // 8h00
-    heure_fin: 1020, // 17h00
-    intervalle_minutes: 60,
-    is_actif: true,
-    date_debut_validite: '2026-06-01T00:00:00.000Z',
-    date_fin_validite: null,
+    technicienId: 'tech-uuid-1',
+    zoneId: 'zone-uuid-1',
+    jourSemaine: 1, // mardi
+    heureDebut: 480, // 8h00
+    heureFin: 1020, // 17h00
+    intervalleMinutes: 60,
+    isActif: true,
+    dateDebutValidite: '2026-06-01T00:00:00.000Z',
+    dateFinValidite: null,
 };
 
 const mockModeleDto = {
@@ -67,8 +67,8 @@ describe('CreateModelePlanificationUseCase', () => {
         expect(result.id).toBe('modele-uuid-1');
     });
 
-    it('devrait lever BadRequestException si heure_fin <= heure_debut', async () => {
-        const payload = { ...validPayload, heure_debut: 720, heure_fin: 480 };
+    it('devrait lever BadRequestException si heureFin <= heureDebut', async () => {
+        const payload = { ...validPayload, heureDebut: 720, heureFin: 480 };
 
         await expect(useCase.execute(payload)).rejects.toThrow(
             BadRequestException,
@@ -79,8 +79,8 @@ describe('CreateModelePlanificationUseCase', () => {
         expect(mockRepo.createModele).not.toHaveBeenCalled();
     });
 
-    it('devrait lever BadRequestException si heure_fin === heure_debut', async () => {
-        const payload = { ...validPayload, heure_debut: 480, heure_fin: 480 };
+    it('devrait lever BadRequestException si heureFin === heureDebut', async () => {
+        const payload = { ...validPayload, heureDebut: 480, heureFin: 480 };
 
         await expect(useCase.execute(payload)).rejects.toThrow(
             BadRequestException,

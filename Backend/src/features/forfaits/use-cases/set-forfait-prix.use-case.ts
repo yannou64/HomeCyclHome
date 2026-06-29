@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { FORFAITS_REPO } from '../modules/forfaits.module';
+import { FORFAITS_REPO } from '../forfaits.module';
 import { IForfaitsRepository } from '../repositories/forfaits.repository.interface';
 
 @Injectable()

@@ -68,12 +68,12 @@ export function PauseRecurrenteList({
               pauses.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
-                    {item.jour_semaine !== null
-                      ? JOURS[item.jour_semaine]
+                    {item.jourSemaine !== null
+                      ? JOURS[item.jourSemaine]
                       : <span className={styles.allDays}>Tous les jours</span>}
                   </TableCell>
                   <TableCell>
-                    {minutesToTime(item.heure_debut)} – {minutesToTime(item.heure_fin)}
+                    {minutesToTime(item.heureDebut)} – {minutesToTime(item.heureFin)}
                   </TableCell>
                   <TableCell className={styles.description}>
                     {item.description ?? <span className={styles.none}>—</span>}

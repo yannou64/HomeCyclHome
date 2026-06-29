@@ -10,9 +10,9 @@ export class CreateForfaitDto {
 
     @IsInt()
     @Min(15)
-    duree_minutes: number;
+    dureeMinutes: number;
 
     @IsOptional()
     @IsBoolean()
-    is_actif?: boolean;
+    isActif?: boolean;
 }

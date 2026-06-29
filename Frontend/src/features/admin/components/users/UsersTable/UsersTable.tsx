@@ -36,7 +36,7 @@ interface UsersTableProps {
     // Filtres
     onSearch: (value: string) => void;
     onRoleFilter: (role: GetUsersParams['role']) => void;
-    onStatutFilter: (is_actif: GetUsersParams['is_actif']) => void;
+    onStatutFilter: (isActif: GetUsersParams['isActif']) => void;
     onPageChange: (page: number) => void;
     // Actions
     onAdd: () => void;
@@ -131,7 +131,7 @@ export function UsersTable({
                                     <RoleLabel role={user.role} />
                                 </TableCell>
                                 <TableCell>
-                                    <StatutBadge isActif={user.is_actif} />
+                                    <StatutBadge isActif={user.isActif} />
                                 </TableCell>
                                 <TableCell className={styles.actions}>
                                     <button

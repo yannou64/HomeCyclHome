@@ -12,11 +12,11 @@ import { ZonePointInputDto } from './create-zone.dto';
 export class UpdateZoneDto {
     @IsOptional()
     @IsString()
-    nom_zone?: string;
+    nomZone?: string;
 
     @IsOptional()
     @IsBoolean()
-    is_active?: boolean;
+    isActive?: boolean;
 
     @IsOptional()
     @IsArray()

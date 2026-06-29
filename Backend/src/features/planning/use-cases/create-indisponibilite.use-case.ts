@@ -13,8 +13,8 @@ export class CreateIndisponibiliteUseCase {
     ) {}
 
     async execute(dto: CreateIndisponibiliteDto): Promise<IndisponibiliteDto> {
-        const dateDebut = new Date(dto.date_debut);
-        const dateFin = new Date(dto.date_fin);
+        const dateDebut = new Date(dto.dateDebut);
+        const dateFin = new Date(dto.dateFin);
 
         if (dateFin <= dateDebut) {
             throw new BadRequestException(
@@ -23,18 +23,18 @@ export class CreateIndisponibiliteUseCase {
         }
 
         const technicienExiste = await this.repo.technicienExists(
-            dto.technicien_id,
+            dto.technicienId,
         );
         if (!technicienExiste) {
             throw new NotFoundException(
-                `Technicien introuvable : ${dto.technicien_id}`,
+                `Technicien introuvable : ${dto.technicienId}`,
             );
         }
 
         return this.repo.createIndisponibilite({
-            technicien_id: dto.technicien_id,
-            date_debut: dateDebut,
-            date_fin: dateFin,
+            technicienId: dto.technicienId,
+            dateDebut: dateDebut,
+            dateFin: dateFin,
             motif: dto.motif,
         });
     }

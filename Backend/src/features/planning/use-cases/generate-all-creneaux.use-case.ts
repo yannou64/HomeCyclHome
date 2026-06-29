@@ -8,7 +8,7 @@ import { GenerateCreneauxUseCase } from './generate-creneaux.use-case';
 
 export type GenerateAllCreneauxInput = {
     technicienId: string;
-    date_fin_generation?: string;
+    dateFinGeneration?: string;
 };
 
 export class GenerateAllCreneauxUseCase {
@@ -24,7 +24,7 @@ export class GenerateAllCreneauxUseCase {
         const modeles = await this.repo.findModelesByTechnicien(
             input.technicienId,
         );
-        const actifs = modeles.filter((m) => m.is_actif);
+        const actifs = modeles.filter((m) => m.isActif);
 
         if (actifs.length === 0) {
             return { created: 0, skipped: 0, conflicts: 0 };
@@ -33,8 +33,8 @@ export class GenerateAllCreneauxUseCase {
         const rapports = await Promise.all(
             actifs.map((m) =>
                 this.generateUseCase.execute({
-                    modele_id: m.id,
-                    date_fin_generation: input.date_fin_generation,
+                    modeleId: m.id,
+                    dateFinGeneration: input.dateFinGeneration,
                 }),
             ),
         );

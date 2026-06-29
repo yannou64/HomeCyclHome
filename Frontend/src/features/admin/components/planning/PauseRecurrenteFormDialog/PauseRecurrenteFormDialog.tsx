@@ -57,10 +57,10 @@ export function PauseRecurrenteFormDialog({
     setFormError(null);
     try {
       await onSubmit({
-        technicien_id: technicienId,
-        jour_semaine: jourSemaine !== '' ? parseInt(jourSemaine, 10) : null,
-        heure_debut: debut,
-        heure_fin: fin,
+        technicienId: technicienId,
+        jourSemaine: jourSemaine !== '' ? parseInt(jourSemaine, 10) : null,
+        heureDebut: debut,
+        heureFin: fin,
         description: description.trim() || null,
       });
       handleClose();

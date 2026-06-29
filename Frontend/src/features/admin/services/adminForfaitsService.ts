@@ -18,7 +18,7 @@ export const adminForfaitsService = {
     return apiClient.delete(`/admin/forfaits/${id}`).then(() => undefined);
   },
 
-  setPrix(id: string, payload: { montant: number; date_debut: string }): Promise<void> {
+  setPrix(id: string, payload: { montant: number; dateDebut: string }): Promise<void> {
     return apiClient.post(`/admin/forfaits/${id}/prix`, payload).then(() => undefined);
   },
 };

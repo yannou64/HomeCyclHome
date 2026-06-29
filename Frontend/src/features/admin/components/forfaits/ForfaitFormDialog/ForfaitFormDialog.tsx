@@ -15,7 +15,7 @@ interface ForfaitFormDialogProps {
   item?: Forfait;
 }
 
-const DEFAULT_FORM = { nom: '', description: '', duree_minutes: 60, is_actif: true };
+const DEFAULT_FORM = { nom: '', description: '', dureeMinutes: 60, isActif: true };
 
 export function ForfaitFormDialog({
   isOpen,
@@ -33,8 +33,8 @@ export function ForfaitFormDialog({
       setForm({
         nom: item.nom,
         description: item.description ?? '',
-        duree_minutes: item.duree_minutes,
-        is_actif: item.is_actif,
+        dureeMinutes: item.dureeMinutes,
+        isActif: item.isActif,
       });
     } else {
       setForm(DEFAULT_FORM);
@@ -50,8 +50,8 @@ export function ForfaitFormDialog({
       await onSubmit({
         nom: form.nom,
         description: form.description || undefined,
-        duree_minutes: form.duree_minutes,
-        is_actif: form.is_actif,
+        dureeMinutes: form.dureeMinutes,
+        isActif: form.isActif,
       });
       onClose();
     } catch {
@@ -99,15 +99,15 @@ export function ForfaitFormDialog({
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="duree_minutes">
+            <label className={styles.label} htmlFor="dureeMinutes">
               Durée (minutes)
             </label>
             <input
-              id="duree_minutes"
+              id="dureeMinutes"
               type="number"
               className={styles.input}
-              value={form.duree_minutes}
-              onChange={(e) => setForm((f) => ({ ...f, duree_minutes: Number(e.target.value) }))}
+              value={form.dureeMinutes}
+              onChange={(e) => setForm((f) => ({ ...f, dureeMinutes: Number(e.target.value) }))}
               min={15}
               required
             />
@@ -115,13 +115,13 @@ export function ForfaitFormDialog({
 
           <div className={styles.checkboxField}>
             <input
-              id="is_actif"
+              id="isActif"
               type="checkbox"
               className={styles.checkbox}
-              checked={form.is_actif}
-              onChange={(e) => setForm((f) => ({ ...f, is_actif: e.target.checked }))}
+              checked={form.isActif}
+              onChange={(e) => setForm((f) => ({ ...f, isActif: e.target.checked }))}
             />
-            <label className={styles.checkboxLabel} htmlFor="is_actif">
+            <label className={styles.checkboxLabel} htmlFor="isActif">
               Forfait actif
             </label>
           </div>

@@ -29,7 +29,7 @@ export function ZoneDeleteDialog({ isOpen, onClose, onConfirm, zone }: ZoneDelet
           <DialogTitle className={styles.title}>Supprimer la zone</DialogTitle>
         </DialogHeader>
         <p className={styles.message}>
-          Êtes-vous sûr de vouloir supprimer la zone <strong>« {zone.nom_zone} »</strong> ?
+          Êtes-vous sûr de vouloir supprimer la zone <strong>« {zone.nomZone} »</strong> ?
           <br />
           Cette action est irréversible.
         </p>

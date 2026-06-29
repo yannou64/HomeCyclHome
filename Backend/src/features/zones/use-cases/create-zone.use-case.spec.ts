@@ -3,7 +3,7 @@ import { IZonesRepository } from '../repositories/zones.repository.interface';
 import { CreateZoneUseCase } from './create-zone.use-case';
 
 const validPayload = {
-    nom_zone: 'Lyon Centre',
+    nomZone: 'Lyon Centre',
     points: [
         { latitude: 45.75, longitude: 4.83, ordre: 0 },
         { latitude: 45.76, longitude: 4.84, ordre: 1 },
@@ -32,15 +32,13 @@ describe('CreateZoneUseCase', () => {
         mockRepo.create.mockResolvedValue({
             id: 'new-uuid',
             ...validPayload,
-            is_active: true,
-            date_creation: new Date(),
+            isActive: true,
+            dateCreation: new Date(),
         });
 
         const result = await useCase.execute(validPayload);
 
-        expect(mockRepo.existsByNom).toHaveBeenCalledWith(
-            validPayload.nom_zone,
-        );
+        expect(mockRepo.existsByNom).toHaveBeenCalledWith(validPayload.nomZone);
         expect(mockRepo.create).toHaveBeenCalledWith(validPayload);
         expect(result.id).toBe('new-uuid');
     });

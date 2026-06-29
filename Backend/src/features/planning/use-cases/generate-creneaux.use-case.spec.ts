@@ -18,15 +18,15 @@ const DATE_MERCREDI = '2026-06-03';
 
 const mockModele: ModelePlanificationDto = {
     id: 'modele-uuid',
-    technicien_id: 'tech-uuid',
-    zone_id: 'zone-uuid',
-    jour_semaine: 0, // lundi
-    heure_debut: 540, // 9h00
-    heure_fin: 660, // 11h00
-    intervalle_minutes: 30,
-    is_actif: true,
-    date_debut_validite: `${DATE_LUNDI}T00:00:00.000Z`,
-    date_fin_validite: null,
+    technicienId: 'tech-uuid',
+    zoneId: 'zone-uuid',
+    jourSemaine: 0, // lundi
+    heureDebut: 540, // 9h00
+    heureFin: 660, // 11h00
+    intervalleMinutes: 30,
+    isActif: true,
+    dateDebutValidite: `${DATE_LUNDI}T00:00:00.000Z`,
+    dateFinValidite: null,
 };
 
 // ─── Mock repository complet ─────────────────────────────────────────────────
@@ -89,8 +89,8 @@ describe('GenerateCreneauxUseCase', () => {
         // Modèle : lundi 9h-11h par 30min → 4 slots (9h, 9h30, 10h, 10h30)
         // Période : du 2026-06-01 au 2026-06-07 (une semaine, un seul lundi)
         const rapport: GenerationRapportDto = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         expect(mockRepo.createManyCreneaux).toHaveBeenCalledTimes(1);
@@ -100,7 +100,7 @@ describe('GenerateCreneauxUseCase', () => {
         // Vérifier les heures UTC des créneaux créés
         // 9h Paris (UTC+2 en juin) = 7h UTC → 420 min, etc.
         const heures = creneauxCrees.map((c) => {
-            const d = new Date(c.date_debut);
+            const d = new Date(c.dateDebut);
             return d.getUTCHours() * 60 + d.getUTCMinutes();
         });
         expect(heures).toEqual([420, 450, 480, 510]); // 7h, 7h30, 8h, 8h30 UTC = 9h-10h30 Paris
@@ -113,8 +113,8 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait générer des créneaux pour chaque lundi de la période', async () => {
         // Du 2026-06-01 au 2026-06-15 : 2 lundis (01 et 08)
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-15',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-15',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -128,13 +128,13 @@ describe('GenerateCreneauxUseCase', () => {
         // Modèle lundi (0), mais on génère du mardi au mercredi → aucun créneau
         mockRepo.findModeleById.mockResolvedValue({
             ...mockModele,
-            date_debut_validite: `${DATE_MARDI}T00:00:00.000Z`,
-            jour_semaine: 0, // lundi
+            dateDebutValidite: `${DATE_MARDI}T00:00:00.000Z`,
+            jourSemaine: 0, // lundi
         });
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: DATE_MERCREDI,
+            modeleId: 'modele-uuid',
+            dateFinGeneration: DATE_MERCREDI,
         });
 
         expect(mockRepo.createManyCreneaux).not.toHaveBeenCalled();
@@ -148,17 +148,17 @@ describe('GenerateCreneauxUseCase', () => {
         // slots 9h ✓, 9h30 ✗ (couvert par la pause), 10h ✓, 10h30 ✓ → 3 créneaux
         const pause: PauseRecurrenteDto = {
             id: 'pause-uuid',
-            technicien_id: 'tech-uuid',
-            jour_semaine: null, // tous les jours
-            heure_debut: 570, // 9h30
-            heure_fin: 600, // 10h00
+            technicienId: 'tech-uuid',
+            jourSemaine: null, // tous les jours
+            heureDebut: 570, // 9h30
+            heureFin: 600, // 10h00
             description: 'Pause café',
         };
         mockRepo.findPausesByTechnicien.mockResolvedValue([pause]);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -172,17 +172,17 @@ describe('GenerateCreneauxUseCase', () => {
         // Idem : 3 créneaux le lundi
         const pause: PauseRecurrenteDto = {
             id: 'pause-uuid',
-            technicien_id: 'tech-uuid',
-            jour_semaine: 0, // lundi seulement
-            heure_debut: 570,
-            heure_fin: 600,
+            technicienId: 'tech-uuid',
+            jourSemaine: 0, // lundi seulement
+            heureDebut: 570,
+            heureFin: 600,
             description: null,
         };
         mockRepo.findPausesByTechnicien.mockResolvedValue([pause]);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -191,20 +191,20 @@ describe('GenerateCreneauxUseCase', () => {
     });
 
     it('ne devrait pas exclure les slots si la pause concerne un autre jour de la semaine', async () => {
-        // Pause mardi (jour_semaine=1) → ne doit pas affecter les créneaux du lundi
+        // Pause mardi (jourSemaine=1) → ne doit pas affecter les créneaux du lundi
         const pause: PauseRecurrenteDto = {
             id: 'pause-uuid',
-            technicien_id: 'tech-uuid',
-            jour_semaine: 1, // mardi
-            heure_debut: 570,
-            heure_fin: 600,
+            technicienId: 'tech-uuid',
+            jourSemaine: 1, // mardi
+            heureDebut: 570,
+            heureFin: 600,
             description: null,
         };
         mockRepo.findPausesByTechnicien.mockResolvedValue([pause]);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -219,16 +219,16 @@ describe('GenerateCreneauxUseCase', () => {
         // On génère 2 semaines (2 lundis : 01 et 08) → seul le 08 génère des créneaux
         const indispo: IndisponibiliteDto = {
             id: 'indispo-uuid',
-            technicien_id: 'tech-uuid',
-            date_debut: `${DATE_LUNDI}T00:00:00.000Z`,
-            date_fin: `${DATE_LUNDI}T23:59:59.000Z`,
+            technicienId: 'tech-uuid',
+            dateDebut: `${DATE_LUNDI}T00:00:00.000Z`,
+            dateFin: `${DATE_LUNDI}T23:59:59.000Z`,
             motif: 'Congé',
         };
         mockRepo.findIndisponibilitesByTechnicien.mockResolvedValue([indispo]);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-15',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-15',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -253,8 +253,8 @@ describe('GenerateCreneauxUseCase', () => {
         ]);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
@@ -269,8 +269,8 @@ describe('GenerateCreneauxUseCase', () => {
         mockRepo.countCreneauxConflits.mockResolvedValue(2);
 
         const rapport = await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         expect(rapport.conflicts).toBe(2);
@@ -284,7 +284,7 @@ describe('GenerateCreneauxUseCase', () => {
         mockRepo.findModeleById.mockResolvedValue(null);
 
         await expect(
-            useCase.execute({ modele_id: 'inexistant' }),
+            useCase.execute({ modeleId: 'inexistant' }),
         ).rejects.toThrow(NotFoundException);
     });
 
@@ -292,8 +292,8 @@ describe('GenerateCreneauxUseCase', () => {
         // date_fin_generation avant le début de validité du modèle
         await expect(
             useCase.execute({
-                modele_id: 'modele-uuid',
-                date_fin_generation: '2026-05-01', // avant 2026-06-01
+                modeleId: 'modele-uuid',
+                dateFinGeneration: '2026-05-01', // avant 2026-06-01
             }),
         ).rejects.toThrow(BadRequestException);
     });
@@ -301,8 +301,8 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait lever BadRequestException si la période dépasse 6 mois', async () => {
         await expect(
             useCase.execute({
-                modele_id: 'modele-uuid',
-                date_fin_generation: '2027-01-01', // > 6 mois depuis 2026-06-01
+                modeleId: 'modele-uuid',
+                dateFinGeneration: '2027-01-01', // > 6 mois depuis 2026-06-01
             }),
         ).rejects.toThrow(BadRequestException);
     });
@@ -311,16 +311,16 @@ describe('GenerateCreneauxUseCase', () => {
 
     it('devrait créer les créneaux avec les bonnes propriétés (zone_id, modele_id, is_disponible)', async () => {
         await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-07',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-07',
         });
 
         const creneauxCrees = mockRepo.createManyCreneaux.mock.calls[0][0];
         for (const creneau of creneauxCrees) {
-            expect(creneau.zone_id).toBe('zone-uuid');
-            expect(creneau.modele_planification_id).toBe('modele-uuid');
-            expect(creneau.is_disponible).toBe(true);
-            expect(creneau.date_fin).toBeNull();
+            expect(creneau.zoneId).toBe('zone-uuid');
+            expect(creneau.modelePlanificationId).toBe('modele-uuid');
+            expect(creneau.isDisponible).toBe(true);
+            expect(creneau.dateFin).toBeNull();
         }
     });
 
@@ -329,7 +329,7 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait utiliser date_fin_validite du modèle si date_fin_generation non fournie', async () => {
         mockRepo.findModeleById.mockResolvedValue({
             ...mockModele,
-            date_fin_validite: '2026-06-07T23:59:59.000Z',
+            dateFinValidite: '2026-06-07T23:59:59.000Z',
         });
 
         const rapport = await useCase.execute({ modele_id: 'modele-uuid' });
@@ -360,13 +360,13 @@ describe('GenerateCreneauxUseCase — conversion jour de semaine', () => {
         // Modèle lundi (0)
         mockRepo.findModeleById.mockResolvedValue({
             ...mockModele,
-            jour_semaine: 0,
+            jourSemaine: 0,
         });
 
         // date_fin_generation est EXCLUSIVE → '2026-06-02' pour inclure le 01 (lundi)
         await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-02',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-02',
         });
 
         const creneauxCrees =
@@ -381,12 +381,12 @@ describe('GenerateCreneauxUseCase — conversion jour de semaine', () => {
         // Modèle mardi (1) — 2026-06-01 est lundi → aucun créneau
         mockRepo.findModeleById.mockResolvedValue({
             ...mockModele,
-            jour_semaine: 1,
+            jourSemaine: 1,
         });
 
         await useCase.execute({
-            modele_id: 'modele-uuid',
-            date_fin_generation: '2026-06-01',
+            modeleId: 'modele-uuid',
+            dateFinGeneration: '2026-06-01',
         });
 
         expect(mockRepo.createManyCreneaux).not.toHaveBeenCalled();

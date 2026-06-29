@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CyclesController } from '../controllers/cycles.controller';
-import { CyclesPrismaRepository } from '../repositories/cycles.prisma.repository';
-import { CreateCycleUseCase } from '../use-cases/create-cycle.use-case';
-import { DeleteCycleUseCase } from '../use-cases/delete-cycle.use-case';
-import { GetCyclesUseCase } from '../use-cases/get-cycles.use-case';
-import { UpdateCycleUseCase } from '../use-cases/update-cycle.use-case';
+import { CyclesController } from './controllers/cycles.controller';
+import { CyclesPrismaRepository } from './repositories/cycles.prisma.repository';
+import { CreateCycleUseCase } from './use-cases/create-cycle.use-case';
+import { DeleteCycleUseCase } from './use-cases/delete-cycle.use-case';
+import { GetCyclesUseCase } from './use-cases/get-cycles.use-case';
+import { UpdateCycleUseCase } from './use-cases/update-cycle.use-case';
 
 export const CYCLES_REPO = 'CYCLES_REPO';
 

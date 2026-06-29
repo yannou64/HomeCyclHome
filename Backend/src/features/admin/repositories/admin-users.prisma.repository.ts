@@ -19,7 +19,7 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
         limit,
         search,
         role,
-        is_actif,
+        isActif,
     }: FindManyUsersParams): Promise<{ users: AdminUserDto[]; total: number }> {
         const where: Prisma.UtilisateurWhereInput = {
             AND: [
@@ -48,7 +48,7 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
                       }
                     : {},
                 role ? { role } : {},
-                is_actif !== undefined ? { is_actif } : {},
+                isActif !== undefined ? { is_actif: isActif } : {},
             ],
         };
 
@@ -120,8 +120,8 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
             email: user.email,
             telephone: user.telephone,
             role: user.role,
-            is_actif: user.is_actif,
-            date_creation: user.date_creation,
+            isActif: user.is_actif,
+            dateCreation: user.date_creation,
         };
     }
 }

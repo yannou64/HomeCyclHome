@@ -32,7 +32,6 @@ export function CycleEtForfaitForm() {
         if (!canSubmit) return;
         setCycle(selectedCycle);
         setForfait(selectedForfait);
-        console.log('[ReservationContext] cycle :', selectedCycle, '— forfait :', selectedForfait);
         goToStep('creneau');
     };
 

@@ -39,10 +39,10 @@ export class UploadInterventionPhotosUseCase {
             files.map((file) => this.storage.uploadFile(file, folder)),
         );
 
-        // 4. Mapper vers le format du repository (url_s3 / cle_s3) et persister
+        // 4. Mapper vers le format du repository (urlS3 / cleS3) et persister
         await this.repo.createPhotos(
             interventionId,
-            uploaded.map((u) => ({ url_s3: u.url, cle_s3: u.cle })),
+            uploaded.map((u) => ({ urlS3: u.url, cleS3: u.cle })),
             'client',
         );
 
