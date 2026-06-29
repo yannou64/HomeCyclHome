@@ -7,26 +7,26 @@ import { GenerateAllCreneauxUseCase } from './generate-all-creneaux.use-case';
 
 const baseModele: ModelePlanificationDto = {
     id: 'modele-1',
-    technicien_id: 'tech-uuid',
-    zone_id: 'zone-uuid',
-    jour_semaine: 0,
-    heure_debut: 540,
-    heure_fin: 660,
-    intervalle_minutes: 30,
-    is_actif: true,
-    date_debut_validite: '2026-06-01T00:00:00.000Z',
-    date_fin_validite: null,
+    technicienId: 'tech-uuid',
+    zoneId: 'zone-uuid',
+    jourSemaine: 0,
+    heureDebut: 540,
+    heureFin: 660,
+    intervalleMinutes: 30,
+    isActif: true,
+    dateDebutValidite: '2026-06-01T00:00:00.000Z',
+    dateFinValidite: null,
 };
 
 const modele2: ModelePlanificationDto = {
     ...baseModele,
     id: 'modele-2',
-    jour_semaine: 2,
+    jourSemaine: 2,
 };
 const modeleInactif: ModelePlanificationDto = {
     ...baseModele,
     id: 'modele-3',
-    is_actif: false,
+    isActif: false,
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ describe('GenerateAllCreneauxUseCase', () => {
         expect(rapport).toEqual({ created: 0, skipped: 0, conflicts: 0 });
     });
 
-    it('devrait transmettre date_fin_generation à chaque generate use case', async () => {
+    it('devrait transmettre dateFinGeneration à chaque generate use case', async () => {
         mockRepo.findModelesByTechnicien.mockResolvedValue([baseModele]);
         mockGenerateUseCase.execute.mockResolvedValue({
             created: 4,
@@ -123,12 +123,12 @@ describe('GenerateAllCreneauxUseCase', () => {
 
         await useCase.execute({
             technicienId: 'tech-uuid',
-            date_fin_generation: '2026-08-01',
+            dateFinGeneration: '2026-08-01',
         });
 
         expect(mockGenerateUseCase.execute).toHaveBeenCalledWith({
-            modele_id: 'modele-1',
-            date_fin_generation: '2026-08-01',
+            modeleId: 'modele-1',
+            dateFinGeneration: '2026-08-01',
         });
     });
 

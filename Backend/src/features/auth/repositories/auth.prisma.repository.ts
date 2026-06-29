@@ -31,7 +31,17 @@ export class AuthPrismaRepository implements IAuthRepository {
     }
 
     async create(data: CreateUserData): Promise<AuthUserData> {
-        const user = await this.prisma.utilisateur.create({ data });
+        const user = await this.prisma.utilisateur.create({
+            data: {
+                nom: data.nom,
+                prenom: data.prenom,
+                email: data.email,
+                telephone: data.telephone,
+                password_hash: data.passwordHash,
+                email_confirmation_token: data.emailConfirmationToken,
+                token_expires_at: data.tokenExpiresAt,
+            },
+        });
         return this.toData(user);
     }
 
@@ -75,10 +85,10 @@ export class AuthPrismaRepository implements IAuthRepository {
             email: user.email,
             prenom: user.prenom,
             role: user.role,
-            password_hash: user.password_hash,
-            is_actif: user.is_actif,
-            email_confirmation_token: user.email_confirmation_token,
-            token_expires_at: user.token_expires_at,
+            passwordHash: user.password_hash,
+            isActif: user.is_actif,
+            emailConfirmationToken: user.email_confirmation_token,
+            tokenExpiresAt: user.token_expires_at,
         };
     }
 }

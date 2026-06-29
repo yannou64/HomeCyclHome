@@ -52,25 +52,25 @@ export function ZonesList({ zones, isLoading, error, onAdd, onEdit, onDelete }: 
             ) : (
               zones.map((zone) => (
                 <TableRow key={zone.id}>
-                  <TableCell className={styles.nomCell}>{zone.nom_zone}</TableCell>
+                  <TableCell className={styles.nomCell}>{zone.nomZone}</TableCell>
                   <TableCell>{zone.points.length} sommet{zone.points.length > 1 ? 's' : ''}</TableCell>
                   <TableCell>
-                    <span className={zone.is_active ? styles.badgeActif : styles.badgeInactif}>
-                      {zone.is_active ? 'Active' : 'Inactive'}
+                    <span className={zone.isActive ? styles.badgeActif : styles.badgeInactif}>
+                      {zone.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
                   <TableCell className={styles.actions}>
                     <button
                       className={styles.editButton}
                       onClick={() => onEdit(zone)}
-                      aria-label={`Modifier ${zone.nom_zone}`}
+                      aria-label={`Modifier ${zone.nomZone}`}
                     >
                       ✏️ Modifier
                     </button>
                     <button
                       className={styles.deleteButton}
                       onClick={() => onDelete(zone)}
-                      aria-label={`Supprimer ${zone.nom_zone}`}
+                      aria-label={`Supprimer ${zone.nomZone}`}
                     >
                       🗑️ Supprimer
                     </button>

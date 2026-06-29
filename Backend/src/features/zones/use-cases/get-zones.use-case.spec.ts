@@ -4,9 +4,9 @@ import { GetZonesUseCase } from './get-zones.use-case';
 const mockZones = [
     {
         id: 'uuid-1',
-        nom_zone: 'Lyon Centre',
-        is_active: true,
-        date_creation: new Date('2026-01-01'),
+        nomZone: 'Lyon Centre',
+        isActive: true,
+        dateCreation: new Date('2026-01-01'),
         points: [
             { latitude: 45.75, longitude: 4.83, ordre: 0 },
             { latitude: 45.76, longitude: 4.84, ordre: 1 },
@@ -15,9 +15,9 @@ const mockZones = [
     },
     {
         id: 'uuid-2',
-        nom_zone: 'Villeurbanne',
-        is_active: false,
-        date_creation: new Date('2026-02-01'),
+        nomZone: 'Villeurbanne',
+        isActive: false,
+        dateCreation: new Date('2026-02-01'),
         points: [
             { latitude: 45.77, longitude: 4.88, ordre: 0 },
             { latitude: 45.78, longitude: 4.89, ordre: 1 },

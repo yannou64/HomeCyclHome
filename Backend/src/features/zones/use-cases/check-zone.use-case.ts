@@ -15,7 +15,7 @@ export class CheckZoneUseCase {
 
         for (const zone of zones) {
             if (this.isPointInPolygon(latitude, longitude, zone.points)) {
-                return { zoneId: zone.id, nomZone: zone.nom_zone };
+                return { zoneId: zone.id, nomZone: zone.nomZone };
             }
         }
 

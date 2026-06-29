@@ -3,10 +3,10 @@ import { IPlanningRepository } from '../repositories/planning.repository.interfa
 import { CreatePauseRecurrenteUseCase } from './create-pause-recurrente.use-case';
 
 const validPayload = {
-    technicien_id: 'tech-uuid-1',
-    jour_semaine: null, // tous les jours
-    heure_debut: 720, // 12h00
-    heure_fin: 810, // 13h30
+    technicienId: 'tech-uuid-1',
+    jourSemaine: null, // tous les jours
+    heureDebut: 720, // 12h00
+    heureFin: 810, // 13h30
     description: 'Pause déjeuner',
 };
 
@@ -49,8 +49,8 @@ describe('CreatePauseRecurrenteUseCase', () => {
         expect(result.id).toBe('pause-uuid-1');
     });
 
-    it('devrait lever BadRequestException si heure_fin <= heure_debut', async () => {
-        const payload = { ...validPayload, heure_debut: 810, heure_fin: 720 };
+    it('devrait lever BadRequestException si heureFin <= heureDebut', async () => {
+        const payload = { ...validPayload, heureDebut: 810, heureFin: 720 };
 
         await expect(useCase.execute(payload)).rejects.toThrow(
             BadRequestException,

@@ -75,15 +75,15 @@ export function AdminForfaitsSection() {
                   <TableCell className={styles.descriptionCell}>
                     {item.description ?? <span className={styles.none}>—</span>}
                   </TableCell>
-                  <TableCell>{item.duree_minutes} min</TableCell>
+                  <TableCell>{item.dureeMinutes} min</TableCell>
                   <TableCell>
-                    {item.prix_actif !== null
-                      ? `${item.prix_actif} €`
+                    {item.prixActif !== null
+                      ? `${item.prixActif} €`
                       : <span className={styles.none}>—</span>}
                   </TableCell>
                   <TableCell>
-                    <span className={item.is_actif ? styles.badgeActif : styles.badgeInactif}>
-                      {item.is_actif ? 'Actif' : 'Inactif'}
+                    <span className={item.isActif ? styles.badgeActif : styles.badgeInactif}>
+                      {item.isActif ? 'Actif' : 'Inactif'}
                     </span>
                   </TableCell>
                   <TableCell className={styles.actions}>

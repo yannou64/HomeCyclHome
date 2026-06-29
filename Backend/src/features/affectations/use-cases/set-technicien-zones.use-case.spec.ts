@@ -6,13 +6,13 @@ const TECH_ID = 'tech-uuid-1';
 const ZONE_IDS = ['zone-uuid-1', 'zone-uuid-2'];
 
 const mockAffectation = {
-    technicien_id: TECH_ID,
+    technicienId: TECH_ID,
     nom: 'Dupont',
     prenom: 'Marie',
     email: 'marie.dupont@example.com',
     zones: [
-        { id: 'zone-uuid-1', nom_zone: 'Lyon Centre', is_active: true },
-        { id: 'zone-uuid-2', nom_zone: 'Lyon Nord', is_active: true },
+        { id: 'zone-uuid-1', nomZone: 'Lyon Centre', isActive: true },
+        { id: 'zone-uuid-2', nomZone: 'Lyon Nord', isActive: true },
     ],
 };
 
@@ -67,7 +67,7 @@ describe('SetTechnicienZonesUseCase', () => {
         expect(mockRepo.setZonesForTechnicien).not.toHaveBeenCalled();
     });
 
-    it('devrait lever BadRequestException si zone_ids est vide', async () => {
+    it('devrait lever BadRequestException si zoneIds est vide', async () => {
         await expect(useCase.execute(TECH_ID, [])).rejects.toThrow(
             BadRequestException,
         );

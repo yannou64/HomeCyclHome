@@ -24,9 +24,9 @@ describe('DeleteForfaitUseCase', () => {
             id: 'uuid-1',
             nom: 'Révision Express',
             description: null,
-            duree_minutes: 45,
-            is_actif: true,
-            prix_actif: null,
+            dureeMinutes: 45,
+            isActif: true,
+            prixActif: null,
         });
 
         await useCase.execute('uuid-1');

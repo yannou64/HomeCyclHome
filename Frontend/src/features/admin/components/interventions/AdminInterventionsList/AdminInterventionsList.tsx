@@ -62,7 +62,7 @@ export function AdminInterventionsList({
                     <option value="">Toutes les zones</option>
                     {zones.map((z) => (
                         <option key={z.id} value={z.id}>
-                            {z.nom_zone}
+                            {z.nomZone}
                         </option>
                     ))}
                 </select>

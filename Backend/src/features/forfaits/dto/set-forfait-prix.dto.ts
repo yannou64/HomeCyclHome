@@ -6,5 +6,5 @@ export class SetForfaitPrixDto {
     montant: number;
 
     @IsDateString()
-    date_debut: string;
+    dateDebut: string;
 }

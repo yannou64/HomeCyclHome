@@ -11,7 +11,7 @@ import styles from './ForfaitPrixDialog.module.scss';
 interface ForfaitPrixDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (payload: { montant: number; date_debut: string }) => Promise<void>;
+  onSubmit: (payload: { montant: number; dateDebut: string }) => Promise<void>;
   item: Forfait | null;
 }
 
@@ -23,12 +23,12 @@ export function ForfaitPrixDialog({
   onSubmit,
   item,
 }: ForfaitPrixDialogProps) {
-  const [form, setForm] = useState({ montant: '', date_debut: today() });
+  const [form, setForm] = useState({ montant: '', dateDebut: today() });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setForm({ montant: item?.prix_actif != null ? String(item.prix_actif) : '', date_debut: today() });
+    setForm({ montant: item?.prixActif != null ? String(item.prixActif) : '', dateDebut: today() });
     setError(null);
   }, [item, isOpen]);
 
@@ -37,7 +37,7 @@ export function ForfaitPrixDialog({
     setIsSubmitting(true);
     setError(null);
     try {
-      await onSubmit({ montant: Number(form.montant), date_debut: form.date_debut });
+      await onSubmit({ montant: Number(form.montant), dateDebut: form.dateDebut });
       onClose();
     } catch {
       setError('Une erreur est survenue lors de la mise à jour du prix.');
@@ -55,9 +55,9 @@ export function ForfaitPrixDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {item?.prix_actif !== null && item?.prix_actif !== undefined && (
+        {item?.prixActif !== null && item?.prixActif !== undefined && (
           <p className={styles.currentPrice}>
-            Prix actuel : <strong>{item.prix_actif} €</strong>
+            Prix actuel : <strong>{item.prixActif} €</strong>
           </p>
         )}
 
@@ -80,15 +80,15 @@ export function ForfaitPrixDialog({
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="date_debut">
+            <label className={styles.label} htmlFor="dateDebut">
               Date d'application
             </label>
             <input
-              id="date_debut"
+              id="dateDebut"
               type="date"
               className={styles.input}
-              value={form.date_debut}
-              onChange={(e) => setForm((f) => ({ ...f, date_debut: e.target.value }))}
+              value={form.dateDebut}
+              onChange={(e) => setForm((f) => ({ ...f, dateDebut: e.target.value }))}
               required
             />
           </div>

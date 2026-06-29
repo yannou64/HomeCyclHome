@@ -30,8 +30,8 @@ export class UpdateModelePlanificationUseCase {
         }
 
         // 2. Fusionner les valeurs pour valider l'état final
-        const heureDebut = dto.heure_debut ?? existant.heure_debut;
-        const heureFin = dto.heure_fin ?? existant.heure_fin;
+        const heureDebut = dto.heureDebut ?? existant.heureDebut;
+        const heureFin = dto.heureFin ?? existant.heureFin;
 
         if (heureFin <= heureDebut) {
             throw new BadRequestException(
@@ -40,21 +40,21 @@ export class UpdateModelePlanificationUseCase {
         }
 
         // 3. Vérifier l'absence de chevauchement en excluant ce modèle lui-même
-        const jourSemaine = dto.jour_semaine ?? existant.jour_semaine;
-        const dateDebut = dto.date_debut_validite
-            ? new Date(dto.date_debut_validite)
-            : new Date(existant.date_debut_validite);
+        const jourSemaine = dto.jourSemaine ?? existant.jourSemaine;
+        const dateDebut = dto.dateDebutValidite
+            ? new Date(dto.dateDebutValidite)
+            : new Date(existant.dateDebutValidite);
         const dateFin =
-            dto.date_fin_validite !== undefined
-                ? dto.date_fin_validite
-                    ? new Date(dto.date_fin_validite)
+            dto.dateFinValidite !== undefined
+                ? dto.dateFinValidite
+                    ? new Date(dto.dateFinValidite)
                     : null
-                : existant.date_fin_validite
-                  ? new Date(existant.date_fin_validite)
+                : existant.dateFinValidite
+                  ? new Date(existant.dateFinValidite)
                   : null;
 
         const chevauchements = await this.repo.findModelesChevauchants(
-            existant.technicien_id,
+            existant.technicienId,
             jourSemaine,
             heureDebut,
             heureFin,
@@ -70,23 +70,23 @@ export class UpdateModelePlanificationUseCase {
         }
 
         return this.repo.updateModele(id, {
-            ...(dto.jour_semaine !== undefined && {
-                jour_semaine: dto.jour_semaine,
+            ...(dto.jourSemaine !== undefined && {
+                jourSemaine: dto.jourSemaine,
             }),
-            ...(dto.heure_debut !== undefined && {
-                heure_debut: dto.heure_debut,
+            ...(dto.heureDebut !== undefined && {
+                heureDebut: dto.heureDebut,
             }),
-            ...(dto.heure_fin !== undefined && { heure_fin: dto.heure_fin }),
-            ...(dto.intervalle_minutes !== undefined && {
-                intervalle_minutes: dto.intervalle_minutes,
+            ...(dto.heureFin !== undefined && { heureFin: dto.heureFin }),
+            ...(dto.intervalleMinutes !== undefined && {
+                intervalleMinutes: dto.intervalleMinutes,
             }),
-            ...(dto.is_actif !== undefined && { is_actif: dto.is_actif }),
-            ...(dto.date_debut_validite !== undefined && {
-                date_debut_validite: new Date(dto.date_debut_validite),
+            ...(dto.isActif !== undefined && { isActif: dto.isActif }),
+            ...(dto.dateDebutValidite !== undefined && {
+                dateDebutValidite: new Date(dto.dateDebutValidite),
             }),
-            ...(dto.date_fin_validite !== undefined && {
-                date_fin_validite: dto.date_fin_validite
-                    ? new Date(dto.date_fin_validite)
+            ...(dto.dateFinValidite !== undefined && {
+                dateFinValidite: dto.dateFinValidite
+                    ? new Date(dto.dateFinValidite)
                     : null,
             }),
         });

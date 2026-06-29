@@ -47,7 +47,7 @@ function formatDate(iso: string): string {
 function grouperParJour(creneaux: Creneau[]): Map<string, Creneau[]> {
   const map = new Map<string, Creneau[]>();
   for (const c of creneaux) {
-    const jour = c.date_debut.slice(0, 10);
+    const jour = c.dateDebut.slice(0, 10);
     const existing = map.get(jour) ?? [];
     map.set(jour, [...existing, c]);
   }
@@ -95,7 +95,7 @@ export function CreneauxTab({
     void onLoad(dateDebut, dateFin);
   };
 
-  const nbDisponibles = creneaux.filter((c) => c.is_disponible).length;
+  const nbDisponibles = creneaux.filter((c) => c.isDisponible).length;
   const groupes = grouperParJour(creneaux);
 
   return (
@@ -154,7 +154,7 @@ export function CreneauxTab({
         <div className={styles.listWrapper}>
           {Array.from(groupes.entries()).map(([jour, items]) => (
             <div key={jour} className={styles.dayGroup}>
-              <h4 className={styles.dayTitle}>{formatDate(items[0].date_debut)}</h4>
+              <h4 className={styles.dayTitle}>{formatDate(items[0].dateDebut)}</h4>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -167,19 +167,19 @@ export function CreneauxTab({
                   {items.map((creneau) => (
                     <TableRow key={creneau.id}>
                       <TableCell className={styles.heure}>
-                        {formatHeure(creneau.date_debut)}
+                        {formatHeure(creneau.dateDebut)}
                       </TableCell>
                       <TableCell>
                         <span
                           className={
-                            creneau.is_disponible ? styles.badgeDisponible : styles.badgeReserve
+                            creneau.isDisponible ? styles.badgeDisponible : styles.badgeReserve
                           }
                         >
-                          {creneau.is_disponible ? 'Disponible' : 'Réservé'}
+                          {creneau.isDisponible ? 'Disponible' : 'Réservé'}
                         </span>
                       </TableCell>
                       <TableCell className={styles.actions}>
-                        {creneau.is_disponible && (
+                        {creneau.isDisponible && (
                           <button
                             className={styles.deleteButton}
                             onClick={() => setDeletingItem(creneau)}
@@ -199,7 +199,7 @@ export function CreneauxTab({
           <div className={styles.footer}>
             <span className={styles.count}>
               {creneaux.length} créneau{creneaux.length > 1 ? 'x' : ''} —{' '}
-              {creneaux.filter((c) => c.is_disponible).length} disponible{creneaux.filter((c) => c.is_disponible).length > 1 ? 's' : ''}
+              {creneaux.filter((c) => c.isDisponible).length} disponible{creneaux.filter((c) => c.isDisponible).length > 1 ? 's' : ''}
             </span>
           </div>
         </div>

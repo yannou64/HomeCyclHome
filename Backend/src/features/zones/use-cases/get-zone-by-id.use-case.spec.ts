@@ -4,9 +4,9 @@ import { GetZoneByIdUseCase } from './get-zone-by-id.use-case';
 
 const mockZone = {
     id: 'uuid-1',
-    nom_zone: 'Lyon Centre',
-    is_active: true,
-    date_creation: new Date('2026-01-01'),
+    nomZone: 'Lyon Centre',
+    isActive: true,
+    dateCreation: new Date('2026-01-01'),
     points: [
         { latitude: 45.75, longitude: 4.83, ordre: 0 },
         { latitude: 45.76, longitude: 4.84, ordre: 1 },

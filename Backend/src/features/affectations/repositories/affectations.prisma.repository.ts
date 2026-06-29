@@ -101,7 +101,7 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
 
     private toDto(technicien: TechnicienAvecZones): AffectationDto {
         return {
-            technicien_id: technicien.id,
+            technicienId: technicien.id,
             nom: technicien.nom,
             prenom: technicien.prenom,
             email: technicien.email,
@@ -114,8 +114,8 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
     private toZoneDto(zone: Zone): ZoneAffecteeDto {
         return {
             id: zone.id,
-            nom_zone: zone.nom_zone,
-            is_active: zone.is_active,
+            nomZone: zone.nom_zone,
+            isActive: zone.is_active,
         };
     }
 }

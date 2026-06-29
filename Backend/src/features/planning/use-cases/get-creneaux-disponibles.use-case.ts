@@ -48,32 +48,32 @@ export class GetCreneauxDisponiblesUseCase {
         for (let i = 0; i < creneaux.length; i++) {
             const creneau = creneaux[i];
 
-            if (!creneau.is_disponible) continue;
+            if (!creneau.isDisponible) continue;
 
             // Buffer avant : le slot précédent doit exister, être disponible ET adjacent
             // Un gap > intervalleMinutes = trou causé par une pause → pas de buffer de déplacement
             if (i === 0) continue;
             const prevCreneau = creneaux[i - 1];
-            if (!prevCreneau.is_disponible) continue;
+            if (!prevCreneau.isDisponible) continue;
             const ecartMs =
-                new Date(creneau.date_debut).getTime() -
-                new Date(prevCreneau.date_debut).getTime();
+                new Date(creneau.dateDebut).getTime() -
+                new Date(prevCreneau.dateDebut).getTime();
             if (ecartMs > creneau.intervalleMinutes * 60 * 1000) continue;
 
-            const dateDebutIntervention = new Date(creneau.date_debut);
+            const dateDebutIntervention = new Date(creneau.dateDebut);
             const dateFinIntervention = new Date(
                 dateDebutIntervention.getTime() + dureeMs,
             );
 
             // Vérifier que tous les slots couverts par la durée du forfait sont disponibles
-            // Un slot j est couvert si son date_debut est dans [dateDebut, dateFinIntervention)
+            // Un slot j est couvert si son dateDebut est dans [dateDebut, dateFinIntervention)
             let dernierSlotIdx = i;
             let slotIntermediaireReserve = false;
 
             for (let j = i; j < creneaux.length; j++) {
-                const slotDebut = new Date(creneaux[j].date_debut);
+                const slotDebut = new Date(creneaux[j].dateDebut);
                 if (slotDebut >= dateFinIntervention) break;
-                if (!creneaux[j].is_disponible) {
+                if (!creneaux[j].isDisponible) {
                     slotIntermediaireReserve = true;
                     break;
                 }
@@ -86,17 +86,17 @@ export class GetCreneauxDisponiblesUseCase {
             const bufferApresIdx = dernierSlotIdx + 1;
             if (
                 bufferApresIdx >= creneaux.length ||
-                !creneaux[bufferApresIdx].is_disponible
+                !creneaux[bufferApresIdx].isDisponible
             ) {
                 continue;
             }
 
             results.push({
                 id: creneau.id,
-                date_debut: creneau.date_debut,
-                date_fin: dateFinIntervention.toISOString(),
-                technicien_id: creneau.technicien_id,
-                zone_id: creneau.zone_id,
+                dateDebut: creneau.dateDebut,
+                dateFin: dateFinIntervention.toISOString(),
+                technicienId: creneau.technicienId,
+                zoneId: creneau.zoneId,
             });
         }
 

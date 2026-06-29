@@ -10,7 +10,7 @@ interface ZoneFormProps {
 }
 
 export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
-  const [nomZone, setNomZone] = useState(zone?.nom_zone ?? '');
+  const [nomZone, setNomZone] = useState(zone?.nomZone ?? '');
   const [points, setPoints] = useState<ZonePoint[]>(zone?.points ?? []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
 
     setIsSubmitting(true);
     try {
-      await onSubmit({ nom_zone: nomZone.trim(), points });
+      await onSubmit({ nomZone: nomZone.trim(), points });
       onCancel(); // retour à la liste après succès
     } catch {
       setError('Une erreur est survenue. Veuillez réessayer.');

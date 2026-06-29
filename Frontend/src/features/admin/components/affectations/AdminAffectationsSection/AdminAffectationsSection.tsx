@@ -35,7 +35,7 @@ export function AdminAffectationsSection() {
   };
 
   const handleFormSubmit = async (technicienId: string, zoneIds: string[]) => {
-    await setZones(technicienId, { zone_ids: zoneIds });
+    await setZones(technicienId, { zoneIds: zoneIds });
   };
 
   return (
@@ -69,7 +69,7 @@ export function AdminAffectationsSection() {
               </TableRow>
             ) : (
               items.map((item) => (
-                <TableRow key={item.technicien_id}>
+                <TableRow key={item.technicienId}>
                   <TableCell className={styles.technicienCell}>
                     {item.prenom} {item.nom}
                   </TableCell>
@@ -81,9 +81,9 @@ export function AdminAffectationsSection() {
                         item.zones.map((zone) => (
                           <span
                             key={zone.id}
-                            className={zone.is_active ? styles.badgeZone : styles.badgeZoneInactive}
+                            className={zone.isActive ? styles.badgeZone : styles.badgeZoneInactive}
                           >
-                            {zone.nom_zone}
+                            {zone.nomZone}
                           </span>
                         ))
                       )}
@@ -128,7 +128,7 @@ export function AdminAffectationsSection() {
       <AffectationDeleteDialog
         isOpen={!!deletingItem}
         onClose={() => setDeletingItem(null)}
-        onConfirm={() => deleteAffectation(deletingItem!.technicien_id)}
+        onConfirm={() => deleteAffectation(deletingItem!.technicienId)}
         item={deletingItem}
       />
     </div>

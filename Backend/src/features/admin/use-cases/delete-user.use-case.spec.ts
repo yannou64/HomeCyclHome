@@ -26,8 +26,8 @@ describe('DeleteUserUseCase', () => {
             email: 'sophie@email.com',
             telephone: '0601020304',
             role: 'client',
-            is_actif: true,
-            date_creation: new Date(),
+            isActif: true,
+            dateCreation: new Date(),
         });
 
         await useCase.execute('admin-123', 'user-456');

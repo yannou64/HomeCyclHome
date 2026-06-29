@@ -345,13 +345,13 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
     async createPhotos(
         interventionId: string,
-        photos: { url_s3: string; cle_s3: string }[],
+        photos: { urlS3: string; cleS3: string }[],
         contexte: 'client' | 'technicien',
     ): Promise<void> {
         await this.prisma.photo.createMany({
             data: photos.map((p) => ({
-                url_s3: p.url_s3,
-                cle_s3: p.cle_s3,
+                url_s3: p.urlS3,
+                cle_s3: p.cleS3,
                 contexte,
                 intervention_id: interventionId,
             })),
@@ -453,10 +453,10 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             },
             photosClient: intervention.photos
                 .filter((p) => p.contexte === 'client')
-                .map((p) => ({ id: p.id, url_s3: p.url_s3 })),
+                .map((p) => ({ id: p.id, urlS3: p.url_s3 })),
             photosTechnicien: intervention.photos
                 .filter((p) => p.contexte === 'technicien')
-                .map((p) => ({ id: p.id, url_s3: p.url_s3 })),
+                .map((p) => ({ id: p.id, urlS3: p.url_s3 })),
         };
     }
 }

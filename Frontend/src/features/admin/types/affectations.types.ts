@@ -1,11 +1,11 @@
 export type ZoneAffectee = {
   id: string;
-  nom_zone: string;
-  is_active: boolean;
+  nomZone: string;
+  isActive: boolean;
 };
 
 export type Affectation = {
-  technicien_id: string;
+  technicienId: string;
   nom: string;
   prenom: string;
   email: string;
@@ -13,5 +13,5 @@ export type Affectation = {
 };
 
 export type SetTechnicienZonesPayload = {
-  zone_ids: string[];
+  zoneIds: string[];
 };

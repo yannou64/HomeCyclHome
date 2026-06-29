@@ -61,14 +61,14 @@ export function ModelePlanificationFormDialog({
       setFormError(null);
 
       if (isEditMode && item) {
-        setZoneId(item.zone_id);
-        setJourSemaine(String(item.jour_semaine));
-        setHeureDebut(minutesToTime(item.heure_debut));
-        setHeureFin(minutesToTime(item.heure_fin));
-        setIntervalleMinutes(String(item.intervalle_minutes));
-        setIsActif(item.is_actif);
-        setDateDebutValidite(item.date_debut_validite.slice(0, 10));
-        setDateFinValidite(item.date_fin_validite ? item.date_fin_validite.slice(0, 10) : '');
+        setZoneId(item.zoneId);
+        setJourSemaine(String(item.jourSemaine));
+        setHeureDebut(minutesToTime(item.heureDebut));
+        setHeureFin(minutesToTime(item.heureFin));
+        setIntervalleMinutes(String(item.intervalleMinutes));
+        setIsActif(item.isActif);
+        setDateDebutValidite(item.dateDebutValidite.slice(0, 10));
+        setDateFinValidite(item.dateFinValidite ? item.dateFinValidite.slice(0, 10) : '');
       } else {
         setZoneId('');
         setJourSemaine('0');
@@ -117,15 +117,15 @@ export function ModelePlanificationFormDialog({
     setFormError(null);
 
     const payload: CreateModelePlanificationPayload = {
-      technicien_id: technicienId,
-      zone_id: zoneId,
-      jour_semaine: parseInt(jourSemaine, 10),
-      heure_debut: debut,
-      heure_fin: fin,
-      intervalle_minutes: intervalle,
-      is_actif: isActif,
-      date_debut_validite: new Date(dateDebutValidite).toISOString(),
-      date_fin_validite: dateFinValidite ? new Date(dateFinValidite).toISOString() : null,
+      technicienId: technicienId,
+      zoneId: zoneId,
+      jourSemaine: parseInt(jourSemaine, 10),
+      heureDebut: debut,
+      heureFin: fin,
+      intervalleMinutes: intervalle,
+      isActif: isActif,
+      dateDebutValidite: new Date(dateDebutValidite).toISOString(),
+      dateFinValidite: dateFinValidite ? new Date(dateFinValidite).toISOString() : null,
     };
 
     try {
@@ -170,7 +170,7 @@ export function ModelePlanificationFormDialog({
                 <option value="">— Sélectionner une zone —</option>
                 {zones.map((z) => (
                   <option key={z.id} value={z.id}>
-                    {z.nom_zone}{!z.is_active ? ' (inactive)' : ''}
+                    {z.nomZone}{!z.isActive ? ' (inactive)' : ''}
                   </option>
                 ))}
               </select>

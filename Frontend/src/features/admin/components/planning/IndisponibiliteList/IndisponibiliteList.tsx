@@ -74,8 +74,8 @@ export function IndisponibiliteList({
             ) : (
               indisponibilites.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{formatDatetime(item.date_debut)}</TableCell>
-                  <TableCell>{formatDatetime(item.date_fin)}</TableCell>
+                  <TableCell>{formatDatetime(item.dateDebut)}</TableCell>
+                  <TableCell>{formatDatetime(item.dateFin)}</TableCell>
                   <TableCell className={styles.motif}>
                     {item.motif ?? <span className={styles.none}>—</span>}
                   </TableCell>

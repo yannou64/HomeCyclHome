@@ -39,7 +39,7 @@ export function useAdminForfaits() {
     await fetchItems();
   };
 
-  const setPrix = async (id: string, payload: { montant: number; date_debut: string }) => {
+  const setPrix = async (id: string, payload: { montant: number; dateDebut: string }) => {
     await adminForfaitsService.setPrix(id, payload);
     await fetchItems();
   };

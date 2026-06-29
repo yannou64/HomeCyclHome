@@ -68,8 +68,8 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
             data: {
                 nom: data.nom,
                 description: data.description,
-                duree_minutes: data.duree_minutes,
-                is_actif: data.is_actif ?? true,
+                duree_minutes: data.dureeMinutes,
+                is_actif: data.isActif ?? true,
             },
         });
         return this.toDto(forfait);
@@ -78,7 +78,12 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
     async update(id: string, data: UpdateForfaitData): Promise<ForfaitDto> {
         const forfait = await this.prisma.forfait.update({
             where: { id },
-            data,
+            data: {
+                nom: data.nom,
+                description: data.description,
+                ...(data.dureeMinutes !== undefined && { duree_minutes: data.dureeMinutes }),
+                ...(data.isActif !== undefined && { is_actif: data.isActif }),
+            },
         });
         return this.toDto(forfait);
     }
@@ -108,9 +113,9 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
             id: forfait.id,
             nom: forfait.nom,
             description: forfait.description,
-            duree_minutes: forfait.duree_minutes,
-            is_actif: forfait.is_actif,
-            prix_actif: forfait.historique_prix?.[0]
+            dureeMinutes: forfait.duree_minutes,
+            isActif: forfait.is_actif,
+            prixActif: forfait.historique_prix?.[0]
                 ? Number(forfait.historique_prix[0].montant)
                 : null,
         };

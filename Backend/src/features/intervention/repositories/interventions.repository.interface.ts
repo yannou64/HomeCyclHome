@@ -88,7 +88,7 @@ export interface IInterventionsRepository {
     getPhotosCount(interventionId: string): Promise<number>;
     createPhotos(
         interventionId: string,
-        photos: { url_s3: string; cle_s3: string }[],
+        photos: { urlS3: string; cleS3: string }[],
         contexte: 'client' | 'technicien',
     ): Promise<void>;
 }

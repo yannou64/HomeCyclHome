@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from '../controllers/users.controller';
-import { UsersPrismaRepository } from '../repositories/users.prisma.repository';
-import { DeleteAccountUseCase } from '../use-cases/delete-account.use-case';
-import { GetProfileUseCase } from '../use-cases/get-profile.use-case';
-import { UpdateProfileUseCase } from '../use-cases/update-profile.use-case';
+import { UsersController } from './controllers/users.controller';
+import { UsersPrismaRepository } from './repositories/users.prisma.repository';
+import { DeleteAccountUseCase } from './use-cases/delete-account.use-case';
+import { GetProfileUseCase } from './use-cases/get-profile.use-case';
+import { UpdateProfileUseCase } from './use-cases/update-profile.use-case';
 
 // Token utilisé pour injecter l'interface IUsersRepository
 // Les interfaces disparaissent à la compilation — le token est l'identifiant runtime

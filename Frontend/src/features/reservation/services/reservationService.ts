@@ -23,10 +23,10 @@ export const reservationService = {
         return apiClient
             .get<CreneauDisponibleDto[]>('/creneaux', {
                 params: {
-                    zone_id: params.zoneId,
-                    duree_minutes: params.dureeMinutes,
-                    date_debut: params.dateDebut,
-                    date_fin: params.dateFin,
+                    zoneId: params.zoneId,
+                    dureeMinutes: params.dureeMinutes,
+                    dateDebut: params.dateDebut,
+                    dateFin: params.dateFin,
                 },
             })
             .then((r) => r.data);

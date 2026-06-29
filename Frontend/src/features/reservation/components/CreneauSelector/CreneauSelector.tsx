@@ -62,8 +62,8 @@ export function CreneauSelector() {
                       .slice(0, -1)
                       .map(
                           (c, i) =>
-                              new Date(creneaux[i + 1].date_debut).getTime() -
-                              new Date(c.date_debut).getTime(),
+                              new Date(creneaux[i + 1].dateDebut).getTime() -
+                              new Date(c.dateDebut).getTime(),
                       ),
               )
             : 30 * 60 * 1000;
@@ -100,9 +100,9 @@ export function CreneauSelector() {
 
         const creneauInfo: CreneauInfo = {
             creneauId: creneau.id,
-            dateDebut: creneau.date_debut,
-            dateFin: creneau.date_fin,
-            technicienId: creneau.technicien_id,
+            dateDebut: creneau.dateDebut,
+            dateFin: creneau.dateFin,
+            technicienId: creneau.technicienId,
         };
 
         setCreneau(creneauInfo);
@@ -112,24 +112,24 @@ export function CreneauSelector() {
     // Filtre défensif : exclut les créneaux dont date_fin déborde dans un gap (ex: pause déjeuner).
     // Le backend devrait déjà garantir cela, mais ce filtre évite toute incohérence visuelle.
     const creneauxValides = creneaux.filter((c) => {
-        const dateFin = new Date(c.date_fin).getTime();
+        const dateFin = new Date(c.dateFin).getTime();
         const slotsAvantFin = creneaux.filter(
-            (s) => new Date(s.date_debut).getTime() < dateFin,
+            (s) => new Date(s.dateDebut).getTime() < dateFin,
         );
         const dernierSlot = slotsAvantFin[slotsAvantFin.length - 1];
         if (!dernierSlot) return false;
-        return new Date(dernierSlot.date_debut).getTime() >= dateFin - slotDurationMs;
+        return new Date(dernierSlot.dateDebut).getTime() >= dateFin - slotDurationMs;
     });
 
     const events = creneauxValides.map((c) => {
         const isSelected = c.id === selectedId;
         return {
             id: c.id,
-            start: c.date_debut,
+            start: c.dateDebut,
             end: isSelected
-                ? c.date_fin
-                : new Date(new Date(c.date_debut).getTime() + slotDurationMs).toISOString(),
-            extendedProps: { dateFin: c.date_fin, isSelected },
+                ? c.dateFin
+                : new Date(new Date(c.dateDebut).getTime() + slotDurationMs).toISOString(),
+            extendedProps: { dateFin: c.dateFin, isSelected },
             backgroundColor: isSelected ? '#f26419' : '#d6f6dd',
             borderColor: isSelected ? '#f26419' : '#d6f6dd',
             textColor: isSelected ? '#ffffff' : '#4f3b30',
@@ -141,7 +141,7 @@ export function CreneauSelector() {
 
     const firstAvailableDate =
         creneauxValides.length > 0
-            ? toLocalDateString(new Date(creneauxValides[0].date_debut))
+            ? toLocalDateString(new Date(creneauxValides[0].dateDebut))
             : today;
 
     return (

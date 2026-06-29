@@ -7,8 +7,8 @@ export type AdminUser = {
     email: string;
     telephone: string;
     role: Role;
-    is_actif: boolean;
-    date_creation: string;
+    isActif: boolean;
+    dateCreation: string;
 };
 
 export type PaginationMeta = {
@@ -28,7 +28,7 @@ export type GetUsersParams = {
     limit?: number;
     search?: string;
     role?: Role;
-    is_actif?: boolean;
+    isActif?: boolean;
 };
 
 export type CreateUserPayload = {

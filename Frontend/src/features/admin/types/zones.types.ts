@@ -6,19 +6,19 @@ export type ZonePoint = {
 
 export type Zone = {
   id: string;
-  nom_zone: string;
-  is_active: boolean;
-  date_creation: string;
+  nomZone: string;
+  isActive: boolean;
+  dateCreation: string;
   points: ZonePoint[];
 };
 
 export type CreateZonePayload = {
-  nom_zone: string;
+  nomZone: string;
   points: ZonePoint[];
 };
 
 export type UpdateZonePayload = {
-  nom_zone?: string;
-  is_active?: boolean;
+  nomZone?: string;
+  isActive?: boolean;
   points?: ZonePoint[];
 };

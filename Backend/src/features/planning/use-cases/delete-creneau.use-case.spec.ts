@@ -5,16 +5,16 @@ import { DeleteCreneauUseCase } from './delete-creneau.use-case';
 
 const mockCreneauDisponible: CreneauDto = {
     id: 'creneau-uuid-1',
-    date_debut: '2026-06-01T09:00:00.000Z',
-    date_fin: null,
-    is_disponible: true,
-    zone_id: 'zone-uuid',
-    modele_planification_id: 'modele-uuid',
+    dateDebut: '2026-06-01T09:00:00.000Z',
+    dateFin: null,
+    isDisponible: true,
+    zoneId: 'zone-uuid',
+    modelePlanificationId: 'modele-uuid',
 };
 
 const mockCreneauReserve: CreneauDto = {
     ...mockCreneauDisponible,
-    is_disponible: false,
+    isDisponible: false,
 };
 
 function buildMockRepo(
@@ -74,7 +74,7 @@ describe('DeleteCreneauUseCase', () => {
         expect(mockRepo.deleteCreneau).not.toHaveBeenCalled();
     });
 
-    it('devrait lever ConflictException si le créneau est réservé (is_disponible=false)', async () => {
+    it('devrait lever ConflictException si le créneau est réservé (isDisponible=false)', async () => {
         mockRepo.findCreneauById.mockResolvedValue(mockCreneauReserve);
 
         await expect(useCase.execute('creneau-uuid-1')).rejects.toThrow(

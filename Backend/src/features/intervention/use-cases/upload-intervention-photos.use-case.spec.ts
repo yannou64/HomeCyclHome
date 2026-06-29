@@ -75,9 +75,9 @@ describe('UploadInterventionPhotosUseCase', () => {
             expect.arrayContaining([
                 expect.objectContaining({
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    url_s3: expect.any(String),
+                    urlS3: expect.any(String),
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    cle_s3: expect.any(String),
+                    cleS3: expect.any(String),
                 }),
             ]),
             'client',

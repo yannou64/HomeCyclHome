@@ -3,8 +3,8 @@ import { ForfaitDto } from '../dto/forfait.dto';
 export type CreateForfaitData = {
     nom: string;
     description?: string;
-    duree_minutes: number;
-    is_actif?: boolean;
+    dureeMinutes: number;
+    isActif?: boolean;
 };
 
 export type UpdateForfaitData = Partial<CreateForfaitData>;

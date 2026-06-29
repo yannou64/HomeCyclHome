@@ -25,7 +25,7 @@ export class ZonePointInputDto {
 export class CreateZoneDto {
     @IsString()
     @IsNotEmpty()
-    nom_zone: string;
+    nomZone: string;
 
     @IsArray()
     @ArrayMinSize(3)

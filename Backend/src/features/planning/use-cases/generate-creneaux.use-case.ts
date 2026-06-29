@@ -11,10 +11,10 @@ import {
 } from '../repositories/planning.repository.interface';
 
 export type GenerateCreneauxInput = {
-    modele_id: string;
+    modeleId: string;
     // Borne EXCLUSIVE : les créneaux sont générés pour les jours strictement AVANT cette date.
-    // Si absent : date_fin_validite du modèle (inclusive → convertie) ou début + MAX_MOIS.
-    date_fin_generation?: string;
+    // Si absent : dateFinValidite du modèle (inclusive → convertie) ou début + MAX_MOIS.
+    dateFinGeneration?: string;
 };
 
 const MAX_MOIS = 6;
@@ -27,15 +27,15 @@ export class GenerateCreneauxUseCase {
 
     async execute(input: GenerateCreneauxInput): Promise<GenerationRapportDto> {
         // 1. Charger le modèle
-        const modele = await this.repo.findModeleById(input.modele_id);
+        const modele = await this.repo.findModeleById(input.modeleId);
         if (!modele) {
             throw new NotFoundException(
-                `Modèle de planification introuvable : ${input.modele_id}`,
+                `Modèle de planification introuvable : ${input.modeleId}`,
             );
         }
 
         // 2. Déterminer la plage de génération
-        const debut = new Date(modele.date_debut_validite);
+        const debut = new Date(modele.dateDebutValidite);
         debut.setUTCHours(0, 0, 0, 0);
 
         // Limite maximale (exclusive) : 6 mois après le début de validité
@@ -44,13 +44,13 @@ export class GenerateCreneauxUseCase {
         limiteMax.setUTCHours(0, 0, 0, 0);
 
         let fin: Date;
-        if (input.date_fin_generation) {
-            // date_fin_generation est une borne exclusive : on génère les jours AVANT cette date
-            fin = new Date(input.date_fin_generation);
+        if (input.dateFinGeneration) {
+            // dateFinGeneration est une borne exclusive : on génère les jours AVANT cette date
+            fin = new Date(input.dateFinGeneration);
             fin.setUTCHours(0, 0, 0, 0);
-        } else if (modele.date_fin_validite) {
-            // date_fin_validite est inclusive → on ajoute 1 jour pour en faire une borne exclusive
-            fin = new Date(modele.date_fin_validite);
+        } else if (modele.dateFinValidite) {
+            // dateFinValidite est inclusive → on ajoute 1 jour pour en faire une borne exclusive
+            fin = new Date(modele.dateFinValidite);
             fin.setUTCHours(0, 0, 0, 0);
             fin.setUTCDate(fin.getUTCDate() + 1);
         } else {
@@ -73,16 +73,16 @@ export class GenerateCreneauxUseCase {
         // 4. Charger les données en parallèle
         const [pauses, indisponibilites, existingDatesArray, conflits] =
             await Promise.all([
-                this.repo.findPausesByTechnicien(modele.technicien_id),
+                this.repo.findPausesByTechnicien(modele.technicienId),
                 this.repo.findIndisponibilitesByTechnicien(
-                    modele.technicien_id,
+                    modele.technicienId,
                 ),
                 this.repo.findCreneauxDateDebutByModele(
-                    input.modele_id,
+                    input.modeleId,
                     debut,
                     fin,
                 ),
-                this.repo.countCreneauxConflits(input.modele_id, debut, fin),
+                this.repo.countCreneauxConflits(input.modeleId, debut, fin),
             ]);
 
         // Set pour la vérification d'idempotence en O(1)
@@ -99,7 +99,7 @@ export class GenerateCreneauxUseCase {
             // Conversion JS day (0=dim) → modèle day (0=lun)
             const jourModele = (cursor.getUTCDay() + 6) % 7;
 
-            if (jourModele === modele.jour_semaine) {
+            if (jourModele === modele.jourSemaine) {
                 // Vérifier si ce jour entier est couvert par une indisponibilité
                 const estIndisponible = this.estJourIndisponible(
                     cursor,
@@ -107,8 +107,8 @@ export class GenerateCreneauxUseCase {
                 );
 
                 const nbSlotsParJour = Math.floor(
-                    (modele.heure_fin - modele.heure_debut) /
-                        modele.intervalle_minutes,
+                    (modele.heureFin - modele.heureDebut) /
+                        modele.intervalleMinutes,
                 );
 
                 if (estIndisponible) {
@@ -116,9 +116,9 @@ export class GenerateCreneauxUseCase {
                 } else {
                     // Générer les slots de la journée
                     for (
-                        let heure = modele.heure_debut;
-                        heure < modele.heure_fin;
-                        heure += modele.intervalle_minutes
+                        let heure = modele.heureDebut;
+                        heure < modele.heureFin;
+                        heure += modele.intervalleMinutes
                     ) {
                         // heure est en minutes depuis minuit, heure Paris locale.
                         // On calcule d'abord la date en traitant l'heure comme UTC,
@@ -149,11 +149,11 @@ export class GenerateCreneauxUseCase {
                         }
 
                         batch.push({
-                            date_debut: slotDate,
-                            date_fin: null,
-                            is_disponible: true,
-                            zone_id: modele.zone_id,
-                            modele_planification_id: modele.id,
+                            dateDebut: slotDate,
+                            dateFin: null,
+                            isDisponible: true,
+                            zoneId: modele.zoneId,
+                            modelePlanificationId: modele.id,
                         });
                     }
                 }
@@ -183,8 +183,8 @@ export class GenerateCreneauxUseCase {
         jourFin.setUTCHours(23, 59, 59, 999);
 
         return indisponibilites.some((indispo) => {
-            const indispoDebut = new Date(indispo.date_debut);
-            const indispoFin = new Date(indispo.date_fin);
+            const indispoDebut = new Date(indispo.dateDebut);
+            const indispoFin = new Date(indispo.dateFin);
             return indispoDebut <= jourFin && indispoFin >= jourDebut;
         });
     }
@@ -207,13 +207,13 @@ export class GenerateCreneauxUseCase {
         return pauses.some((pause) => {
             // La pause s'applique si elle est quotidienne (null) ou sur ce jour précis
             const appliqueAuJour =
-                pause.jour_semaine === null ||
-                pause.jour_semaine === jourModele;
-            // Le slot est couvert si heure >= debut_pause ET heure < fin_pause
+                pause.jourSemaine === null ||
+                pause.jourSemaine === jourModele;
+            // Le slot est couvert si heure >= heureDebut ET heure < heureFin
             return (
                 appliqueAuJour &&
-                heure >= pause.heure_debut &&
-                heure < pause.heure_fin
+                heure >= pause.heureDebut &&
+                heure < pause.heureFin
             );
         });
     }

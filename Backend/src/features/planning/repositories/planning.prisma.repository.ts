@@ -87,15 +87,15 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     ): Promise<ModelePlanificationDto> {
         const modele = await this.prisma.modelePlanification.create({
             data: {
-                technicien_id: data.technicien_id,
-                zone_id: data.zone_id,
-                jour_semaine: data.jour_semaine,
-                heure_debut: data.heure_debut,
-                heure_fin: data.heure_fin,
-                intervalle_minutes: data.intervalle_minutes,
-                is_actif: data.is_actif,
-                date_debut_validite: data.date_debut_validite,
-                date_fin_validite: data.date_fin_validite ?? null,
+                technicien_id: data.technicienId,
+                zone_id: data.zoneId,
+                jour_semaine: data.jourSemaine,
+                heure_debut: data.heureDebut,
+                heure_fin: data.heureFin,
+                intervalle_minutes: data.intervalleMinutes,
+                is_actif: data.isActif,
+                date_debut_validite: data.dateDebutValidite,
+                date_fin_validite: data.dateFinValidite ?? null,
             },
         });
         return this.toModeleDto(modele);
@@ -108,25 +108,25 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         const modele = await this.prisma.modelePlanification.update({
             where: { id },
             data: {
-                ...(data.jour_semaine !== undefined && {
-                    jour_semaine: data.jour_semaine,
+                ...(data.jourSemaine !== undefined && {
+                    jour_semaine: data.jourSemaine,
                 }),
-                ...(data.heure_debut !== undefined && {
-                    heure_debut: data.heure_debut,
+                ...(data.heureDebut !== undefined && {
+                    heure_debut: data.heureDebut,
                 }),
-                ...(data.heure_fin !== undefined && {
-                    heure_fin: data.heure_fin,
+                ...(data.heureFin !== undefined && {
+                    heure_fin: data.heureFin,
                 }),
-                ...(data.intervalle_minutes !== undefined && {
-                    intervalle_minutes: data.intervalle_minutes,
+                ...(data.intervalleMinutes !== undefined && {
+                    intervalle_minutes: data.intervalleMinutes,
                 }),
-                ...(data.is_actif !== undefined && { is_actif: data.is_actif }),
-                ...(data.date_debut_validite !== undefined && {
-                    date_debut_validite: data.date_debut_validite,
+                ...(data.isActif !== undefined && { is_actif: data.isActif }),
+                ...(data.dateDebutValidite !== undefined && {
+                    date_debut_validite: data.dateDebutValidite,
                 }),
-                // date_fin_validite peut être explicitement null (suppression de la date de fin)
-                ...(data.date_fin_validite !== undefined && {
-                    date_fin_validite: data.date_fin_validite,
+                // dateFinValidite peut être explicitement null (suppression de la date de fin)
+                ...(data.dateFinValidite !== undefined && {
+                    date_fin_validite: data.dateFinValidite,
                 }),
             },
         });
@@ -159,10 +159,10 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     async createPause(data: CreatePauseData): Promise<PauseRecurrenteDto> {
         const pause = await this.prisma.pauseRecurrente.create({
             data: {
-                technicien_id: data.technicien_id,
-                jour_semaine: data.jour_semaine ?? null,
-                heure_debut: data.heure_debut,
-                heure_fin: data.heure_fin,
+                technicien_id: data.technicienId,
+                jour_semaine: data.jourSemaine ?? null,
+                heure_debut: data.heureDebut,
+                heure_fin: data.heureFin,
                 description: data.description ?? null,
             },
         });
@@ -199,9 +199,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     ): Promise<IndisponibiliteDto> {
         const indispo = await this.prisma.indisponibilite.create({
             data: {
-                technicien_id: data.technicien_id,
-                date_debut: data.date_debut,
-                date_fin: data.date_fin,
+                technicien_id: data.technicienId,
+                date_debut: data.dateDebut,
+                date_fin: data.dateFin,
                 motif: data.motif ?? null,
             },
         });
@@ -266,11 +266,11 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     async createManyCreneaux(data: CreateCreneauData[]): Promise<number> {
         const result = await this.prisma.creneau.createMany({
             data: data.map((c) => ({
-                date_debut: c.date_debut,
-                date_fin: c.date_fin,
-                is_disponible: c.is_disponible,
-                zone_id: c.zone_id,
-                modele_planification_id: c.modele_planification_id,
+                date_debut: c.dateDebut,
+                date_fin: c.dateFin,
+                is_disponible: c.isDisponible,
+                zone_id: c.zoneId,
+                modele_planification_id: c.modelePlanificationId,
             })),
         });
         return result.count;
@@ -340,25 +340,25 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     private toModeleDto(m: ModelePlanification): ModelePlanificationDto {
         return {
             id: m.id,
-            technicien_id: m.technicien_id,
-            zone_id: m.zone_id,
-            jour_semaine: m.jour_semaine,
-            heure_debut: m.heure_debut,
-            heure_fin: m.heure_fin,
-            intervalle_minutes: m.intervalle_minutes,
-            is_actif: m.is_actif,
-            date_debut_validite: m.date_debut_validite.toISOString(),
-            date_fin_validite: m.date_fin_validite?.toISOString() ?? null,
+            technicienId: m.technicien_id,
+            zoneId: m.zone_id,
+            jourSemaine: m.jour_semaine,
+            heureDebut: m.heure_debut,
+            heureFin: m.heure_fin,
+            intervalleMinutes: m.intervalle_minutes,
+            isActif: m.is_actif,
+            dateDebutValidite: m.date_debut_validite.toISOString(),
+            dateFinValidite: m.date_fin_validite?.toISOString() ?? null,
         };
     }
 
     private toPauseDto(p: PauseRecurrente): PauseRecurrenteDto {
         return {
             id: p.id,
-            technicien_id: p.technicien_id,
-            jour_semaine: p.jour_semaine,
-            heure_debut: p.heure_debut,
-            heure_fin: p.heure_fin,
+            technicienId: p.technicien_id,
+            jourSemaine: p.jour_semaine,
+            heureDebut: p.heure_debut,
+            heureFin: p.heure_fin,
             description: p.description,
         };
     }
@@ -366,9 +366,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     private toIndisponibiliteDto(i: Indisponibilite): IndisponibiliteDto {
         return {
             id: i.id,
-            technicien_id: i.technicien_id,
-            date_debut: i.date_debut.toISOString(),
-            date_fin: i.date_fin.toISOString(),
+            technicienId: i.technicien_id,
+            dateDebut: i.date_debut.toISOString(),
+            dateFin: i.date_fin.toISOString(),
             motif: i.motif,
         };
     }
@@ -376,11 +376,11 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     private toCreneauDto(c: Creneau): CreneauDto {
         return {
             id: c.id,
-            date_debut: c.date_debut.toISOString(),
-            date_fin: c.date_fin?.toISOString() ?? null,
-            is_disponible: c.is_disponible,
-            zone_id: c.zone_id,
-            modele_planification_id: c.modele_planification_id,
+            dateDebut: c.date_debut.toISOString(),
+            dateFin: c.date_fin?.toISOString() ?? null,
+            isDisponible: c.is_disponible,
+            zoneId: c.zone_id,
+            modelePlanificationId: c.modele_planification_id,
         };
     }
 
@@ -394,7 +394,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     ): CreneauAvecTechnicienDto {
         return {
             ...this.toCreneauDto(c),
-            technicien_id: c.modele_planification?.technicien_id ?? null,
+            technicienId: c.modele_planification?.technicien_id ?? null,
             // Infinity pour les créneaux manuels (sans modèle) → pas de restriction de contiguïté
             intervalleMinutes:
                 c.modele_planification?.intervalle_minutes ?? Infinity,

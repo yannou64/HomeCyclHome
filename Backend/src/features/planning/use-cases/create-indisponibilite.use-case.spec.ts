@@ -3,9 +3,9 @@ import { IPlanningRepository } from '../repositories/planning.repository.interfa
 import { CreateIndisponibiliteUseCase } from './create-indisponibilite.use-case';
 
 const validPayload = {
-    technicien_id: 'tech-uuid-1',
-    date_debut: '2026-07-14T00:00:00.000Z',
-    date_fin: '2026-07-21T00:00:00.000Z',
+    technicienId: 'tech-uuid-1',
+    dateDebut: '2026-07-14T00:00:00.000Z',
+    dateFin: '2026-07-21T00:00:00.000Z',
     motif: 'Congés annuels',
 };
 
@@ -48,11 +48,11 @@ describe('CreateIndisponibiliteUseCase', () => {
         expect(result.id).toBe('indispo-uuid-1');
     });
 
-    it('devrait lever BadRequestException si date_fin <= date_debut', async () => {
+    it('devrait lever BadRequestException si dateFin <= dateDebut', async () => {
         const payload = {
             ...validPayload,
-            date_debut: '2026-07-21T00:00:00.000Z',
-            date_fin: '2026-07-14T00:00:00.000Z',
+            dateDebut: '2026-07-21T00:00:00.000Z',
+            dateFin: '2026-07-14T00:00:00.000Z',
         };
 
         await expect(useCase.execute(payload)).rejects.toThrow(
@@ -62,8 +62,8 @@ describe('CreateIndisponibiliteUseCase', () => {
         expect(mockRepo.technicienExists).not.toHaveBeenCalled();
     });
 
-    it('devrait lever BadRequestException si date_fin === date_debut', async () => {
-        const payload = { ...validPayload, date_fin: validPayload.date_debut };
+    it('devrait lever BadRequestException si dateFin === dateDebut', async () => {
+        const payload = { ...validPayload, dateFin: validPayload.dateDebut };
 
         await expect(useCase.execute(payload)).rejects.toThrow(
             BadRequestException,

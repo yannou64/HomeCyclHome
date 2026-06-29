@@ -8,15 +8,15 @@ import { UpdateModelePlanificationUseCase } from './update-modele-planification.
 
 const existingModele = {
     id: 'modele-uuid-1',
-    technicien_id: 'tech-uuid-1',
-    zone_id: 'zone-uuid-1',
-    jour_semaine: 1,
-    heure_debut: 480,
-    heure_fin: 1020,
-    intervalle_minutes: 60,
-    is_actif: true,
-    date_debut_validite: '2026-06-01T00:00:00.000Z',
-    date_fin_validite: null,
+    technicienId: 'tech-uuid-1',
+    zoneId: 'zone-uuid-1',
+    jourSemaine: 1,
+    heureDebut: 480,
+    heureFin: 1020,
+    intervalleMinutes: 60,
+    isActif: true,
+    dateDebutValidite: '2026-06-01T00:00:00.000Z',
+    dateFinValidite: null,
 };
 
 describe('UpdateModelePlanificationUseCase', () => {
@@ -50,18 +50,18 @@ describe('UpdateModelePlanificationUseCase', () => {
         mockRepo.findModelesChevauchants.mockResolvedValue([]);
         mockRepo.updateModele.mockResolvedValue({
             ...existingModele,
-            intervalle_minutes: 90,
+            intervalleMinutes: 90,
         });
 
         const result = await useCase.execute('modele-uuid-1', {
-            intervalle_minutes: 90,
+            intervalleMinutes: 90,
         });
 
         expect(mockRepo.findModeleById).toHaveBeenCalledWith('modele-uuid-1');
         expect(mockRepo.updateModele).toHaveBeenCalledWith('modele-uuid-1', {
-            intervalle_minutes: 90,
+            intervalleMinutes: 90,
         });
-        expect(result.intervalle_minutes).toBe(90);
+        expect(result.intervalleMinutes).toBe(90);
     });
 
     it('devrait lever NotFoundException si le modèle est introuvable', async () => {
@@ -74,12 +74,12 @@ describe('UpdateModelePlanificationUseCase', () => {
         expect(mockRepo.updateModele).not.toHaveBeenCalled();
     });
 
-    it('devrait lever BadRequestException si heure_fin <= heure_debut après fusion', async () => {
+    it('devrait lever BadRequestException si heureFin <= heureDebut après fusion', async () => {
         mockRepo.findModeleById.mockResolvedValue(existingModele);
 
-        // On modifie heure_fin pour qu'elle soit inférieure à heure_debut existant
+        // On modifie heureFin pour qu'elle soit inférieure à heureDebut existant
         await expect(
-            useCase.execute('modele-uuid-1', { heure_fin: 300 }),
+            useCase.execute('modele-uuid-1', { heureFin: 300 }),
         ).rejects.toThrow(BadRequestException);
 
         expect(mockRepo.updateModele).not.toHaveBeenCalled();
@@ -93,17 +93,15 @@ describe('UpdateModelePlanificationUseCase', () => {
         ]);
 
         await expect(
-            useCase.execute('modele-uuid-1', { heure_debut: 400 }),
+            useCase.execute('modele-uuid-1', { heureDebut: 400 }),
         ).rejects.toThrow(ConflictException);
 
-        // expect.anything() ne matche pas null — on utilise expect.toBeNil() n'existant pas,
-        // on vérifie simplement que la fonction a été appelée avec le bon excludeId.
-        // Les 5 premiers args sont des valeurs dérivées de existant/dto, le 6e est null (pas de date_fin).
+        // Vérifie que le use case passe bien l'excludeId pour exclure le modèle lui-même
         expect(mockRepo.findModelesChevauchants).toHaveBeenCalledWith(
-            'tech-uuid-1', // technicien_id
-            1, // jour_semaine (inchangé)
-            400, // heure_debut (du dto)
-            1020, // heure_fin (de existant)
+            'tech-uuid-1', // technicienId
+            1, // jourSemaine (inchangé)
+            400, // heureDebut (du dto)
+            1020, // heureFin (de existant)
             expect.any(Date), // dateDebutValidite
             null, // dateFinValidite — null car indéfinie dans existant
             'modele-uuid-1', // excludeId : clé de la règle à tester

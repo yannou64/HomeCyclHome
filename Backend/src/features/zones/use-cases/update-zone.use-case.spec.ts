@@ -4,9 +4,9 @@ import { UpdateZoneUseCase } from './update-zone.use-case';
 
 const existingZone = {
     id: 'uuid-1',
-    nom_zone: 'Lyon Centre',
-    is_active: true,
-    date_creation: new Date('2026-01-01'),
+    nomZone: 'Lyon Centre',
+    isActive: true,
+    dateCreation: new Date('2026-01-01'),
     points: [
         { latitude: 45.75, longitude: 4.83, ordre: 0 },
         { latitude: 45.76, longitude: 4.84, ordre: 1 },
@@ -34,22 +34,22 @@ describe('UpdateZoneUseCase', () => {
         mockRepo.findById.mockResolvedValue(existingZone);
         mockRepo.update.mockResolvedValue({
             ...existingZone,
-            is_active: false,
+            isActive: false,
         });
 
-        const result = await useCase.execute('uuid-1', { is_active: false });
+        const result = await useCase.execute('uuid-1', { isActive: false });
 
         expect(mockRepo.update).toHaveBeenCalledWith('uuid-1', {
-            is_active: false,
+            isActive: false,
         });
-        expect(result.is_active).toBe(false);
+        expect(result.isActive).toBe(false);
     });
 
     it('devrait lever NotFoundException si la zone est introuvable', async () => {
         mockRepo.findById.mockResolvedValue(null);
 
         await expect(
-            useCase.execute('ghost-uuid', { is_active: false }),
+            useCase.execute('ghost-uuid', { isActive: false }),
         ).rejects.toThrow(NotFoundException);
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
@@ -60,7 +60,7 @@ describe('UpdateZoneUseCase', () => {
         mockRepo.existsByNom.mockResolvedValue(true);
 
         await expect(
-            useCase.execute('uuid-1', { nom_zone: 'Villeurbanne' }),
+            useCase.execute('uuid-1', { nomZone: 'Villeurbanne' }),
         ).rejects.toThrow(ConflictException);
         expect(mockRepo.update).not.toHaveBeenCalled();
     });
@@ -71,10 +71,10 @@ describe('UpdateZoneUseCase', () => {
         mockRepo.existsByNom.mockResolvedValue(false);
         mockRepo.update.mockResolvedValue({
             ...existingZone,
-            nom_zone: 'Lyon Centre v2',
+            nomZone: 'Lyon Centre v2',
         });
 
-        await useCase.execute('uuid-1', { nom_zone: 'Lyon Centre v2' });
+        await useCase.execute('uuid-1', { nomZone: 'Lyon Centre v2' });
 
         expect(mockRepo.existsByNom).toHaveBeenCalledWith(
             'Lyon Centre v2',

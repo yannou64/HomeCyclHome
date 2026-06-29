@@ -28,13 +28,13 @@ export class LoginUseCase {
 
         const isPasswordValid = await bcrypt.compare(
             dto.password,
-            user.password_hash,
+            user.passwordHash,
         );
         if (!isPasswordValid) {
             throw new UnauthorizedException('Email ou mot de passe incorrect.');
         }
 
-        if (!user.is_actif) {
+        if (!user.isActif) {
             throw new ForbiddenException(
                 'Confirme ton email avant de te connecter.',
             );
