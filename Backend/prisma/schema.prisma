@@ -283,5 +283,27 @@ model Intervention {
   adresse         Adresse               @relation(fields: [adresse_id],                  references: [id])
   historique_prix HistoriquePrixForfait @relation(fields: [historique_prix_forfait_id],  references: [id])
 
+  photos          Photo[]
+
   @@map("Interventions")
+}
+
+// ─── Photos ──────────────────────────────────────────────────────────────────
+
+enum ContextePhoto {
+  client      // Photo ajoutée par le client lors de la réservation
+  technicien  // Photo ajoutée par le technicien à la clôture de l'intervention
+}
+
+model Photo {
+  id              String        @id @default(uuid())
+  url_s3          String        // URL complète HTTPS du fichier sur S3
+  cle_s3          String        // Clé S3 — conservée pour permettre la suppression du fichier
+  contexte        ContextePhoto // Discriminateur : qui a uploadé et à quelle étape
+  date_creation   DateTime      @default(now())
+
+  intervention_id String
+  intervention    Intervention  @relation(fields: [intervention_id], references: [id], onDelete: Cascade)
+
+  @@map("Photos")
 }

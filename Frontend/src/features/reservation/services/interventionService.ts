@@ -49,4 +49,19 @@ export const interventionService = {
             .post<InterventionCreatedDto>('/interventions', payload)
             .then((r) => r.data);
     },
+
+    // FormData est détecté automatiquement par Axios — pas besoin de Content-Type manuel
+    uploadPhotos(
+        interventionId: string,
+        photos: File[],
+    ): Promise<{ count: number; urls: string[] }> {
+        const form = new FormData();
+        photos.forEach((f) => form.append('photos', f));
+        return apiClient
+            .post<{ count: number; urls: string[] }>(
+                `/interventions/${interventionId}/photos`,
+                form,
+            )
+            .then((r) => r.data);
+    },
 };

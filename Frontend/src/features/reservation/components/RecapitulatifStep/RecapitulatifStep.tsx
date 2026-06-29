@@ -57,13 +57,16 @@ export function RecapitulatifStep() {
         };
 
         try {
-            await createIntervention({
-                adresse,
-                cycle,
-                forfaitId: forfait.forfaitId,
-                creneauId: creneau.creneauId,
-                commentaire: commentaire?.commentaire || undefined,
-            });
+            await createIntervention(
+                {
+                    adresse,
+                    cycle,
+                    forfaitId: forfait.forfaitId,
+                    creneauId: creneau.creneauId,
+                    commentaire: commentaire?.commentaire || undefined,
+                },
+                commentaire?.photos,
+            );
             localStorage.removeItem(PENDING_RESERVATION_KEY);
             // reset() est volontairement déplacé dans le bouton "Retour à l'accueil"
             // — l'appeler ici changerait currentStep et démonterait ce composant
