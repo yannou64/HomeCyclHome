@@ -24,6 +24,14 @@ describe('DeleteIndisponibiliteUseCase', () => {
             deleteIndisponibilite: jest.fn(),
             technicienExists: jest.fn(),
             isAffecteAZone: jest.fn(),
+            findCreneauxDateDebutByModele: jest.fn(),
+            countCreneauxConflits: jest.fn(),
+            createManyCreneaux: jest.fn(),
+            findCreneauxByTechnicien: jest.fn(),
+            findCreneauById: jest.fn(),
+            findCreneauxByZone: jest.fn(),
+            deleteCreneau: jest.fn(),
+            deleteCreneauxDisponibles: jest.fn(),
         };
         useCase = new DeleteIndisponibiliteUseCase(mockRepo);
     });
@@ -31,9 +39,9 @@ describe('DeleteIndisponibiliteUseCase', () => {
     it("devrait supprimer l'indisponibilité si elle existe", async () => {
         const indispo = {
             id: 'indispo-1',
-            technicien_id: 'tech-1',
-            date_debut: '2026-07-14T00:00:00.000Z',
-            date_fin: '2026-07-21T00:00:00.000Z',
+            technicienId: 'tech-1',
+            dateDebut: '2026-07-14T00:00:00.000Z',
+            dateFin: '2026-07-21T00:00:00.000Z',
             motif: null,
         };
         mockRepo.findIndisponibiliteById.mockResolvedValue(indispo);

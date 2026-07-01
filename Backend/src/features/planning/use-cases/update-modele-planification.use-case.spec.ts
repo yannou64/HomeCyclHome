@@ -41,6 +41,14 @@ describe('UpdateModelePlanificationUseCase', () => {
             deleteIndisponibilite: jest.fn(),
             technicienExists: jest.fn(),
             isAffecteAZone: jest.fn(),
+            findCreneauxDateDebutByModele: jest.fn(),
+            countCreneauxConflits: jest.fn(),
+            createManyCreneaux: jest.fn(),
+            findCreneauxByTechnicien: jest.fn(),
+            findCreneauById: jest.fn(),
+            findCreneauxByZone: jest.fn(),
+            deleteCreneau: jest.fn(),
+            deleteCreneauxDisponibles: jest.fn(),
         };
         useCase = new UpdateModelePlanificationUseCase(mockRepo);
     });

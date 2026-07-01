@@ -34,6 +34,8 @@ const makeDetail = (
         marque: 'Trek',
         type: 'VTT',
     },
+    photosClient: [],
+    photosTechnicien: [],
     ...overrides,
 });
 

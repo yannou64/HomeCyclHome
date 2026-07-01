@@ -15,12 +15,12 @@ const validPayload = {
     intervalleMinutes: 60,
     isActif: true,
     dateDebutValidite: '2026-06-01T00:00:00.000Z',
-    dateFinValidite: null,
 };
 
 const mockModeleDto = {
     id: 'modele-uuid-1',
     ...validPayload,
+    dateFinValidite: null,
 };
 
 describe('CreateModelePlanificationUseCase', () => {
@@ -45,6 +45,14 @@ describe('CreateModelePlanificationUseCase', () => {
             deleteIndisponibilite: jest.fn(),
             technicienExists: jest.fn(),
             isAffecteAZone: jest.fn(),
+            findCreneauxDateDebutByModele: jest.fn(),
+            countCreneauxConflits: jest.fn(),
+            createManyCreneaux: jest.fn(),
+            findCreneauxByTechnicien: jest.fn(),
+            findCreneauById: jest.fn(),
+            findCreneauxByZone: jest.fn(),
+            deleteCreneau: jest.fn(),
+            deleteCreneauxDisponibles: jest.fn(),
         };
         useCase = new CreateModelePlanificationUseCase(mockRepo);
     });

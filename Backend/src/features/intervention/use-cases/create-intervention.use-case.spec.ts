@@ -54,6 +54,9 @@ describe('CreateInterventionUseCase', () => {
             cancelInterventionTransaction: jest.fn(),
             findAllInterventions: jest.fn(),
             findInterventionDetailById: jest.fn(),
+            isInterventionOwnedByClient: jest.fn(),
+            getPhotosCount: jest.fn(),
+            createPhotos: jest.fn(),
         };
 
         mockEmailService = {

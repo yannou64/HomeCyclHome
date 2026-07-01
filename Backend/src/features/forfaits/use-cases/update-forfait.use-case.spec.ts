@@ -18,6 +18,7 @@ describe('UpdateForfaitUseCase', () => {
     beforeEach(() => {
         mockRepo = {
             findAll: jest.fn(),
+            findAllActifs: jest.fn(),
             findById: jest.fn(),
             findByNom: jest.fn(),
             create: jest.fn(),

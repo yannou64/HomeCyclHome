@@ -10,10 +10,15 @@ export class ModelePlanificationDto {
     @ApiProperty()
     zoneId: string;
 
-    @ApiProperty({ description: '0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche' })
+    @ApiProperty({
+        description:
+            '0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche',
+    })
     jourSemaine: number;
 
-    @ApiProperty({ description: 'Minutes depuis minuit : 510 = 8h30, 1020 = 17h00' })
+    @ApiProperty({
+        description: 'Minutes depuis minuit : 510 = 8h30, 1020 = 17h00',
+    })
     heureDebut: number;
 
     @ApiProperty()
@@ -39,7 +44,11 @@ export class PauseRecurrenteDto {
     @ApiProperty()
     technicienId: string;
 
-    @ApiProperty({ nullable: true, type: Number, description: 'null = tous les jours, 0=lundi … 6=dimanche' })
+    @ApiProperty({
+        nullable: true,
+        type: Number,
+        description: 'null = tous les jours, 0=lundi … 6=dimanche',
+    })
     jourSemaine: number | null;
 
     @ApiProperty()
@@ -76,7 +85,11 @@ export class CreneauDto {
     @ApiProperty({ description: 'ISO 8601' })
     dateDebut: string;
 
-    @ApiProperty({ nullable: true, type: String, description: 'null à la génération, rempli à la réservation' })
+    @ApiProperty({
+        nullable: true,
+        type: String,
+        description: 'null à la génération, rempli à la réservation',
+    })
     dateFin: string | null;
 
     @ApiProperty()
@@ -96,10 +109,16 @@ export class CreneauDisponibleDto {
     @ApiProperty({ description: 'ISO 8601' })
     dateDebut: string;
 
-    @ApiProperty({ description: 'ISO 8601 — dateDebut + dureeMinutes du forfait' })
+    @ApiProperty({
+        description: 'ISO 8601 — dateDebut + dureeMinutes du forfait',
+    })
     dateFin: string;
 
-    @ApiProperty({ nullable: true, type: String, description: 'null si créneau sans modèle de planification' })
+    @ApiProperty({
+        nullable: true,
+        type: String,
+        description: 'null si créneau sans modèle de planification',
+    })
     technicienId: string | null;
 
     @ApiProperty()
@@ -110,10 +129,15 @@ export class GenerationRapportDto {
     @ApiProperty({ description: 'Créneaux nouvellement insérés' })
     created: number;
 
-    @ApiProperty({ description: 'Slots sautés (pause, indisponibilité, doublon)' })
+    @ApiProperty({
+        description: 'Slots sautés (pause, indisponibilité, doublon)',
+    })
     skipped: number;
 
-    @ApiProperty({ description: 'Créneaux isDisponible=false dans la période (déjà réservés)' })
+    @ApiProperty({
+        description:
+            'Créneaux isDisponible=false dans la période (déjà réservés)',
+    })
     conflicts: number;
 }
 
