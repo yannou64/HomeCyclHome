@@ -81,7 +81,9 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
             data: {
                 nom: data.nom,
                 description: data.description,
-                ...(data.dureeMinutes !== undefined && { duree_minutes: data.dureeMinutes }),
+                ...(data.dureeMinutes !== undefined && {
+                    duree_minutes: data.dureeMinutes,
+                }),
                 ...(data.isActif !== undefined && { is_actif: data.isActif }),
             },
         });

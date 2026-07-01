@@ -9,6 +9,12 @@ import {
     Put,
     UseGuards,
 } from '@nestjs/common';
+import {
+    ApiCookieAuth,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -18,6 +24,8 @@ import { GetAffectationByTechnicienUseCase } from '../use-cases/get-affectation-
 import { GetAffectationsUseCase } from '../use-cases/get-affectations.use-case';
 import { SetTechnicienZonesUseCase } from '../use-cases/set-technicien-zones.use-case';
 
+@ApiTags('Administration — Affectations')
+@ApiCookieAuth('access_token')
 @Controller('admin/affectations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
@@ -29,16 +37,19 @@ export class AdminAffectationsController {
         private readonly deleteTechnicienAffectationsUseCase: DeleteTechnicienAffectationsUseCase,
     ) {}
 
+    @ApiOkResponse({ description: 'Liste des affectations technicien/zones' })
     @Get()
     findAll() {
         return this.getAffectationsUseCase.execute();
     }
 
+    @ApiOkResponse({ description: "Affectation d'un technicien" })
     @Get(':technicienId')
     findByTechnicien(@Param('technicienId') technicienId: string) {
         return this.getAffectationByTechnicienUseCase.execute(technicienId);
     }
 
+    @ApiOkResponse({ description: 'Zones affectées mises à jour' })
     @Put(':technicienId')
     setZones(
         @Param('technicienId') technicienId: string,
@@ -50,6 +61,7 @@ export class AdminAffectationsController {
         );
     }
 
+    @ApiNoContentResponse({ description: 'Affectations supprimées' })
     @Delete(':technicienId')
     @HttpCode(HttpStatus.NO_CONTENT)
     remove(@Param('technicienId') technicienId: string) {

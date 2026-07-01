@@ -1,24 +1,50 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../users/dto/user-profile.dto';
 
-// Shape d'un utilisateur tel qu'exposé par l'API admin (jamais de password_hash)
-export type AdminUserDto = {
+export class AdminUserDto {
+    @ApiProperty()
     id: string;
-    nom: string;
-    prenom: string;
-    email: string;
-    telephone: string;
-    role: UserRole;
-    isActif: boolean;
-    dateCreation: Date;
-};
 
-// Réponse paginée : les données + les métadonnées de pagination
-export type PaginatedUsersDto = {
+    @ApiProperty()
+    nom: string;
+
+    @ApiProperty()
+    prenom: string;
+
+    @ApiProperty()
+    email: string;
+
+    @ApiProperty()
+    telephone: string;
+
+    @ApiProperty({ enum: ['client', 'technicien', 'admin'] })
+    role: UserRole;
+
+    @ApiProperty()
+    isActif: boolean;
+
+    @ApiProperty()
+    dateCreation: Date;
+}
+
+class PaginationMetaDto {
+    @ApiProperty()
+    total: number;
+
+    @ApiProperty()
+    page: number;
+
+    @ApiProperty()
+    limit: number;
+
+    @ApiProperty()
+    totalPages: number;
+}
+
+export class PaginatedUsersDto {
+    @ApiProperty({ type: () => [AdminUserDto] })
     data: AdminUserDto[];
-    meta: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-    };
-};
+
+    @ApiProperty({ type: () => PaginationMetaDto })
+    meta: PaginationMetaDto;
+}

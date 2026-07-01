@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CheckZoneDto {
     @IsNumber()
@@ -10,7 +11,10 @@ export class CheckZoneDto {
     longitude: number;
 }
 
-export type CheckZoneResultDto = {
+export class CheckZoneResultDto {
+    @ApiProperty()
     zoneId: string;
+
+    @ApiProperty()
     nomZone: string;
-};
+}

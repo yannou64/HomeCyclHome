@@ -10,6 +10,7 @@ import {
     Request,
     UseGuards,
 } from '@nestjs/common';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -22,6 +23,8 @@ import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
 import { DeleteUserUseCase } from '../use-cases/delete-user.use-case';
 
 // Tous les endpoints de ce controller sont réservés aux admins
+@ApiTags('Administration — Utilisateurs')
+@ApiCookieAuth('access_token')
 @Controller('admin/users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')

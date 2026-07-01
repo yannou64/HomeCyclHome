@@ -1,41 +1,123 @@
-// DTOs de sortie — types simples, pas de décorateurs class-validator
-// Ces types représentent ce que l'API retourne au frontend
+import { ApiProperty } from '@nestjs/swagger';
 
-export type ModelePlanificationDto = {
+export class ModelePlanificationDto {
+    @ApiProperty()
     id: string;
+
+    @ApiProperty()
     technicienId: string;
+
+    @ApiProperty()
     zoneId: string;
-    // 0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche
+
+    @ApiProperty({ description: '0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche' })
     jourSemaine: number;
-    // Minutes depuis minuit : 510 = 8h30, 1020 = 17h00
+
+    @ApiProperty({ description: 'Minutes depuis minuit : 510 = 8h30, 1020 = 17h00' })
     heureDebut: number;
+
+    @ApiProperty()
     heureFin: number;
+
+    @ApiProperty()
     intervalleMinutes: number;
+
+    @ApiProperty()
     isActif: boolean;
-    dateDebutValidite: string; // ISO 8601
+
+    @ApiProperty({ description: 'ISO 8601' })
+    dateDebutValidite: string;
+
+    @ApiProperty({ nullable: true, type: String, description: 'ISO 8601' })
     dateFinValidite: string | null;
-};
+}
 
-export type PauseRecurrenteDto = {
+export class PauseRecurrenteDto {
+    @ApiProperty()
     id: string;
+
+    @ApiProperty()
     technicienId: string;
-    // null = tous les jours, 0=lundi … 6=dimanche
+
+    @ApiProperty({ nullable: true, type: Number, description: 'null = tous les jours, 0=lundi … 6=dimanche' })
     jourSemaine: number | null;
+
+    @ApiProperty()
     heureDebut: number;
+
+    @ApiProperty()
     heureFin: number;
+
+    @ApiProperty({ nullable: true, type: String })
     description: string | null;
-};
+}
 
-export type IndisponibiliteDto = {
+export class IndisponibiliteDto {
+    @ApiProperty()
     id: string;
-    technicienId: string;
-    dateDebut: string; // ISO 8601
-    dateFin: string; // ISO 8601
-    motif: string | null;
-};
 
-// Types intermédiaires utilisés par l'interface repository
-// Séparés des DTOs d'entrée HTTP pour que le repository reste indépendant de NestJS
+    @ApiProperty()
+    technicienId: string;
+
+    @ApiProperty({ description: 'ISO 8601' })
+    dateDebut: string;
+
+    @ApiProperty({ description: 'ISO 8601' })
+    dateFin: string;
+
+    @ApiProperty({ nullable: true, type: String })
+    motif: string | null;
+}
+
+export class CreneauDto {
+    @ApiProperty()
+    id: string;
+
+    @ApiProperty({ description: 'ISO 8601' })
+    dateDebut: string;
+
+    @ApiProperty({ nullable: true, type: String, description: 'null à la génération, rempli à la réservation' })
+    dateFin: string | null;
+
+    @ApiProperty()
+    isDisponible: boolean;
+
+    @ApiProperty()
+    zoneId: string;
+
+    @ApiProperty({ nullable: true, type: String })
+    modelePlanificationId: string | null;
+}
+
+export class CreneauDisponibleDto {
+    @ApiProperty()
+    id: string;
+
+    @ApiProperty({ description: 'ISO 8601' })
+    dateDebut: string;
+
+    @ApiProperty({ description: 'ISO 8601 — dateDebut + dureeMinutes du forfait' })
+    dateFin: string;
+
+    @ApiProperty({ nullable: true, type: String, description: 'null si créneau sans modèle de planification' })
+    technicienId: string | null;
+
+    @ApiProperty()
+    zoneId: string;
+}
+
+export class GenerationRapportDto {
+    @ApiProperty({ description: 'Créneaux nouvellement insérés' })
+    created: number;
+
+    @ApiProperty({ description: 'Slots sautés (pause, indisponibilité, doublon)' })
+    skipped: number;
+
+    @ApiProperty({ description: 'Créneaux isDisponible=false dans la période (déjà réservés)' })
+    conflicts: number;
+}
+
+// ── Types internes — jamais exposés directement via l'API ─────────────────────
 
 export type CreateModeleData = Omit<
     ModelePlanificationDto,
@@ -64,44 +146,12 @@ export type CreateIndisponibiliteData = {
     motif?: string;
 };
 
-// ── Créneaux ─────────────────────────────────────────────────────────────────
-
-export type CreneauDto = {
-    id: string;
-    dateDebut: string; // ISO 8601
-    dateFin: string | null; // null à la génération, rempli à la réservation
-    isDisponible: boolean;
-    zoneId: string;
-    modelePlanificationId: string | null;
-};
-
-// Type intermédiaire utilisé par le repository findCreneauxByZone
 // Étend CreneauDto avec technicienId résolu depuis la relation modele_planification
-// intervalleMinutes = durée d'un slot selon le modèle (utilisé pour vérifier la contiguïté des buffers)
 export type CreneauAvecTechnicienDto = CreneauDto & {
     technicienId: string | null;
     intervalleMinutes: number;
 };
 
-// Créneau retourné au client dans le tunnel de réservation
-// dateFin est toujours renseigné (calculé : dateDebut + dureeMinutes du forfait)
-// technicienId est le snapshot qui sera stocké sur l'intervention
-export type CreneauDisponibleDto = {
-    id: string;
-    dateDebut: string; // ISO 8601
-    dateFin: string; // ISO 8601 — dateDebut + dureeMinutes
-    technicienId: string | null; // null si créneau manuel (sans modèle de planification)
-    zoneId: string;
-};
-
-// Réponse de l'endpoint POST /admin/planning/creneaux/generate
-export type GenerationRapportDto = {
-    created: number; // créneaux nouvellement insérés
-    skipped: number; // slots sautés (pause, indisponibilité, doublon)
-    conflicts: number; // créneaux isDisponible=false dans la période (déjà réservés)
-};
-
-// Données envoyées au repository pour créer un créneau (type interne, pas de décorateurs)
 export type CreateCreneauData = {
     dateDebut: Date; // Date native — Prisma attend une Date, pas un string ISO
     dateFin: null; // toujours null à la génération

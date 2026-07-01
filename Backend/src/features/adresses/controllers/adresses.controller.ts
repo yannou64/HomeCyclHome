@@ -3,12 +3,21 @@ import {
     Controller,
     Delete,
     Get,
+    HttpCode,
+    HttpStatus,
     Param,
     Patch,
     Post,
     Req,
     UseGuards,
 } from '@nestjs/common';
+import {
+    ApiCookieAuth,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { GetAdressesUseCase } from '../use-cases/get-adresses.use-case';
@@ -20,6 +29,8 @@ import {
     UpdateAdresseDto,
 } from '../dto/input/adresse-input.dto';
 
+@ApiTags('Adresses')
+@ApiCookieAuth('access_token')
 @Controller('adresses')
 @UseGuards(JwtAuthGuard)
 export class AdressesController {
@@ -30,18 +41,21 @@ export class AdressesController {
         private readonly deleteAdresseUseCase: DeleteAdresseUseCase,
     ) {}
 
+    @ApiOkResponse({ description: 'Liste des adresses du client' })
     @Get()
     findAll(@Req() req: Request) {
         const { userId } = req.user as { userId: string };
         return this.getAdressesUseCase.execute(userId);
     }
 
+    @ApiCreatedResponse({ description: 'Adresse créée' })
     @Post()
     create(@Req() req: Request, @Body() dto: CreateAdresseDto) {
         const { userId } = req.user as { userId: string };
         return this.createAdresseUseCase.execute(userId, dto);
     }
 
+    @ApiOkResponse({ description: 'Adresse mise à jour' })
     @Patch(':id')
     update(
         @Req() req: Request,
@@ -52,6 +66,8 @@ export class AdressesController {
         return this.updateAdresseUseCase.execute(id, userId, dto);
     }
 
+    @ApiNoContentResponse({ description: 'Adresse supprimée' })
+    @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
     remove(@Req() req: Request, @Param('id') id: string) {
         const { userId } = req.user as { userId: string };
