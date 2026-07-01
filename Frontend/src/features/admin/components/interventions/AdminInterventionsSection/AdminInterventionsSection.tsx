@@ -31,13 +31,17 @@ export function AdminInterventionsSection() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [zones, setZones] = useState<Zone[]>([]);
     const [techniciens, setTechniciens] = useState<AdminUser[]>([]);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
-        adminZonesService.getAll().then(setZones).catch(() => {});
+        adminZonesService
+            .getAll()
+            .then(setZones)
+            .catch(() => setLoadError('Impossible de charger les zones.'));
         adminUsersService
             .getUsers({ role: 'technicien', limit: 100 })
             .then((result) => setTechniciens(result.data))
-            .catch(() => {});
+            .catch(() => setLoadError('Impossible de charger les techniciens.'));
     }, []);
 
     const listProps = {
@@ -56,6 +60,8 @@ export function AdminInterventionsSection() {
     return (
         <div className={styles.wrapper}>
             <h2 className={styles.title}>Interventions</h2>
+
+            {loadError && <p className={styles.error}>{loadError}</p>}
 
             <Tabs
                 value={activeTab}

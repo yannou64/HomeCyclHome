@@ -29,6 +29,14 @@
     height: auto !important;
 }
 
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #d32f2f;
+    text-align: center;
+    padding: $spacing-sm;
+}
+
 .tabsTrigger {
     font-family: $font-primary !important;
     font-size: $font-size-body !important;
