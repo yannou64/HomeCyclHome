@@ -144,17 +144,19 @@ Composant → Hook → Service → API Backend
 ```typescript
 // featureService.ts
 export const featureService = {
-  getX(params: GetXParams): Promise<X> {
-    return apiClient.get<X>('/endpoint', { params }).then((r) => r.data);
+  async getX(params: GetXParams): Promise<X> {
+    const r = await apiClient.get<X>('/endpoint', { params });
+    return r.data;
   },
-  createX(payload: CreateXPayload): Promise<X> {
-    return apiClient.post<X>('/endpoint', payload).then((r) => r.data);
+  async createX(payload: CreateXPayload): Promise<X> {
+    const r = await apiClient.post<X>('/endpoint', payload);
+    return r.data;
   },
 };
 ```
 
 - Toujours exporter un objet nommé (jamais des fonctions isolées)
-- Toujours utiliser `.then((r) => r.data)` pour ne retourner que la donnée, pas la réponse Axios
+- Toujours utiliser `async/await` (jamais `.then()/.catch()`), y compris dans les hooks et composants qui consomment un service
 - **Référence :** `features/admin/services/adminUsersService.ts` est l'implémentation de référence
 
 ---

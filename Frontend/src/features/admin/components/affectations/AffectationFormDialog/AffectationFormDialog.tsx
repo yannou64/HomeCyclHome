@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
-import { adminAffectationsService } from '../../../services/adminAffectationsService';
-import type { AdminUser } from '../../../types/admin.types';
-import type { Affectation, ZoneAffectee } from '../../../types/affectations.types';
+import { useAffectationFormData } from '../../../hooks/useAffectationFormData';
+import type { Affectation } from '../../../types/affectations.types';
 import styles from './AffectationFormDialog.module.scss';
 
 interface AffectationFormDialogProps {
@@ -26,42 +25,18 @@ export function AffectationFormDialog({
 }: AffectationFormDialogProps) {
   const isEditMode = !!item;
 
-  const [techniciens, setTechniciens] = useState<AdminUser[]>([]);
-  const [zones, setZones] = useState<ZoneAffectee[]>([]);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const { techniciens, zones, isLoadingData, loadError } = useAffectationFormData(isOpen);
 
   const [selectedTechnicienId, setSelectedTechnicienId] = useState('');
   const [selectedZoneIds, setSelectedZoneIds] = useState<string[]>([]);
-  const [formError, setFormError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [wasOpen, setWasOpen] = useState(isOpen);
 
-  // Chargement paresseux : uniquement quand le dialog s'ouvre
-  useEffect(() => {
-    if (!isOpen) return;
-
-    let cancelled = false;
-
-    const loadData = async () => {
-      setIsLoadingData(true);
-      setFormError(null);
-      try {
-        const [techs, zns] = await Promise.all([
-          adminAffectationsService.getTechniciens(),
-          adminAffectationsService.getZones(),
-        ]);
-        if (cancelled) return;
-        setTechniciens(techs);
-        setZones(zns);
-      } catch {
-        if (cancelled) return;
-        setFormError('Impossible de charger les données du formulaire.');
-      } finally {
-        if (!cancelled) setIsLoadingData(false);
-      }
-    };
-
-    void loadData();
-
-    // Pré-remplissage en mode édition
+  // Pré-remplissage en mode édition : ajustement pendant le rendu (pattern React
+  // recommandé) déclenché sur la transition fermé → ouvert, plutôt qu'un effect.
+  if (isOpen && !wasOpen) {
+    setWasOpen(true);
+    setValidationError(null);
     if (isEditMode) {
       setSelectedTechnicienId(item.technicienId);
       setSelectedZoneIds(item.zones.map((z) => z.id));
@@ -69,9 +44,11 @@ export function AffectationFormDialog({
       setSelectedTechnicienId('');
       setSelectedZoneIds([]);
     }
+  } else if (!isOpen && wasOpen) {
+    setWasOpen(false);
+  }
 
-    return () => { cancelled = true; };
-  }, [isOpen, isEditMode, item]);
+  const formError = validationError ?? loadError;
 
   const toggleZone = (zoneId: string) => {
     setSelectedZoneIds((prev) =>
@@ -81,11 +58,11 @@ export function AffectationFormDialog({
 
   const handleSubmit = async () => {
     if (!selectedTechnicienId) {
-      setFormError('Veuillez sélectionner un technicien.');
+      setValidationError('Veuillez sélectionner un technicien.');
       return;
     }
     if (selectedZoneIds.length === 0) {
-      setFormError('Veuillez sélectionner au moins une zone.');
+      setValidationError('Veuillez sélectionner au moins une zone.');
       return;
     }
 

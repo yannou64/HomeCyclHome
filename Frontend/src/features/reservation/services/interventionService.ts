@@ -37,7 +37,7 @@ function mapCycle(cycle: CreateInterventionRequest['cycle']) {
 }
 
 export const interventionService = {
-    create(request: CreateInterventionRequest): Promise<InterventionCreatedDto> {
+    async create(request: CreateInterventionRequest): Promise<InterventionCreatedDto> {
         const payload = {
             adresse: mapAdresse(request.adresse),
             cycle: mapCycle(request.cycle),
@@ -45,23 +45,21 @@ export const interventionService = {
             creneauId: request.creneauId,
             commentaire: request.commentaire,
         };
-        return apiClient
-            .post<InterventionCreatedDto>('/interventions', payload)
-            .then((r) => r.data);
+        const r = await apiClient.post<InterventionCreatedDto>('/interventions', payload);
+        return r.data;
     },
 
     // FormData est détecté automatiquement par Axios — pas besoin de Content-Type manuel
-    uploadPhotos(
+    async uploadPhotos(
         interventionId: string,
         photos: File[],
     ): Promise<{ count: number; urls: string[] }> {
         const form = new FormData();
         photos.forEach((f) => form.append('photos', f));
-        return apiClient
-            .post<{ count: number; urls: string[] }>(
-                `/interventions/${interventionId}/photos`,
-                form,
-            )
-            .then((r) => r.data);
+        const r = await apiClient.post<{ count: number; urls: string[] }>(
+            `/interventions/${interventionId}/photos`,
+            form,
+        );
+        return r.data;
     },
 };

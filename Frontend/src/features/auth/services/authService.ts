@@ -3,15 +3,20 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { LoginPayload, RegisterPayload } from '../types/auth.types';
 
 export const authService = {
-    login(payload: LoginPayload): Promise<AuthSession> {
-        return apiClient.post<AuthSession>('/auth/login', payload).then((r) => r.data);
+    async login(payload: LoginPayload): Promise<AuthSession> {
+        const r = await apiClient.post<AuthSession>('/auth/login', payload);
+        return r.data;
     },
 
-    logout(): Promise<void> {
-        return apiClient.post('/auth/logout').then(() => undefined);
+    async logout(): Promise<void> {
+        await apiClient.post('/auth/logout');
     },
 
-    register(payload: RegisterPayload): Promise<void> {
-        return apiClient.post('/auth/register', payload).then(() => undefined);
+    async register(payload: RegisterPayload): Promise<void> {
+        await apiClient.post('/auth/register', payload);
+    },
+
+    async confirmEmail(token: string): Promise<void> {
+        await apiClient.get('/auth/confirm-email', { params: { token } });
     },
 };

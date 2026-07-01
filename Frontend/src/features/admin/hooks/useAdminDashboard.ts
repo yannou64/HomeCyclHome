@@ -8,11 +8,16 @@ export function useAdminDashboard() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        adminDashboardService
-            .getStats()
-            .then(setStats)
-            .catch(() => setError('Impossible de charger les statistiques.'))
-            .finally(() => setIsLoading(false));
+        void (async () => {
+            try {
+                const data = await adminDashboardService.getStats();
+                setStats(data);
+            } catch {
+                setError('Impossible de charger les statistiques.');
+            } finally {
+                setIsLoading(false);
+            }
+        })();
     }, []);
 
     return { stats, isLoading, error };

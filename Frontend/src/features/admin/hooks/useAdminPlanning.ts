@@ -30,10 +30,14 @@ export function useAdminPlanning() {
 
   // Chargement initial : liste des techniciens
   useEffect(() => {
-    adminPlanningService
-      .getTechniciens()
-      .then(setTechniciens)
-      .catch(() => setError('Impossible de charger la liste des techniciens.'));
+    void (async () => {
+      try {
+        const data = await adminPlanningService.getTechniciens();
+        setTechniciens(data);
+      } catch {
+        setError('Impossible de charger la liste des techniciens.');
+      }
+    })();
   }, []);
 
   // Rechargement réactif : quand le technicien sélectionné change

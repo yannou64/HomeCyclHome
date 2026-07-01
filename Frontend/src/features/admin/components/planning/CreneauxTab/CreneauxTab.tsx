@@ -222,7 +222,7 @@ export function CreneauxTab({
       <PlanningDeleteDialog
         isOpen={isDeletingDisponibles}
         onClose={() => setIsDeletingDisponibles(false)}
-        onConfirm={() => onDeleteDisponibles(dateDebut, dateFin).then(() => undefined)}
+        onConfirm={async () => { await onDeleteDisponibles(dateDebut, dateFin); }}
         title="Supprimer les créneaux disponibles"
         description={`Êtes-vous sûr de vouloir supprimer les ${nbDisponibles} créneau${nbDisponibles > 1 ? 'x' : ''} disponible${nbDisponibles > 1 ? 's' : ''} sur cette période ? Cette action est irréversible.`}
       />

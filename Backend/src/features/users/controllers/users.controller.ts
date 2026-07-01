@@ -25,6 +25,7 @@ import { UpdateProfileUseCase } from '../use-cases/update-profile.use-case';
 @ApiTags('Profil')
 @ApiCookieAuth('access_token')
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
     constructor(
         private readonly getProfileUseCase: GetProfileUseCase,
@@ -33,7 +34,6 @@ export class UsersController {
     ) {}
 
     @ApiOkResponse({ description: 'Profil utilisateur connecté' })
-    @UseGuards(JwtAuthGuard)
     @Get('me')
     getProfile(@Req() req: Request) {
         const { userId } = req.user as { userId: string };
@@ -41,7 +41,6 @@ export class UsersController {
     }
 
     @ApiOkResponse({ description: 'Profil mis à jour' })
-    @UseGuards(JwtAuthGuard)
     @Patch('me')
     updateProfile(@Req() req: Request, @Body() dto: UpdateUserDto) {
         const { userId } = req.user as { userId: string };
@@ -49,7 +48,6 @@ export class UsersController {
     }
 
     @ApiNoContentResponse({ description: 'Compte supprimé' })
-    @UseGuards(JwtAuthGuard)
     @Delete('me')
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteAccount(@Req() req: Request) {

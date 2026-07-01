@@ -2,19 +2,22 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { CycleItemPayload, Marque } from '../types/cycles.types';
 
 export const adminMarquesService = {
-  getAll(): Promise<Marque[]> {
-    return apiClient.get<Marque[]>('/admin/marques').then((r) => r.data);
+  async getAll(): Promise<Marque[]> {
+    const r = await apiClient.get<Marque[]>('/admin/marques');
+    return r.data;
   },
 
-  create(payload: CycleItemPayload): Promise<Marque> {
-    return apiClient.post<Marque>('/admin/marques', payload).then((r) => r.data);
+  async create(payload: CycleItemPayload): Promise<Marque> {
+    const r = await apiClient.post<Marque>('/admin/marques', payload);
+    return r.data;
   },
 
-  update(id: string, payload: CycleItemPayload): Promise<Marque> {
-    return apiClient.patch<Marque>(`/admin/marques/${id}`, payload).then((r) => r.data);
+  async update(id: string, payload: CycleItemPayload): Promise<Marque> {
+    const r = await apiClient.patch<Marque>(`/admin/marques/${id}`, payload);
+    return r.data;
   },
 
-  delete(id: string): Promise<void> {
-    return apiClient.delete(`/admin/marques/${id}`).then(() => undefined);
+  async delete(id: string): Promise<void> {
+    await apiClient.delete(`/admin/marques/${id}`);
   },
 };

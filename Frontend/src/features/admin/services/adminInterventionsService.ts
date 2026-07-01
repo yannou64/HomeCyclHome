@@ -6,17 +6,15 @@ import type {
 } from '../types/adminIntervention.types';
 
 export const adminInterventionsService = {
-    getInterventions(
+    async getInterventions(
         params: GetAdminInterventionsParams,
     ): Promise<AdminInterventionListItem[]> {
-        return apiClient
-            .get<AdminInterventionListItem[]>('/admin/interventions', { params })
-            .then((r) => r.data);
+        const r = await apiClient.get<AdminInterventionListItem[]>('/admin/interventions', { params });
+        return r.data;
     },
 
-    getInterventionDetail(id: string): Promise<AdminInterventionDetail> {
-        return apiClient
-            .get<AdminInterventionDetail>(`/admin/interventions/${id}`)
-            .then((r) => r.data);
+    async getInterventionDetail(id: string): Promise<AdminInterventionDetail> {
+        const r = await apiClient.get<AdminInterventionDetail>(`/admin/interventions/${id}`);
+        return r.data;
     },
 };

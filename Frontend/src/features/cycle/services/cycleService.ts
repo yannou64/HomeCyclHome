@@ -2,19 +2,22 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { Cycle, CreateCyclePayload, UpdateCyclePayload } from '../types/cycle.types';
 
 export const cycleService = {
-    getAll(): Promise<Cycle[]> {
-        return apiClient.get<Cycle[]>('/cycles').then((r) => r.data);
+    async getAll(): Promise<Cycle[]> {
+        const r = await apiClient.get<Cycle[]>('/cycles');
+        return r.data;
     },
 
-    create(payload: CreateCyclePayload): Promise<Cycle> {
-        return apiClient.post<Cycle>('/cycles', payload).then((r) => r.data);
+    async create(payload: CreateCyclePayload): Promise<Cycle> {
+        const r = await apiClient.post<Cycle>('/cycles', payload);
+        return r.data;
     },
 
-    update(id: string, payload: UpdateCyclePayload): Promise<Cycle> {
-        return apiClient.patch<Cycle>(`/cycles/${id}`, payload).then((r) => r.data);
+    async update(id: string, payload: UpdateCyclePayload): Promise<Cycle> {
+        const r = await apiClient.patch<Cycle>(`/cycles/${id}`, payload);
+        return r.data;
     },
 
-    delete(id: string): Promise<void> {
-        return apiClient.delete(`/cycles/${id}`).then(() => undefined);
+    async delete(id: string): Promise<void> {
+        await apiClient.delete(`/cycles/${id}`);
     },
 };

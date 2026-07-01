@@ -1,18 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
     Tabs,
     TabsList,
     TabsTrigger,
     TabsContent,
 } from '../../../../../shared/components/ui/tabs';
-import { adminZonesService } from '../../../services/adminZonesService';
-import { adminUsersService } from '../../../services/adminUsersService';
 import { useAdminInterventions } from '../../../hooks/useAdminInterventions';
+import { useAdminInterventionFilters } from '../../../hooks/useAdminInterventionFilters';
 import { AdminInterventionsList } from '../AdminInterventionsList/AdminInterventionsList';
 import { AdminInterventionDetailDialog } from '../AdminInterventionDetailDialog/AdminInterventionDetailDialog';
 import type { ActiveInterventionTab } from '../../../types/adminIntervention.types';
-import type { AdminUser } from '../../../types/admin.types';
-import type { Zone } from '../../../types/zones.types';
 import styles from './AdminInterventionsSection.module.scss';
 
 export function AdminInterventionsSection() {
@@ -29,20 +26,7 @@ export function AdminInterventionsSection() {
     } = useAdminInterventions();
 
     const [selectedId, setSelectedId] = useState<string | null>(null);
-    const [zones, setZones] = useState<Zone[]>([]);
-    const [techniciens, setTechniciens] = useState<AdminUser[]>([]);
-    const [loadError, setLoadError] = useState<string | null>(null);
-
-    useEffect(() => {
-        adminZonesService
-            .getAll()
-            .then(setZones)
-            .catch(() => setLoadError('Impossible de charger les zones.'));
-        adminUsersService
-            .getUsers({ role: 'technicien', limit: 100 })
-            .then((result) => setTechniciens(result.data))
-            .catch(() => setLoadError('Impossible de charger les techniciens.'));
-    }, []);
+    const { zones, techniciens, loadError } = useAdminInterventionFilters();
 
     const listProps = {
         interventions,

@@ -1,12 +1,11 @@
-import { useEffect, useReducer } from 'react';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
-import { adminInterventionsService } from '../../../services/adminInterventionsService';
-import type { AdminInterventionDetail, AdminInterventionStatut } from '../../../types/adminIntervention.types';
+import { useAdminInterventionDetail } from '../../../hooks/useAdminInterventionDetail';
+import type { AdminInterventionStatut } from '../../../types/adminIntervention.types';
 import styles from './AdminInterventionDetailDialog.module.scss';
 
 interface AdminInterventionDetailDialogProps {
@@ -31,45 +30,11 @@ function formatDateTime(dateString: string): string {
     });
 }
 
-type FetchState = {
-    detail: AdminInterventionDetail | null;
-    isLoading: boolean;
-    error: string | null;
-};
-
-type FetchAction =
-    | { type: 'start' }
-    | { type: 'success'; payload: AdminInterventionDetail }
-    | { type: 'error' };
-
-function fetchReducer(_: FetchState, action: FetchAction): FetchState {
-    switch (action.type) {
-        case 'start':   return { detail: null, isLoading: true, error: null };
-        case 'success': return { detail: action.payload, isLoading: false, error: null };
-        case 'error':   return { detail: null, isLoading: false, error: 'Impossible de charger le détail.' };
-    }
-}
-
-const INITIAL_STATE: FetchState = { detail: null, isLoading: false, error: null };
-
 export function AdminInterventionDetailDialog({
     id,
     onClose,
 }: AdminInterventionDetailDialogProps) {
-    const [{ detail, isLoading, error }, dispatch] = useReducer(fetchReducer, INITIAL_STATE);
-
-    useEffect(() => {
-        if (!id) return;
-
-        let active = true;
-        dispatch({ type: 'start' });
-        adminInterventionsService
-            .getInterventionDetail(id)
-            .then((data) => { if (active) dispatch({ type: 'success', payload: data }); })
-            .catch(() => { if (active) dispatch({ type: 'error' }); });
-
-        return () => { active = false; };
-    }, [id]);
+    const { detail, isLoading, error } = useAdminInterventionDetail(id);
 
     return (
         <Dialog open={!!id} onOpenChange={onClose}>
