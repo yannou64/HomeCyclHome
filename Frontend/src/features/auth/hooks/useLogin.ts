@@ -17,7 +17,7 @@ export function useLogin() {
         try {
             const session = await authService.login(payload);
             login(session); // met à jour le contexte + localStorage
-            navigate('/'); // redirige vers l'accueil
+            navigate(session.role === 'admin' ? '/admin' : '/');
         } catch {
             setError('Email ou mot de passe incorrect.');
         } finally {
