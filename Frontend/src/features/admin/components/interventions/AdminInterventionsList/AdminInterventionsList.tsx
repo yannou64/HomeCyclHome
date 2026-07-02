@@ -1,6 +1,25 @@
-import type { AdminInterventionListItem, AdminInterventionStatut } from '../../../types/adminIntervention.types';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '../../../../../shared/components/ui/table';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
+import type { PaginationMeta } from '../../../../../shared/types/pagination.types';
+import type { AdminInterventionListItem } from '../../../types/adminIntervention.types';
 import type { AdminUser } from '../../../types/admin.types';
 import type { Zone } from '../../../types/zones.types';
+import { getDisplayStatut, getStatutLabel } from '../../../utils/interventionStatut';
+import { AdminInterventionsFilterBar } from '../AdminInterventionsFilterBar/AdminInterventionsFilterBar';
 import styles from './AdminInterventionsList.module.scss';
 
 interface AdminInterventionsListProps {
@@ -14,13 +33,9 @@ interface AdminInterventionsListProps {
     onZoneFilter: (zoneId: string | undefined) => void;
     onTechnicienFilter: (technicienId: string | undefined) => void;
     onRowClick: (id: string) => void;
+    meta: PaginationMeta;
+    onPageChange: (page: number) => void;
 }
-
-const STATUT_LABELS: Record<AdminInterventionStatut, string> = {
-    Planifiee: 'Planifiée',
-    Terminee: 'Terminée',
-    Annulee: 'Annulée',
-};
 
 function formatDateTime(dateString: string): string {
     const date = new Date(dateString);
@@ -48,39 +63,19 @@ export function AdminInterventionsList({
     onZoneFilter,
     onTechnicienFilter,
     onRowClick,
+    meta,
+    onPageChange,
 }: AdminInterventionsListProps) {
     return (
         <div className={styles.wrapper}>
-            {/* Filtres */}
-            <div className={styles.filters}>
-                <select
-                    className={styles.select}
-                    value={zoneId ?? ''}
-                    onChange={(e) => onZoneFilter(e.target.value || undefined)}
-                    aria-label="Filtrer par zone"
-                >
-                    <option value="">Toutes les zones</option>
-                    {zones.map((z) => (
-                        <option key={z.id} value={z.id}>
-                            {z.nomZone}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    className={styles.select}
-                    value={technicienId ?? ''}
-                    onChange={(e) => onTechnicienFilter(e.target.value || undefined)}
-                    aria-label="Filtrer par technicien"
-                >
-                    <option value="">Tous les techniciens</option>
-                    {techniciens.map((t) => (
-                        <option key={t.id} value={t.id}>
-                            {t.prenom} {t.nom}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            <AdminInterventionsFilterBar
+                zones={zones}
+                techniciens={techniciens}
+                zoneId={zoneId}
+                technicienId={technicienId}
+                onZoneFilter={onZoneFilter}
+                onTechnicienFilter={onTechnicienFilter}
+            />
 
             {/* États */}
             {isLoading && <p className={styles.message}>Chargement…</p>}
@@ -92,20 +87,21 @@ export function AdminInterventionsList({
             )}
 
             {!isLoading && !error && interventions.length > 0 && (
-                <div className={styles.tableWrapper}>
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>Date &amp; heure</th>
-                                <th>Zone</th>
-                                <th>Technicien</th>
-                                <th>Forfait</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {interventions.map((intervention) => (
-                                <tr
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Date &amp; heure</TableHead>
+                            <TableHead>Zone</TableHead>
+                            <TableHead>Technicien</TableHead>
+                            <TableHead>Forfait</TableHead>
+                            <TableHead>Statut</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {interventions.map((intervention) => {
+                            const displayStatut = getDisplayStatut(intervention);
+                            return (
+                                <TableRow
                                     key={intervention.id}
                                     className={styles.row}
                                     onClick={() => onRowClick(intervention.id)}
@@ -117,24 +113,69 @@ export function AdminInterventionsList({
                                         }
                                     }}
                                 >
-                                    <td>{formatDateTime(intervention.dateDebut)}</td>
-                                    <td>{intervention.zone.nom}</td>
-                                    <td>
+                                    <TableCell>{formatDateTime(intervention.dateDebut)}</TableCell>
+                                    <TableCell>{intervention.zone.nom}</TableCell>
+                                    <TableCell>
                                         {intervention.technicien
                                             ? `${intervention.technicien.prenom} ${intervention.technicien.nom}`
                                             : <span className={styles.unassigned}>Non assigné</span>}
-                                    </td>
-                                    <td>{intervention.forfaitNom}</td>
-                                    <td>
-                                        <span className={`${styles.badge} ${styles[`badge${intervention.statut}`]}`}>
-                                            {STATUT_LABELS[intervention.statut]}
+                                    </TableCell>
+                                    <TableCell>{intervention.forfaitNom}</TableCell>
+                                    <TableCell>
+                                        <span className={`${styles.badge} ${styles[`badge${displayStatut}`]}`}>
+                                            {getStatutLabel(displayStatut)}
                                         </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            )}
+
+            {!isLoading && !error && meta.totalPages > 1 && (
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (meta.page > 1) onPageChange(meta.page - 1);
+                                }}
+                                aria-disabled={meta.page === 1}
+                                className={meta.page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                            />
+                        </PaginationItem>
+                        {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                            <PaginationItem key={p}>
+                                <PaginationLink
+                                    href="#"
+                                    isActive={meta.page === p}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onPageChange(p);
+                                    }}
+                                >
+                                    {p}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationNext
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (meta.page < meta.totalPages) onPageChange(meta.page + 1);
+                                }}
+                                aria-disabled={meta.page === meta.totalPages}
+                                className={
+                                    meta.page === meta.totalPages ? 'pointer-events-none opacity-40' : undefined
+                                }
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             )}
         </div>
     );

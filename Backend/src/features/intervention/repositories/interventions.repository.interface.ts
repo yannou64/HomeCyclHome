@@ -36,9 +36,11 @@ export type ClientInfo = {
 };
 
 export type GetAdminInterventionsParams = {
-    statut?: 'Planifiee' | 'archivees';
+    statut?: 'Planifiee' | 'enRetard' | 'archivees';
     zoneId?: string;
     technicienId?: string;
+    page: number;
+    limit: number;
 };
 
 export type CreateInterventionData = {
@@ -74,9 +76,10 @@ export interface IInterventionsRepository {
         interventionId: string,
         creneauId: string,
     ): Promise<void>;
-    findAllInterventions(
-        params: GetAdminInterventionsParams,
-    ): Promise<AdminInterventionListItemDto[]>;
+    findAllInterventions(params: GetAdminInterventionsParams): Promise<{
+        interventions: AdminInterventionListItemDto[];
+        total: number;
+    }>;
     findInterventionDetailById(
         id: string,
     ): Promise<AdminInterventionDetailDto | null>;

@@ -5,19 +5,13 @@ import {
     DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
 import { useAdminInterventionDetail } from '../../../hooks/useAdminInterventionDetail';
-import type { AdminInterventionStatut } from '../../../types/adminIntervention.types';
+import { getDisplayStatut, getStatutLabel } from '../../../utils/interventionStatut';
 import styles from './AdminInterventionDetailDialog.module.scss';
 
 interface AdminInterventionDetailDialogProps {
     id: string | null;
     onClose: () => void;
 }
-
-const STATUT_LABELS: Record<AdminInterventionStatut, string> = {
-    Planifiee: 'Planifiée',
-    Terminee: 'Terminée',
-    Annulee: 'Annulée',
-};
 
 function formatDateTime(dateString: string): string {
     return new Date(dateString).toLocaleString('fr-FR', {
@@ -52,8 +46,8 @@ export function AdminInterventionDetailDialog({
                     <div className={styles.body}>
                         {/* Statut + dates */}
                         <div className={styles.header}>
-                            <span className={`${styles.badge} ${styles[`badge${detail.statut}`]}`}>
-                                {STATUT_LABELS[detail.statut]}
+                            <span className={`${styles.badge} ${styles[`badge${getDisplayStatut(detail)}`]}`}>
+                                {getStatutLabel(getDisplayStatut(detail))}
                             </span>
                             <span className={styles.dateDebut}>
                                 {formatDateTime(detail.dateDebut)}
@@ -116,13 +110,13 @@ export function AdminInterventionDetailDialog({
                                     {detail.photosClient.map((p) => (
                                         <a
                                             key={p.id}
-                                            href={p.url_s3}
+                                            href={p.urlS3}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={styles.photoLink}
                                         >
                                             <img
-                                                src={p.url_s3}
+                                                src={p.urlS3}
                                                 alt="Photo client"
                                                 className={styles.photo}
                                             />
@@ -140,13 +134,13 @@ export function AdminInterventionDetailDialog({
                                     {detail.photosTechnicien.map((p) => (
                                         <a
                                             key={p.id}
-                                            href={p.url_s3}
+                                            href={p.urlS3}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={styles.photoLink}
                                         >
                                             <img
-                                                src={p.url_s3}
+                                                src={p.urlS3}
                                                 alt="Photo technicien"
                                                 className={styles.photo}
                                             />

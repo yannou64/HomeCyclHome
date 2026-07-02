@@ -4,7 +4,7 @@ import type {
     IInterventionsRepository,
     GetAdminInterventionsParams,
 } from '../repositories/interventions.repository.interface';
-import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
+import type { PaginatedAdminInterventionsDto } from '../dto/output/paginated-admin-interventions.dto';
 
 @Injectable()
 export class GetAdminInterventionsUseCase {
@@ -13,9 +13,20 @@ export class GetAdminInterventionsUseCase {
         private readonly repo: IInterventionsRepository,
     ) {}
 
-    execute(
+    async execute(
         params: GetAdminInterventionsParams,
-    ): Promise<AdminInterventionListItemDto[]> {
-        return this.repo.findAllInterventions(params);
+    ): Promise<PaginatedAdminInterventionsDto> {
+        const { interventions, total } =
+            await this.repo.findAllInterventions(params);
+
+        return {
+            data: interventions,
+            meta: {
+                total,
+                page: params.page,
+                limit: params.limit,
+                totalPages: Math.ceil(total / params.limit),
+            },
+        };
     }
 }

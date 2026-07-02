@@ -7,6 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from '../../../../../shared/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
+import { usePagination } from '../../../../../shared/hooks/usePagination';
 import { useAdminTypeCycles } from '../../../hooks/useAdminTypeCycles';
 import type { TypeCycle } from '../../../types/cycles.types';
 import { CycleItemDeleteDialog } from '../CycleItemDeleteDialog/CycleItemDeleteDialog';
@@ -15,6 +24,7 @@ import styles from './TypesCyclesTab.module.scss';
 
 export function TypesCyclesTab() {
   const { items, isLoading, error, createItem, updateItem, deleteItem } = useAdminTypeCycles();
+  const { pageItems, page, setPage, totalPages } = usePagination(items, 6);
   const [editingItem, setEditingItem] = useState<TypeCycle | null>(null);
   const [deletingItem, setDeletingItem] = useState<TypeCycle | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -62,7 +72,7 @@ export function TypesCyclesTab() {
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item) => (
+              pageItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.libelle}</TableCell>
                   <TableCell className={styles.actions}>
@@ -92,11 +102,48 @@ export function TypesCyclesTab() {
         <span className={styles.paginationInfo}>
           {items.length} résultat{items.length > 1 ? 's' : ''}
         </span>
-        <div className={styles.paginationControls}>
-          <button className={styles.pageBtn} disabled aria-label="Page précédente">←</button>
-          <button className={`${styles.pageBtn} ${styles.pageBtnActive}`} aria-current="page">1</button>
-          <button className={styles.pageBtn} disabled aria-label="Page suivante">→</button>
-        </div>
+        {totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page > 1) setPage(page - 1);
+                  }}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === p}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(p);
+                    }}
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                  aria-disabled={page === totalPages}
+                  className={page === totalPages ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
 
       <CycleItemFormDialog

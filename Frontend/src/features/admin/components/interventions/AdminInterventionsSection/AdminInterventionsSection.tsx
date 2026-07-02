@@ -15,6 +15,7 @@ import styles from './AdminInterventionsSection.module.scss';
 export function AdminInterventionsSection() {
     const {
         interventions,
+        meta,
         isLoading,
         error,
         activeTab,
@@ -23,6 +24,7 @@ export function AdminInterventionsSection() {
         setZoneId,
         technicienId,
         setTechnicienId,
+        setPage,
     } = useAdminInterventions();
 
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -39,6 +41,8 @@ export function AdminInterventionsSection() {
         onZoneFilter: setZoneId,
         onTechnicienFilter: setTechnicienId,
         onRowClick: setSelectedId,
+        meta,
+        onPageChange: setPage,
     };
 
     return (
@@ -56,12 +60,19 @@ export function AdminInterventionsSection() {
                     <TabsTrigger value="planifiees" className={styles.tabsTrigger}>
                         Planifiées
                     </TabsTrigger>
+                    <TabsTrigger value="enRetard" className={styles.tabsTrigger}>
+                        En retard
+                    </TabsTrigger>
                     <TabsTrigger value="archivees" className={styles.tabsTrigger}>
                         Archivées
                     </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="planifiees">
+                    <AdminInterventionsList {...listProps} />
+                </TabsContent>
+
+                <TabsContent value="enRetard">
                     <AdminInterventionsList {...listProps} />
                 </TabsContent>
 

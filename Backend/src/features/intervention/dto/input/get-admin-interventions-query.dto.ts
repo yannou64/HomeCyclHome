@@ -1,9 +1,10 @@
-import { IsIn, IsOptional, IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsUUID, Max, Min } from 'class-validator';
 
 export class GetAdminInterventionsQueryDto {
     @IsOptional()
-    @IsIn(['Planifiee', 'archivees'])
-    statut?: 'Planifiee' | 'archivees';
+    @IsIn(['Planifiee', 'enRetard', 'archivees'])
+    statut?: 'Planifiee' | 'enRetard' | 'archivees';
 
     @IsOptional()
     @IsUUID()
@@ -12,4 +13,17 @@ export class GetAdminInterventionsQueryDto {
     @IsOptional()
     @IsUUID()
     technicienId?: string;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    @Min(1)
+    page: number = 1;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsInt()
+    @Min(1)
+    @Max(100)
+    limit: number = 6;
 }

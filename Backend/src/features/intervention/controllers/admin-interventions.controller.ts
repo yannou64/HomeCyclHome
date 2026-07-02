@@ -1,5 +1,10 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiCookieAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiCookieAuth,
+    ApiOkResponse,
+    ApiQuery,
+    ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
@@ -18,8 +23,17 @@ export class AdminInterventionsController {
         private readonly getDetailUseCase: GetAdminInterventionDetailUseCase,
     ) {}
 
+    @ApiQuery({
+        name: 'statut',
+        required: false,
+        enum: ['Planifiee', 'enRetard', 'archivees'],
+    })
+    @ApiQuery({ name: 'zoneId', required: false, type: String })
+    @ApiQuery({ name: 'technicienId', required: false, type: String })
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
     @ApiOkResponse({
-        description: 'Liste des interventions (supervision admin)',
+        description: 'Liste paginée des interventions (supervision admin)',
     })
     @Get()
     getAll(@Query() query: GetAdminInterventionsQueryDto) {

@@ -13,7 +13,7 @@ export function useAdminUsers() {
     const [meta, setMeta] = useState<PaginationMeta>({
         total: 0,
         page: 1,
-        limit: 10,
+        limit: 6,
         totalPages: 1,
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ export function useAdminUsers() {
 
     const [filters, setFilters] = useState<GetUsersParams>({
         page: 1,
-        limit: 10,
+        limit: 6,
     });
 
     const fetchUsers = useCallback(async (params: GetUsersParams) => {

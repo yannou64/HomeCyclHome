@@ -8,6 +8,7 @@ const makeDetail = (
 ): AdminInterventionDetailDto => ({
     id: 'int-1',
     statut: 'Planifiee',
+    enRetard: false,
     dateDebut: '2026-06-20T09:00:00.000Z',
     forfaitNom: 'Révision complète',
     zone: { id: 'zone-1', nom: 'Lyon Centre' },

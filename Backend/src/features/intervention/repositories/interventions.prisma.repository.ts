@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import type {
     IInterventionsRepository,
@@ -265,35 +266,57 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         });
     }
 
-    async findAllInterventions(
-        params: GetAdminInterventionsParams,
-    ): Promise<AdminInterventionListItemDto[]> {
-        const { statut, zoneId, technicienId } = params;
+    async findAllInterventions(params: GetAdminInterventionsParams): Promise<{
+        interventions: AdminInterventionListItemDto[];
+        total: number;
+    }> {
+        const { statut, zoneId, technicienId, page, limit } = params;
+        const now = new Date();
 
-        const interventions = await this.prisma.intervention.findMany({
-            where: {
-                ...(statut === 'archivees'
-                    ? { statut: { in: ['Terminee', 'Annulee'] } }
-                    : statut
-                      ? { statut }
-                      : {}),
-                ...(zoneId ? { creneau: { zone_id: zoneId } } : {}),
-                ...(technicienId ? { technicien_id: technicienId } : {}),
-            },
-            select: {
-                id: true,
-                statut: true,
-                technicien_id: true,
-                creneau: {
-                    select: {
-                        date_debut: true,
-                        zone: { select: { id: true, nom_zone: true } },
+        // Fusionné en un seul objet : deux spreads séparés ciblant tous les deux
+        // la clé `creneau` s'écraseraient silencieusement au lieu de se combiner.
+        const creneauFilter: Prisma.CreneauWhereInput = {
+            ...(zoneId ? { zone_id: zoneId } : {}),
+            ...(statut === 'enRetard'
+                ? { date_debut: { lt: now } }
+                : statut === 'Planifiee'
+                  ? { date_debut: { gte: now } }
+                  : {}),
+        };
+
+        const where: Prisma.InterventionWhereInput = {
+            ...(statut === 'archivees'
+                ? { statut: { in: ['Terminee', 'Annulee'] } }
+                : statut
+                  ? { statut: 'Planifiee' }
+                  : {}),
+            ...(Object.keys(creneauFilter).length > 0
+                ? { creneau: creneauFilter }
+                : {}),
+            ...(technicienId ? { technicien_id: technicienId } : {}),
+        };
+
+        const [interventions, total] = await this.prisma.$transaction([
+            this.prisma.intervention.findMany({
+                where,
+                select: {
+                    id: true,
+                    statut: true,
+                    technicien_id: true,
+                    creneau: {
+                        select: {
+                            date_debut: true,
+                            zone: { select: { id: true, nom_zone: true } },
+                        },
                     },
+                    forfait: { select: { nom: true } },
                 },
-                forfait: { select: { nom: true } },
-            },
-            orderBy: { creneau: { date_debut: 'asc' } },
-        });
+                orderBy: { creneau: { date_debut: 'asc' } },
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+            this.prisma.intervention.count({ where }),
+        ]);
 
         // technicien_id est un snapshot scalaire sans @relation Prisma → requête séparée
         const technicienIds = [
@@ -315,16 +338,21 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             { id: string; prenom: string; nom: string }
         >(techniciens.map((t) => [t.id, t]));
 
-        return interventions.map((i) => ({
-            id: i.id,
-            statut: i.statut as AdminInterventionListItemDto['statut'],
-            dateDebut: i.creneau.date_debut.toISOString(),
-            forfaitNom: i.forfait.nom,
-            zone: { id: i.creneau.zone.id, nom: i.creneau.zone.nom_zone },
-            technicien: i.technicien_id
-                ? (technicienMap.get(i.technicien_id) ?? null)
-                : null,
-        }));
+        return {
+            interventions: interventions.map((i) => ({
+                id: i.id,
+                statut: i.statut as AdminInterventionListItemDto['statut'],
+                enRetard:
+                    i.statut === 'Planifiee' && i.creneau.date_debut < now,
+                dateDebut: i.creneau.date_debut.toISOString(),
+                forfaitNom: i.forfait.nom,
+                zone: { id: i.creneau.zone.id, nom: i.creneau.zone.nom_zone },
+                technicien: i.technicien_id
+                    ? (technicienMap.get(i.technicien_id) ?? null)
+                    : null,
+            })),
+            total,
+        };
     }
 
     async isInterventionOwnedByClient(
@@ -422,6 +450,9 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         return {
             id: intervention.id,
             statut: intervention.statut as AdminInterventionDetailDto['statut'],
+            enRetard:
+                intervention.statut === 'Planifiee' &&
+                intervention.creneau.date_debut < new Date(),
             dateDebut: intervention.creneau.date_debut.toISOString(),
             forfaitNom: intervention.forfait.nom,
             zone: {

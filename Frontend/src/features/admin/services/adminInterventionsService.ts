@@ -1,15 +1,15 @@
 import { apiClient } from '../../../shared/services/apiClient';
 import type {
-    AdminInterventionListItem,
     AdminInterventionDetail,
     GetAdminInterventionsParams,
+    PaginatedAdminInterventions,
 } from '../types/adminIntervention.types';
 
 export const adminInterventionsService = {
     async getInterventions(
         params: GetAdminInterventionsParams,
-    ): Promise<AdminInterventionListItem[]> {
-        const r = await apiClient.get<AdminInterventionListItem[]>('/admin/interventions', { params });
+    ): Promise<PaginatedAdminInterventions> {
+        const r = await apiClient.get<PaginatedAdminInterventions>('/admin/interventions', { params });
         return r.data;
     },
 

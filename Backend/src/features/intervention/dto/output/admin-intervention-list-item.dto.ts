@@ -26,6 +26,12 @@ export class AdminInterventionListItemDto {
     @ApiProperty({ enum: ['Planifiee', 'Terminee', 'Annulee'] })
     statut: 'Planifiee' | 'Terminee' | 'Annulee';
 
+    @ApiProperty({
+        description:
+            "Vrai si l'intervention est Planifiee et que sa date de début est passée (calculé côté serveur)",
+    })
+    enRetard: boolean;
+
     @ApiProperty()
     dateDebut: string;
 

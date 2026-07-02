@@ -7,6 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from '../../../../../shared/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
+import { usePagination } from '../../../../../shared/hooks/usePagination';
 import { useAdminForfaits } from '../../../hooks/useAdminForfaits';
 import type { Forfait } from '../../../types/forfaits.types';
 import { ForfaitDeleteDialog } from '../ForfaitDeleteDialog/ForfaitDeleteDialog';
@@ -16,6 +25,7 @@ import styles from './AdminForfaitsSection.module.scss';
 
 export function AdminForfaitsSection() {
   const { items, isLoading, error, createItem, updateItem, deleteItem, setPrix } = useAdminForfaits();
+  const { pageItems, page, setPage, totalPages } = usePagination(items, 6);
   const [editingItem, setEditingItem] = useState<Forfait | null>(null);
   const [deletingItem, setDeletingItem] = useState<Forfait | null>(null);
   const [prixItem, setPrixItem] = useState<Forfait | null>(null);
@@ -69,7 +79,7 @@ export function AdminForfaitsSection() {
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item) => (
+              pageItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={styles.nomCell}>{item.nom}</TableCell>
                   <TableCell className={styles.descriptionCell}>
@@ -120,11 +130,48 @@ export function AdminForfaitsSection() {
         <span className={styles.paginationInfo}>
           {items.length} résultat{items.length > 1 ? 's' : ''}
         </span>
-        <div className={styles.paginationControls}>
-          <button className={styles.pageBtn} disabled aria-label="Page précédente">←</button>
-          <button className={`${styles.pageBtn} ${styles.pageBtnActive}`} aria-current="page">1</button>
-          <button className={styles.pageBtn} disabled aria-label="Page suivante">→</button>
-        </div>
+        {totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page > 1) setPage(page - 1);
+                  }}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === p}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(p);
+                    }}
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                  aria-disabled={page === totalPages}
+                  className={page === totalPages ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
 
       <ForfaitFormDialog

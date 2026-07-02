@@ -1,5 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+    ApiOkResponse,
+    ApiOperation,
+    ApiQuery,
+    ApiTags,
+} from '@nestjs/swagger';
 import { GetCreneauxDisponiblesQueryDto } from '../dto/get-creneaux-disponibles.dto';
 import { GetCreneauxDisponiblesUseCase } from '../use-cases/get-creneaux-disponibles.use-case';
 
@@ -14,6 +19,10 @@ export class ClientCreneauxController {
         summary:
             'Retourne les créneaux disponibles filtrés par zone, durée forfait et plage de dates',
     })
+    @ApiQuery({ name: 'zoneId', required: true, type: String })
+    @ApiQuery({ name: 'dureeMinutes', required: true, type: Number })
+    @ApiQuery({ name: 'dateDebut', required: true, type: String })
+    @ApiQuery({ name: 'dateFin', required: true, type: String })
     @ApiOkResponse({ description: 'Liste des créneaux disponibles' })
     @Get()
     findDisponibles(@Query() query: GetCreneauxDisponiblesQueryDto) {
