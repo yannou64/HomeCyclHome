@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useAuth } from '../../../../app/providers/authContext/useAuth';
 import { useReservation } from '../../../../app/providers/reservationContext/useReservation';
 import { useZoneCheck } from '../../../reservation/hooks/useZoneCheck';
+import { Card } from '../../../../shared/components/Card/Card';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import { useAddressAutocomplete } from '../../hooks/useAddressAutocomplete';
 import { useAdresses } from '../../hooks/useAdresses';
 import type { Adresse } from '../../types/adresse.types';
@@ -31,27 +33,29 @@ function NonAuthSelector() {
     };
 
     return (
-        <div className={styles.wrapper}>
-            <label className={styles.label} htmlFor="adresse-input">
-                Votre adresse d&apos;intervention
-            </label>
-            <input
-                id="adresse-input"
-                ref={inputRef}
-                type="text"
-                className={styles.input}
-                placeholder="Ex: 12 rue de la Paix, Lyon"
-                autoComplete="off"
-            />
-            {error && <p className={styles.error}>{error}</p>}
-            <CTAButton
-                onClick={() => void handleSubmit()}
-                disabled={!decomposedAddress}
-                isLoading={isLoading}
-            >
-                Prendre Rendez-vous
-            </CTAButton>
-        </div>
+        <Card className={styles.card}>
+            <Form className={styles.form} onSubmit={() => void handleSubmit()}>
+                <label className={styles.label} htmlFor="adresse-input">
+                    Votre adresse d&apos;intervention
+                </label>
+                <input
+                    id="adresse-input"
+                    ref={inputRef}
+                    type="text"
+                    className={styles.input}
+                    placeholder="Ex: 12 rue de la Paix, Lyon"
+                    autoComplete="off"
+                />
+                {error && <p className={styles.error}>{error}</p>}
+                <CTAButton
+                    type="submit"
+                    disabled={!decomposedAddress}
+                    isLoading={isLoading}
+                >
+                    Prendre Rendez-vous
+                </CTAButton>
+            </Form>
+        </Card>
     );
 }
 
@@ -101,62 +105,64 @@ function AuthSelector() {
     const isDisabled = showNewInput ? !decomposedAddress : !selectedId;
 
     return (
-        <div className={styles.wrapper}>
-            <label className={styles.label} htmlFor="adresse-select">
-                Sélectionner une de mes adresses
-            </label>
+        <Card className={styles.card}>
+            <Form className={styles.form} onSubmit={() => void handleSubmit()}>
+                <label className={styles.label} htmlFor="adresse-select">
+                    Sélectionner une de mes adresses
+                </label>
 
-            {!showNewInput ? (
-                <>
-                    <select
-                        id="adresse-select"
-                        className={styles.select}
-                        value={selectedId}
-                        onChange={(e) => setSelectedId(e.target.value)}
-                    >
-                        {activeAdresses.map((a) => (
-                            <option key={a.id} value={a.id}>
-                                {formatAdresse(a)}
-                            </option>
-                        ))}
-                    </select>
-                    <button
-                        type="button"
-                        className={styles.newAddressLink}
-                        onClick={() => setShowNewInput(true)}
-                    >
-                        Saisir une nouvelle adresse
-                    </button>
-                </>
-            ) : (
-                <>
-                    <input
-                        id="adresse-select"
-                        ref={inputRef}
-                        type="text"
-                        className={styles.input}
-                        placeholder="Ex: 12 rue de la Paix, Lyon"
-                        autoComplete="off"
-                    />
-                    <button
-                        type="button"
-                        className={styles.newAddressLink}
-                        onClick={() => setShowNewInput(false)}
-                    >
-                        ← Choisir une adresse enregistrée
-                    </button>
-                </>
-            )}
+                {!showNewInput ? (
+                    <>
+                        <select
+                            id="adresse-select"
+                            className={styles.select}
+                            value={selectedId}
+                            onChange={(e) => setSelectedId(e.target.value)}
+                        >
+                            {activeAdresses.map((a) => (
+                                <option key={a.id} value={a.id}>
+                                    {formatAdresse(a)}
+                                </option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className={styles.newAddressLink}
+                            onClick={() => setShowNewInput(true)}
+                        >
+                            Saisir une nouvelle adresse
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <input
+                            id="adresse-select"
+                            ref={inputRef}
+                            type="text"
+                            className={styles.input}
+                            placeholder="Ex: 12 rue de la Paix, Lyon"
+                            autoComplete="off"
+                        />
+                        <button
+                            type="button"
+                            className={styles.newAddressLink}
+                            onClick={() => setShowNewInput(false)}
+                        >
+                            ← Choisir une adresse enregistrée
+                        </button>
+                    </>
+                )}
 
-            {error && <p className={styles.error}>{error}</p>}
-            <CTAButton
-                onClick={() => void handleSubmit()}
-                disabled={isDisabled}
-                isLoading={isLoading}
-            >
-                Prendre Rendez-vous
-            </CTAButton>
-        </div>
+                {error && <p className={styles.error}>{error}</p>}
+                <CTAButton
+                    type="submit"
+                    disabled={isDisabled}
+                    isLoading={isLoading}
+                >
+                    Prendre Rendez-vous
+                </CTAButton>
+            </Form>
+        </Card>
     );
 }
 

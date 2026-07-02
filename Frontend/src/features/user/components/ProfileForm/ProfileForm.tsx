@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import { useUpdateProfile } from '../../hooks/useUpdateProfile';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import phoneIcon from '../../../../assets/icones/telephone.svg';
 import type { UserProfile } from '../../types/user.types';
 import styles from './ProfileForm.module.scss';
@@ -20,15 +21,14 @@ function ProfileFormFields({ initialProfile }: { initialProfile: UserProfile }) 
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
-    function handleSubmit(e: { preventDefault(): void }) {
-        e.preventDefault();
+    function handleSubmit() {
         void handleUpdateProfile(formData);
     }
 
     return (
         <>
             <h2 className={styles.title}>Mon profil</h2>
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <Form className={styles.form} onSubmit={handleSubmit}>
 
                 <div className={styles.nameRow}>
                     <div className={styles.field}>
@@ -74,7 +74,7 @@ function ProfileFormFields({ initialProfile }: { initialProfile: UserProfile }) 
                 <CTAButton type="submit" isLoading={isLoading}>
                     Enregistrer
                 </CTAButton>
-            </form>
+            </Form>
         </>
     );
 }

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useReservation } from '../../../../app/providers/reservationContext/useReservation';
 import { useAuth } from '../../../../app/providers/authContext/useAuth';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import styles from './CommentaireEtPhotosForm.module.scss';
 
 const MAX_PHOTOS = 5;
@@ -62,7 +63,7 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
     };
 
     return (
-        <div className={styles.container}>
+        <Form className={styles.container} onSubmit={handleContinue}>
             <h2 className={styles.sectionTitle}>Informations complémentaires <span className={styles.facultatif}>(facultatif)</span></h2>
 
             <div className={styles.field}>
@@ -163,7 +164,7 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
 
             {!embedded && (
                 <div className={styles.actions}>
-                    <CTAButton onClick={handleContinue}>Continuer</CTAButton>
+                    <CTAButton type="submit">Continuer</CTAButton>
                     <button
                         type="button"
                         className={styles.backButton}
@@ -173,6 +174,6 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
                     </button>
                 </div>
             )}
-        </div>
+        </Form>
     );
 }

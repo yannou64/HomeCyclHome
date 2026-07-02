@@ -1,7 +1,8 @@
-import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { useCycles } from '../../hooks/useCycles';
 import { useReferentiel } from '../../hooks/useReferentiel';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import type { Cycle } from '../../types/cycle.types';
 import styles from './MesCycles.module.scss';
 
@@ -55,8 +56,7 @@ export function MesCycles() {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
-    async function handleSubmit(e: FormEvent) {
-        e.preventDefault();
+    async function handleSubmit() {
         setFormError(null);
         setFormSuccess(null);
         setIsSaving(true);
@@ -131,7 +131,7 @@ export function MesCycles() {
 
             {/* Formulaire — affiché uniquement si un cycle est sélectionné ou en création */}
             {selectedId !== null && (
-                <form className={styles.form} onSubmit={(e) => void handleSubmit(e)}>
+                <Form className={styles.form} onSubmit={() => void handleSubmit()}>
 
                     <div className={styles.field}>
                         <label htmlFor="libelle" className={styles.label}>Libellé</label>
@@ -213,7 +213,7 @@ export function MesCycles() {
                             Supprimer
                         </button>
                     )}
-                </form>
+                </Form>
             )}
         </div>
     );

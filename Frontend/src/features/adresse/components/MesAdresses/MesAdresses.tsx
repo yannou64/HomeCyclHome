@@ -1,7 +1,8 @@
-import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { useAdresses } from '../../hooks/useAdresses';
 import { useAddressAutocomplete } from '../../hooks/useAddressAutocomplete';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import type { Adresse } from '../../types/adresse.types';
 import styles from './MesAdresses.module.scss';
 
@@ -44,8 +45,7 @@ export function MesAdresses() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedId, adresses]);
 
-    async function handleCreate(e: FormEvent) {
-        e.preventDefault();
+    async function handleCreate() {
         if (!decomposedAddress) {
             setFormError('Veuillez sélectionner une adresse dans la liste de suggestions.');
             return;
@@ -72,8 +72,7 @@ export function MesAdresses() {
         }
     }
 
-    async function handleUpdate(e: FormEvent) {
-        e.preventDefault();
+    async function handleUpdate() {
         if (!selectedId || selectedId === 'new') return;
 
         setFormError(null);
@@ -146,7 +145,7 @@ export function MesAdresses() {
 
             {/* Formulaire de création */}
             {isNew && (
-                <form className={styles.form} onSubmit={(e) => void handleCreate(e)}>
+                <Form className={styles.form} onSubmit={() => void handleCreate()}>
                     <div className={styles.field}>
                         <label htmlFor="autocomplete" className={styles.label}>
                             Adresse
@@ -201,12 +200,12 @@ export function MesAdresses() {
                     <CTAButton type="submit" isLoading={isSaving} disabled={!decomposedAddress}>
                         Enregistrer
                     </CTAButton>
-                </form>
+                </Form>
             )}
 
             {/* Formulaire d'édition */}
             {selectedId && !isNew && selectedAdresse && (
-                <form className={styles.form} onSubmit={(e) => void handleUpdate(e)}>
+                <Form className={styles.form} onSubmit={() => void handleUpdate()}>
                     {/* Adresse physique — lecture seule */}
                     <div className={styles.field}>
                         <span className={styles.label}>Adresse</span>
@@ -263,7 +262,7 @@ export function MesAdresses() {
                             Désactiver
                         </button>
                     )}
-                </form>
+                </Form>
             )}
         </div>
     );
