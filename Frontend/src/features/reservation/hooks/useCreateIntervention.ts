@@ -12,25 +12,27 @@ export function useCreateIntervention() {
     const createIntervention = async (
         request: CreateInterventionRequest,
         photos?: File[],
-    ): Promise<InterventionCreatedDto> => {
+    ): Promise<{ intervention: InterventionCreatedDto; photoUrls: string[] }> => {
         setIsLoading(true);
         setError(null);
         try {
             const intervention = await interventionService.create(request);
 
             // Upload best-effort : un échec S3 ne doit pas annuler la réservation
+            let photoUrls: string[] = [];
             if (photos && photos.length > 0) {
                 try {
-                    await interventionService.uploadPhotos(
+                    const uploaded = await interventionService.uploadPhotos(
                         intervention.id,
                         photos,
                     );
+                    photoUrls = uploaded.urls;
                 } catch {
                     // silencieux — l'intervention est créée, les photos sont perdues
                 }
             }
 
-            return intervention;
+            return { intervention, photoUrls };
         } catch (err: unknown) {
             const message =
                 err instanceof Error ? err.message : 'Une erreur est survenue.';
