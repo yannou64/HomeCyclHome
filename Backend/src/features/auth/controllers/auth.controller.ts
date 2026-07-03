@@ -109,7 +109,7 @@ export class AuthController {
         await this.logoutUseCase.execute(userId);
 
         res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
+        res.clearCookie('refresh_token', { path: REFRESH_COOKIE.path });
 
         return { message: 'Déconnecté.' };
     }
