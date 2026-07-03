@@ -1,0 +1,199 @@
+{
+  "main": {
+    "id": "129876692a4b794b",
+    "type": "split",
+    "children": [
+      {
+        "id": "2c99884eecbd5cae",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "99237fdddae4e4a8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "wiki/sprint-actuel.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "sprint-actuel"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "11d7175da217abf3",
+    "type": "split",
+    "children": [
+      {
+        "id": "6b884989e5deedf1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cde8d949d546c307",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorateur de fichiers"
+            }
+          },
+          {
+            "id": "b615e38b1ed3f923",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Rechercher"
+            }
+          },
+          {
+            "id": "729ca7c8c59c25f7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Signets"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d0ceccdc23d2d94c",
+    "type": "split",
+    "children": [
+      {
+        "id": "bc82ce9a28373497",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9a2f341e9b59813a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "wiki/sprint-actuel.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Rétrolien pour sprint-actuel"
+            }
+          },
+          {
+            "id": "74095f378cb1da2f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "wiki/sprint-actuel.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Liens sortants de sprint-actuel"
+            }
+          },
+          {
+            "id": "26f2df95b7bd18f9",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Mots-clés"
+            }
+          },
+          {
+            "id": "77c454357b8d36ee",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Toutes les propriétés"
+            }
+          },
+          {
+            "id": "36a4c81319b1036d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "wiki/sprint-actuel.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Plan de sprint-actuel"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Ouvrir le sélecteur rapide": false,
+      "graph:Ouvrir la vue graphique": false,
+      "canvas:Créer une nouvelle toile": false,
+      "daily-notes:Ouvrir la note quotidienne": false,
+      "templates:Insérer le modèle": false,
+      "command-palette:Ouvrir la palette de commandes": false,
+      "bases:Créer une nouvelle base": false
+    }
+  },
+  "active": "99237fdddae4e4a8",
+  "lastOpenFiles": [
+    "wiki/Modèle Conceptuel de Données.md",
+    "wiki/metier.md",
+    "wiki/log.md",
+    "wiki/index.md",
+    "wiki/ia.md",
+    "wiki/Capture d’écran 2026-04-11 à 16.54.55.png",
+    "wiki/Capture d’écran 2026-04-11 à 16.08.36.png",
+    "wiki/architecture.md",
+    "wiki/prompts/updateSprint.md",
+    "wiki/prompts/update-log.md"
+  ]
+}

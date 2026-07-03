@@ -26,5 +26,5 @@ export class UpdateAdminUserDto {
     role?: UserRole;
 
     @IsOptional()
-    is_actif?: boolean;
+    isActif?: boolean;
 }

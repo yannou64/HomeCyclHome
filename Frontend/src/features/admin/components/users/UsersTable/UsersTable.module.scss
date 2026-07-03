@@ -25,16 +25,17 @@
 
 .addButton {
     padding: $spacing-xs $spacing-md;
-    border: 1px solid $color-border;
+    border: none;
     border-radius: $radius-md;
-    background: white;
+    background-color: $color-myOrange;
     font-family: $font-primary;
     font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
     cursor: pointer;
-    color: $color-text-primary;
 
     &:hover {
-        background-color: $color-myLightGreen;
+        opacity: 0.9;
     }
 }
 
@@ -139,41 +140,6 @@
     font-family: $font-primary;
     font-size: $font-size-body;
     color: $color-text-label;
-}
-
-.paginationControls {
-    display: flex;
-    gap: $spacing-xs;
-    align-items: center;
-}
-
-.pageBtn {
-    width: 36px;
-    height: 36px;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    background: white;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover:not(:disabled) {
-        background-color: $color-myLightGreen;
-    }
-
-    &:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-    &.pageBtnActive {
-        border-color: $color-myOrange;
-        color: $color-myOrange;
-        font-weight: $font-bold;
-    }
 }
 
 .loading,

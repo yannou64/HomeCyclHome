@@ -1,0 +1,224 @@
+@use '../../../../app/styles/index' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    width: 100%;
+}
+
+.sectionTitle {
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    margin: 0;
+}
+
+.calendarWrapper {
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+    border-radius: $radius-md;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+    border: 1px solid $color-border;
+
+    :global {
+        --fc-page-bg-color: #ffffff;
+        --fc-today-bg-color: rgba(242, 100, 25, 0.06);
+
+        // Fond blanc sur les cellules et l'axe des horaires
+        .fc-timegrid-slot-lane,
+        .fc-timegrid-axis {
+            background: #ffffff;
+        }
+
+        // En-tête colonne redondant avec le toolbar custom
+        .fc-col-header {
+            display: none;
+        }
+    }
+
+    @include desktop {
+        :global {
+            // Slots plus compacts sur desktop : ~7h visibles dans les 360px du conteneur
+            .fc-timegrid-slot {
+                height: 28px;
+            }
+        }
+    }
+}
+
+// Toolbar custom
+.customToolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: 10px $spacing-sm;
+    background-color: #fff;
+    border-bottom: 1px solid $color-border;
+
+    @include desktop {
+        padding: 16px $spacing-sm;
+    }
+}
+
+.navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    background-color: $color-myOrange;
+    color: #fff;
+    border: none;
+    border-radius: $radius-sm;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myBrown;
+    }
+
+    &:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+    }
+}
+
+// Bouton central : date + jour sur une ligne, centré
+.dateTrigger {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: $radius-sm;
+    transition: background-color 0.15s;
+
+    &:hover {
+        background-color: rgba(242, 100, 25, 0.06);
+    }
+}
+
+.dateText {
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    white-space: nowrap;
+
+    @include desktop {
+        font-size: $font-size-h2;
+    }
+}
+
+.dateSeparator {
+    font-size: $font-size-body;
+    color: $color-text-label;
+
+    @include desktop {
+        font-size: $font-size-h2;
+    }
+}
+
+.dayName {
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-myYellow;
+    text-transform: capitalize;
+    white-space: nowrap;
+
+    @include desktop {
+        font-size: $font-size-h1;
+    }
+}
+
+// Input date masqué — fonctionne via showPicker() déclenché par .dateTrigger
+.hiddenDateInput {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    tabindex: -1;
+}
+
+// Conteneur scrollable du calendrier — mobile : page scrolle / desktop : div scrolle
+// (un div CSS ne remet jamais son scroll à zéro sur un re-render React)
+.calendarScrollArea {
+    @include desktop {
+        max-height: 360px;
+        overflow-y: auto;
+    }
+}
+
+// Contenu du créneau sélectionné
+.eventContent {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 6px;
+    overflow: hidden;
+}
+
+.eventTime {
+    font-size: 0.75rem;
+    font-weight: $font-semibold;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.ctaFullWidth {
+    width: 100%;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    color: $color-text-label;
+    font-size: $font-size-body;
+    font-family: $font-primary;
+    cursor: pointer;
+    padding: $spacing-xs 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-text-primary;
+    }
+}
+
+.statusText {
+    font-size: $font-size-body;
+    color: $color-text-label;
+    text-align: center;
+    padding: $spacing-sm 0;
+}
+
+.errorText {
+    font-size: $font-size-body;
+    color: #c0392b;
+    text-align: center;
+    padding: $spacing-sm 0;
+}

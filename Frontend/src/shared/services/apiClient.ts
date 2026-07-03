@@ -26,8 +26,11 @@ apiClient.interceptors.response.use(
             _retry?: boolean;
         };
 
-        // On n'intercepte que les 401, et jamais une requête déjà rejouée
-        if (error.response?.status !== 401 || originalRequest._retry) {
+        // On n'intercepte que les 401, jamais une requête déjà rejouée,
+        // et jamais les routes d'auth qui gèrent elles-mêmes leur 401
+        const url = originalRequest.url ?? '';
+        const isAuthRoute = url.includes('/auth/refresh') || url.includes('/auth/logout');
+        if (error.response?.status !== 401 || originalRequest._retry || isAuthRoute) {
             return Promise.reject(error);
         }
 
@@ -52,7 +55,7 @@ apiClient.interceptors.response.use(
             processPendingQueue(refreshError);
             // Hors du contexte React — on vide la session et on force un rechargement
             localStorage.removeItem('session');
-            window.location.href = '/connexion';
+            window.location.href = '/login';
             return Promise.reject(refreshError);
         } finally {
             isRefreshing = false;

@@ -1,0 +1,70 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}
+
+.row {
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover {
+        background-color: #fef6f0;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-myOrange;
+        outline-offset: -2px;
+    }
+}
+
+.unassigned {
+    color: #999;
+    font-style: italic;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px $spacing-xs;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: $font-semibold;
+}
+
+.badgePlanifiee {
+    background: #fff4e5;
+    color: #c76b00;
+}
+
+.badgeTerminee {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badgeAnnulee {
+    background: #f5f5f5;
+    color: #757575;
+}
+
+.badgeEnRetard {
+    background: $color-warning-bg;
+    color: $color-warning;
+}
+
+.message {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #666;
+    text-align: center;
+    padding: $spacing-lg 0;
+}
+
+.error {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: #d32f2f;
+    text-align: center;
+    padding: $spacing-sm;
+}

@@ -1,0 +1,139 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: white;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  padding: $spacing-lg;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h1;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.cancelLink {
+  background: none;
+  border: none;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: $color-text-primary;
+    text-decoration: underline;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &:focus {
+    border-color: $color-myOrange;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    background: $color-myLightGreen;
+  }
+}
+
+.error {
+  color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+  padding-top: $spacing-xs;
+  border-top: 1px solid $color-border;
+}
+
+.cancelButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: $color-myLightGreen;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.submitButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: $color-myOrange;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

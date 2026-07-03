@@ -2,15 +2,17 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { UpdateProfilePayload, UserProfile } from '../types/user.types';
 
 export const userService = {
-    getProfile(): Promise<UserProfile> {
-        return apiClient.get<UserProfile>('/users/me').then((r) => r.data);
+    async getProfile(): Promise<UserProfile> {
+        const r = await apiClient.get<UserProfile>('/users/me');
+        return r.data;
     },
 
-    updateProfile(payload: UpdateProfilePayload): Promise<UserProfile> {
-        return apiClient.patch<UserProfile>('/users/me', payload).then((r) => r.data);
+    async updateProfile(payload: UpdateProfilePayload): Promise<UserProfile> {
+        const r = await apiClient.patch<UserProfile>('/users/me', payload);
+        return r.data;
     },
 
-    deleteAccount(): Promise<void> {
-        return apiClient.delete('/users/me').then(() => undefined);
+    async deleteAccount(): Promise<void> {
+        await apiClient.delete('/users/me');
     },
 };

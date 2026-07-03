@@ -17,24 +17,24 @@ export class RegisterUseCase {
             throw new ConflictException('Cet email est déjà utilisé.');
         }
 
-        const password_hash = await bcrypt.hash(dto.password, 12);
-        const email_confirmation_token = crypto.randomBytes(32).toString('hex');
-        const token_expires_at = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
+        const passwordHash = await bcrypt.hash(dto.password, 12);
+        const emailConfirmationToken = crypto.randomBytes(32).toString('hex');
+        const tokenExpiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
 
         const user = await this.repo.create({
             nom: dto.nom,
             prenom: dto.prenom,
             email: dto.email,
-            password_hash,
+            passwordHash,
             telephone: dto.telephone,
-            email_confirmation_token,
-            token_expires_at,
+            emailConfirmationToken,
+            tokenExpiresAt,
         });
 
         await this.emailService.sendConfirmationEmail(
             user.email,
             user.prenom,
-            email_confirmation_token,
+            emailConfirmationToken,
         );
 
         return {

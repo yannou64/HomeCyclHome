@@ -13,7 +13,7 @@ export function useAdminUsers() {
     const [meta, setMeta] = useState<PaginationMeta>({
         total: 0,
         page: 1,
-        limit: 10,
+        limit: 6,
         totalPages: 1,
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ export function useAdminUsers() {
 
     const [filters, setFilters] = useState<GetUsersParams>({
         page: 1,
-        limit: 10,
+        limit: 6,
     });
 
     const fetchUsers = useCallback(async (params: GetUsersParams) => {
@@ -52,8 +52,8 @@ export function useAdminUsers() {
     const setRoleFilter = (role: GetUsersParams['role']) =>
         setFilters((prev) => ({ ...prev, role, page: 1 }));
 
-    const setStatutFilter = (is_actif: GetUsersParams['is_actif']) =>
-        setFilters((prev) => ({ ...prev, is_actif, page: 1 }));
+    const setStatutFilter = (isActif: GetUsersParams['isActif']) =>
+        setFilters((prev) => ({ ...prev, isActif, page: 1 }));
 
     const createUser = async (payload: CreateUserPayload) => {
         await adminUsersService.createUser(payload);

@@ -5,7 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "google.maps"],
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -17,7 +17,6 @@
     "jsx": "react-jsx",
 
     /* Alias @ → src/ (requis par shadcn/ui) */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },

@@ -1,0 +1,80 @@
+@use '../../../../app/styles/index' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-lg $spacing-sm;
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.title {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.description {
+    font-size: $font-size-body;
+    color: $color-text-label;
+    line-height: 1.6;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    width: 100%;
+}
+
+.btnPrimary {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    background-color: $color-myOrange;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.btnSecondary {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    background-color: transparent;
+    color: $color-myOrange;
+    border: 2px solid $color-myOrange;
+    border-radius: 8px;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+
+    &:hover {
+        background-color: $color-myOrange;
+        color: #fff;
+    }
+}
+
+.backLink {
+    background: none;
+    border: none;
+    color: $color-text-label;
+    font-size: $font-size-body;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: $color-text-primary;
+    }
+}

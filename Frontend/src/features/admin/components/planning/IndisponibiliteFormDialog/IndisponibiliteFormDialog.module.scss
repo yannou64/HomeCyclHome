@@ -1,0 +1,102 @@
+@use '../../../../../app/styles/index' as *;
+
+.content {
+  font-family: $font-primary !important;
+  max-width: 480px !important;
+  background-color: white !important;
+  padding: $spacing-lg !important;
+  border-radius: $radius-lg !important;
+}
+
+.title {
+  font-family: $font-primary;
+  font-size: $font-size-h2;
+  font-weight: $font-bold;
+  color: $color-text-primary;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin-top: $spacing-sm;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+}
+
+.optional {
+  font-weight: $font-regular;
+  color: $color-text-label;
+  font-size: $font-size-label;
+}
+
+.input {
+  width: 100%;
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  background: white;
+
+  &:focus {
+    outline: none;
+    border-color: $color-myOrange;
+  }
+}
+
+.error {
+  color: #b91c1c;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-xs;
+  margin-top: $spacing-xs;
+}
+
+.cancelButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myLightGreen;
+  }
+}
+
+.submitButton {
+  padding: $spacing-xs $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  background-color: $color-myOrange;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}

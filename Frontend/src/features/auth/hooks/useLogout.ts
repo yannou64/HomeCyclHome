@@ -1,23 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../app/providers/authContext/useAuth';
 import { authService } from '../services/authService';
-
-const isDev = import.meta.env.DEV
+import { PENDING_RESERVATION_KEY } from '../../../app/providers/reservationContext/types/reservation.types';
 
 export function useLogout() {
     const { logout } = useAuth();
     const navigate = useNavigate();
-    if(isDev) console.log("[useLogout] Tentative de logout")
-      
     async function handleLogout() {
         try {
-            await authService.logout();   // POST /auth/logout → efface cookies + refresh token en base
-            if(isDev) console.log("[useLogout] Logout réussi")
+            await authService.logout(); // POST /auth/logout → efface cookies + refresh token en base
         } catch {
-            console.error("[useLogout] Erreur backend pendant le logout")
             // même en cas d'erreur réseau, on déconnecte localement
         } finally {
-            logout();                // efface session + localStorage
+            localStorage.removeItem(PENDING_RESERVATION_KEY); // réservation en attente obsolète
+            logout(); // efface session + localStorage
             navigate('/login');
         }
     }

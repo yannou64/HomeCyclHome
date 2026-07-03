@@ -10,8 +10,8 @@ const existingUser: AdminUserDto = {
     email: 'jean.dupont@email.com',
     telephone: '0601020304',
     role: 'technicien',
-    is_actif: true,
-    date_creation: new Date(),
+    isActif: true,
+    dateCreation: new Date(),
 };
 
 describe('UpdateUserUseCase', () => {

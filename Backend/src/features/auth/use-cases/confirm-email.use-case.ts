@@ -11,7 +11,7 @@ export class ConfirmEmailUseCase {
             throw new NotFoundException('Lien de confirmation invalide.');
         }
 
-        if (user.token_expires_at && user.token_expires_at < new Date()) {
+        if (user.tokenExpiresAt && user.tokenExpiresAt < new Date()) {
             throw new BadRequestException(
                 'Ce lien a expiré. Inscris-toi à nouveau.',
             );

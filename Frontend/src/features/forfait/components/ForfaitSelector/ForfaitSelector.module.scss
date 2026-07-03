@@ -1,0 +1,88 @@
+@use '../../../../app/styles/index' as *;
+
+.cardsList {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.card {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    border: 1.5px solid $color-border;
+    border-radius: $radius-md;
+    cursor: pointer;
+    background-color: #fff;
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease;
+
+    &:hover {
+        border-color: $color-myOrange;
+    }
+
+    &.selected {
+        border-color: $color-myOrange;
+        background-color: rgba($color-myOrange, 0.06);
+    }
+}
+
+// Input radio caché mais accessible (screen readers le voient toujours)
+.radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.cardContent {
+    flex: 1;
+}
+
+.cardNom {
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    margin: 0 0 4px;
+}
+
+.cardDescription {
+    font-size: $font-size-label;
+    color: $color-text-label;
+    margin: 0 0 6px;
+    line-height: 1.4;
+}
+
+.cardMeta {
+    display: flex;
+    gap: $spacing-sm;
+    font-size: $font-size-label;
+    color: $color-text-label;
+    font-weight: $font-medium;
+}
+
+// Indicateur visuel de sélection (pastille orange)
+.radioIndicator {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border-radius: $radius-full;
+    border: 2px solid $color-border;
+    margin-top: 2px;
+    transition: border-color 0.15s ease;
+    position: relative;
+
+    .card.selected & {
+        border-color: $color-myOrange;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: $radius-full;
+            background-color: $color-myOrange;
+        }
+    }
+}

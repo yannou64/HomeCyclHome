@@ -6,6 +6,14 @@ import {
     TableHeader,
     TableRow,
 } from '../../../../../shared/components/ui/table';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
 import type { AdminUser, GetUsersParams, PaginationMeta } from '../../../types/admin.types';
 import styles from './UsersTable.module.scss';
 
@@ -36,7 +44,7 @@ interface UsersTableProps {
     // Filtres
     onSearch: (value: string) => void;
     onRoleFilter: (role: GetUsersParams['role']) => void;
-    onStatutFilter: (is_actif: GetUsersParams['is_actif']) => void;
+    onStatutFilter: (isActif: GetUsersParams['isActif']) => void;
     onPageChange: (page: number) => void;
     // Actions
     onAdd: () => void;
@@ -131,7 +139,7 @@ export function UsersTable({
                                     <RoleLabel role={user.role} />
                                 </TableCell>
                                 <TableCell>
-                                    <StatutBadge isActif={user.is_actif} />
+                                    <StatutBadge isActif={user.isActif} />
                                 </TableCell>
                                 <TableCell className={styles.actions}>
                                     <button
@@ -160,34 +168,50 @@ export function UsersTable({
                 <span className={styles.paginationInfo}>
                     {meta.total} résultat{meta.total > 1 ? 's' : ''}
                 </span>
-                <div className={styles.paginationControls}>
-                    <button
-                        className={styles.pageBtn}
-                        onClick={() => onPageChange(filters.page! - 1)}
-                        disabled={filters.page === 1}
-                        aria-label="Page précédente"
-                    >
-                        ←
-                    </button>
-                    {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
-                        <button
-                            key={p}
-                            className={`${styles.pageBtn} ${filters.page === p ? styles.pageBtnActive : ''}`}
-                            onClick={() => onPageChange(p)}
-                            aria-current={filters.page === p ? 'page' : undefined}
-                        >
-                            {p}
-                        </button>
-                    ))}
-                    <button
-                        className={styles.pageBtn}
-                        onClick={() => onPageChange(filters.page! + 1)}
-                        disabled={filters.page === meta.totalPages}
-                        aria-label="Page suivante"
-                    >
-                        →
-                    </button>
-                </div>
+                {meta.totalPages > 1 && (
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (filters.page! > 1) onPageChange(filters.page! - 1);
+                                    }}
+                                    aria-disabled={filters.page === 1}
+                                    className={filters.page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                                />
+                            </PaginationItem>
+                            {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                                <PaginationItem key={p}>
+                                    <PaginationLink
+                                        href="#"
+                                        isActive={filters.page === p}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            onPageChange(p);
+                                        }}
+                                    >
+                                        {p}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+                            <PaginationItem>
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (filters.page! < meta.totalPages) onPageChange(filters.page! + 1);
+                                    }}
+                                    aria-disabled={filters.page === meta.totalPages}
+                                    className={
+                                        filters.page === meta.totalPages ? 'pointer-events-none opacity-40' : undefined
+                                    }
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                )}
             </div>
         </div>
     );

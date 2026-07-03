@@ -22,6 +22,17 @@
     background-position: center top;
 }
 
+// Logo mobile — display:contents rend ce wrapper transparent au flex de contentSection.
+// Le HeroBrand est traité comme un direct child (le margin-top:-200px fonctionne intact).
+.mobileHero {
+    display: contents;
+}
+
+// Logo desktop — masqué sur mobile, géré par leftOverlay sur desktop
+.leftOverlay {
+    display: none;
+}
+
 // ── Section centrale : fond vert menthe, contenu centré ──────────────────────
 .contentSection {
     background-color: $color-myLightGreen;
@@ -36,7 +47,7 @@
 
 // ── Section basse : carousel + dégradé depuis le vert menthe ─────────────────
 .bottomSection {
-    height: 200px;
+    height: 130px;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
@@ -56,6 +67,35 @@
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// NO CONTENT SCROLL — étapes avec leur propre scroll interne (ex: créneau)
+// Désactive overflow-y sur contentSection pour éviter le double scroll desktop
+// ─────────────────────────────────────────────────────────────────────────────
+
+.noContentScroll {
+    @include desktop {
+        .contentSection {
+            overflow-y: visible;
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODE COMPACT — toutes les étapes sauf l'accueil
+// Mobile  : cache photo, logo et carousel → focus sur l'action
+// Desktop : garde la colonne photo/logo, cache uniquement le carousel
+// ─────────────────────────────────────────────────────────────────────────────
+
+.compact {
+    .topSection    { display: none; }
+    .mobileHero    { display: none; }
+    .bottomSection { display: none; }
+
+    @include desktop {
+        .topSection { display: flex; } // restaurer la colonne photo gauche
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DESKTOP (≥ 1024px) — grille 2 colonnes
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -66,7 +106,7 @@
         grid-template-rows: 1fr auto;
     }
 
-    // Colonne gauche : image Lyon pleine hauteur (spanning les 2 lignes)
+    // Colonne gauche : image Lyon pleine hauteur + logo centré par-dessus
     .topSection {
         grid-column: 1;
         grid-row: 1 / 3; // occupe toute la hauteur de la grille
@@ -75,6 +115,27 @@
         background-size: cover;
         background-position: center;
         opacity: 0.9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // Logo centré sur la colonne photo — visible uniquement sur desktop
+    .leftOverlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    // Logo masqué dans contentSection sur desktop (affiché uniquement dans leftOverlay)
+    .mobileHero {
+        display: none;
+    }
+
+    // En mode compact : contenu aligné en haut — les pages fonctionnelles scrollent
+    // depuis le haut sans que justify-content:center coupe le dessus
+    .compact .contentSection {
+        justify-content: flex-start;
     }
 
     // Colonne droite, ligne haute : contenu de la page
@@ -83,17 +144,18 @@
     .contentSection {
         grid-column: 2;
         grid-row: 1;
-        justify-content: flex-start; // le contenu part du haut quand il scrolle
+        justify-content: center;
         padding: $spacing-xl $spacing-lg;
         overflow-y: auto;
         min-height: 300px; // évite un affichage trop compressé si peu de contenu
     }
 
-    // Colonne droite, ligne basse : carousel
+    // Colonne droite, ligne basse : carousel — 33% de la hauteur visible hors header/footer
+    // 120px = header (50px) + footer (~70px)
     .bottomSection {
         grid-column: 2;
         grid-row: 2;
-        height: 280px;
+        height: calc((100vh - 120px) / 3);
 
         // Pas de dégradé sur desktop
         &::before {

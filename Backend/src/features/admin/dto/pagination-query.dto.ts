@@ -23,7 +23,7 @@ export class PaginationQueryDto {
     @IsInt()
     @Min(1)
     @Max(100)
-    limit: number = 10;
+    limit: number = 6;
 
     @IsOptional()
     @IsString()
@@ -37,5 +37,5 @@ export class PaginationQueryDto {
     @IsOptional()
     @Transform(({ value }: { value: unknown }) => value === 'true')
     @IsBoolean()
-    is_actif?: boolean;
+    isActif?: boolean;
 }

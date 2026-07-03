@@ -4,6 +4,7 @@ import { useLogin } from '../../hooks/useLogin';
 import type { LoginPayload } from '../../types/auth.types';
 import styles from './LoginForm.module.scss';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import emailIcon from '../../../../assets/icones/email.svg';
 import eyeOpenIcon from '../../../../assets/icones/oeilOuvert.svg';
 import eyeClosedIcon from '../../../../assets/icones/oeilFerme.svg';
@@ -20,15 +21,16 @@ export function LoginForm() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    function handleSubmit() {
         handleLogin(formData);
     }
+
+    const canSubmit = !!formData.email && !!formData.password;
 
     return (
         <>
             <h2 className={styles.title}>Se Connecter</h2>
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <Form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.field}>
                     <label htmlFor="email" className={styles.label}>
                         Email
@@ -73,8 +75,8 @@ export function LoginForm() {
                     </div>
                 </div>
                 {error && <p className={styles.error}>{error}</p>}
-                <CTAButton type="submit" isLoading={isLoading}>Connexion</CTAButton>
-            </form>
+                <CTAButton type="submit" disabled={!canSubmit} isLoading={isLoading}>Connexion</CTAButton>
+            </Form>
             <p className={styles.registerLink}>
                 Pas de compte ? <Link to="/inscription">S'inscrire</Link>
             </p>

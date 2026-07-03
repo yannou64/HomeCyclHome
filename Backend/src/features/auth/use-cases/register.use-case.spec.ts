@@ -17,6 +17,7 @@ describe('RegisterUseCase', () => {
             findByConfirmationToken: jest.fn(),
             create: jest.fn(),
             activate: jest.fn(),
+            findRefreshHashById: jest.fn(),
             saveRefreshTokenHash: jest.fn(),
             clearRefreshTokenHash: jest.fn(),
         };
@@ -53,10 +54,10 @@ describe('RegisterUseCase', () => {
             email: 'nouveau@gmail.com',
             prenom: 'Yannick',
             role: 'client',
-            password_hash: 'hash',
-            is_actif: false,
-            email_confirmation_token: 'token-abc',
-            token_expires_at: new Date(),
+            passwordHash: 'hash',
+            isActif: false,
+            emailConfirmationToken: 'token-abc',
+            tokenExpiresAt: new Date(),
         });
         mockEmailService.sendConfirmationEmail.mockResolvedValue(undefined);
 

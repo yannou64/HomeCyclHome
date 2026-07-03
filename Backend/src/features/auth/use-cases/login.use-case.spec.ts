@@ -19,10 +19,10 @@ const makeUser = (override: Partial<AuthUserData> = {}): AuthUserData => ({
     email: 'test@gmail.com',
     prenom: 'Yannick',
     role: 'client',
-    password_hash: 'hash-placeholder', // remplacé dans chaque test si besoin
-    is_actif: true,
-    email_confirmation_token: null,
-    token_expires_at: null,
+    passwordHash: 'hash-placeholder', // remplacé dans chaque test si besoin
+    isActif: true,
+    emailConfirmationToken: null,
+    tokenExpiresAt: null,
     ...override,
 });
 
@@ -38,6 +38,7 @@ describe('LoginUseCase', () => {
             findByConfirmationToken: jest.fn(),
             create: jest.fn(),
             activate: jest.fn(),
+            findRefreshHashById: jest.fn(),
             saveRefreshTokenHash: jest.fn(),
             clearRefreshTokenHash: jest.fn(),
         };
@@ -74,7 +75,7 @@ describe('LoginUseCase', () => {
 
     it('devrait lever ForbiddenException si compte non confirmé', async () => {
         // ARRANGE — mot de passe correct mais compte inactif
-        mockRepo.findByEmail.mockResolvedValue(makeUser({ is_actif: false }));
+        mockRepo.findByEmail.mockResolvedValue(makeUser({ isActif: false }));
         (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
         // ACT + ASSERT

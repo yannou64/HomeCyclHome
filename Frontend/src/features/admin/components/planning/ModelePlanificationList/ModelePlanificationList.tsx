@@ -1,0 +1,228 @@
+import { useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../../../shared/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
+import { usePagination } from '../../../../../shared/hooks/usePagination';
+import { minutesToTime } from '../../../../../shared/utils/timeUtils';
+import type {
+  CreateModelePlanificationPayload,
+  ModelePlanification,
+  UpdateModelePlanificationPayload,
+} from '../../../types/planning.types';
+import { ModelePlanificationFormDialog } from '../ModelePlanificationFormDialog/ModelePlanificationFormDialog';
+import { PlanningDeleteDialog } from '../PlanningDeleteDialog/PlanningDeleteDialog';
+import styles from './ModelePlanificationList.module.scss';
+
+const JOURS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+interface ModelePlanificationListProps {
+  modeles: ModelePlanification[];
+  technicienId: string;
+  isLoading: boolean;
+  error: string | null;
+  onCreate: (payload: CreateModelePlanificationPayload) => Promise<void>;
+  onUpdate: (id: string, payload: UpdateModelePlanificationPayload) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
+}
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
+
+export function ModelePlanificationList({
+  modeles,
+  technicienId,
+  isLoading,
+  error,
+  onCreate,
+  onUpdate,
+  onDelete,
+}: ModelePlanificationListProps) {
+  const { pageItems, page, setPage, totalPages } = usePagination(modeles, 6);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ModelePlanification | null>(null);
+  const [deletingItem, setDeletingItem] = useState<ModelePlanification | null>(null);
+
+  const handleAdd = () => {
+    setEditingItem(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEdit = (item: ModelePlanification) => {
+    setEditingItem(item);
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setEditingItem(null);
+  };
+
+  const handleFormSubmit = async (
+    payload: CreateModelePlanificationPayload | UpdateModelePlanificationPayload,
+  ) => {
+    if (editingItem) {
+      await onUpdate(editingItem.id, payload as UpdateModelePlanificationPayload);
+    } else {
+      await onCreate(payload as CreateModelePlanificationPayload);
+    }
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <button className={styles.addButton} onClick={handleAdd}>
+          + Nouveau modèle
+        </button>
+      </div>
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      {isLoading ? (
+        <p className={styles.loading}>Chargement...</p>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Jour</TableHead>
+              <TableHead>Horaires</TableHead>
+              <TableHead>Intervalle</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Validité</TableHead>
+              <TableHead className={styles.actionsHead}>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {modeles.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className={styles.empty}>
+                  Aucun modèle de planification enregistré.
+                </TableCell>
+              </TableRow>
+            ) : (
+              pageItems.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className={styles.jour}>
+                    {JOURS[item.jourSemaine]}
+                  </TableCell>
+                  <TableCell>
+                    {minutesToTime(item.heureDebut)} – {minutesToTime(item.heureFin)}
+                  </TableCell>
+                  <TableCell>{item.intervalleMinutes} min</TableCell>
+                  <TableCell>
+                    <span className={item.isActif ? styles.badgeActif : styles.badgeInactif}>
+                      {item.isActif ? 'Actif' : 'Inactif'}
+                    </span>
+                  </TableCell>
+                  <TableCell className={styles.validite}>
+                    {formatDate(item.dateDebutValidite)}
+                    {item.dateFinValidite
+                      ? ` → ${formatDate(item.dateFinValidite)}`
+                      : ' → ∞'}
+                  </TableCell>
+                  <TableCell className={styles.actions}>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => handleEdit(item)}
+                      aria-label="Modifier ce modèle"
+                    >
+                      ✏️ Modifier
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => setDeletingItem(item)}
+                      aria-label="Supprimer ce modèle"
+                    >
+                      🗑️ Supprimer
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
+
+      <div className={styles.footer}>
+        <span className={styles.count}>
+          {modeles.length} modèle{modeles.length > 1 ? 's' : ''}
+        </span>
+        {totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page > 1) setPage(page - 1);
+                  }}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === p}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(p);
+                    }}
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                  aria-disabled={page === totalPages}
+                  className={page === totalPages ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+      </div>
+
+      <ModelePlanificationFormDialog
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        onSubmit={handleFormSubmit}
+        technicienId={technicienId}
+        item={editingItem ?? undefined}
+      />
+
+      <PlanningDeleteDialog
+        isOpen={!!deletingItem}
+        onClose={() => setDeletingItem(null)}
+        onConfirm={() => onDelete(deletingItem!.id)}
+        title="Supprimer le modèle"
+        description="Êtes-vous sûr de vouloir supprimer ce modèle de planification ? Cette action est irréversible."
+      />
+    </div>
+  );
+}

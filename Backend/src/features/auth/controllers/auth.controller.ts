@@ -2,6 +2,8 @@ import {
     Body,
     Controller,
     Get,
+    HttpCode,
+    HttpStatus,
     Post,
     Query,
     Req,
@@ -9,6 +11,13 @@ import {
     UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
+import {
+    ApiCookieAuth,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import { ACCESS_COOKIE, REFRESH_COOKIE } from '../../../config/cookie.config';
 import { LoginDto } from '../dto/login.dto';
@@ -20,6 +29,7 @@ import { LogoutUseCase } from '../use-cases/logout.use-case';
 import { RefreshTokenUseCase } from '../use-cases/refresh-token.use-case';
 import { RegisterUseCase } from '../use-cases/register.use-case';
 
+@ApiTags('Authentification')
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -30,16 +40,26 @@ export class AuthController {
         private readonly refreshTokenUseCase: RefreshTokenUseCase,
     ) {}
 
+    @ApiCreatedResponse({
+        description: 'Compte créé — email de confirmation envoyé',
+    })
     @Post('register')
     register(@Body() dto: RegisterDto) {
         return this.registerUseCase.execute(dto);
     }
 
+    @ApiOkResponse({ description: 'Email confirmé' })
     @Get('confirm-email')
     confirmEmail(@Query('token') token: string) {
         return this.confirmEmailUseCase.execute(token);
     }
 
+    @ApiOperation({
+        summary:
+            "Authentification — pose access_token et refresh_token en cookies HttpOnly (le token n'est jamais retourné dans le body)",
+    })
+    @ApiOkResponse({ description: 'Connexion réussie — cookies posés' })
+    @HttpCode(HttpStatus.OK)
     @Post('login')
     async login(
         @Body() dto: LoginDto,
@@ -58,6 +78,8 @@ export class AuthController {
         };
     }
 
+    @ApiOkResponse({ description: 'Token renouvelé' })
+    @HttpCode(HttpStatus.OK)
     @Post('refresh')
     async refresh(
         @Req() req: Request,
@@ -74,6 +96,9 @@ export class AuthController {
         return { message: 'Token renouvelé.' };
     }
 
+    @ApiCookieAuth('access_token')
+    @ApiOkResponse({ description: 'Déconnecté — cookies effacés' })
+    @HttpCode(HttpStatus.OK)
     @UseGuards(JwtAuthGuard)
     @Post('logout')
     async logout(
@@ -84,7 +109,7 @@ export class AuthController {
         await this.logoutUseCase.execute(userId);
 
         res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
+        res.clearCookie('refresh_token', { path: REFRESH_COOKIE.path });
 
         return { message: 'Déconnecté.' };
     }

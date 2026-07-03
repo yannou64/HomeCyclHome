@@ -8,25 +8,22 @@ import type {
 } from '../types/admin.types';
 
 export const adminUsersService = {
-    getUsers(params: GetUsersParams): Promise<PaginatedUsers> {
-        return apiClient
-            .get<PaginatedUsers>('/admin/users', { params })
-            .then((r) => r.data);
+    async getUsers(params: GetUsersParams): Promise<PaginatedUsers> {
+        const r = await apiClient.get<PaginatedUsers>('/admin/users', { params });
+        return r.data;
     },
 
-    createUser(payload: CreateUserPayload): Promise<AdminUser> {
-        return apiClient
-            .post<AdminUser>('/admin/users', payload)
-            .then((r) => r.data);
+    async createUser(payload: CreateUserPayload): Promise<AdminUser> {
+        const r = await apiClient.post<AdminUser>('/admin/users', payload);
+        return r.data;
     },
 
-    updateUser(id: string, payload: UpdateUserPayload): Promise<AdminUser> {
-        return apiClient
-            .patch<AdminUser>(`/admin/users/${id}`, payload)
-            .then((r) => r.data);
+    async updateUser(id: string, payload: UpdateUserPayload): Promise<AdminUser> {
+        const r = await apiClient.patch<AdminUser>(`/admin/users/${id}`, payload);
+        return r.data;
     },
 
-    deleteUser(id: string): Promise<void> {
-        return apiClient.delete(`/admin/users/${id}`).then(() => undefined);
+    async deleteUser(id: string): Promise<void> {
+        await apiClient.delete(`/admin/users/${id}`);
     },
 };

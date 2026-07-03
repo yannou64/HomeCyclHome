@@ -10,10 +10,10 @@ const makeUser = (override: Partial<AuthUserData> = {}): AuthUserData => ({
     email: 'test@gmail.com',
     prenom: 'Yannick',
     role: 'client',
-    password_hash: 'hash',
-    is_actif: false,
-    email_confirmation_token: 'token-valide',
-    token_expires_at: new Date('2099-01-01'), // futur → valide par défaut
+    passwordHash: 'hash',
+    isActif: false,
+    emailConfirmationToken: 'token-valide',
+    tokenExpiresAt: new Date('2099-01-01'), // futur → valide par défaut
     ...override,
 });
 
@@ -28,6 +28,7 @@ describe('ConfirmEmailUseCase', () => {
             findByConfirmationToken: jest.fn(),
             create: jest.fn(),
             activate: jest.fn(),
+            findRefreshHashById: jest.fn(),
             saveRefreshTokenHash: jest.fn(),
             clearRefreshTokenHash: jest.fn(),
         };
@@ -48,7 +49,7 @@ describe('ConfirmEmailUseCase', () => {
     it('devrait lever BadRequestException si token expiré', async () => {
         // ARRANGE — token trouvé mais expiré
         mockRepo.findByConfirmationToken.mockResolvedValue(
-            makeUser({ token_expires_at: new Date('2000-01-01') }),
+            makeUser({ tokenExpiresAt: new Date('2000-01-01') }),
         );
 
         // ACT + ASSERT

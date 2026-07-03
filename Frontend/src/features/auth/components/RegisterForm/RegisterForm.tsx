@@ -4,6 +4,7 @@ import { useRegister } from '../../hooks/useRegister';
 import type { RegisterPayload } from '../../types/auth.types';
 import styles from './RegisterForm.module.scss';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import emailIcon from '../../../../assets/icones/email.svg';
 import phoneIcon from '../../../../assets/icones/telephone.svg';
 import eyeOpenIcon from '../../../../assets/icones/oeilOuvert.svg';
@@ -28,8 +29,7 @@ export function RegisterForm() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
+    function handleSubmit() {
         setFormError(null);
 
         if (formData.password !== confirmPassword) {
@@ -44,6 +44,15 @@ export function RegisterForm() {
         handleRegister(formData);
     }
 
+    const canSubmit =
+        !!formData.prenom &&
+        !!formData.nom &&
+        !!formData.email &&
+        !!formData.telephone &&
+        !!formData.password &&
+        !!confirmPassword &&
+        acceptCgu;
+
     if (isSuccess) {
         return (
             <p className={styles.successMessage}>
@@ -56,7 +65,7 @@ export function RegisterForm() {
     return (
         <>
             <h2 className={styles.title}>Créer un compte</h2>
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <Form className={styles.form} onSubmit={handleSubmit}>
 
                 {/* Prénom + Nom en deux colonnes */}
                 <div className={styles.nameRow}>
@@ -165,8 +174,8 @@ export function RegisterForm() {
                     <p className={styles.error}>{formError ?? error}</p>
                 )}
 
-                <CTAButton type="submit" isLoading={isLoading}>S'inscrire</CTAButton>
-            </form>
+                <CTAButton type="submit" disabled={!canSubmit} isLoading={isLoading}>S'inscrire</CTAButton>
+            </Form>
             <p className={styles.loginLink}>
                 Déjà un compte ? <Link to="/login">Se connecter</Link>
             </p>

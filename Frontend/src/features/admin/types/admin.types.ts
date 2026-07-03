@@ -1,4 +1,7 @@
 import type { Role } from '../../../app/providers/authContext/types/auth.types';
+import type { PaginationMeta } from '../../../shared/types/pagination.types';
+
+export type { PaginationMeta };
 
 export type AdminUser = {
     id: string;
@@ -7,15 +10,8 @@ export type AdminUser = {
     email: string;
     telephone: string;
     role: Role;
-    is_actif: boolean;
-    date_creation: string;
-};
-
-export type PaginationMeta = {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
+    isActif: boolean;
+    dateCreation: string;
 };
 
 export type PaginatedUsers = {
@@ -28,7 +24,7 @@ export type GetUsersParams = {
     limit?: number;
     search?: string;
     role?: Role;
-    is_actif?: boolean;
+    isActif?: boolean;
 };
 
 export type CreateUserPayload = {

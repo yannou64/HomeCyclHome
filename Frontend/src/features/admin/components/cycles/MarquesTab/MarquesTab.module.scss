@@ -10,20 +10,22 @@
 .header {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .addButton {
   padding: $spacing-xs $spacing-md;
-  border: 1px solid $color-border;
+  border: none;
   border-radius: $radius-md;
-  background: white;
+  background-color: $color-myOrange;
   font-family: $font-primary;
   font-size: $font-size-body;
-  color: $color-text-primary;
+  font-weight: $font-semibold;
+  color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: $color-myLightGreen;
+    opacity: 0.9;
   }
 }
 
@@ -37,34 +39,40 @@
   gap: $spacing-xs;
 }
 
-.editButton {
-  padding: 4px $spacing-xs;
+.editButton,
+.deleteButton {
+  padding: $spacing-xs $spacing-sm;
   border: 1px solid $color-border;
   border-radius: $radius-md;
   background: white;
   font-family: $font-primary;
   font-size: $font-size-label;
-  color: $color-text-primary;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
 
   &:hover {
     background-color: $color-myLightGreen;
   }
 }
 
-.deleteButton {
-  padding: 4px $spacing-xs;
-  border: 1px solid #fecaca;
-  border-radius: $radius-md;
-  background: white;
-  font-family: $font-primary;
-  font-size: $font-size-label;
-  color: #b91c1c;
-  cursor: pointer;
+.deleteButton:hover {
+  background-color: #fee2e2;
+}
 
-  &:hover {
-    background-color: #fee2e2;
-  }
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-xs;
+}
+
+.paginationInfo {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
 }
 
 .empty {

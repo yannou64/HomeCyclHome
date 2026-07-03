@@ -1,0 +1,191 @@
+@use '../../../../../app/styles/index' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: $spacing-md;
+}
+
+// ── Barre de filtre ──────────────────────────────────────────────────────────
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $spacing-sm;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterLabel {
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+  color: $color-text-label;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filterInput {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  background: white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: $color-myOrange;
+  }
+}
+
+.deleteDisponiblesButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid #b91c1c;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: #b91c1c;
+  cursor: pointer;
+  margin-left: auto;
+
+  &:hover {
+    background-color: #fee2e2;
+  }
+}
+
+.loadButton {
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-myOrange;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-myOrange;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-myOrange;
+    color: white;
+  }
+}
+
+// ── États ────────────────────────────────────────────────────────────────────
+
+.loading,
+.empty {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
+  font-style: italic;
+  text-align: center;
+  padding: $spacing-xl 0;
+}
+
+.error {
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  color: #b91c1c;
+}
+
+// ── Liste groupée par jour ───────────────────────────────────────────────────
+
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.dayTitle {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  font-weight: $font-semibold;
+  color: $color-text-primary;
+  text-transform: capitalize;
+  padding-bottom: $spacing-xs;
+  border-bottom: 1px solid $color-border;
+}
+
+.heure {
+  font-weight: $font-semibold;
+  font-family: $font-primary;
+}
+
+// ── Badges statut ────────────────────────────────────────────────────────────
+
+.badgeDisponible,
+.badgeReserve {
+  display: inline-block;
+  padding: 2px $spacing-sm;
+  border-radius: $radius-sm;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  font-weight: $font-semibold;
+}
+
+.badgeDisponible {
+  background-color: $color-myLightGreen;
+  color: $color-text-primary;
+}
+
+.badgeReserve {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+
+.actionsHead {
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.deleteButton {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: white;
+  font-family: $font-primary;
+  font-size: $font-size-label;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background-color: #fee2e2;
+  }
+}
+
+// ── Footer ───────────────────────────────────────────────────────────────────
+
+.footer {
+  padding-top: $spacing-xs;
+}
+
+.count {
+  font-family: $font-primary;
+  font-size: $font-size-body;
+  color: $color-text-label;
+}

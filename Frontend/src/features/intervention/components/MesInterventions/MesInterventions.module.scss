@@ -1,0 +1,50 @@
+@use '../../../../app/styles/index' as *;
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+}
+
+.pageTitle {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+    margin: 0;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.sectionTitle {
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    margin: 0;
+    padding-bottom: $spacing-xs;
+    border-bottom: 2px solid $color-myOrange;
+    display: inline-block;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+}
+
+.message {
+    color: $color-text-label;
+    font-size: $font-size-body;
+    text-align: center;
+    padding: $spacing-lg 0;
+}
+
+.error {
+    color: #dc2626;
+    font-size: $font-size-body;
+    text-align: center;
+    padding: $spacing-lg 0;
+}
