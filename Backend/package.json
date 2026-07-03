@@ -27,18 +27,20 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.4.5",
     "@prisma/client": "^6.19.2",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
     "multer": "^2.2.0",
-    "nodemailer": "^8.0.5",
+    "nodemailer": "^9.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "prisma": "^6.19.2",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -71,7 +73,12 @@
     "typescript-eslint": "^8.20.0"
   },
   "overrides": {
-    "file-type": "21.3.1"
+    "file-type": "^21.3.2",
+    "multer": "^2.2.0",
+    "uuid": "^11.1.1",
+    "preview-email": {
+      "nodemailer": "^9.0.3"
+    }
   },
   "jest": {
     "moduleFileExtensions": [

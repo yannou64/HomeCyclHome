@@ -6,54 +6,6 @@
     gap: $spacing-md;
 }
 
-.filters {
-    display: flex;
-    gap: $spacing-sm;
-    flex-wrap: wrap;
-}
-
-.select {
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    padding: $spacing-xs $spacing-sm;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    min-width: 180px;
-
-    &:focus {
-        outline: 2px solid $color-myOrange;
-        outline-offset: 2px;
-    }
-}
-
-.tableWrapper {
-    overflow-x: auto;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-
-    th {
-        text-align: left;
-        padding: $spacing-xs $spacing-sm;
-        background: #f5f5f5;
-        font-weight: $font-semibold;
-        border-bottom: 2px solid #e0e0e0;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: $spacing-xs $spacing-sm;
-        border-bottom: 1px solid #efefef;
-        vertical-align: middle;
-    }
-}
-
 .row {
     cursor: pointer;
     transition: background-color 0.15s;
@@ -94,6 +46,11 @@
 .badgeAnnulee {
     background: #f5f5f5;
     color: #757575;
+}
+
+.badgeEnRetard {
+    background: $color-warning-bg;
+    color: $color-warning;
 }
 
 .message {

@@ -1,24 +1,17 @@
-import { useEffect, useReducer } from 'react';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
-import { adminInterventionsService } from '../../../services/adminInterventionsService';
-import type { AdminInterventionDetail, AdminInterventionStatut } from '../../../types/adminIntervention.types';
+import { useAdminInterventionDetail } from '../../../hooks/useAdminInterventionDetail';
+import { getDisplayStatut, getStatutLabel } from '../../../utils/interventionStatut';
 import styles from './AdminInterventionDetailDialog.module.scss';
 
 interface AdminInterventionDetailDialogProps {
     id: string | null;
     onClose: () => void;
 }
-
-const STATUT_LABELS: Record<AdminInterventionStatut, string> = {
-    Planifiee: 'Planifiée',
-    Terminee: 'Terminée',
-    Annulee: 'Annulée',
-};
 
 function formatDateTime(dateString: string): string {
     return new Date(dateString).toLocaleString('fr-FR', {
@@ -31,45 +24,11 @@ function formatDateTime(dateString: string): string {
     });
 }
 
-type FetchState = {
-    detail: AdminInterventionDetail | null;
-    isLoading: boolean;
-    error: string | null;
-};
-
-type FetchAction =
-    | { type: 'start' }
-    | { type: 'success'; payload: AdminInterventionDetail }
-    | { type: 'error' };
-
-function fetchReducer(_: FetchState, action: FetchAction): FetchState {
-    switch (action.type) {
-        case 'start':   return { detail: null, isLoading: true, error: null };
-        case 'success': return { detail: action.payload, isLoading: false, error: null };
-        case 'error':   return { detail: null, isLoading: false, error: 'Impossible de charger le détail.' };
-    }
-}
-
-const INITIAL_STATE: FetchState = { detail: null, isLoading: false, error: null };
-
 export function AdminInterventionDetailDialog({
     id,
     onClose,
 }: AdminInterventionDetailDialogProps) {
-    const [{ detail, isLoading, error }, dispatch] = useReducer(fetchReducer, INITIAL_STATE);
-
-    useEffect(() => {
-        if (!id) return;
-
-        let active = true;
-        dispatch({ type: 'start' });
-        adminInterventionsService
-            .getInterventionDetail(id)
-            .then((data) => { if (active) dispatch({ type: 'success', payload: data }); })
-            .catch(() => { if (active) dispatch({ type: 'error' }); });
-
-        return () => { active = false; };
-    }, [id]);
+    const { detail, isLoading, error } = useAdminInterventionDetail(id);
 
     return (
         <Dialog open={!!id} onOpenChange={onClose}>
@@ -87,8 +46,8 @@ export function AdminInterventionDetailDialog({
                     <div className={styles.body}>
                         {/* Statut + dates */}
                         <div className={styles.header}>
-                            <span className={`${styles.badge} ${styles[`badge${detail.statut}`]}`}>
-                                {STATUT_LABELS[detail.statut]}
+                            <span className={`${styles.badge} ${styles[`badge${getDisplayStatut(detail)}`]}`}>
+                                {getStatutLabel(getDisplayStatut(detail))}
                             </span>
                             <span className={styles.dateDebut}>
                                 {formatDateTime(detail.dateDebut)}
@@ -151,13 +110,13 @@ export function AdminInterventionDetailDialog({
                                     {detail.photosClient.map((p) => (
                                         <a
                                             key={p.id}
-                                            href={p.url_s3}
+                                            href={p.urlS3}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={styles.photoLink}
                                         >
                                             <img
-                                                src={p.url_s3}
+                                                src={p.urlS3}
                                                 alt="Photo client"
                                                 className={styles.photo}
                                             />
@@ -175,13 +134,13 @@ export function AdminInterventionDetailDialog({
                                     {detail.photosTechnicien.map((p) => (
                                         <a
                                             key={p.id}
-                                            href={p.url_s3}
+                                            href={p.urlS3}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={styles.photoLink}
                                         >
                                             <img
-                                                src={p.url_s3}
+                                                src={p.urlS3}
                                                 alt="Photo technicien"
                                                 className={styles.photo}
                                             />

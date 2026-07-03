@@ -7,30 +7,30 @@ import type {
 } from '../types/affectations.types';
 
 export const adminAffectationsService = {
-  getAll(): Promise<Affectation[]> {
-    return apiClient.get<Affectation[]>('/admin/affectations').then((r) => r.data);
+  async getAll(): Promise<Affectation[]> {
+    const r = await apiClient.get<Affectation[]>('/admin/affectations');
+    return r.data;
   },
 
-  setZones(technicienId: string, payload: SetTechnicienZonesPayload): Promise<Affectation> {
-    return apiClient
-      .put<Affectation>(`/admin/affectations/${technicienId}`, payload)
-      .then((r) => r.data);
+  async setZones(technicienId: string, payload: SetTechnicienZonesPayload): Promise<Affectation> {
+    const r = await apiClient.put<Affectation>(`/admin/affectations/${technicienId}`, payload);
+    return r.data;
   },
 
-  delete(technicienId: string): Promise<void> {
-    return apiClient
-      .delete(`/admin/affectations/${technicienId}`)
-      .then(() => undefined);
+  async delete(technicienId: string): Promise<void> {
+    await apiClient.delete(`/admin/affectations/${technicienId}`);
   },
 
   // Données nécessaires au formulaire — appelées uniquement à l'ouverture du dialog
-  getTechniciens(): Promise<AdminUser[]> {
-    return apiClient
-      .get<PaginatedUsers>('/admin/users', { params: { role: 'technicien', limit: 100 } })
-      .then((r) => r.data.data);
+  async getTechniciens(): Promise<AdminUser[]> {
+    const r = await apiClient.get<PaginatedUsers>('/admin/users', {
+      params: { role: 'technicien', limit: 100 },
+    });
+    return r.data.data;
   },
 
-  getZones(): Promise<ZoneAffectee[]> {
-    return apiClient.get<ZoneAffectee[]>('/admin/zones').then((r) => r.data);
+  async getZones(): Promise<ZoneAffectee[]> {
+    const r = await apiClient.get<ZoneAffectee[]>('/admin/zones');
+    return r.data;
   },
 };

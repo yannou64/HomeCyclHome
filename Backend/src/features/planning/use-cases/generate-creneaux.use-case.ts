@@ -74,9 +74,7 @@ export class GenerateCreneauxUseCase {
         const [pauses, indisponibilites, existingDatesArray, conflits] =
             await Promise.all([
                 this.repo.findPausesByTechnicien(modele.technicienId),
-                this.repo.findIndisponibilitesByTechnicien(
-                    modele.technicienId,
-                ),
+                this.repo.findIndisponibilitesByTechnicien(modele.technicienId),
                 this.repo.findCreneauxDateDebutByModele(
                     input.modeleId,
                     debut,
@@ -207,8 +205,7 @@ export class GenerateCreneauxUseCase {
         return pauses.some((pause) => {
             // La pause s'applique si elle est quotidienne (null) ou sur ce jour précis
             const appliqueAuJour =
-                pause.jourSemaine === null ||
-                pause.jourSemaine === jourModele;
+                pause.jourSemaine === null || pause.jourSemaine === jourModele;
             // Le slot est couvert si heure >= heureDebut ET heure < heureFin
             return (
                 appliqueAuJour &&

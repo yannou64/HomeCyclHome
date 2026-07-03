@@ -8,6 +8,7 @@ import type {
 import { CycleSelector } from '../../../cycle/components/CycleSelector/CycleSelector';
 import { ForfaitSelector } from '../../../forfait/components/ForfaitSelector/ForfaitSelector';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
+import { Form } from '../../../../shared/components/Form/Form';
 import { useReferentiel } from '../../../cycle/hooks/useReferentiel';
 import { useForfaits } from '../../hooks/useForfaits';
 import { useUserCyclesForReservation } from '../../hooks/useUserCyclesForReservation';
@@ -40,7 +41,7 @@ export function CycleEtForfaitForm() {
     }
 
     return (
-        <div className={styles.container}>
+        <Form className={styles.container} onSubmit={handleSubmit}>
             <h2 className={styles.sectionTitle}>Votre vélo et votre prestation</h2>
 
             <CycleSelector
@@ -60,13 +61,13 @@ export function CycleEtForfaitForm() {
             </div>
 
             <div className={styles.actions}>
-                <CTAButton onClick={handleSubmit} disabled={!canSubmit}>
+                <CTAButton type="submit" disabled={!canSubmit}>
                     Choisir un créneau
                 </CTAButton>
-                <button className={styles.backButton} onClick={() => goToStep('adresse')}>
+                <button type="button" className={styles.backButton} onClick={() => goToStep('adresse')}>
                     Retour
                 </button>
             </div>
-        </div>
+        </Form>
     );
 }

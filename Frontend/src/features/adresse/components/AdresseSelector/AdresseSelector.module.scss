@@ -1,13 +1,17 @@
 @use '../../../../app/styles/index' as *;
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    background-color: $color-myGreen;
-    border-radius: $radius-md;
-    padding: $spacing-sm;
-    width: 75%; // aligne la card avec la largeur du logo
+// Surcharge uniquement la largeur du Card partagé : 75% pour aligner
+// la carte avec la largeur du logo dans le hero de l'accueil.
+// !important nécessaire — l'ordre d'injection des CSS Modules n'est pas garanti.
+.card {
+    width: 75% !important;
+}
+
+// display: contents — le <form> disparaît visuellement, ses enfants deviennent
+// directement les enfants flex de .card et héritent de son gap, sans dupliquer
+// les propriétés de layout.
+.form {
+    display: contents;
 }
 
 .label {

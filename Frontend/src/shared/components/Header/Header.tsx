@@ -24,11 +24,7 @@ export function Header() {
         }
 
         if (session?.role === 'admin') {
-            return [
-                { label: 'Accueil', to: '/' },
-                { label: 'Administration', to: '/admin' },
-                { label: 'Mon profil', to: '/profil' },
-            ];
+            return [{ label: 'Administration', to: '/admin' }];
         }
 
         // client & technicien

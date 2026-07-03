@@ -7,6 +7,7 @@ const makeListItem = (
 ): AdminInterventionListItemDto => ({
     id: 'int-1',
     statut: 'Planifiee',
+    enRetard: false,
     dateDebut: '2026-06-20T09:00:00.000Z',
     forfaitNom: 'Révision complète',
     zone: { id: 'zone-1', nom: 'Lyon Centre' },
@@ -28,23 +29,68 @@ describe('GetAdminInterventionsUseCase', () => {
         );
     });
 
-    it('devrait retourner la liste des interventions', async () => {
+    it('devrait retourner data + meta paginés', async () => {
         const interventions = [makeListItem(), makeListItem({ id: 'int-2' })];
-        mockRepo.findAllInterventions.mockResolvedValue(interventions);
+        mockRepo.findAllInterventions.mockResolvedValue({
+            interventions,
+            total: 25,
+        });
 
-        const result = await useCase.execute({ statut: 'Planifiee' });
+        const result = await useCase.execute({
+            statut: 'Planifiee',
+            page: 2,
+            limit: 10,
+        });
 
-        expect(result).toHaveLength(2);
+        expect(result.data).toHaveLength(2);
+        expect(result.meta).toEqual({
+            total: 25,
+            page: 2,
+            limit: 10,
+            totalPages: 3,
+        });
         expect(mockRepo.findAllInterventions).toHaveBeenCalledWith({
             statut: 'Planifiee',
+            page: 2,
+            limit: 10,
         });
     });
 
-    it('devrait retourner un tableau vide si aucune intervention', async () => {
-        mockRepo.findAllInterventions.mockResolvedValue([]);
+    it('devrait calculer totalPages à 1 quand total est inférieur à limit', async () => {
+        mockRepo.findAllInterventions.mockResolvedValue({
+            interventions: [makeListItem()],
+            total: 3,
+        });
 
-        const result = await useCase.execute({});
+        const result = await useCase.execute({ page: 1, limit: 10 });
 
-        expect(result).toEqual([]);
+        expect(result.meta.totalPages).toBe(1);
+    });
+
+    it('devrait retourner data vide et totalPages à 0 si aucune intervention', async () => {
+        mockRepo.findAllInterventions.mockResolvedValue({
+            interventions: [],
+            total: 0,
+        });
+
+        const result = await useCase.execute({ page: 1, limit: 10 });
+
+        expect(result.data).toEqual([]);
+        expect(result.meta.totalPages).toBe(0);
+    });
+
+    it('devrait transmettre le filtre statut enRetard tel quel au repository', async () => {
+        mockRepo.findAllInterventions.mockResolvedValue({
+            interventions: [makeListItem({ enRetard: true })],
+            total: 1,
+        });
+
+        await useCase.execute({ statut: 'enRetard', page: 1, limit: 10 });
+
+        expect(mockRepo.findAllInterventions).toHaveBeenCalledWith({
+            statut: 'enRetard',
+            page: 1,
+            limit: 10,
+        });
     });
 });

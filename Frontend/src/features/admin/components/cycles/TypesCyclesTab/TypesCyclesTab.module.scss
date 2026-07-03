@@ -75,40 +75,6 @@
   color: $color-text-label;
 }
 
-.paginationControls {
-  display: flex;
-  gap: $spacing-xs;
-  align-items: center;
-}
-
-.pageBtn {
-  width: 36px;
-  height: 36px;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background: white;
-  font-family: $font-primary;
-  font-size: $font-size-body;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover:not(:disabled) {
-    background-color: $color-myLightGreen;
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-}
-
-.pageBtnActive {
-  border-color: $color-myOrange;
-  color: $color-myOrange;
-  font-weight: $font-bold;
-}
 
 .empty {
   text-align: center;

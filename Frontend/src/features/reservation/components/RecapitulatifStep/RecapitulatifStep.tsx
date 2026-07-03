@@ -15,6 +15,8 @@ type ConfirmationData = {
     forfait: ForfaitInfo;
     creneau: CreneauInfo;
     adresseLabel: string;
+    commentaire: string | null;
+    photoUrls: string[];
 };
 
 function formatDate(iso: string): string {
@@ -50,14 +52,8 @@ export function RecapitulatifStep() {
     const handleSubmit = async () => {
         if (!adresse || !cycle || !forfait || !creneau) return;
 
-        const snapshot: ConfirmationData = {
-            forfait,
-            creneau,
-            adresseLabel: `${adresse.data.rue}, ${adresse.data.ville}`,
-        };
-
         try {
-            await createIntervention(
+            const { photoUrls } = await createIntervention(
                 {
                     adresse,
                     cycle,
@@ -71,7 +67,13 @@ export function RecapitulatifStep() {
             // reset() est volontairement déplacé dans le bouton "Retour à l'accueil"
             // — l'appeler ici changerait currentStep et démonterait ce composant
             // avant que l'écran de succès ne soit affiché.
-            setConfirmationData(snapshot);
+            setConfirmationData({
+                forfait,
+                creneau,
+                adresseLabel: `${adresse.data.rue}, ${adresse.data.ville}`,
+                commentaire: commentaire?.commentaire || null,
+                photoUrls,
+            });
             setIsSuccess(true);
         } catch {
             // error est exposé par useCreateIntervention
@@ -79,7 +81,8 @@ export function RecapitulatifStep() {
     };
 
     if (isSuccess && confirmationData) {
-        const { forfait: f, creneau: c, adresseLabel } = confirmationData;
+        const { forfait: f, creneau: c, adresseLabel, commentaire: commentaireSaisi, photoUrls } =
+            confirmationData;
         return (
             <div className={styles.successContainer}>
                 <div className={styles.successIcon}>✓</div>
@@ -115,6 +118,32 @@ export function RecapitulatifStep() {
                         <span className={styles.summaryValue}>{adresseLabel}</span>
                     </div>
                 </div>
+
+                {commentaireSaisi && (
+                    <div className={styles.successCommentaire}>
+                        <span className={styles.summaryLabel}>Commentaire</span>
+                        <p>{commentaireSaisi}</p>
+                    </div>
+                )}
+
+                {photoUrls.length > 0 && (
+                    <div className={styles.successPhotos}>
+                        <span className={styles.summaryLabel}>Photos enregistrées</span>
+                        <div className={styles.photosGrid}>
+                            {photoUrls.map((url) => (
+                                <a
+                                    key={url}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.photoLink}
+                                >
+                                    <img src={url} alt="Photo du vélo" className={styles.photo} />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <CTAButton onClick={() => { reset(); navigate('/'); }}>
                     Retour à l'accueil

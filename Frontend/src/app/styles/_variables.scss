@@ -12,6 +12,9 @@ $color-text-placeholder: #b5a9a4;
 
 $color-border: #ddd5d2;
 
+$color-warning: #b45309;
+$color-warning-bg: #fef3c7;
+
 // Font families
 $font-primary: 'Nunito', sans-serif;
 $font-hero: 'Grand Hotel', cursive;
@@ -71,6 +74,9 @@ $max-width-content: 1440px;
     --color-text-placeholder: #{$color-text-placeholder};
 
     --color-border: #{$color-border};
+
+    --color-warning: #{$color-warning};
+    --color-warning-bg: #{$color-warning-bg};
 
     --font-primary: #{$font-primary};
     --font-hero: #{$font-hero};

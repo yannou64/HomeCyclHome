@@ -18,6 +18,7 @@ describe('CreateZoneUseCase', () => {
     beforeEach(() => {
         mockRepo = {
             findAll: jest.fn(),
+            findAllActive: jest.fn(),
             findById: jest.fn(),
             existsByNom: jest.fn(),
             create: jest.fn(),

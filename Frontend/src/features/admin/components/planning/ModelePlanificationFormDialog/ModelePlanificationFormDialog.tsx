@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
-import { adminPlanningService } from '../../../services/adminPlanningService';
-import type { ZoneAffectee } from '../../../types/affectations.types';
+import { useZonesForTechnicien } from '../../../hooks/useZonesForTechnicien';
 import type {
   CreateModelePlanificationPayload,
   ModelePlanification,
@@ -36,8 +35,7 @@ export function ModelePlanificationFormDialog({
 }: ModelePlanificationFormDialogProps) {
   const isEditMode = !!item;
 
-  const [zones, setZones] = useState<ZoneAffectee[]>([]);
-  const [isLoadingZones, setIsLoadingZones] = useState(false);
+  const { zones, isLoadingZones, loadError } = useZonesForTechnicien(technicienId, isOpen);
 
   const [zoneId, setZoneId] = useState('');
   const [jourSemaine, setJourSemaine] = useState('0');
@@ -48,73 +46,59 @@ export function ModelePlanificationFormDialog({
   const [dateDebutValidite, setDateDebutValidite] = useState('');
   const [dateFinValidite, setDateFinValidite] = useState('');
 
-  const [formError, setFormError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const formError = validationError ?? loadError;
+  const [wasOpen, setWasOpen] = useState(isOpen);
 
-  // Chargement paresseux des zones + pré-remplissage en mode édition
-  useEffect(() => {
-    if (!isOpen) return;
+  // Pré-remplissage du formulaire : ajustement pendant le rendu (pattern React
+  // recommandé) déclenché sur la transition fermé → ouvert, plutôt qu'un effect.
+  if (isOpen && !wasOpen) {
+    setWasOpen(true);
+    setValidationError(null);
 
-    let cancelled = false;
-
-    const load = async () => {
-      setIsLoadingZones(true);
-      setFormError(null);
-
-      if (isEditMode && item) {
-        setZoneId(item.zoneId);
-        setJourSemaine(String(item.jourSemaine));
-        setHeureDebut(minutesToTime(item.heureDebut));
-        setHeureFin(minutesToTime(item.heureFin));
-        setIntervalleMinutes(String(item.intervalleMinutes));
-        setIsActif(item.isActif);
-        setDateDebutValidite(item.dateDebutValidite.slice(0, 10));
-        setDateFinValidite(item.dateFinValidite ? item.dateFinValidite.slice(0, 10) : '');
-      } else {
-        setZoneId('');
-        setJourSemaine('0');
-        setHeureDebut('');
-        setHeureFin('');
-        setIntervalleMinutes('60');
-        setIsActif(true);
-        setDateDebutValidite('');
-        setDateFinValidite('');
-      }
-
-      try {
-        const data = await adminPlanningService.getZonesForTechnicien(technicienId);
-        if (!cancelled) setZones(data);
-      } catch {
-        if (!cancelled) setFormError('Impossible de charger les zones du technicien.');
-      } finally {
-        if (!cancelled) setIsLoadingZones(false);
-      }
-    };
-
-    void load();
-
-    return () => { cancelled = true; };
-  }, [isOpen, isEditMode, item, technicienId]);
+    if (isEditMode && item) {
+      setZoneId(item.zoneId);
+      setJourSemaine(String(item.jourSemaine));
+      setHeureDebut(minutesToTime(item.heureDebut));
+      setHeureFin(minutesToTime(item.heureFin));
+      setIntervalleMinutes(String(item.intervalleMinutes));
+      setIsActif(item.isActif);
+      setDateDebutValidite(item.dateDebutValidite.slice(0, 10));
+      setDateFinValidite(item.dateFinValidite ? item.dateFinValidite.slice(0, 10) : '');
+    } else {
+      setZoneId('');
+      setJourSemaine('0');
+      setHeureDebut('');
+      setHeureFin('');
+      setIntervalleMinutes('60');
+      setIsActif(true);
+      setDateDebutValidite('');
+      setDateFinValidite('');
+    }
+  } else if (!isOpen && wasOpen) {
+    setWasOpen(false);
+  }
 
   const handleSubmit = async () => {
-    if (!zoneId) { setFormError('Veuillez sélectionner une zone.'); return; }
-    if (!heureDebut || !heureFin) { setFormError("Les heures sont obligatoires."); return; }
-    if (!dateDebutValidite) { setFormError("La date de début de validité est obligatoire."); return; }
+    if (!zoneId) { setValidationError('Veuillez sélectionner une zone.'); return; }
+    if (!heureDebut || !heureFin) { setValidationError("Les heures sont obligatoires."); return; }
+    if (!dateDebutValidite) { setValidationError("La date de début de validité est obligatoire."); return; }
 
     const debut = timeToMinutes(heureDebut);
     const fin = timeToMinutes(heureFin);
 
     if (fin <= debut) {
-      setFormError("L'heure de fin doit être postérieure à l'heure de début.");
+      setValidationError("L'heure de fin doit être postérieure à l'heure de début.");
       return;
     }
 
     const intervalle = parseInt(intervalleMinutes, 10);
     if (isNaN(intervalle) || intervalle <= 0) {
-      setFormError("L'intervalle doit être un nombre positif.");
+      setValidationError("L'intervalle doit être un nombre positif.");
       return;
     }
 
-    setFormError(null);
+    setValidationError(null);
 
     const payload: CreateModelePlanificationPayload = {
       technicienId: technicienId,
@@ -134,7 +118,7 @@ export function ModelePlanificationFormDialog({
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string | string[] } } };
       const msg = axiosErr?.response?.data?.message;
-      setFormError(
+      setValidationError(
         typeof msg === 'string'
           ? msg
           : Array.isArray(msg)

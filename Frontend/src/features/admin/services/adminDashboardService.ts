@@ -2,7 +2,8 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminStats } from '../types/dashboard.types';
 
 export const adminDashboardService = {
-    getStats(): Promise<AdminStats> {
-        return apiClient.get<AdminStats>('/admin/stats').then((r) => r.data);
+    async getStats(): Promise<AdminStats> {
+        const r = await apiClient.get<AdminStats>('/admin/stats');
+        return r.data;
     },
 };

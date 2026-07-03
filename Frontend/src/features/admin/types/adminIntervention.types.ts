@@ -1,8 +1,11 @@
+import type { PaginationMeta } from '../../../shared/types/pagination.types';
+
 export type AdminInterventionStatut = 'Planifiee' | 'Terminee' | 'Annulee';
 
 export type AdminInterventionListItem = {
     id: string;
     statut: AdminInterventionStatut;
+    enRetard: boolean;
     dateDebut: string;
     forfaitNom: string;
     zone: { id: string; nom: string };
@@ -32,14 +35,21 @@ export type AdminInterventionDetail = AdminInterventionListItem & {
         marque: string;
         type: string;
     };
-    photosClient: { id: string; url_s3: string }[];
-    photosTechnicien: { id: string; url_s3: string }[];
+    photosClient: { id: string; urlS3: string }[];
+    photosTechnicien: { id: string; urlS3: string }[];
 };
 
 export type GetAdminInterventionsParams = {
-    statut?: 'Planifiee' | 'archivees';
+    statut?: 'Planifiee' | 'enRetard' | 'archivees';
     zoneId?: string;
     technicienId?: string;
+    page?: number;
+    limit?: number;
 };
 
-export type ActiveInterventionTab = 'planifiees' | 'archivees';
+export type PaginatedAdminInterventions = {
+    data: AdminInterventionListItem[];
+    meta: PaginationMeta;
+};
+
+export type ActiveInterventionTab = 'planifiees' | 'enRetard' | 'archivees';

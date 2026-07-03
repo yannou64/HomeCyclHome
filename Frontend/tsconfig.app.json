@@ -17,7 +17,6 @@
     "jsx": "react-jsx",
 
     /* Alias @ → src/ (requis par shadcn/ui) */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },

@@ -13,6 +13,16 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
+import {
+    ApiBody,
+    ApiConsumes,
+    ApiCookieAuth,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -25,6 +35,8 @@ import { CreateInterventionDto } from '../dto/input/create-intervention.dto';
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024; // 30 Mo
 
+@ApiTags('Interventions')
+@ApiCookieAuth('access_token')
 @Controller('interventions')
 @UseGuards(JwtAuthGuard)
 export class InterventionsController {
@@ -35,18 +47,27 @@ export class InterventionsController {
         private readonly uploadInterventionPhotosUseCase: UploadInterventionPhotosUseCase,
     ) {}
 
+    @ApiOperation({
+        summary:
+            'Crée une intervention et marque le créneau indisponible dans une transaction atomique',
+    })
+    @ApiCreatedResponse({
+        description: 'Intervention créée, créneau marqué indisponible',
+    })
     @Post()
     create(@Req() req: Request, @Body() dto: CreateInterventionDto) {
         const { userId } = req.user as { userId: string };
         return this.createInterventionUseCase.execute(userId, dto);
     }
 
+    @ApiOkResponse({ description: 'Liste des interventions du client' })
     @Get()
     getMyInterventions(@Req() req: Request) {
         const { userId } = req.user as { userId: string };
         return this.getClientInterventionsUseCase.execute(userId);
     }
 
+    @ApiNoContentResponse({ description: 'Intervention annulée' })
     @Patch(':id/annuler')
     @HttpCode(HttpStatus.NO_CONTENT)
     cancelIntervention(@Req() req: Request, @Param('id') id: string) {
@@ -54,6 +75,23 @@ export class InterventionsController {
         return this.cancelInterventionUseCase.execute(id, userId);
     }
 
+    @ApiOperation({
+        summary:
+            "Upload jusqu'à 5 photos (JPEG/PNG/WebP, 30 Mo max) vers AWS S3",
+    })
+    @ApiCreatedResponse({ description: 'Photos uploadées vers S3' })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                photos: {
+                    type: 'array',
+                    items: { type: 'string', format: 'binary' },
+                },
+            },
+        },
+    })
     @Post(':id/photos')
     @UseInterceptors(
         FilesInterceptor('photos', 5, {

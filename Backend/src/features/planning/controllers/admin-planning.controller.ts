@@ -11,6 +11,14 @@ import {
     Query,
     UseGuards,
 } from '@nestjs/common';
+import {
+    ApiCookieAuth,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -36,6 +44,8 @@ import { GetCreneauxUseCase } from '../use-cases/get-creneaux.use-case';
 import { DeleteCreneauUseCase } from '../use-cases/delete-creneau.use-case';
 import { DeleteCreneauxDisponiblesUseCase } from '../use-cases/delete-creneaux-disponibles.use-case';
 
+@ApiTags('Administration — Planning')
+@ApiCookieAuth('access_token')
 @Controller('admin/planning')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
@@ -64,16 +74,19 @@ export class AdminPlanningController {
 
     // ── Modèles de planification ─────────────────────────────────────────────
 
+    @ApiOkResponse({ description: 'Liste des modèles de planification' })
     @Get('modeles')
     getModeles(@Query('technicienId') technicienId: string) {
         return this.getModelesUseCase.execute(technicienId);
     }
 
+    @ApiCreatedResponse({ description: 'Modèle de planification créé' })
     @Post('modeles')
     createModele(@Body() dto: CreateModelePlanificationDto) {
         return this.createModeleUseCase.execute(dto);
     }
 
+    @ApiOkResponse({ description: 'Modèle de planification mis à jour' })
     @Patch('modeles/:id')
     updateModele(
         @Param('id') id: string,
@@ -82,6 +95,7 @@ export class AdminPlanningController {
         return this.updateModeleUseCase.execute(id, dto);
     }
 
+    @ApiNoContentResponse({ description: 'Modèle de planification supprimé' })
     @Delete('modeles/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteModele(@Param('id') id: string) {
@@ -90,16 +104,19 @@ export class AdminPlanningController {
 
     // ── Pauses récurrentes ───────────────────────────────────────────────────
 
+    @ApiOkResponse({ description: 'Liste des pauses récurrentes' })
     @Get('pauses')
     getPauses(@Query('technicienId') technicienId: string) {
         return this.getPausesUseCase.execute(technicienId);
     }
 
+    @ApiCreatedResponse({ description: 'Pause récurrente créée' })
     @Post('pauses')
     createPause(@Body() dto: CreatePauseRecurrenteDto) {
         return this.createPauseUseCase.execute(dto);
     }
 
+    @ApiNoContentResponse({ description: 'Pause récurrente supprimée' })
     @Delete('pauses/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     deletePause(@Param('id') id: string) {
@@ -108,16 +125,19 @@ export class AdminPlanningController {
 
     // ── Indisponibilités ─────────────────────────────────────────────────────
 
+    @ApiOkResponse({ description: 'Liste des indisponibilités' })
     @Get('indisponibilites')
     getIndisponibilites(@Query('technicienId') technicienId: string) {
         return this.getIndisponibilitesUseCase.execute(technicienId);
     }
 
+    @ApiCreatedResponse({ description: 'Indisponibilité créée' })
     @Post('indisponibilites')
     createIndisponibilite(@Body() dto: CreateIndisponibiliteDto) {
         return this.createIndisponibiliteUseCase.execute(dto);
     }
 
+    @ApiNoContentResponse({ description: 'Indisponibilité supprimée' })
     @Delete('indisponibilites/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteIndisponibilite(@Param('id') id: string) {
@@ -128,11 +148,19 @@ export class AdminPlanningController {
 
     // Routes statiques déclarées avant les routes paramétrées (:id)
     // pour éviter que NestJS les interprète comme des identifiants.
+    @ApiOperation({
+        summary:
+            "Génère les créneaux d'un technicien (algorithme 3 couches : modèle → pauses → indisponibilités)",
+    })
+    @ApiCreatedResponse({ description: 'Créneaux générés' })
     @Post('creneaux/generate')
     generateCreneaux(@Body() dto: GenerateCreneauxDto) {
         return this.generateCreneauxUseCase.execute(dto);
     }
 
+    @ApiCreatedResponse({
+        description: 'Créneaux générés pour tous les techniciens',
+    })
     @Post('creneaux/generate-all')
     generateAllCreneaux(@Body() dto: GenerateAllCreneauxDto) {
         return this.generateAllCreneauxUseCase.execute({
@@ -141,6 +169,7 @@ export class AdminPlanningController {
         });
     }
 
+    @ApiOkResponse({ description: 'Liste des créneaux' })
     @Get('creneaux')
     getCreneaux(
         @Query('technicienId') technicienId: string,
@@ -154,6 +183,7 @@ export class AdminPlanningController {
         });
     }
 
+    @ApiOkResponse({ description: 'Nombre de créneaux disponibles supprimés' })
     @Delete('creneaux/disponibles')
     @HttpCode(HttpStatus.OK)
     deleteCreneauxDisponibles(
@@ -168,6 +198,7 @@ export class AdminPlanningController {
         });
     }
 
+    @ApiNoContentResponse({ description: 'Créneau supprimé' })
     @Delete('creneaux/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     deleteCreneau(@Param('id') id: string) {

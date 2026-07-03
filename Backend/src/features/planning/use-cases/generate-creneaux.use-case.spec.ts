@@ -332,7 +332,7 @@ describe('GenerateCreneauxUseCase', () => {
             dateFinValidite: '2026-06-07T23:59:59.000Z',
         });
 
-        const rapport = await useCase.execute({ modele_id: 'modele-uuid' });
+        const rapport = await useCase.execute({ modeleId: 'modele-uuid' });
 
         // Lundi 01 uniquement dans la semaine du 01 au 07
         expect(rapport.created).toBe(4);
@@ -342,7 +342,7 @@ describe('GenerateCreneauxUseCase', () => {
         // Le modèle n'a pas de date_fin_validite (null) et aucune date override fournie
         // → la génération doit s'arrêter à aujourd'hui + 3 mois
         // On vérifie juste que l'appel ne lève pas d'erreur et que createManyCreneaux est appelé
-        const rapport = await useCase.execute({ modele_id: 'modele-uuid' });
+        const rapport = await useCase.execute({ modeleId: 'modele-uuid' });
 
         expect(rapport).toHaveProperty('created');
         expect(rapport).toHaveProperty('skipped');

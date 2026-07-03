@@ -215,3 +215,40 @@
     color: $color-text-label;
     font-weight: $font-regular;
 }
+
+// ── Commentaire & photos (écran de succès) ────────────────────────────────────
+
+.successCommentaire,
+.successPhotos {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    width: 100%;
+    text-align: left;
+
+    p {
+        font-size: $font-size-body;
+        color: $color-text-primary;
+        margin: 0;
+    }
+}
+
+.photosGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: $spacing-xs;
+}
+
+.photoLink {
+    display: block;
+    border-radius: $radius-md;
+    overflow: hidden;
+    border: 1px solid $color-border;
+}
+
+.photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}

@@ -4,31 +4,30 @@ import type { ForfaitDto } from '../types/forfait.types';
 import type { CreneauDisponibleDto } from '../types/creneau.types';
 
 export const reservationService = {
-    checkZone(latitude: number, longitude: number): Promise<ZoneInfo> {
-        return apiClient
-            .post<ZoneInfo>('/zones/check', { latitude, longitude })
-            .then((r) => r.data);
+    async checkZone(latitude: number, longitude: number): Promise<ZoneInfo> {
+        const r = await apiClient.post<ZoneInfo>('/zones/check', { latitude, longitude });
+        return r.data;
     },
 
-    getForfaits(): Promise<ForfaitDto[]> {
-        return apiClient.get<ForfaitDto[]>('/forfaits').then((r) => r.data);
+    async getForfaits(): Promise<ForfaitDto[]> {
+        const r = await apiClient.get<ForfaitDto[]>('/forfaits');
+        return r.data;
     },
 
-    getCreneaux(params: {
+    async getCreneaux(params: {
         zoneId: string;
         dureeMinutes: number;
         dateDebut: string;
         dateFin: string;
     }): Promise<CreneauDisponibleDto[]> {
-        return apiClient
-            .get<CreneauDisponibleDto[]>('/creneaux', {
-                params: {
-                    zoneId: params.zoneId,
-                    dureeMinutes: params.dureeMinutes,
-                    dateDebut: params.dateDebut,
-                    dateFin: params.dateFin,
-                },
-            })
-            .then((r) => r.data);
+        const r = await apiClient.get<CreneauDisponibleDto[]>('/creneaux', {
+            params: {
+                zoneId: params.zoneId,
+                dureeMinutes: params.dureeMinutes,
+                dateDebut: params.dateDebut,
+                dateFin: params.dateFin,
+            },
+        });
+        return r.data;
     },
 };

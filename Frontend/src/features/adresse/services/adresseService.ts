@@ -2,19 +2,22 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { Adresse, CreateAdressePayload, UpdateAdressePayload } from '../types/adresse.types';
 
 export const adresseService = {
-    getAll(): Promise<Adresse[]> {
-        return apiClient.get<Adresse[]>('/adresses').then((r) => r.data);
+    async getAll(): Promise<Adresse[]> {
+        const r = await apiClient.get<Adresse[]>('/adresses');
+        return r.data;
     },
 
-    create(payload: CreateAdressePayload): Promise<Adresse> {
-        return apiClient.post<Adresse>('/adresses', payload).then((r) => r.data);
+    async create(payload: CreateAdressePayload): Promise<Adresse> {
+        const r = await apiClient.post<Adresse>('/adresses', payload);
+        return r.data;
     },
 
-    update(id: string, payload: UpdateAdressePayload): Promise<Adresse> {
-        return apiClient.patch<Adresse>(`/adresses/${id}`, payload).then((r) => r.data);
+    async update(id: string, payload: UpdateAdressePayload): Promise<Adresse> {
+        const r = await apiClient.patch<Adresse>(`/adresses/${id}`, payload);
+        return r.data;
     },
 
-    delete(id: string): Promise<void> {
-        return apiClient.delete(`/adresses/${id}`).then(() => undefined);
+    async delete(id: string): Promise<void> {
+        await apiClient.delete(`/adresses/${id}`);
     },
 };

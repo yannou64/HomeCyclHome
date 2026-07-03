@@ -7,6 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from '../../../../../shared/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../../../../../shared/components/ui/pagination';
+import { usePagination } from '../../../../../shared/hooks/usePagination';
 import { minutesToTime } from '../../../../../shared/utils/timeUtils';
 import type {
   CreateModelePlanificationPayload,
@@ -46,6 +55,7 @@ export function ModelePlanificationList({
   onUpdate,
   onDelete,
 }: ModelePlanificationListProps) {
+  const { pageItems, page, setPage, totalPages } = usePagination(modeles, 6);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ModelePlanification | null>(null);
   const [deletingItem, setDeletingItem] = useState<ModelePlanification | null>(null);
@@ -107,7 +117,7 @@ export function ModelePlanificationList({
                 </TableCell>
               </TableRow>
             ) : (
-              modeles.map((item) => (
+              pageItems.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={styles.jour}>
                     {JOURS[item.jourSemaine]}
@@ -154,6 +164,48 @@ export function ModelePlanificationList({
         <span className={styles.count}>
           {modeles.length} modèle{modeles.length > 1 ? 's' : ''}
         </span>
+        {totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page > 1) setPage(page - 1);
+                  }}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === p}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setPage(p);
+                    }}
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage(page + 1);
+                  }}
+                  aria-disabled={page === totalPages}
+                  className={page === totalPages ? 'pointer-events-none opacity-40' : undefined}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
 
       <ModelePlanificationFormDialog

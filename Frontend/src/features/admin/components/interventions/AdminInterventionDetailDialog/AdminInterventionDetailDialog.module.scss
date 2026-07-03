@@ -77,6 +77,11 @@
     color: #757575;
 }
 
+.badgeEnRetard {
+    background: $color-warning-bg;
+    color: $color-warning;
+}
+
 // Grille 2 colonnes (client / intervention)
 .grid {
     display: grid;
