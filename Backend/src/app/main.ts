@@ -2,12 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { helmetConfig } from '../config/helmet.config';
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
     app.setGlobalPrefix('api');
+
+    // Headers de sécurité HTTP (X-Frame-Options, HSTS, CSP...)
+    app.use(helmet(helmetConfig));
 
     // Lecture des cookies entrants (nécessaire pour la JWT strategy)
     app.use(cookieParser());
