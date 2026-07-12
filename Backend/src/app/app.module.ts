@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { throttlerConfig } from '../config/throttler.config';
 import { DatabaseModule } from '../shared/database/database.module';
 import { AuthModule } from '../features/auth/auth.module';
 import { UsersModule } from '../features/users/users.module';
@@ -15,6 +18,7 @@ import { InterventionModule } from '../features/intervention/intervention.module
 
 @Module({
     imports: [
+        ThrottlerModule.forRoot(throttlerConfig),
         DatabaseModule,
         AuthModule,
         UsersModule,
@@ -29,5 +33,6 @@ import { InterventionModule } from '../features/intervention/intervention.module
         AdressesModule,
         InterventionModule,
     ],
+    providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

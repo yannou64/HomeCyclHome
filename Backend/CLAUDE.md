@@ -142,7 +142,13 @@ features/<nom>/
 - Mots de passe hashés avec `bcrypt` (jamais stockés en clair)
 - Validation systématique des entrées via `ValidationPipe` global
 - CORS configuré pour n'autoriser que le domaine frontend
-- Rate limiting sur les endpoints sensibles (auth notamment)
+- Headers de sécurité HTTP via `helmet` (`main.ts`) — CSP stricte en production,
+  désactivée hors production pour ne pas bloquer Swagger UI
+  (voir `src/config/helmet.config.ts`)
+- Rate limiting via `@nestjs/throttler` : `ThrottlerGuard` enregistré globalement
+  (`APP_GUARD` dans `app.module.ts`), limite par défaut 100 req/min/IP
+  (`src/config/throttler.config.ts`). Resserré à 5 req/min/IP via `@Throttle()`
+  sur les routes auth non authentifiées (`register`, `confirm-email`, `login`, `refresh`)
 - Aucune donnée bancaire stockée — paiement physique uniquement
 
 ---
