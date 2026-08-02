@@ -30,16 +30,16 @@ Réservation → Réalisation → Paiement → Clôture
 | Couche | Technologie |
 |---|---|
 | Frontend | React + Vite + TypeScript |
-| Style | SCSS modules + shadcn/ui |
+| Style | SCSS modules (pages client) + Tailwind/shadcn-ui (panneau admin uniquement) |
 | Backend | NestJS + TypeScript |
 | ORM | Prisma |
 | Base de données | PostgreSQL |
 | Auth | JWT + Refresh Token + RBAC |
 | Géolocalisation | Google Maps Platform (Geocoding + Autocomplete) |
 | Calendrier | FullCalendar (version gratuite) |
-| Tests | Jest (TDD) + Supertest |
+| Tests | Jest (TDD, backend uniquement) — Supertest installé mais aucun test d'intégration écrit à ce jour, aucun test frontend |
 | CI/CD | GitHub Actions |
-| Conteneurisation | Docker + Docker Compose (production uniquement) |
+| Conteneurisation | Docker + Docker Compose (staging + production — pas de conteneurisation en développement local) |
 | Registry | GitHub Container Registry (ghcr.io/yannou64) |
 
 ---
@@ -109,15 +109,18 @@ Ne jamais proposer un message de commit non conforme à cette convention.
 
 ## 7. Domaine métier — entités clés
 
-Les entités principales du modèle de données :
+Les entités principales du modèle de données (implémentées, sauf mention contraire) :
 
-`Utilisateur` · `Role` · `Adresse` · `Zone` · `Cycle` · `TypeCycle`
-`Forfait` · `HistoriquePrixForfait` · `Creneau` · `Intervention`
-`Photo` · `Paiement` · `Produit` · `LigneCommande` · `HistoriquePrixProduit`
+`Utilisateur` (rôle en enum) · `Adresse` · `Zone` · `ZonePoint` · `Cycle` · `Marque` · `TypeCycle`
+`Forfait` · `HistoriquePrixForfait` · `TechnicienZone` · `ModelePlanification` · `PauseRecurrente`
+`Indisponibilite` · `Creneau` · `Intervention` · `Photo` (contexte en enum)
+
+**Prévues, non implémentées (Sprint 4 / V2) :** `Paiement` · `Produit` · `LigneCommande` · `HistoriquePrixProduit`
+— voir [[docs/wiki/metier.md]] pour le détail.
 
 **Règles métier critiques :**
-- Un créneau est lié à une zone géographique et un technicien
-- L'adresse client est validée via Google Maps puis vérifiée contre les zones actives
+- Un créneau est lié à une zone géographique et, via un modèle de planification, à un technicien
+- L'adresse client est validée via Google Maps puis vérifiée contre les zones actives (algorithme Ray Casting côté backend, pas l'API Google Maps)
 - La durée d'une intervention est déterminée par le forfait sélectionné
 - Un créneau devient `is_disponible = false` dès qu'une intervention est créée
 - Le paiement est physique — aucune donnée bancaire n'est stockée
@@ -147,7 +150,7 @@ Les entités principales du modèle de données :
 
 **Typographie :**
 - `Grand Hotel` — hero uniquement (script élégant)
-- `Poppins` — tout le reste
+- `Nunito` — tout le reste
 
 **Échelle typographique mobile :**
 - Hero : 28–32px
@@ -175,8 +178,11 @@ Consulter ces fichiers pour le contexte détaillé :
 | `docs/wiki/stack.md` | Justification des choix techniques |
 | `docs/wiki/architecture.md` | Structure des dossiers, modules NestJS |
 | `docs/wiki/metier.md` | Entités, règles métier, MCD/MLD |
+| `docs/wiki/Modèle Conceptuel de Données.md` | MCD complet — entités, attributs, associations |
 | `docs/wiki/sprint-actuel.md` | État du sprint en cours |
 | `docs/wiki/log.md` | Journal des décisions (append-only) |
+| `docs/wiki/ia.md` | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
+| `docs/wiki/features/<nom>/index.md` | Fiche détaillée par feature — fichiers, endpoints, entités |
 
 ---
 
@@ -193,5 +199,11 @@ Consulter ces fichiers pour le contexte détaillé :
 Yannick conserve volontairement sa propre créativité sur l'UI/UX et le design.
 L'IA est un outil d'assistance et de scaffolding, pas de génération complète.
 Ne pas surcharger avec des suggestions visuelles non demandées.
+
+**Rappel de fin de session :**
+Yannick se décrit "tête en l'air" — après un développement significatif (nouvelle feature
+backend ou frontend créée, refactor structurant, ou session ayant touché plus de 10 fichiers),
+proposer explicitement de lancer le skill `/fin-session` (audit `CLAUDE.md`/wiki + mise à jour
+du sprint). Ne jamais le lancer soi-même sans confirmation — proposer, pas agir.
 
 **Langue :** toujours répondre en français.

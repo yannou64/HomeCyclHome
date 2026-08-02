@@ -16,7 +16,7 @@ Il est lu automatiquement par Claude Code quand tu travailles dans ce dossier.
 | Cookie HttpOnly     | Stockage sécurisé des tokens (protection XSS) |
 | bcrypt              | Hashage des mots de passe                     |
 | class-validator     | Validation des DTOs                           |
-| Jest + Supertest    | Tests unitaires et d'intégration API          |
+| Jest                | Tests unitaires — Supertest installé (`test/jest-e2e.json`) mais aucun test d'intégration écrit à ce jour |
 
 ---
 
@@ -46,17 +46,31 @@ src/
 ├── config/                      # Configuration globale (env, JWT, cookies...)
 │
 ├── features/                    # Modules métier (un dossier = un module NestJS)
+│   ├── admin/                   # Back-office (users CRUD, RBAC, stats)
+│   ├── adresses/                # Carnet d'adresses client
+│   ├── affectations/            # Affectation technicien ↔ zone
 │   ├── auth/                    # Authentification
 │   ├── cycle/                   # Gestion des cycles client
+│   ├── email/                   # Service technique d'envoi d'emails
+│   ├── forfaits/                # Catalogue des prestations + historique des prix
 │   ├── intervention/            # Gestion des interventions
-│   └── planning/                # Créneaux et planification
+│   ├── planning/                # Créneaux et planification
+│   ├── referentiel/             # Marques, types de cycles
+│   ├── users/                   # Profil utilisateur (self-service)
+│   └── zones/                   # Zones géographiques
 │
 ├── shared/                      # Éléments transversaux
 │   ├── database/                # Module Prisma partagé
-│   └── prisma/                  # PrismaService injectable
+│   ├── prisma/                  # PrismaService injectable
+│   ├── guards/                  # RolesGuard (RBAC)
+│   ├── decorators/              # @Roles()
+│   └── storage/                 # StorageService — upload AWS S3
 │
-└── test/                        # Tests d'intégration globaux (Supertest)
+└── test/                        # Config Jest e2e (jest-e2e.json) — aucun test d'intégration écrit à ce jour
 ```
+
+Liste complète et détaillée par feature (fichiers, endpoints, entités) : voir
+`docs/wiki/features/<nom>/index.md`.
 
 **Structure interne d'une feature (pattern à respecter) :**
 
@@ -170,8 +184,10 @@ doivent être atomiques (transaction Prisma) pour éviter les conflits de réser
 ## 7. Stratégie de tests (TDD)
 
 - **Écrire les tests avant le code** sur les règles métier critiques
-- Tests unitaires Jest : dans chaque feature (`<nom>.spec.ts`)
-- Tests d'intégration Supertest : dans `test/`
+- Tests unitaires Jest : dans chaque feature (`<nom>.spec.ts`) — c'est la seule couche de tests
+  réellement en place aujourd'hui (200+ specs)
+- Tests d'intégration Supertest : `test/jest-e2e.json` est configuré mais **aucun fichier
+  `*.e2e-spec.ts` n'existe encore** — à créer si l'objectif Supertest doit être tenu
 - Priorités de test :
     - Gestion des créneaux (disponibilité, conflits)
     - Vérification de zone géographique
