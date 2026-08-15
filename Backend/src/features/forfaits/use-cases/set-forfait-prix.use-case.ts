@@ -1,13 +1,8 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { FORFAITS_REPO } from '../forfaits.module';
+import { NotFoundException } from '@nestjs/common';
 import { IForfaitsRepository } from '../repositories/forfaits.repository.interface';
 
-@Injectable()
 export class SetForfaitPrixUseCase {
-    constructor(
-        @Inject(FORFAITS_REPO)
-        private readonly repo: IForfaitsRepository,
-    ) {}
+    constructor(private readonly repo: IForfaitsRepository) {}
 
     async execute(
         forfaitId: string,
