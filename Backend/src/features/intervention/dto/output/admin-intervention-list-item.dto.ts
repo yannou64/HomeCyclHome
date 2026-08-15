@@ -2,45 +2,45 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class ZoneSnapshotDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 }
 
 class TechnicienSnapshotDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    prenom: string;
+    prenom!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 }
 
 export class AdminInterventionListItemDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty({ enum: ['Planifiee', 'Terminee', 'Annulee'] })
-    statut: 'Planifiee' | 'Terminee' | 'Annulee';
+    statut!: 'Planifiee' | 'Terminee' | 'Annulee';
 
     @ApiProperty({
         description:
             "Vrai si l'intervention est Planifiee et que sa date de début est passée (calculé côté serveur)",
     })
-    enRetard: boolean;
+    enRetard!: boolean;
 
     @ApiProperty()
-    dateDebut: string;
+    dateDebut!: string;
 
     @ApiProperty()
-    forfaitNom: string;
+    forfaitNom!: string;
 
     @ApiProperty({ type: () => ZoneSnapshotDto })
-    zone: ZoneSnapshotDto;
+    zone!: ZoneSnapshotDto;
 
     @ApiProperty({ nullable: true, type: () => TechnicienSnapshotDto })
-    technicien: TechnicienSnapshotDto | null;
+    technicien!: TechnicienSnapshotDto | null;
 }

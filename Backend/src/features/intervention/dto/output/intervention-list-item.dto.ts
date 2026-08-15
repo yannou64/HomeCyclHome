@@ -2,57 +2,57 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class AdresseSnapshotDto {
     @ApiProperty({ nullable: true, type: String })
-    numero: string | null;
+    numero!: string | null;
 
     @ApiProperty()
-    rue: string;
+    rue!: string;
 
     @ApiProperty()
-    codePostal: string;
+    codePostal!: string;
 
     @ApiProperty()
-    ville: string;
+    ville!: string;
 }
 
 class CycleSnapshotDto {
     @ApiProperty()
-    libelle: string;
+    libelle!: string;
 
     @ApiProperty()
-    marque: string;
+    marque!: string;
 
     @ApiProperty()
-    type: string;
+    type!: string;
 }
 
 export class InterventionListItemDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty({ enum: ['Planifiee', 'Terminee', 'Annulee'] })
-    statut: 'Planifiee' | 'Terminee' | 'Annulee';
+    statut!: 'Planifiee' | 'Terminee' | 'Annulee';
 
     @ApiProperty()
-    dateCreation: string;
+    dateCreation!: string;
 
     @ApiProperty()
-    dateDebut: string;
+    dateDebut!: string;
 
     @ApiProperty({ nullable: true, type: String })
-    dateFin: string | null;
+    dateFin!: string | null;
 
     @ApiProperty()
-    forfaitNom: string;
+    forfaitNom!: string;
 
     @ApiProperty()
-    dureeMinutesSnapshot: number;
+    dureeMinutesSnapshot!: number;
 
     @ApiProperty({ type: () => AdresseSnapshotDto })
-    adresse: AdresseSnapshotDto;
+    adresse!: AdresseSnapshotDto;
 
     @ApiProperty({ type: () => CycleSnapshotDto })
-    cycle: CycleSnapshotDto;
+    cycle!: CycleSnapshotDto;
 
     @ApiProperty({ nullable: true, type: String })
-    commentaire: string | null;
+    commentaire!: string | null;
 }

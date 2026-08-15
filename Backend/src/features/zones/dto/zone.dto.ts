@@ -2,28 +2,28 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ZonePointDto {
     @ApiProperty()
-    latitude: number;
+    latitude!: number;
 
     @ApiProperty()
-    longitude: number;
+    longitude!: number;
 
     @ApiProperty()
-    ordre: number;
+    ordre!: number;
 }
 
 export class ZoneDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nomZone: string;
+    nomZone!: string;
 
     @ApiProperty()
-    isActive: boolean;
+    isActive!: boolean;
 
     @ApiProperty()
-    dateCreation: Date;
+    dateCreation!: Date;
 
     @ApiProperty({ type: () => [ZonePointDto] })
-    points: ZonePointDto[];
+    points!: ZonePointDto[];
 }

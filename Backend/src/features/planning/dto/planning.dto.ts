@@ -2,143 +2,143 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ModelePlanificationDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    technicienId: string;
+    technicienId!: string;
 
     @ApiProperty()
-    zoneId: string;
+    zoneId!: string;
 
     @ApiProperty({
         description:
             '0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche',
     })
-    jourSemaine: number;
+    jourSemaine!: number;
 
     @ApiProperty({
         description: 'Minutes depuis minuit : 510 = 8h30, 1020 = 17h00',
     })
-    heureDebut: number;
+    heureDebut!: number;
 
     @ApiProperty()
-    heureFin: number;
+    heureFin!: number;
 
     @ApiProperty()
-    intervalleMinutes: number;
+    intervalleMinutes!: number;
 
     @ApiProperty()
-    isActif: boolean;
+    isActif!: boolean;
 
     @ApiProperty({ description: 'ISO 8601' })
-    dateDebutValidite: string;
+    dateDebutValidite!: string;
 
     @ApiProperty({ nullable: true, type: String, description: 'ISO 8601' })
-    dateFinValidite: string | null;
+    dateFinValidite!: string | null;
 }
 
 export class PauseRecurrenteDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    technicienId: string;
+    technicienId!: string;
 
     @ApiProperty({
         nullable: true,
         type: Number,
         description: 'null = tous les jours, 0=lundi … 6=dimanche',
     })
-    jourSemaine: number | null;
+    jourSemaine!: number | null;
 
     @ApiProperty()
-    heureDebut: number;
+    heureDebut!: number;
 
     @ApiProperty()
-    heureFin: number;
+    heureFin!: number;
 
     @ApiProperty({ nullable: true, type: String })
-    description: string | null;
+    description!: string | null;
 }
 
 export class IndisponibiliteDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    technicienId: string;
+    technicienId!: string;
 
     @ApiProperty({ description: 'ISO 8601' })
-    dateDebut: string;
+    dateDebut!: string;
 
     @ApiProperty({ description: 'ISO 8601' })
-    dateFin: string;
+    dateFin!: string;
 
     @ApiProperty({ nullable: true, type: String })
-    motif: string | null;
+    motif!: string | null;
 }
 
 export class CreneauDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty({ description: 'ISO 8601' })
-    dateDebut: string;
+    dateDebut!: string;
 
     @ApiProperty({
         nullable: true,
         type: String,
         description: 'null à la génération, rempli à la réservation',
     })
-    dateFin: string | null;
+    dateFin!: string | null;
 
     @ApiProperty()
-    isDisponible: boolean;
+    isDisponible!: boolean;
 
     @ApiProperty()
-    zoneId: string;
+    zoneId!: string;
 
     @ApiProperty({ nullable: true, type: String })
-    modelePlanificationId: string | null;
+    modelePlanificationId!: string | null;
 }
 
 export class CreneauDisponibleDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty({ description: 'ISO 8601' })
-    dateDebut: string;
+    dateDebut!: string;
 
     @ApiProperty({
         description: 'ISO 8601 — dateDebut + dureeMinutes du forfait',
     })
-    dateFin: string;
+    dateFin!: string;
 
     @ApiProperty({
         nullable: true,
         type: String,
         description: 'null si créneau sans modèle de planification',
     })
-    technicienId: string | null;
+    technicienId!: string | null;
 
     @ApiProperty()
-    zoneId: string;
+    zoneId!: string;
 }
 
 export class GenerationRapportDto {
     @ApiProperty({ description: 'Créneaux nouvellement insérés' })
-    created: number;
+    created!: number;
 
     @ApiProperty({
         description: 'Slots sautés (pause, indisponibilité, doublon)',
     })
-    skipped: number;
+    skipped!: number;
 
     @ApiProperty({
         description:
             'Créneaux isDisponible=false dans la période (déjà réservés)',
     })
-    conflicts: number;
+    conflicts!: number;
 }
 
 // ── Types internes — jamais exposés directement via l'API ─────────────────────

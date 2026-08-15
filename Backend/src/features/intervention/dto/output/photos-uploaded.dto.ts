@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PhotosUploadedDto {
     @ApiProperty()
-    count: number;
+    count!: number;
 
     @ApiProperty({ type: [String] })
-    urls: string[];
+    urls!: string[];
 }

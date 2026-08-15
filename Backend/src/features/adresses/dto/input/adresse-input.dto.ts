@@ -6,26 +6,26 @@ export class CreateAdresseDto {
     numero?: string;
 
     @IsString()
-    rue: string;
+    rue!: string;
 
     @IsString()
-    codePostal: string;
+    codePostal!: string;
 
     @IsString()
-    ville: string;
+    ville!: string;
 
     @IsOptional()
     @IsString()
     pays?: string;
 
     @IsNumber()
-    latitude: number;
+    latitude!: number;
 
     @IsNumber()
-    longitude: number;
+    longitude!: number;
 
     @IsString()
-    googlePlaceId: string;
+    googlePlaceId!: string;
 
     @IsOptional()
     @IsString()

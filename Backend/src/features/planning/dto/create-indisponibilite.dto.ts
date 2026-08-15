@@ -8,13 +8,13 @@ import {
 export class CreateIndisponibiliteDto {
     @IsString()
     @IsNotEmpty()
-    technicienId: string;
+    technicienId!: string;
 
     @IsDateString()
-    dateDebut: string;
+    dateDebut!: string;
 
     @IsDateString()
-    dateFin: string;
+    dateFin!: string;
 
     @IsOptional()
     @IsString()

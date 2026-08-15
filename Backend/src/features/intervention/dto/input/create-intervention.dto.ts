@@ -10,7 +10,7 @@ import { Type } from 'class-transformer';
 
 class AdresseBookingDto {
     @IsIn(['saved', 'autocomplete'])
-    source: 'saved' | 'autocomplete';
+    source!: 'saved' | 'autocomplete';
 
     // Champs source === 'saved'
     @IsOptional()
@@ -30,7 +30,7 @@ class AdresseBookingDto {
 
 class CycleBookingDto {
     @IsIn(['existing', 'new'])
-    source: 'existing' | 'new';
+    source!: 'existing' | 'new';
 
     @IsOptional() @IsUUID() cycleId?: string;
     @IsOptional() @IsUUID() typeCycleId?: string;
@@ -40,17 +40,17 @@ class CycleBookingDto {
 export class CreateInterventionDto {
     @ValidateNested()
     @Type(() => AdresseBookingDto)
-    adresse: AdresseBookingDto;
+    adresse!: AdresseBookingDto;
 
     @ValidateNested()
     @Type(() => CycleBookingDto)
-    cycle: CycleBookingDto;
+    cycle!: CycleBookingDto;
 
     @IsUUID()
-    forfaitId: string;
+    forfaitId!: string;
 
     @IsUUID()
-    creneauId: string;
+    creneauId!: string;
 
     @IsOptional()
     @IsString()

@@ -2,7 +2,7 @@ import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateForfaitDto {
     @IsString()
-    nom: string;
+    nom!: string;
 
     @IsOptional()
     @IsString()
@@ -10,7 +10,7 @@ export class CreateForfaitDto {
 
     @IsInt()
     @Min(15)
-    dureeMinutes: number;
+    dureeMinutes!: number;
 
     @IsOptional()
     @IsBoolean()

@@ -4,17 +4,17 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CheckZoneDto {
     @IsNumber()
     @IsNotEmpty()
-    latitude: number;
+    latitude!: number;
 
     @IsNumber()
     @IsNotEmpty()
-    longitude: number;
+    longitude!: number;
 }
 
 export class CheckZoneResultDto {
     @ApiProperty()
-    zoneId: string;
+    zoneId!: string;
 
     @ApiProperty()
-    nomZone: string;
+    nomZone!: string;
 }

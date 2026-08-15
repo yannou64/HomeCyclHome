@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TypeCycleDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    libelle: string;
+    libelle!: string;
 }

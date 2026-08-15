@@ -12,24 +12,24 @@ import {
 
 export class ZonePointInputDto {
     @IsNumber()
-    latitude: number;
+    latitude!: number;
 
     @IsNumber()
-    longitude: number;
+    longitude!: number;
 
     @IsInt()
     @Min(0)
-    ordre: number;
+    ordre!: number;
 }
 
 export class CreateZoneDto {
     @IsString()
     @IsNotEmpty()
-    nomZone: string;
+    nomZone!: string;
 
     @IsArray()
     @ArrayMinSize(3)
     @ValidateNested({ each: true })
     @Type(() => ZonePointInputDto)
-    points: ZonePointInputDto[];
+    points!: ZonePointInputDto[];
 }

@@ -9,20 +9,20 @@ import {
 export class RegisterDto {
     @IsString()
     @IsNotEmpty()
-    nom: string;
+    nom!: string;
 
     @IsString()
     @IsNotEmpty()
-    prenom: string;
+    prenom!: string;
 
     @IsEmail()
-    email: string;
+    email!: string;
 
     @IsString()
     @MinLength(8)
-    password: string;
+    password!: string;
 
     @IsString()
     @Matches(/^(\+33|0)[1-9](\d{2}){4}$/)
-    telephone: string;
+    telephone!: string;
 }

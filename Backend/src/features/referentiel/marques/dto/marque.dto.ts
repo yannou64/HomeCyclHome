@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class MarqueDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    libelle: string;
+    libelle!: string;
 }

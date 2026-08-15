@@ -3,79 +3,79 @@ import { AdminInterventionListItemDto } from './admin-intervention-list-item.dto
 
 class ClientSnapshotDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    prenom: string;
+    prenom!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 
     @ApiProperty()
-    email: string;
+    email!: string;
 
     @ApiProperty()
-    telephone: string;
+    telephone!: string;
 }
 
 class AdresseSnapshotDto {
     @ApiProperty({ nullable: true, type: String })
-    numero: string | null;
+    numero!: string | null;
 
     @ApiProperty()
-    rue: string;
+    rue!: string;
 
     @ApiProperty()
-    codePostal: string;
+    codePostal!: string;
 
     @ApiProperty()
-    ville: string;
+    ville!: string;
 }
 
 class CycleSnapshotDto {
     @ApiProperty()
-    libelle: string;
+    libelle!: string;
 
     @ApiProperty()
-    marque: string;
+    marque!: string;
 
     @ApiProperty()
-    type: string;
+    type!: string;
 }
 
 class PhotoDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    urlS3: string;
+    urlS3!: string;
 }
 
 export class AdminInterventionDetailDto extends AdminInterventionListItemDto {
     @ApiProperty()
-    dateCreation: string;
+    dateCreation!: string;
 
     @ApiProperty({ nullable: true, type: String })
-    dateFin: string | null;
+    dateFin!: string | null;
 
     @ApiProperty()
-    dureeMinutesSnapshot: number;
+    dureeMinutesSnapshot!: number;
 
     @ApiProperty({ nullable: true, type: String })
-    commentaire: string | null;
+    commentaire!: string | null;
 
     @ApiProperty({ type: () => ClientSnapshotDto })
-    client: ClientSnapshotDto;
+    client!: ClientSnapshotDto;
 
     @ApiProperty({ type: () => AdresseSnapshotDto })
-    adresse: AdresseSnapshotDto;
+    adresse!: AdresseSnapshotDto;
 
     @ApiProperty({ type: () => CycleSnapshotDto })
-    cycle: CycleSnapshotDto;
+    cycle!: CycleSnapshotDto;
 
     @ApiProperty({ type: () => [PhotoDto] })
-    photosClient: PhotoDto[];
+    photosClient!: PhotoDto[];
 
     @ApiProperty({ type: () => [PhotoDto] })
-    photosTechnicien: PhotoDto[];
+    photosTechnicien!: PhotoDto[];
 }
