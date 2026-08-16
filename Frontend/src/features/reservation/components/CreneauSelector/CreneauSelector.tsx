@@ -51,22 +51,11 @@ export function CreneauSelector() {
     const [currentDate, setCurrentDate] = useState(today);
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
-    // Durée d'un slot individuel = espacement minimum entre créneaux consécutifs.
-    // On prend le minimum (et non les deux premiers) car la liste peut contenir des trous
-    // (créneaux réservés, pauses) qui fausseraient le calcul si on se basait uniquement
-    // sur creneaux[0] et creneaux[1].
-    const slotDurationMs =
-        creneaux.length >= 2
-            ? Math.min(
-                  ...creneaux
-                      .slice(0, -1)
-                      .map(
-                          (c, i) =>
-                              new Date(creneaux[i + 1].dateDebut).getTime() -
-                              new Date(c.dateDebut).getTime(),
-                      ),
-              )
-            : 30 * 60 * 1000;
+    // Durée d'un slot de la grille, fournie par l'API. Elle ne peut plus être
+    // déduite des écarts entre créneaux consécutifs : la liste peut mêler
+    // plusieurs techniciens, deux entrées voisines n'ont donc pas forcément de
+    // rapport temporel entre elles.
+    const slotDurationMs = (creneaux[0]?.intervalleMinutes ?? 30) * 60 * 1000;
 
     const navigate = (direction: 'prev' | 'next') => {
         calendarRef.current?.getApi()[direction === 'prev' ? 'prev' : 'next']();
@@ -103,25 +92,17 @@ export function CreneauSelector() {
             dateDebut: creneau.dateDebut,
             dateFin: creneau.dateFin,
             technicienId: creneau.technicienId,
+            technicienPrenom: creneau.technicienPrenom,
         };
 
         setCreneau(creneauInfo);
         goToStep(isAuthenticated ? 'confirmation' : 'auth');
     };
 
-    // Filtre défensif : exclut les créneaux dont date_fin déborde dans un gap (ex: pause déjeuner).
-    // Le backend devrait déjà garantir cela, mais ce filtre évite toute incohérence visuelle.
-    const creneauxValides = creneaux.filter((c) => {
-        const dateFin = new Date(c.dateFin).getTime();
-        const slotsAvantFin = creneaux.filter(
-            (s) => new Date(s.dateDebut).getTime() < dateFin,
-        );
-        const dernierSlot = slotsAvantFin[slotsAvantFin.length - 1];
-        if (!dernierSlot) return false;
-        return new Date(dernierSlot.dateDebut).getTime() >= dateFin - slotDurationMs;
-    });
-
-    const events = creneauxValides.map((c) => {
+    // Aucun filtrage métier ici : le backend ne renvoie que des créneaux
+    // réellement réservables (buffers de déplacement et couverture du forfait
+    // vérifiés par la règle de domaine).
+    const events = creneaux.map((c) => {
         const isSelected = c.id === selectedId;
         return {
             id: c.id,
@@ -129,7 +110,11 @@ export function CreneauSelector() {
             end: isSelected
                 ? c.dateFin
                 : new Date(new Date(c.dateDebut).getTime() + slotDurationMs).toISOString(),
-            extendedProps: { dateFin: c.dateFin, isSelected },
+            extendedProps: {
+                dateFin: c.dateFin,
+                isSelected,
+                technicienPrenom: c.technicienPrenom,
+            },
             backgroundColor: isSelected ? '#f26419' : '#d6f6dd',
             borderColor: isSelected ? '#f26419' : '#d6f6dd',
             textColor: isSelected ? '#ffffff' : '#4f3b30',
@@ -140,8 +125,8 @@ export function CreneauSelector() {
     if (error) return <p className={styles.errorText}>{error}</p>;
 
     const firstAvailableDate =
-        creneauxValides.length > 0
-            ? toLocalDateString(new Date(creneauxValides[0].dateDebut))
+        creneaux.length > 0
+            ? toLocalDateString(new Date(creneaux[0].dateDebut))
             : today;
 
     return (
@@ -214,13 +199,35 @@ export function CreneauSelector() {
                         }}
                         eventContent={(arg) => {
                             const isSelected = arg.event.extendedProps['isSelected'] as boolean;
-                            if (!isSelected) return <div />;
+                            const technicienPrenom = arg.event.extendedProps[
+                                'technicienPrenom'
+                            ] as string | null;
+
+                            // Bloc non sélectionné : hauteur d'un seul slot, on se
+                            // limite au prénom du technicien.
+                            if (!isSelected) {
+                                return (
+                                    <div className={styles.eventContent}>
+                                        {technicienPrenom && (
+                                            <span className={styles.eventTechnicien}>
+                                                {technicienPrenom}
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            }
+
                             const dateFin = arg.event.extendedProps['dateFin'] as string;
                             return (
                                 <div className={styles.eventContent}>
                                     <span className={styles.eventTime}>
                                         {formatTime(arg.event.startStr)} → {formatTime(dateFin)}
                                     </span>
+                                    {technicienPrenom && (
+                                        <span className={styles.eventTechnicien}>
+                                            avec {technicienPrenom}
+                                        </span>
+                                    )}
                                 </div>
                             );
                         }}

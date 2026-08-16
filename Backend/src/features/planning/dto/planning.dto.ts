@@ -121,6 +121,20 @@ export class CreneauDisponibleDto {
     })
     technicienId!: string | null;
 
+    @ApiProperty({
+        nullable: true,
+        type: String,
+        description:
+            'Prénom du technicien affecté — affiché dans le calendrier',
+    })
+    technicienPrenom!: string | null;
+
+    @ApiProperty({
+        description:
+            'Durée d’un slot de la grille, en minutes — utilisée par le calendrier client',
+    })
+    intervalleMinutes!: number;
+
     @ApiProperty()
     zoneId!: string;
 }
@@ -170,9 +184,11 @@ export type CreateIndisponibiliteData = {
     motif?: string;
 };
 
-// Étend CreneauDto avec technicienId résolu depuis la relation modele_planification
+// Étend CreneauDto avec le technicien résolu depuis la relation modele_planification.
+// intervalleMinutes vaut Infinity pour un créneau manuel (sans modèle).
 export type CreneauAvecTechnicienDto = CreneauDto & {
     technicienId: string | null;
+    technicienPrenom: string | null;
     intervalleMinutes: number;
 };
 

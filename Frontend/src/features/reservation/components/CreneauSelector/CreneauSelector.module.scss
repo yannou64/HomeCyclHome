@@ -165,10 +165,11 @@
     }
 }
 
-// Contenu du créneau sélectionné
+// Contenu d'un bloc de créneau — empilé pour loger l'horaire et le technicien
 .eventContent {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     height: 100%;
     padding: 0 6px;
     overflow: hidden;
@@ -178,6 +179,16 @@
     font-size: 0.75rem;
     font-weight: $font-semibold;
     white-space: nowrap;
+}
+
+// Prénom du technicien — la place est comptée sur un bloc non sélectionné
+// (un seul slot de haut), d'où la troncature plutôt que le retour à la ligne.
+.eventTechnicien {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .actions {

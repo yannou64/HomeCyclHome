@@ -9,6 +9,7 @@ import {
 } from './create-intervention.use-case';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
+import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
 import type { EmailService } from '../../email/email.service';
 
 // ─── Factories ────────────────────────────────────────────────────────────────
@@ -22,6 +23,31 @@ const makeInput = (
     creneauId: 'cre-1',
     ...overrides,
 });
+
+const makeSlot = (
+    heure: string,
+    id: string,
+    disponible = true,
+): CreneauAvecTechnicienDto => ({
+    id,
+    dateDebut: `2026-06-01T${heure}:00.000Z`,
+    dateFin: null,
+    isDisponible: disponible,
+    zoneId: 'zone-1',
+    modelePlanificationId: 'modele-1',
+    technicienId: 'tech-1',
+    technicienPrenom: 'Marc',
+    intervalleMinutes: 30,
+});
+
+// Journée où `cre-1` (08:30) est réservable pour un forfait de 60 min :
+// buffer aller 08:00 · intervention 08:30 + 09:00 · buffer retour 09:30
+const journeeReservable = (): CreneauAvecTechnicienDto[] => [
+    makeSlot('08:00', 'cre-0'),
+    makeSlot('08:30', 'cre-1'),
+    makeSlot('09:00', 'cre-2'),
+    makeSlot('09:30', 'cre-3'),
+];
 
 const makeInterventionCreated = (
     overrides: Partial<InterventionCreatedDto> = {},
@@ -46,6 +72,9 @@ describe('CreateInterventionUseCase', () => {
             upsertAdresse: jest.fn(),
             getPrixActuelForfait: jest.fn(),
             getTechnicienFromCreneau: jest.fn(),
+            findCreneauxDuJour: jest
+                .fn()
+                .mockResolvedValue(journeeReservable()),
             getForfaitDuree: jest.fn(),
             createInterventionTransaction: jest.fn(),
             findClientById: jest.fn(),
@@ -117,6 +146,68 @@ describe('CreateInterventionUseCase', () => {
             ConflictException,
         );
         // Aucune transaction ne doit être tentée
+        expect(mockRepo.createInterventionTransaction).not.toHaveBeenCalled();
+    });
+
+    // ── Règle de réservabilité rejouée à l'écriture ──────────────────────────
+
+    it('devrait refuser un créneau dont un slot couvert est déjà pris', async () => {
+        // Scénario de double réservation : un autre client a posé une intervention
+        // sur 09:00. Le créneau 08:30 reste libre, donc isCreneauDisponible passe —
+        // mais un forfait de 60 min y déborderait sur un slot occupé.
+        const input = makeInput();
+
+        mockRepo.isCreneauDisponible.mockResolvedValue(true);
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
+        mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
+        mockRepo.getForfaitDuree.mockResolvedValue(60);
+        mockRepo.findCreneauxDuJour.mockResolvedValue([
+            makeSlot('08:00', 'cre-0'),
+            makeSlot('08:30', 'cre-1'),
+            makeSlot('09:00', 'cre-2', false),
+            makeSlot('09:30', 'cre-3'),
+        ]);
+
+        await expect(useCase.execute('user-1', input)).rejects.toThrow(
+            ConflictException,
+        );
+        expect(mockRepo.createInterventionTransaction).not.toHaveBeenCalled();
+    });
+
+    it('devrait refuser le premier créneau de la journée — pas de buffer aller', async () => {
+        const input = makeInput({ creneauId: 'cre-0' });
+
+        mockRepo.isCreneauDisponible.mockResolvedValue(true);
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
+        mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
+        mockRepo.getForfaitDuree.mockResolvedValue(30);
+
+        await expect(useCase.execute('user-1', input)).rejects.toThrow(
+            ConflictException,
+        );
+        expect(mockRepo.createInterventionTransaction).not.toHaveBeenCalled();
+    });
+
+    it('devrait refuser un créneau introuvable dans la journée', async () => {
+        const input = makeInput({ creneauId: 'cre-inconnu' });
+
+        mockRepo.isCreneauDisponible.mockResolvedValue(true);
+        mockRepo.getPrixActuelForfait.mockResolvedValue({
+            id: 'prix-1',
+            montant: 49.9,
+        });
+        mockRepo.getTechnicienFromCreneau.mockResolvedValue('tech-1');
+        mockRepo.getForfaitDuree.mockResolvedValue(60);
+
+        await expect(useCase.execute('user-1', input)).rejects.toThrow(
+            ConflictException,
+        );
         expect(mockRepo.createInterventionTransaction).not.toHaveBeenCalled();
     });
 

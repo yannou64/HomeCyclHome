@@ -5,28 +5,80 @@ import { GetCreneauxDisponiblesUseCase } from './get-creneaux-disponibles.use-ca
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-// Crée un créneau de test à une heure donnée (ex: '09:00') le 2026-06-01
+type Technicien = { id: string; prenom: string; modeleId: string };
+
+const MARC: Technicien = {
+    id: 'tech-a',
+    prenom: 'Marc',
+    modeleId: 'modele-a',
+};
+const JULIE: Technicien = {
+    id: 'tech-b',
+    prenom: 'Julie',
+    modeleId: 'modele-b',
+};
+
+// Un slot de grille. L'heure est en UTC ; en juin, Paris est à UTC+2, donc
+// 06:00Z correspond à 08:00 locales — sans importance pour ces tests, tout se
+// joue le même jour calendaire.
 function makeCreneau(
     heure: string,
-    disponible = true,
-    id?: string,
-    intervalleMinutes = 60,
+    options: {
+        technicien?: Technicien;
+        disponible?: boolean;
+        jour?: string;
+    } = {},
 ): CreneauAvecTechnicienDto {
+    const {
+        technicien = MARC,
+        disponible = true,
+        jour = '2026-06-01',
+    } = options;
+
     return {
-        id: id ?? `creneau-${heure}`,
-        dateDebut: `2026-06-01T${heure}:00.000Z`,
+        id: `${technicien.id}-${jour}-${heure}`,
+        dateDebut: `${jour}T${heure}:00.000Z`,
         dateFin: null,
         isDisponible: disponible,
         zoneId: 'zone-uuid',
-        modelePlanificationId: 'modele-uuid',
-        technicienId: 'tech-uuid',
-        intervalleMinutes,
+        modelePlanificationId: technicien.modeleId,
+        technicienId: technicien.id,
+        technicienPrenom: technicien.prenom,
+        intervalleMinutes: 30,
     };
 }
 
-function buildMockRepo(
-    overrides: Partial<jest.Mocked<IPlanningRepository>> = {},
-): jest.Mocked<IPlanningRepository> {
+// Journée d'un technicien : 08:00 → 10:30, six slots de 30 minutes.
+function journee(
+    technicien: Technicien,
+    options: { reserves?: string[]; jour?: string } = {},
+): CreneauAvecTechnicienDto[] {
+    const { reserves = [], jour } = options;
+    return ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30'].map((heure) =>
+        makeCreneau(heure, {
+            technicien,
+            disponible: !reserves.includes(heure),
+            jour,
+        }),
+    );
+}
+
+// Le repository renvoie tous les créneaux de la zone triés par date, techniciens
+// mélangés — c'est exactement ce que le use case doit savoir démêler.
+function trierCommeLeRepo(
+    creneaux: CreneauAvecTechnicienDto[],
+): CreneauAvecTechnicienDto[] {
+    return [...creneaux].sort((a, b) => {
+        if (a.dateDebut !== b.dateDebut) {
+            return a.dateDebut < b.dateDebut ? -1 : 1;
+        }
+        return (a.modelePlanificationId ?? '').localeCompare(
+            b.modelePlanificationId ?? '',
+        );
+    });
+}
+
+function buildMockRepo(): jest.Mocked<IPlanningRepository> {
     return {
         findModelesByTechnicien: jest.fn(),
         findModeleById: jest.fn(),
@@ -52,7 +104,6 @@ function buildMockRepo(
         findCreneauxByZone: jest.fn().mockResolvedValue([]),
         deleteCreneau: jest.fn(),
         deleteCreneauxDisponibles: jest.fn(),
-        ...overrides,
     };
 }
 
@@ -67,154 +118,146 @@ describe('GetCreneauxDisponiblesUseCase', () => {
         useCase = new GetCreneauxDisponiblesUseCase(mockRepo);
     });
 
-    // ── Happy path ────────────────────────────────────────────────────────────
-
-    it('devrait retourner les créneaux proposables quand buffers et durée respectés', async () => {
-        // Séquence : [08:00 dispo] [09:00 dispo] [09:30 dispo] [10:00 dispo]
-        // Forfait 30 min → 1 slot : buffer[08:00] + intervention[09:00] + buffer[09:30] ✓
-        // Forfait 30 min → 1 slot : buffer[09:00] + intervention[09:30] + buffer[10:00] ✓
-        const creneaux = [
-            makeCreneau('08:00'),
-            makeCreneau('09:00'),
-            makeCreneau('09:30'),
-            makeCreneau('10:00'),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
-
-        const result = await useCase.execute({
+    const executer = (dureeMinutes = 30) =>
+        useCase.execute({
             zoneId: 'zone-uuid',
-            dureeMinutes: 30,
+            dureeMinutes,
             dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
+            dateFin: '2026-06-02',
         });
 
-        expect(result).toHaveLength(2);
-        expect(result[0].id).toBe('creneau-09:00');
-        expect(result[1].id).toBe('creneau-09:30');
-    });
+    // ── Cas simples ───────────────────────────────────────────────────────────
 
-    it('devrait calculer date_fin en ajoutant dureeMinutes à date_debut', async () => {
-        const creneaux = [
-            makeCreneau('08:00'),
-            makeCreneau('09:00'),
-            makeCreneau('10:00'),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
-
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 60,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
-        });
-
-        // dateFin = 09:00 + 60min = 10:00
-        expect(result).toHaveLength(1);
-        expect(result[0].dateFin).toBe('2026-06-01T10:00:00.000Z');
-    });
-
-    it('devrait retourner un tableau vide si aucun créneau dans la zone', async () => {
+    it('retourne un tableau vide si la zone ne contient aucun créneau', async () => {
         mockRepo.findCreneauxByZone.mockResolvedValue([]);
 
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 60,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
-        });
-
-        expect(result).toEqual([]);
+        expect(await executer()).toEqual([]);
     });
 
-    // ── Règles buffer ─────────────────────────────────────────────────────────
+    it('propose toute la journée sauf le premier créneau', async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(journee(MARC));
 
-    it('devrait exclure un créneau quand le buffer avant est réservé', async () => {
-        // [08:00 RÉSERVÉ] [09:00 dispo] [10:00 dispo]
-        // → pas de buffer avant pour 09:00
-        const creneaux = [
-            makeCreneau('08:00', false),
-            makeCreneau('09:00'),
-            makeCreneau('10:00'),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
+        const result = await executer(30);
 
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 60,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
-        });
-
-        expect(result).toHaveLength(0);
+        // 08:00 est écarté : aucun buffer aller possible en début de journée.
+        // 10:30 est proposé : dernier de la journée, le buffer retour n'est pas exigé.
+        expect(result.map((c) => c.dateDebut)).toEqual([
+            '2026-06-01T08:30:00.000Z',
+            '2026-06-01T09:00:00.000Z',
+            '2026-06-01T09:30:00.000Z',
+            '2026-06-01T10:00:00.000Z',
+            '2026-06-01T10:30:00.000Z',
+        ]);
     });
 
-    it('devrait exclure un créneau quand le buffer après est réservé', async () => {
-        // [08:00 dispo] [09:00 dispo] [10:00 RÉSERVÉ]
-        // → pas de buffer après pour 09:00
-        const creneaux = [
-            makeCreneau('08:00'),
-            makeCreneau('09:00'),
-            makeCreneau('10:00', false),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
+    it('calcule dateFin en ajoutant la durée du forfait', async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(journee(MARC));
 
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 60,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
-        });
+        const result = await executer(60);
 
-        expect(result).toHaveLength(0);
+        expect(result[0].dateDebut).toBe('2026-06-01T08:30:00.000Z');
+        expect(result[0].dateFin).toBe('2026-06-01T09:30:00.000Z');
     });
 
-    it('devrait exclure un créneau quand un slot intermédiaire est réservé', async () => {
-        // [08:00 dispo] [09:00 dispo] [09:30 RÉSERVÉ] [10:00 dispo]
-        // Forfait 60min → slots 09:00 + 09:30 : 09:30 est réservé → exclu
-        const creneaux = [
-            makeCreneau('08:00'),
-            makeCreneau('09:00'),
-            makeCreneau('09:30', false),
-            makeCreneau('10:00'),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
+    it('expose le prénom du technicien et la durée du slot', async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(journee(MARC));
 
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 60,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
-        });
+        const result = await executer(30);
 
-        expect(result).toHaveLength(0);
+        expect(result[0].technicienPrenom).toBe('Marc');
+        expect(result[0].technicienId).toBe('tech-a');
+        expect(result[0].intervalleMinutes).toBe(30);
     });
 
-    it('devrait exclure un créneau dont le buffer avant est séparé par un trou (pause)', async () => {
-        // Pause 12h-14h → [11:00, 11:30, 14:00, 14:30] (trou de 2h30 entre 11:30 et 14:00)
-        // 14:00 ne doit PAS être proposé : le buffer avant (11:30) n'est pas contigu
-        // 11:30 DOIT être proposé : buffer avant=11:00 (30 min ≤ 30 min ✓), buffer après=14:00 (disponible ✓)
-        const creneaux = [
-            makeCreneau('11:00', true, undefined, 30),
-            makeCreneau('11:30', true, undefined, 30),
-            makeCreneau('14:00', true, undefined, 30),
-            makeCreneau('14:30', true, undefined, 30),
-        ];
-        mockRepo.findCreneauxByZone.mockResolvedValue(creneaux);
+    // ── Découpage par journée ─────────────────────────────────────────────────
 
-        const result = await useCase.execute({
-            zoneId: 'zone-uuid',
-            dureeMinutes: 30,
-            dateDebut: '2026-06-01',
-            dateFin: '2026-06-01',
+    it('exclut le premier créneau de chaque journée', async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(
+            trierCommeLeRepo([
+                ...journee(MARC, { jour: '2026-06-01' }),
+                ...journee(MARC, { jour: '2026-06-02' }),
+            ]),
+        );
+
+        const result = await executer(30);
+        const proposes = result.map((c) => c.dateDebut);
+
+        expect(proposes).not.toContain('2026-06-01T08:00:00.000Z');
+        expect(proposes).not.toContain('2026-06-02T08:00:00.000Z');
+        expect(proposes).toContain('2026-06-02T08:30:00.000Z');
+        expect(proposes).toHaveLength(10);
+    });
+
+    // ── Zone couverte par plusieurs techniciens ───────────────────────────────
+
+    it('ne propose qu’un créneau par horaire quand deux techniciens sont libres', async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(
+            trierCommeLeRepo([...journee(MARC), ...journee(JULIE)]),
+        );
+
+        const result = await executer(30);
+
+        expect(result).toHaveLength(5);
+        // tech-a passe avant tech-b dans l'ordre déterministe
+        expect(result.every((c) => c.technicienPrenom === 'Marc')).toBe(true);
+    });
+
+    it("bascule sur l'autre technicien là où le premier est indisponible", async () => {
+        // Marc a un rendez-vous à 09:00. Cela lui coûte 08:30 (plus de buffer
+        // retour) et 09:30 (plus de buffer aller) — mais ne doit rien retirer à Julie.
+        mockRepo.findCreneauxByZone.mockResolvedValue(
+            trierCommeLeRepo([
+                ...journee(MARC, { reserves: ['09:00'] }),
+                ...journee(JULIE),
+            ]),
+        );
+
+        const result = await executer(30);
+        const parHoraire = Object.fromEntries(
+            result.map((c) => [c.dateDebut.slice(11, 16), c.technicienPrenom]),
+        );
+
+        expect(parHoraire).toEqual({
+            '08:30': 'Julie',
+            '09:00': 'Julie',
+            '09:30': 'Julie',
+            '10:00': 'Marc',
+            '10:30': 'Marc',
         });
+    });
 
-        expect(result).toHaveLength(1);
-        expect(result[0].id).toBe('creneau-11:30');
+    it("n'invente pas de créneau quand tous les techniciens sont occupés", async () => {
+        mockRepo.findCreneauxByZone.mockResolvedValue(
+            trierCommeLeRepo([
+                ...journee(MARC, {
+                    reserves: [
+                        '08:00',
+                        '08:30',
+                        '09:00',
+                        '09:30',
+                        '10:00',
+                        '10:30',
+                    ],
+                }),
+                ...journee(JULIE, {
+                    reserves: [
+                        '08:00',
+                        '08:30',
+                        '09:00',
+                        '09:30',
+                        '10:00',
+                        '10:30',
+                    ],
+                }),
+            ]),
+        );
+
+        expect(await executer(30)).toEqual([]);
     });
 
     // ── Validations ───────────────────────────────────────────────────────────
 
-    it('devrait lever BadRequestException si zoneId est vide', async () => {
+    it('lève BadRequestException si zoneId est vide', async () => {
         await expect(
             useCase.execute({
                 zoneId: '',
@@ -225,7 +268,7 @@ describe('GetCreneauxDisponiblesUseCase', () => {
         ).rejects.toThrow(BadRequestException);
     });
 
-    it('devrait lever BadRequestException si dureeMinutes est inférieur ou égal à zéro', async () => {
+    it('lève BadRequestException si dureeMinutes est nul ou négatif', async () => {
         await expect(
             useCase.execute({
                 zoneId: 'zone-uuid',

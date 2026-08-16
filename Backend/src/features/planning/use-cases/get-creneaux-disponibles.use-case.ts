@@ -1,5 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreneauDisponibleDto } from '../dto/planning.dto';
+import { estCreneauReservable } from '../domain/creneau-reservable';
+import { jourTravail } from '../domain/jour-travail';
+import {
+    CreneauAvecTechnicienDto,
+    CreneauDisponibleDto,
+} from '../dto/planning.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GetCreneauxDisponiblesInput = {
@@ -36,64 +41,95 @@ export class GetCreneauxDisponiblesUseCase {
             fin,
         );
 
-        const results: CreneauDisponibleDto[] = [];
-        const dureeMs = input.dureeMinutes * 60 * 1000;
+        // 1. Partition — la règle de buffer raisonne sur les voisins immédiats d'un
+        //    créneau. Ces voisins n'ont de sens que pour un même technicien sur une
+        //    même journée : une zone couverte par deux techniciens produit sinon des
+        //    slots entrelacés et des voisinages faux.
+        const groupes = this.grouperParTechnicienEtJour(creneaux);
 
-        for (let i = 0; i < creneaux.length; i++) {
-            const creneau = creneaux[i];
-
-            if (!creneau.isDisponible) continue;
-
-            // Buffer avant : le slot précédent doit exister, être disponible ET adjacent
-            // Un gap > intervalleMinutes = trou causé par une pause → pas de buffer de déplacement
-            if (i === 0) continue;
-            const prevCreneau = creneaux[i - 1];
-            if (!prevCreneau.isDisponible) continue;
-            const ecartMs =
-                new Date(creneau.dateDebut).getTime() -
-                new Date(prevCreneau.dateDebut).getTime();
-            if (ecartMs > creneau.intervalleMinutes * 60 * 1000) continue;
-
-            const dateDebutIntervention = new Date(creneau.dateDebut);
-            const dateFinIntervention = new Date(
-                dateDebutIntervention.getTime() + dureeMs,
-            );
-
-            // Vérifier que tous les slots couverts par la durée du forfait sont disponibles
-            // Un slot j est couvert si son dateDebut est dans [dateDebut, dateFinIntervention)
-            let dernierSlotIdx = i;
-            let slotIntermediaireReserve = false;
-
-            for (let j = i; j < creneaux.length; j++) {
-                const slotDebut = new Date(creneaux[j].dateDebut);
-                if (slotDebut >= dateFinIntervention) break;
-                if (!creneaux[j].isDisponible) {
-                    slotIntermediaireReserve = true;
-                    break;
+        // 2. Application de la règle métier, indépendamment sur chaque groupe
+        const proposables: CreneauDisponibleDto[] = [];
+        for (const groupe of groupes.values()) {
+            for (let i = 0; i < groupe.length; i++) {
+                if (!estCreneauReservable(groupe, i, input.dureeMinutes)) {
+                    continue;
                 }
-                dernierSlotIdx = j;
+                proposables.push(this.toDto(groupe[i], input.dureeMinutes));
             }
-
-            if (slotIntermediaireReserve) continue;
-
-            // Buffer après : le slot qui suit la fin de l'intervention doit être disponible
-            const bufferApresIdx = dernierSlotIdx + 1;
-            if (
-                bufferApresIdx >= creneaux.length ||
-                !creneaux[bufferApresIdx].isDisponible
-            ) {
-                continue;
-            }
-
-            results.push({
-                id: creneau.id,
-                dateDebut: creneau.dateDebut,
-                dateFin: dateFinIntervention.toISOString(),
-                technicienId: creneau.technicienId,
-                zoneId: creneau.zoneId,
-            });
         }
 
-        return results;
+        // 3. Fusion — un seul créneau par horaire. Quand plusieurs techniciens sont
+        //    libres en même temps, le premier dans l'ordre déterministe l'emporte.
+        return this.dedoublonnerParHoraire(proposables);
+    }
+
+    // ── Helpers privés ────────────────────────────────────────────────────────
+
+    // Clé de groupe : technicien + journée de travail. Les deux dimensions comptent —
+    // un voisin d'index n'est un voisin réel que s'il appartient au même technicien
+    // et à la même journée.
+    private grouperParTechnicienEtJour(
+        creneaux: CreneauAvecTechnicienDto[],
+    ): Map<string, CreneauAvecTechnicienDto[]> {
+        const groupes = new Map<string, CreneauAvecTechnicienDto[]>();
+
+        for (const creneau of creneaux) {
+            const cle = `${creneau.technicienId ?? 'manuel'}|${jourTravail(creneau.dateDebut)}`;
+
+            const groupe = groupes.get(cle);
+            if (groupe) {
+                groupe.push(creneau);
+            } else {
+                groupes.set(cle, [creneau]);
+            }
+        }
+
+        return groupes;
+    }
+
+    // Le tri garantit que « le premier technicien » est stable d'un appel à l'autre.
+    private dedoublonnerParHoraire(
+        proposables: CreneauDisponibleDto[],
+    ): CreneauDisponibleDto[] {
+        const parHoraire = new Map<string, CreneauDisponibleDto>();
+
+        const tries = [...proposables].sort((a, b) => {
+            if (a.dateDebut !== b.dateDebut) {
+                return a.dateDebut < b.dateDebut ? -1 : 1;
+            }
+            return (a.technicienId ?? '').localeCompare(b.technicienId ?? '');
+        });
+
+        for (const creneau of tries) {
+            if (!parHoraire.has(creneau.dateDebut)) {
+                parHoraire.set(creneau.dateDebut, creneau);
+            }
+        }
+
+        return [...parHoraire.values()];
+    }
+
+    private toDto(
+        creneau: CreneauAvecTechnicienDto,
+        dureeMinutes: number,
+    ): CreneauDisponibleDto {
+        const dateFin = new Date(
+            new Date(creneau.dateDebut).getTime() + dureeMinutes * 60 * 1000,
+        );
+
+        return {
+            id: creneau.id,
+            dateDebut: creneau.dateDebut,
+            dateFin: dateFin.toISOString(),
+            technicienId: creneau.technicienId,
+            technicienPrenom: creneau.technicienPrenom,
+            // Un créneau manuel porte intervalleMinutes = Infinity, que JSON.stringify
+            // convertirait en null. On retombe sur la durée du forfait : le client a
+            // besoin d'une valeur finie pour dimensionner le bloc du calendrier.
+            intervalleMinutes: Number.isFinite(creneau.intervalleMinutes)
+                ? creneau.intervalleMinutes
+                : dureeMinutes,
+            zoneId: creneau.zoneId,
+        };
     }
 }

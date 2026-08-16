@@ -1,3 +1,4 @@
+import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
 import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
@@ -61,6 +62,10 @@ export interface IInterventionsRepository {
     upsertAdresse(data: UpsertAdresseInput): Promise<string>;
     getPrixActuelForfait(forfaitId: string): Promise<PrixForfait | null>;
     getTechnicienFromCreneau(creneauId: string): Promise<string | null>;
+    // Tous les slots du même technicien sur la même journée que le créneau donné,
+    // triés par dateDebut. Nécessaire pour rejouer la règle de réservabilité à
+    // l'écriture : elle raisonne sur le voisinage immédiat du créneau.
+    findCreneauxDuJour(creneauId: string): Promise<CreneauAvecTechnicienDto[]>;
     getForfaitDuree(forfaitId: string): Promise<number>;
     createInterventionTransaction(
         data: CreateInterventionData,

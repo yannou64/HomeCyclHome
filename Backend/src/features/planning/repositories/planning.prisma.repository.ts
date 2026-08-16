@@ -308,10 +308,20 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             },
             include: {
                 modele_planification: {
-                    select: { technicien_id: true, intervalle_minutes: true },
+                    select: {
+                        technicien_id: true,
+                        intervalle_minutes: true,
+                        technicien: { select: { prenom: true } },
+                    },
                 },
             },
-            orderBy: { date_debut: 'asc' },
+            // Tri secondaire indispensable : quand deux techniciens couvrent la
+            // même zone au même horaire, il fixe lequel remporte le dédoublonnage.
+            // Sans lui, « le premier technicien » varierait d'un appel à l'autre.
+            orderBy: [
+                { date_debut: 'asc' },
+                { modele_planification_id: 'asc' },
+            ],
         });
         return creneaux.map((c) => this.toCreneauAvecTechnicienDto(c));
     }
@@ -389,12 +399,14 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             modele_planification: {
                 technicien_id: string;
                 intervalle_minutes: number;
+                technicien: { prenom: string };
             } | null;
         },
     ): CreneauAvecTechnicienDto {
         return {
             ...this.toCreneauDto(c),
             technicienId: c.modele_planification?.technicien_id ?? null,
+            technicienPrenom: c.modele_planification?.technicien.prenom ?? null,
             // Infinity pour les créneaux manuels (sans modèle) → pas de restriction de contiguïté
             intervalleMinutes:
                 c.modele_planification?.intervalle_minutes ?? Infinity,

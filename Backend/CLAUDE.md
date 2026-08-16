@@ -79,6 +79,9 @@ features/<nom>/
 ├── <nom>.module.ts
 ├── controllers/
 │   └── <nom>.controller.ts              # HTTP uniquement — délègue aux use cases
+├── domain/                              # Règles métier pures (optionnel)
+│   ├── <regle>.ts                       # Aucun import Nest/Prisma, entrée → sortie
+│   └── <regle>.spec.ts                  # Testable sans mock
 ├── use-cases/
 │   ├── get-<nom>.use-case.ts            # 1 fichier = 1 opération métier
 │   ├── create-<nom>.use-case.ts
@@ -94,6 +97,12 @@ features/<nom>/
 ```
 
 **Référence :** le module `admin` est l'implémentation de référence de ce pattern.
+
+**Quand créer un `domain/` :** uniquement pour une règle métier qui coche les trois
+critères — elle est métier et non technique, elle est partagée par plusieurs use cases
+(elle n'appartient donc à aucun), et elle est pure (aucune dépendance). Sinon, la règle
+reste dans son use case. Exemple en place : `planning/domain/creneau-reservable.ts`,
+appelée par `GetCreneauxDisponibles` (lecture) et `CreateIntervention` (écriture).
 
 ---
 
