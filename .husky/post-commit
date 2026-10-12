@@ -3,7 +3,7 @@
 # Déclenché après chaque git commit
 
 # Vault Obsidian externe — source de vérité, distinct de la copie locale docs/wiki/
-WIKI_DIR="/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home"
+WIKI_DIR="/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home"
 
 # Récupération des informations du commit
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)

@@ -174,7 +174,7 @@ vérité consultée pendant le travail (édition directe par Yannick, et par les
 hook post-commit, skill `/fin-session`) :
 
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home
 ```
 
 `docs/wiki/` dans le repo est une copie périodique (versionnée dans Git) de ce vault,

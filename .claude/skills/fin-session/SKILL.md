@@ -17,7 +17,7 @@ si ce fichier est faux, l'évaluation du sprint le sera aussi.
 **Vault** (source de vérité, toutes les opérations de lecture/écriture ci-dessous s'y
 appliquent, jamais à la copie locale `docs/wiki/` du repo) :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home
 ```
 
 **Règle absolue : tu ne modifies jamais un fichier directement pendant la phase d'audit.** Tu
@@ -83,7 +83,7 @@ Applique uniquement ce qui a été validé.
 
 ## Étape 6 — Mise à jour du sprint
 
-@/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home/05 - prompts/updateSprint.md
+@/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home/05 - prompts/updateSprint.md
 
 Suis les instructions ci-dessus telles quelles, maintenant que `CLAUDE.md`/le wiki de synthèse
 sont fiables.

@@ -3,7 +3,7 @@
 # (source de vérité). Ne commit rien : stage seulement (git add).
 set -e
 
-VAULT="/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home"
+VAULT="/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 rm -rf "$REPO_ROOT/docs/wiki"
