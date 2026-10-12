@@ -123,12 +123,9 @@ export class GetCreneauxDisponiblesUseCase {
             dateFin: dateFin.toISOString(),
             technicienId: creneau.technicienId,
             technicienPrenom: creneau.technicienPrenom,
-            // Un créneau manuel porte intervalleMinutes = Infinity, que JSON.stringify
-            // convertirait en null. On retombe sur la durée du forfait : le client a
-            // besoin d'une valeur finie pour dimensionner le bloc du calendrier.
-            intervalleMinutes: Number.isFinite(creneau.intervalleMinutes)
-                ? creneau.intervalleMinutes
-                : dureeMinutes,
+            // Toujours fini : estCreneauReservable écarte les créneaux détachés de
+            // leur modèle, qui sont les seuls à porter Infinity.
+            intervalleMinutes: creneau.intervalleMinutes,
             zoneId: creneau.zoneId,
         };
     }

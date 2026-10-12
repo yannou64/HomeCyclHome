@@ -1,7 +1,7 @@
 ---
 name: fin-session
 description: Audit incrémental de l'alignement CLAUDE.md/wiki avec le code, propose des corrections, puis met à jour l'état du sprint. À lancer manuellement en fin de session de développement importante.
-allowed-tools: [Read, Grep, Glob, Bash(git:*)]
+allowed-tools: [Read, Grep, Glob, Bash(git:*), Bash(sh scripts/sync-wiki.sh:*)]
 disable-model-invocation: true
 ---
 
@@ -11,8 +11,14 @@ Tu es invoqué manuellement par Yannick en fin de session de développement sur 
 HomeCycl'Home. Ta mission a deux parties, dans cet ordre précis : d'abord vérifier que
 `CLAUDE.md` et le wiki de synthèse sont toujours alignés avec le code réel, puis seulement
 ensuite mettre à jour l'état du sprint — dans cet ordre, parce que la mise à jour du sprint
-évalue l'avancement en se basant sur les règles métier de `docs/wiki/metier.md` : si ce fichier
-est faux, l'évaluation du sprint le sera aussi.
+évalue l'avancement en se basant sur les règles métier de `metier.md` (vault, voir ci-dessous) :
+si ce fichier est faux, l'évaluation du sprint le sera aussi.
+
+**Vault** (source de vérité, toutes les opérations de lecture/écriture ci-dessous s'y
+appliquent, jamais à la copie locale `docs/wiki/` du repo) :
+```
+/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+```
 
 **Règle absolue : tu ne modifies jamais un fichier directement pendant la phase d'audit.** Tu
 listes les écarts trouvés, tu proposes une correction pour chacun, et tu attends la validation
@@ -22,11 +28,12 @@ la même proposition, jamais d'écriture silencieuse.
 
 ## Étape 1 — Lire le marqueur
 
-Lis `docs/wiki/.last-doc-sync`. Il contient un `sha` (dernier commit audité) et une `date`.
+Lis `.last-doc-sync` (à la racine du vault). Il contient un `sha` (dernier commit audité) et une
+`date`.
 
 - S'il n'existe pas, traite-le comme "aucun commit encore audité" : ne tente pas un audit
   complet du projet (ce n'est pas le rôle de ce skill), contente-toi d'examiner les entrées de
-  `docs/wiki/log.md` marquées `⚠️ À vérifier :` sans base de comparaison temporelle, puis crée
+  `log.md` (vault) marquées `⚠️ À vérifier :` sans base de comparaison temporelle, puis crée
   le marqueur à l'étape 7 avec le HEAD courant pour que les prochains runs soient incrémentaux.
 
 ## Étape 2 — Lister les commits depuis le marqueur
@@ -40,7 +47,7 @@ jour du sprint). Ne saute pas pour autant l'examen du marqueur inexistant décri
 
 ## Étape 3 — Examiner les signalements du post-commit
 
-Lis `docs/wiki/log.md`, isole les entrées dont la date est postérieure à celle du marqueur.
+Lis `log.md` (vault), isole les entrées dont la date est postérieure à celle du marqueur.
 Pour chaque entrée contenant une ligne `⚠️ À vérifier :`, vérifie concrètement :
 1. Relis le fichier `CLAUDE.md` (racine, `Frontend/CLAUDE.md` ou `Backend/CLAUDE.md` selon le
    sujet) pour voir l'affirmation exacte mise en cause
@@ -59,7 +66,7 @@ git diff --stat <sha>..HEAD -- '**/package.json'
 ```
 
 - Un dossier de feature ajouté/supprimé/renommé sous `features/` → vérifie s'il existe une
-  fiche correspondante dans `docs/wiki/features/`, sinon propose-en une (même gabarit que les
+  fiche correspondante dans `01 - features/` (vault), sinon propose-en une (même gabarit que les
   fiches existantes : Statut, Description, Fichiers Backend/Frontend, Endpoints, Entités,
   Dépendances, Diagrammes à compléter)
 - Un `package.json` modifié → vérifie si une dépendance ajoutée/retirée contredit une
@@ -76,17 +83,30 @@ Applique uniquement ce qui a été validé.
 
 ## Étape 6 — Mise à jour du sprint
 
-@docs/wiki/prompts/updateSprint.md
+@/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home/05 - prompts/updateSprint.md
 
 Suis les instructions ci-dessus telles quelles, maintenant que `CLAUDE.md`/le wiki de synthèse
 sont fiables.
 
 ## Étape 7 — Mettre à jour le marqueur
 
-Réécris `docs/wiki/.last-doc-sync` avec le SHA du HEAD courant (`git rev-parse HEAD`) et la
-date du jour, au même format que le fichier existant.
+Réécris `.last-doc-sync` (racine du vault) avec le SHA du HEAD courant (`git rev-parse HEAD`) et
+la date du jour, au même format que le fichier existant.
 
-## Étape 8 — Résumer
+## Étape 8 — Resynchroniser la copie locale docs/wiki/
+
+Le vault est maintenant à jour (corrections validées, sprint mis à jour, marqueur réécrit).
+Rafraîchis la copie versionnée dans le repo :
+
+```
+sh scripts/sync-wiki.sh
+```
+
+Ce script supprime `docs/wiki/`, le recopie intégralement depuis le vault, puis stage le
+résultat (`git add docs/wiki`) — il ne commit rien.
+
+## Étape 9 — Résumer
 
 Donne à Yannick un résumé court : ce qui a été corrigé/ajouté dans la doc (ou "rien à signaler"),
-et le nouvel état du sprint produit par l'étape 6.
+le nouvel état du sprint produit par l'étape 6, et confirme que `docs/wiki/` a été resynchronisé
+et stagé.

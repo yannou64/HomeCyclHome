@@ -134,17 +134,19 @@ describe('estCreneauReservable', () => {
         expect(estCreneauReservable(journeeType(), 11, 30)).toBe(true);
     });
 
-    // ── Créneaux manuels ──────────────────────────────────────────────────────
+    // ── Créneaux détachés de leur modèle ──────────────────────────────────────
 
-    it('ne contraint pas la contiguïté des créneaux manuels (intervalleMinutes infini)', () => {
-        // Un créneau sans modèle de planification reçoit intervalleMinutes = Infinity
-        // depuis le repository : il échappe volontairement aux tests d'écart.
+    it('refuse un créneau sans modèle de planification', () => {
+        // Le repository renvoie intervalleMinutes = Infinity quand la relation vers
+        // le modèle est nulle — cas fréquent en base, `onDelete: SetNull` détache les
+        // créneaux existants dès qu'un modèle est supprimé. Sans intervalle connu ni
+        // technicien, les buffers sont invérifiables : le créneau n'est pas proposable.
         const jour = [
             slot('08:00', true, Infinity),
             slot('11:00', true, Infinity),
             slot('15:00', true, Infinity),
         ];
 
-        expect(estCreneauReservable(jour, 1, 60)).toBe(true);
+        expect(estCreneauReservable(jour, 1, 60)).toBe(false);
     });
 });

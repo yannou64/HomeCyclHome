@@ -116,7 +116,7 @@ Les entités principales du modèle de données (implémentées, sauf mention co
 `Indisponibilite` · `Creneau` · `Intervention` · `Photo` (contexte en enum)
 
 **Prévues, non implémentées (Sprint 4 / V2) :** `Paiement` · `Produit` · `LigneCommande` · `HistoriquePrixProduit`
-— voir [[docs/wiki/metier.md]] pour le détail.
+— voir `metier.md` dans le wiki (section 10) pour le détail.
 
 **Règles métier critiques :**
 - Un créneau est lié à une zone géographique et, via un modèle de planification, à un technicien
@@ -169,20 +169,31 @@ Les entités principales du modèle de données (implémentées, sauf mention co
 
 ## 10. Wiki projet
 
-La mémoire du projet est maintenue dans `docs/wiki/`.
-Consulter ces fichiers pour le contexte détaillé :
+La mémoire vivante du projet est maintenue dans un vault Obsidian externe, source de
+vérité consultée pendant le travail (édition directe par Yannick, et par les outils :
+hook post-commit, skill `/fin-session`) :
+
+```
+/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+```
+
+`docs/wiki/` dans le repo est une copie périodique (versionnée dans Git) de ce vault,
+utile comme preuve de documentation pour la certification CDA — pas la référence à
+jour en cours de session.
+
+Consulter ces fichiers (chemins relatifs au vault) pour le contexte détaillé :
 
 | Fichier | Contenu |
 |---|---|
-| `docs/wiki/index.md` | Vue d'ensemble et navigation |
-| `docs/wiki/stack.md` | Justification des choix techniques |
-| `docs/wiki/architecture.md` | Structure des dossiers, modules NestJS |
-| `docs/wiki/metier.md` | Entités, règles métier, MCD/MLD |
-| `docs/wiki/Modèle Conceptuel de Données.md` | MCD complet — entités, attributs, associations |
-| `docs/wiki/sprint-actuel.md` | État du sprint en cours |
-| `docs/wiki/log.md` | Journal des décisions (append-only) |
-| `docs/wiki/ia.md` | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
-| `docs/wiki/features/<nom>/index.md` | Fiche détaillée par feature — fichiers, endpoints, entités |
+| `index.md` | Vue d'ensemble et navigation |
+| `stack.md` | Justification des choix techniques |
+| `architecture.md` | Structure des dossiers, modules NestJS |
+| `metier.md` | Entités, règles métier, MCD/MLD |
+| `Modèle Conceptuel de Données.md` | MCD complet — entités, attributs, associations |
+| `sprint-actuel.md` | État du sprint en cours |
+| `log.md` | Journal des décisions (append-only) |
+| `ia.md` | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
+| `01 - features/<nom>/index.md` | Fiche détaillée par feature — fichiers, endpoints, entités |
 
 ---
 

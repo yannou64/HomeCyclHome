@@ -70,7 +70,7 @@ src/
 ```
 
 Liste complète et détaillée par feature (fichiers, endpoints, entités) : voir
-`docs/wiki/features/<nom>/index.md`.
+`01 - features/<nom>/index.md` dans le vault (racine `CLAUDE.md`, section 10).
 
 **Structure interne d'une feature (pattern à respecter) :**
 

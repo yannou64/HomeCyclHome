@@ -30,9 +30,13 @@ export function estCreneauReservable(
     const candidat = creneauxDuJour[index];
     if (!candidat?.isDisponible) return false;
 
-    // Écart maximal toléré entre deux slots pour les considérer contigus.
-    // Vaut Infinity pour un créneau manuel (sans modèle de planification) :
-    // ces créneaux échappent volontairement à tout contrôle de contiguïté.
+    // Un créneau détaché de son modèle de planification porte intervalleMinutes
+    // = Infinity. On ne connaît alors ni son technicien ni la durée d'un slot :
+    // les buffers sont invérifiables. Le proposer reviendrait à contourner toute
+    // la règle, on le retire donc de l'offre.
+    if (!Number.isFinite(candidat.intervalleMinutes)) return false;
+
+    // Écart maximal toléré entre deux slots pour les considérer contigus
     const ecartMaxMs = candidat.intervalleMinutes * 60 * 1000;
 
     // ── 1. Buffer aller — le technicien doit pouvoir arriver ─────────────────

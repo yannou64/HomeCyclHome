@@ -1,6 +1,9 @@
 #!/bin/sh
-# Hook post-commit — mise à jour automatique du wiki
+# Hook post-commit — mise à jour automatique du wiki (vault Obsidian externe)
 # Déclenché après chaque git commit
+
+# Vault Obsidian externe — source de vérité, distinct de la copie locale docs/wiki/
+WIKI_DIR="/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home"
 
 # Récupération des informations du commit
 COMMIT_MESSAGE=$(git log -1 --pretty=%B)
@@ -15,13 +18,13 @@ fi
 
 # Lancer le sous-agent Claude Code
 # --dangerously-skip-permissions : nécessaire pour un hook non interactif
-# Le sous-agent n'a accès qu'à docs/wiki/log.md — risque limité et connu
+# Le sous-agent n'a accès qu'au log.md du vault — risque limité et connu
 claude --print --dangerously-skip-permissions \
-  --system-prompt "$(cat docs/wiki/prompts/update-log.md)" \
+  --system-prompt "$(cat "$WIKI_DIR/05 - prompts/update-log.md")" \
   "Commit message: $COMMIT_MESSAGE
 Date: $COMMIT_DATE
 Branch: $COMMIT_BRANCH
 Changed files:
 $CHANGED_FILES
 
-Mets à jour docs/wiki/log.md selon les instructions."
+Mets à jour \"$WIKI_DIR/log.md\" selon les instructions."
