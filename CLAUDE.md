@@ -27,7 +27,7 @@ vault de gestion de projet (section 2) — ce fichier ne le recopie jamais.**
 
 **Vault de gestion de projet** (Obsidian, hors dépôt) :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+/Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home
 ```
 Dossier de la V2 : `3. Développement - Suivi et contrôle/V2/`
 

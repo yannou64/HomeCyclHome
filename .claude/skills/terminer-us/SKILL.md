@@ -12,7 +12,7 @@ User story : **$ARGUMENTS**
 
 Vault de la V2 :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
+/Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
 
 Seule note où tu peux écrire, **après accord explicite de Yannick** :
