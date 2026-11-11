@@ -25,12 +25,6 @@ dist
 .DS_Store
 
 # ========================
-# Doc
-# ========================
-# Annexes de certification (PDF) — conservées en local, non publiées
-docs/annexes
-
-# ========================
 # Outils externes
 # ========================
 # Le C4 (Structurizr) et la config Obsidian vivent dans le vault de gestion de
