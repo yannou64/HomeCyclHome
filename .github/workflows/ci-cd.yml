@@ -2,7 +2,19 @@ name: CI/CD
 
 on:
     push:
-        branches: [dev, 'feature/**', main]
+        # Branches de travail nommées selon le type Conventional Commits
+        # (feat/, fix/, refactor/, ci/, docs/, test/) + branches de déploiement
+        branches:
+            [
+                dev,
+                main,
+                'feat/**',
+                'fix/**',
+                'refactor/**',
+                'ci/**',
+                'docs/**',
+                'test/**',
+            ]
     pull_request:
         branches: [main, dev]
 
