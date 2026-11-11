@@ -2,19 +2,25 @@
 
 Ce fichier complète le `CLAUDE.md` racine avec les spécificités du Frontend.
 Il est lu automatiquement par Claude Code quand tu travailles dans ce dossier.
+Les règles d'affichage métier (libellés, statuts visibles, ce que chaque rôle voit)
+sont dans la spec du vault, pas ici.
 
 ---
 
 ## 1. Stack Frontend
 
-| Outil              | Usage                       |
-| ------------------ | --------------------------- |
-| React 18 + Vite    | Framework + bundler         |
-| TypeScript         | Typage statique strict      |
-| SCSS Modules       | Styles scopés par composant |
-| React Router       | Routing SPA                 |
-| FullCalendar       | Affichage des créneaux      |
-| Google Maps JS API | Autocomplete adresse        |
+| Outil                  | Usage                                                   |
+| ---------------------- | ------------------------------------------------------- |
+| React 19 + Vite        | Framework + bundler                                     |
+| TypeScript             | Typage statique strict                                  |
+| SCSS Modules           | Styles scopés par composant (pages client et technicien) |
+| Tailwind v4 + shadcn-ui | Panneau admin uniquement (voir section 4)              |
+| React Router 7         | Routing SPA                                             |
+| FullCalendar           | Calendriers (réservation, planning)                     |
+| Google Maps JS API     | Autocomplete adresse                                    |
+
+**Tests :** aucun test frontend (décision ouverte, consignée dans le Journal de
+développement du vault).
 
 ---
 
@@ -123,6 +129,18 @@ un composant — ne jamais écrire de valeurs en dur.**
 - Ne jamais écrire de styles globaux dans un module — uniquement dans `global.scss`
 - Nommage des classes en `camelCase` dans les modules (ex: `.headerWrapper`)
 
+**Panneau admin — Tailwind v4 + shadcn-ui :**
+
+- Réservé aux écrans d'administration ; ne jamais l'utiliser sur les pages client ou
+  technicien, qui restent en SCSS Modules.
+- Composants shadcn dans `src/shared/components/ui/`, point d'entrée Tailwind
+  `src/app/styles/tailwind.css`, helper `src/shared/utils/cn` (config :
+  `components.json`).
+
+**Constantes d'affichage partagées :** une correspondance utilisée à plusieurs
+endroits (par exemple nom de couleur de zone → code hexadécimal) vit dans **un seul
+fichier** de `shared/`, importé partout. Ses valeurs viennent de la spec.
+
 **Composants UI clés identifiés dans la maquette :**
 
 - `Header` — deux états : `unauthenticated` | `authenticated`
@@ -186,15 +204,21 @@ export const featureService = {
 
 ---
 
-## 8. MCP Figma
+## 8. Maquettes — vault puis Figma
 
-Le MCP Figma est connecté à Claude Code pour accéder aux maquettes HomeCycl'Home.
-Quand un composant est à implémenter :
+**Écrans V2 :** les wireframes et maquettes de travail sont dans le vault
+(`2. Conception/4. Wireframes/` : `planning 2.0`, `intervention 2.0` ;
+`2. Conception/5. Maquettes/` : `Maquette-planning 2.0`). Les lire avant d'implémenter
+un écran V2 : ils fixent la structure et le parcours.
 
-1. Consulter d'abord la maquette Figma via MCP
+**Espace technicien :** conçu mobile d'abord (usage terrain), desktop ensuite.
+
+**MCP Figma** (valeurs visuelles des composants existants) :
+
+1. Consulter la maquette Figma via MCP
 2. Extraire les valeurs exactes (dimensions, couleurs, espacements)
 3. Implémenter en SCSS Modules en respectant ces valeurs
-4. Signaler toute incohérence entre maquette et design system
+4. Signaler toute incohérence entre maquette, wireframe du vault et design system
 
 ---
 
