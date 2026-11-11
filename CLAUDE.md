@@ -27,7 +27,7 @@ vault de gestion de projet (section 2) — ce fichier ne le recopie jamais.**
 
 **Vault de gestion de projet** (Obsidian, hors dépôt) :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+/Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home
 ```
 Dossier de la V2 : `3. Développement - Suivi et contrôle/V2/`
 
@@ -127,6 +127,12 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
   travail préfixées par leur type : `feat/`, `fix/`, `refactor/`, `ci/`, `docs/`,
   `test/`. Ne jamais créer une branche nommée seulement `feat` ou `refactor` : elle
   bloque le préfixe.
+- **Granularité :** une branche par **sujet global** (un lot de travail, une épique),
+  pas une par petite modification. Avant d'en créer une, vérifier si la branche en
+  cours couvre déjà le sujet. Y enchaîner plusieurs commits, chacun décrivant une
+  action précise.
+- **Push et PR : Yannick seul.** Claude commite, mais ne pousse jamais et n'ouvre
+  jamais de PR ; il signale les commits prêts.
 - **Flux :** branche de travail → PR → `dev` → PR → `main`. Imposé par GitHub : le
   ruleset « Protection dev et main » refuse sur ces deux branches tout push direct,
   tout force push et toute suppression, et n'accepte une PR que si les checks

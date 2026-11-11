@@ -12,7 +12,7 @@ Périmètre : **$ARGUMENTS** (vide = toute la V2).
 
 Vault de la V2 :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
+/Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
 
 **Règle absolue : tu n'écris rien, nulle part.** Tu produis un rapport et des
@@ -47,7 +47,7 @@ Pour `CLAUDE.md`, `Backend/CLAUDE.md` et `Frontend/CLAUDE.md` :
 Vérifie aussi `Assistant IA - Lisez-moi.md` :
 - la section « Où ça vit dans le code » : les chemins existent-ils toujours ?
 - le renvoi vers la section « Invariants de sécurité des liens » de
-  `/Users/yannickbiot/Documents/Mini Brain/CLAUDE.md` : cette section existe-t-elle
+  `/Users/yannickbiot/Mini Brain/CLAUDE.md` : cette section existe-t-elle
   toujours sous ce titre ?
 
 ## Contrôle 4 — Journal ↔ Roadmap

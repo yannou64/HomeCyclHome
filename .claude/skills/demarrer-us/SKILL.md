@@ -12,7 +12,7 @@ User story demandée : **$ARGUMENTS**
 
 Vault de la V2 (lecture seule, sauf la note *Écarts* à l'étape 5 avec accord) :
 ```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
+/Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
 
 **Tu n'écris aucun code et aucun test dans ce skill.** Tu prépares, tu expliques,
