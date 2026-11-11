@@ -127,9 +127,11 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
   travail préfixées par leur type : `feat/`, `fix/`, `refactor/`, `ci/`, `docs/`,
   `test/`. Ne jamais créer une branche nommée seulement `feat` ou `refactor` : elle
   bloque le préfixe.
-- **Flux :** branche de travail → PR → `dev` → PR → `main`. Jamais de push direct sur
-  `dev` ni `main`. *Protection GitHub de ces deux branches : en cours de
-  configuration par Yannick (PR obligatoire, checks CI obligatoires).*
+- **Flux :** branche de travail → PR → `dev` → PR → `main`. Imposé par GitHub : le
+  ruleset « Protection dev et main » refuse sur ces deux branches tout push direct,
+  tout force push et toute suppression, et n'accepte une PR que si les checks
+  `lint-frontend`, `lint-backend` et `test-backend` passent. Aucune exception, y
+  compris pour l'administrateur.
 - **CI :** une branche de travail est testée **par sa PR** (sur le résultat de la
   fusion avec la cible), pas par ses push. Pour un retour avant la fin du travail,
   ouvrir la PR en brouillon. La fusion dans `dev` déploie le staging, dans `main` la
