@@ -1,0 +1,1170 @@
+{
+  "configuration" : { },
+  "description" : "Modèle C4 — Contexte et Conteneurs",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedAgent" : "structurizr-ui",
+  "lastModifiedDate" : "2026-07-03T19:07:43Z",
+  "model" : {
+    "deploymentNodes" : [ {
+      "children" : [ {
+        "containerInstances" : [ {
+          "containerId" : "5",
+          "deploymentGroups" : [ "Staging" ],
+          "environment" : "VPS",
+          "id" : "69",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "stagingSpaInstance"
+          },
+          "relationships" : [ {
+            "description" : "Fait des appels API",
+            "destinationId" : "70",
+            "id" : "71",
+            "linkedRelationshipId" : "64",
+            "sourceId" : "69",
+            "technology" : "JSON/HTTPS"
+          } ],
+          "tags" : "Container Instance"
+        }, {
+          "containerId" : "14",
+          "deploymentGroups" : [ "Staging" ],
+          "environment" : "VPS",
+          "id" : "70",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "stagingApiInstance"
+          },
+          "relationships" : [ {
+            "description" : "Lit / écrit les données",
+            "destinationId" : "72",
+            "id" : "73",
+            "linkedRelationshipId" : "39",
+            "sourceId" : "70",
+            "technology" : "SQL/TCP"
+          } ],
+          "tags" : "Container Instance"
+        }, {
+          "containerId" : "22",
+          "deploymentGroups" : [ "Staging" ],
+          "environment" : "VPS",
+          "id" : "72",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "3193991a-f54d-4b60-ae7f-47e96fb3b2d8"
+          },
+          "tags" : "Container Instance"
+        } ],
+        "description" : "Réseau bridge isolé : staging_network",
+        "environment" : "VPS",
+        "id" : "67",
+        "infrastructureNodes" : [ {
+          "description" : "Route / vers le frontend, /api vers le backend",
+          "environment" : "VPS",
+          "id" : "68",
+          "name" : "Nginx (reverse proxy interne)",
+          "properties" : {
+            "structurizr.dsl.identifier" : "stagingReverseProxy"
+          },
+          "relationships" : [ {
+            "description" : "Sert les fichiers statiques",
+            "destinationId" : "69",
+            "id" : "83",
+            "sourceId" : "68",
+            "tags" : "Relationship",
+            "technology" : "HTTP"
+          }, {
+            "description" : "Route /api/*",
+            "destinationId" : "70",
+            "id" : "84",
+            "sourceId" : "68",
+            "tags" : "Relationship",
+            "technology" : "HTTP/JSON"
+          } ],
+          "tags" : "Element,Infrastructure Node",
+          "technology" : "nginx:alpine — 127.0.0.1:8080->80"
+        } ],
+        "instances" : "1",
+        "name" : "Stack Docker Compose — Staging",
+        "properties" : {
+          "structurizr.dsl.identifier" : "fabdd3fb-cb3f-4b00-b935-eda9ee204759"
+        },
+        "tags" : "Element,Deployment Node",
+        "technology" : "Docker Compose"
+      }, {
+        "containerInstances" : [ {
+          "containerId" : "5",
+          "deploymentGroups" : [ "Production" ],
+          "environment" : "VPS",
+          "id" : "76",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "prodSpaInstance"
+          },
+          "relationships" : [ {
+            "description" : "Fait des appels API",
+            "destinationId" : "77",
+            "id" : "78",
+            "linkedRelationshipId" : "64",
+            "sourceId" : "76",
+            "technology" : "JSON/HTTPS"
+          } ],
+          "tags" : "Container Instance"
+        }, {
+          "containerId" : "14",
+          "deploymentGroups" : [ "Production" ],
+          "environment" : "VPS",
+          "id" : "77",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "prodApiInstance"
+          },
+          "relationships" : [ {
+            "description" : "Lit / écrit les données",
+            "destinationId" : "79",
+            "id" : "80",
+            "linkedRelationshipId" : "39",
+            "sourceId" : "77",
+            "technology" : "SQL/TCP"
+          } ],
+          "tags" : "Container Instance"
+        }, {
+          "containerId" : "22",
+          "deploymentGroups" : [ "Production" ],
+          "environment" : "VPS",
+          "id" : "79",
+          "instanceId" : 1,
+          "properties" : {
+            "structurizr.dsl.identifier" : "71458f13-cfd5-4d68-a742-16bc0b948e5f"
+          },
+          "tags" : "Container Instance"
+        } ],
+        "description" : "Réseau bridge isolé : prod_network",
+        "environment" : "VPS",
+        "id" : "74",
+        "infrastructureNodes" : [ {
+          "description" : "Route / vers le frontend, /api vers le backend",
+          "environment" : "VPS",
+          "id" : "75",
+          "name" : "Nginx (reverse proxy interne)",
+          "properties" : {
+            "structurizr.dsl.identifier" : "prodReverseProxy"
+          },
+          "relationships" : [ {
+            "description" : "Sert les fichiers statiques",
+            "destinationId" : "76",
+            "id" : "85",
+            "sourceId" : "75",
+            "tags" : "Relationship",
+            "technology" : "HTTP"
+          }, {
+            "description" : "Route /api/*",
+            "destinationId" : "77",
+            "id" : "86",
+            "sourceId" : "75",
+            "tags" : "Relationship",
+            "technology" : "HTTP/JSON"
+          } ],
+          "tags" : "Element,Infrastructure Node",
+          "technology" : "nginx:alpine — 127.0.0.1:8081->80"
+        } ],
+        "instances" : "1",
+        "name" : "Stack Docker Compose — Production",
+        "properties" : {
+          "structurizr.dsl.identifier" : "d6c38d3a-cdeb-4e21-8183-b5b56318acca"
+        },
+        "tags" : "Element,Deployment Node",
+        "technology" : "Docker Compose"
+      } ],
+      "description" : "Hôte unique, partagé entre les deux environnements",
+      "environment" : "VPS",
+      "id" : "65",
+      "infrastructureNodes" : [ {
+        "description" : "Reverse proxy public unique, terminaison SSL (Let's Encrypt), route selon le nom de domaine",
+        "environment" : "VPS",
+        "id" : "66",
+        "name" : "Nginx hôte + Certbot",
+        "properties" : {
+          "structurizr.dsl.identifier" : "hostNginx"
+        },
+        "relationships" : [ {
+          "description" : "Forward vers 127.0.0.1:8080 — staging.homecyclhome.yannickbiot.fr",
+          "destinationId" : "68",
+          "id" : "81",
+          "sourceId" : "66",
+          "tags" : "Relationship",
+          "technology" : "HTTP"
+        }, {
+          "description" : "Forward vers 127.0.0.1:8081 — homecyclhome.yannickbiot.fr",
+          "destinationId" : "75",
+          "id" : "82",
+          "sourceId" : "66",
+          "tags" : "Relationship",
+          "technology" : "HTTP"
+        } ],
+        "tags" : "Element,Infrastructure Node",
+        "technology" : "Nginx (hôte, hors Docker)"
+      } ],
+      "instances" : "1",
+      "name" : "VPS Ubuntu",
+      "properties" : {
+        "structurizr.dsl.identifier" : "35faaa84-af23-4e57-83f7-d7684f613eea"
+      },
+      "tags" : "Element,Deployment Node",
+      "technology" : "Linux Ubuntu + Docker Engine"
+    } ],
+    "people" : [ {
+      "description" : "Réserve une intervention",
+      "id" : "1",
+      "name" : "Client",
+      "properties" : {
+        "structurizr.dsl.identifier" : "client"
+      },
+      "relationships" : [ {
+        "description" : "Utilise",
+        "destinationId" : "5",
+        "id" : "26",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "4",
+        "id" : "27",
+        "linkedRelationshipId" : "26",
+        "sourceId" : "1",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "6",
+        "id" : "46",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Réalise l'intervention",
+      "id" : "2",
+      "name" : "Technicien",
+      "properties" : {
+        "structurizr.dsl.identifier" : "technicien"
+      },
+      "relationships" : [ {
+        "description" : "Utilise",
+        "destinationId" : "5",
+        "id" : "28",
+        "sourceId" : "2",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "4",
+        "id" : "29",
+        "linkedRelationshipId" : "28",
+        "sourceId" : "2",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "6",
+        "id" : "47",
+        "sourceId" : "2",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Configure et supervise",
+      "id" : "3",
+      "name" : "Admin",
+      "properties" : {
+        "structurizr.dsl.identifier" : "admin"
+      },
+      "relationships" : [ {
+        "description" : "Utilise",
+        "destinationId" : "5",
+        "id" : "30",
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "4",
+        "id" : "31",
+        "linkedRelationshipId" : "30",
+        "sourceId" : "3",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Utilise",
+        "destinationId" : "6",
+        "id" : "48",
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "components" : [ {
+          "description" : "Définit les routes, protège les pages selon le rôle (ProtectedRoute), lazy-load les pages",
+          "documentation" : { },
+          "id" : "6",
+          "name" : "Router",
+          "properties" : {
+            "structurizr.dsl.identifier" : "router"
+          },
+          "relationships" : [ {
+            "description" : "Route vers",
+            "destinationId" : "7",
+            "id" : "49",
+            "sourceId" : "6",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Vérifie l'authentification et le rôle (ProtectedRoute)",
+            "destinationId" : "8",
+            "id" : "50",
+            "sourceId" : "6",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "React Router"
+        }, {
+          "description" : "Orchestrent les composants de features pour composer un écran (1 fichier = 1 route)",
+          "documentation" : { },
+          "id" : "7",
+          "name" : "Pages",
+          "properties" : {
+            "structurizr.dsl.identifier" : "pages"
+          },
+          "relationships" : [ {
+            "description" : "Compose l'écran à partir de",
+            "destinationId" : "11",
+            "id" : "51",
+            "sourceId" : "7",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "React"
+        }, {
+          "description" : "État transverse partagé entre features : session utilisateur, wizard de réservation multi-étapes",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "Providers globaux",
+          "properties" : {
+            "structurizr.dsl.identifier" : "globalProviders"
+          },
+          "tags" : "Element,Component",
+          "technology" : "React Context (AuthContext, ReservationContext)"
+        }, {
+          "description" : "UI générique réutilisable entre features (Header, Footer, CTAButton, Card...)",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "Composants partagés",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sharedUI"
+          },
+          "tags" : "Element,Component",
+          "technology" : "React + shadcn/ui"
+        }, {
+          "description" : "Instance Axios centralisée : baseURL, cookies, intercepteur de refresh automatique sur 401",
+          "documentation" : { },
+          "id" : "10",
+          "name" : "Client HTTP",
+          "properties" : {
+            "structurizr.dsl.identifier" : "apiClient"
+          },
+          "relationships" : [ {
+            "description" : "Fait des appels API",
+            "destinationId" : "19",
+            "id" : "61",
+            "sourceId" : "10",
+            "tags" : "Relationship",
+            "technology" : "JSON/HTTPS"
+          }, {
+            "description" : "Fait des appels API",
+            "destinationId" : "14",
+            "id" : "62",
+            "linkedRelationshipId" : "61",
+            "sourceId" : "10",
+            "technology" : "JSON/HTTPS"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Axios"
+        }, {
+          "description" : "UI spécifique à une fonctionnalité (ex: LoginForm, CreneauSelector, AuthStep...)",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x8)",
+          "id" : "11",
+          "name" : "Composants Feature",
+          "properties" : {
+            "structurizr.dsl.identifier" : "featureComponents"
+          },
+          "relationships" : [ {
+            "description" : "Délègue la logique à",
+            "destinationId" : "12",
+            "id" : "52",
+            "sourceId" : "11",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Réutilise",
+            "destinationId" : "9",
+            "id" : "53",
+            "sourceId" : "11",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Consomme (contexte)",
+            "destinationId" : "8",
+            "id" : "54",
+            "sourceId" : "11",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Affichage carte + dessin de zones (composant dédié, ex: ZoneMapDrawer — feature admin)",
+            "destinationId" : "23",
+            "id" : "55",
+            "sourceId" : "11",
+            "tags" : "Relationship",
+            "technology" : "Maps JavaScript API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "React + SCSS Modules"
+        }, {
+          "description" : "Logique d'état, orchestre l'appel au service (ex: useLogin, useCreneaux...)",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x8)",
+          "id" : "12",
+          "name" : "Hooks Feature",
+          "properties" : {
+            "structurizr.dsl.identifier" : "featureHooks"
+          },
+          "relationships" : [ {
+            "description" : "Appelle",
+            "destinationId" : "13",
+            "id" : "58",
+            "sourceId" : "12",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autocomplete + décomposition d'adresse (hook dédié, ex: useAddressAutocomplete)",
+            "destinationId" : "23",
+            "id" : "59",
+            "sourceId" : "12",
+            "tags" : "Relationship",
+            "technology" : "Places API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "React Hooks"
+        }, {
+          "description" : "Appelle l'API et retourne des données typées (ex: authService, reservationService...)",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x8)",
+          "id" : "13",
+          "name" : "Services Feature",
+          "properties" : {
+            "structurizr.dsl.identifier" : "featureServices"
+          },
+          "relationships" : [ {
+            "description" : "Effectue les requêtes via",
+            "destinationId" : "10",
+            "id" : "60",
+            "sourceId" : "13",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Objet async/await"
+        } ],
+        "description" : "Recherche, réservation et suivi des interventions",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Application Web",
+        "properties" : {
+          "structurizr.dsl.identifier" : "spa"
+        },
+        "relationships" : [ {
+          "description" : "Affichage carte + dessin de zones (composant dédié, ex: ZoneMapDrawer — feature admin)",
+          "destinationId" : "23",
+          "id" : "56",
+          "linkedRelationshipId" : "55",
+          "sourceId" : "5",
+          "technology" : "Maps JavaScript API"
+        }, {
+          "description" : "Fait des appels API",
+          "destinationId" : "19",
+          "id" : "63",
+          "linkedRelationshipId" : "61",
+          "sourceId" : "5",
+          "technology" : "JSON/HTTPS"
+        }, {
+          "description" : "Fait des appels API",
+          "destinationId" : "14",
+          "id" : "64",
+          "linkedRelationshipId" : "61",
+          "sourceId" : "5",
+          "technology" : "JSON/HTTPS"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "React 18 + Vite + TypeScript"
+      }, {
+        "components" : [ {
+          "description" : "Authentification JWT (JwtAuthGuard) et contrôle des rôles (RolesGuard)",
+          "documentation" : { },
+          "id" : "15",
+          "name" : "Guards",
+          "properties" : {
+            "structurizr.dsl.identifier" : "guards"
+          },
+          "tags" : "Element,Component",
+          "technology" : "NestJS Guards + Passport"
+        }, {
+          "description" : "Point d'accès unique à la base de données, injecté dans tous les repositories",
+          "documentation" : { },
+          "id" : "16",
+          "name" : "PrismaService",
+          "properties" : {
+            "structurizr.dsl.identifier" : "prismaService"
+          },
+          "relationships" : [ {
+            "description" : "Lit / écrit les données",
+            "destinationId" : "22",
+            "id" : "38",
+            "sourceId" : "16",
+            "tags" : "Relationship",
+            "technology" : "SQL/TCP"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Prisma Client"
+        }, {
+          "description" : "Envoi d'emails transactionnels (confirmation de compte, notifications...)",
+          "documentation" : { },
+          "id" : "17",
+          "name" : "Service Email",
+          "properties" : {
+            "structurizr.dsl.identifier" : "emailService"
+          },
+          "relationships" : [ {
+            "description" : "Envoie emails",
+            "destinationId" : "24",
+            "id" : "40",
+            "sourceId" : "17",
+            "tags" : "Relationship",
+            "technology" : "SMTP"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nodemailer (@nestjs-modules/mailer)"
+        }, {
+          "description" : "Upload et lecture des photos d'intervention",
+          "documentation" : { },
+          "id" : "18",
+          "name" : "Service Storage",
+          "properties" : {
+            "structurizr.dsl.identifier" : "storageService"
+          },
+          "relationships" : [ {
+            "description" : "Stocke / récupère les photos",
+            "destinationId" : "25",
+            "id" : "43",
+            "sourceId" : "18",
+            "tags" : "Relationship",
+            "technology" : "AWS SDK"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "AWS SDK S3"
+        }, {
+          "description" : "Reçoit la requête HTTP, valide via DTO, délègue au use case — aucune logique métier",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x11)",
+          "id" : "19",
+          "name" : "Controllers",
+          "properties" : {
+            "structurizr.dsl.identifier" : "controllers"
+          },
+          "relationships" : [ {
+            "description" : "Protège via",
+            "destinationId" : "15",
+            "id" : "32",
+            "sourceId" : "19",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Délègue à",
+            "destinationId" : "20",
+            "id" : "33",
+            "sourceId" : "19",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "NestJS Controllers"
+        }, {
+          "description" : "Logique métier : une classe = une opération (ex: CreateInterventionUseCase)",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x11)",
+          "id" : "20",
+          "name" : "Use Cases",
+          "properties" : {
+            "structurizr.dsl.identifier" : "useCases"
+          },
+          "relationships" : [ {
+            "description" : "Appelle",
+            "destinationId" : "21",
+            "id" : "34",
+            "sourceId" : "20",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Envoie des emails (ex: confirmation de compte, register/create-intervention)",
+            "destinationId" : "17",
+            "id" : "35",
+            "sourceId" : "20",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Stocke / lit les photos (ex: upload-intervention-photos)",
+            "destinationId" : "18",
+            "id" : "36",
+            "sourceId" : "20",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "TypeScript"
+        }, {
+          "description" : "Interface + implémentation Prisma, découplées via token d'injection",
+          "documentation" : { },
+          "group" : "Module Feature (pattern répété x11)",
+          "id" : "21",
+          "name" : "Repositories",
+          "properties" : {
+            "structurizr.dsl.identifier" : "repositories"
+          },
+          "relationships" : [ {
+            "description" : "Exécute les requêtes via",
+            "destinationId" : "16",
+            "id" : "37",
+            "sourceId" : "21",
+            "tags" : "Relationship",
+            "technology" : "Prisma Client"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Prisma"
+        } ],
+        "description" : "Expose l'API REST, applique les règles métier, gère l'authentification JWT/RBAC",
+        "documentation" : { },
+        "id" : "14",
+        "name" : "API Backend",
+        "properties" : {
+          "structurizr.dsl.identifier" : "api"
+        },
+        "relationships" : [ {
+          "description" : "Lit / écrit les données",
+          "destinationId" : "22",
+          "id" : "39",
+          "linkedRelationshipId" : "38",
+          "sourceId" : "14",
+          "technology" : "SQL/TCP"
+        }, {
+          "description" : "Envoie emails",
+          "destinationId" : "24",
+          "id" : "41",
+          "linkedRelationshipId" : "40",
+          "sourceId" : "14",
+          "technology" : "SMTP"
+        }, {
+          "description" : "Stocke / récupère les photos",
+          "destinationId" : "25",
+          "id" : "44",
+          "linkedRelationshipId" : "43",
+          "sourceId" : "14",
+          "technology" : "AWS SDK"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "NestJS + TypeScript"
+      }, {
+        "description" : "Utilisateurs, zones, créneaux, interventions, paiements...",
+        "documentation" : { },
+        "id" : "22",
+        "name" : "Base de données",
+        "properties" : {
+          "structurizr.dsl.identifier" : "db"
+        },
+        "tags" : "Element,Container,Database",
+        "technology" : "PostgreSQL 16"
+      } ],
+      "description" : "Réservation d'interventions de réparation et entretien de vélos à domicile",
+      "documentation" : { },
+      "id" : "4",
+      "name" : "HomeCycl'Home",
+      "properties" : {
+        "structurizr.dsl.identifier" : "homeCyclHome"
+      },
+      "relationships" : [ {
+        "description" : "Envoie emails",
+        "destinationId" : "24",
+        "id" : "42",
+        "linkedRelationshipId" : "40",
+        "sourceId" : "4",
+        "technology" : "SMTP"
+      }, {
+        "description" : "Stocke / récupère les photos",
+        "destinationId" : "25",
+        "id" : "45",
+        "linkedRelationshipId" : "43",
+        "sourceId" : "4",
+        "technology" : "AWS SDK"
+      }, {
+        "description" : "Affichage carte + dessin de zones (composant dédié, ex: ZoneMapDrawer — feature admin)",
+        "destinationId" : "23",
+        "id" : "57",
+        "linkedRelationshipId" : "55",
+        "sourceId" : "4",
+        "technology" : "Maps JavaScript API"
+      } ],
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Autocomplete d'adresse (Places) + affichage carte et dessin de zones (Maps JS)",
+      "documentation" : { },
+      "id" : "23",
+      "name" : "Google Maps Platform",
+      "properties" : {
+        "structurizr.dsl.identifier" : "gmaps"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Envoi d'emails (best-effort)",
+      "documentation" : { },
+      "id" : "24",
+      "name" : "Serveur SMTP",
+      "properties" : {
+        "structurizr.dsl.identifier" : "smtp"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Stockage des photos (best-effort)",
+      "documentation" : { },
+      "id" : "25",
+      "name" : "AWS S3",
+      "properties" : {
+        "structurizr.dsl.identifier" : "s3"
+      },
+      "tags" : "Element,Software System,External"
+    } ]
+  },
+  "name" : "HomeCycl'Home",
+  "properties" : {
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.error" : "16",
+    "structurizr.inspection.warning" : "0",
+    "structurizr.dsl" : "d29ya3NwYWNlICJIb21lQ3ljbCdIb21lIiAiTW9kw6hsZSBDNCDigJQgQ29udGV4dGUgZXQgQ29udGVuZXVycyIgewoKICAgIG1vZGVsIHsKICAgICAgICAjIEFjdGV1cnMgKFBlcnNvbikKICAgICAgICBjbGllbnQgICAgID0gcGVyc29uICJDbGllbnQiICAgICAiUsOpc2VydmUgdW5lIGludGVydmVudGlvbiIKICAgICAgICB0ZWNobmljaWVuID0gcGVyc29uICJUZWNobmljaWVuIiAiUsOpYWxpc2UgbCdpbnRlcnZlbnRpb24iCiAgICAgICAgYWRtaW4gICAgICA9IHBlcnNvbiAiQWRtaW4iICAgICAgIkNvbmZpZ3VyZSBldCBzdXBlcnZpc2UiCgogICAgICAgICMgU3lzdMOobWUgY2VudHJhbCwgZMOpY29tcG9zw6kgZW4gY29udGVuZXVycyAobml2ZWF1IDIpCiAgICAgICAgaG9tZUN5Y2xIb21lID0gc29mdHdhcmVTeXN0ZW0gIkhvbWVDeWNsJ0hvbWUiICJSw6lzZXJ2YXRpb24gZCdpbnRlcnZlbnRpb25zIGRlIHLDqXBhcmF0aW9uIGV0IGVudHJldGllbiBkZSB2w6lsb3Mgw6AgZG9taWNpbGUiIHsKCiAgICAgICAgICAgIHNwYSA9IGNvbnRhaW5lciAiQXBwbGljYXRpb24gV2ViIiAiUmVjaGVyY2hlLCByw6lzZXJ2YXRpb24gZXQgc3VpdmkgZGVzIGludGVydmVudGlvbnMiICJSZWFjdCAxOCArIFZpdGUgKyBUeXBlU2NyaXB0IiB7CgogICAgICAgICAgICAgICAgcm91dGVyID0gY29tcG9uZW50ICJSb3V0ZXIiICJEw6lmaW5pdCBsZXMgcm91dGVzLCBwcm90w6hnZSBsZXMgcGFnZXMgc2Vsb24gbGUgcsO0bGUgKFByb3RlY3RlZFJvdXRlKSwgbGF6eS1sb2FkIGxlcyBwYWdlcyIgIlJlYWN0IFJvdXRlciIKCiAgICAgICAgICAgICAgICBwYWdlcyA9IGNvbXBvbmVudCAiUGFnZXMiICJPcmNoZXN0cmVudCBsZXMgY29tcG9zYW50cyBkZSBmZWF0dXJlcyBwb3VyIGNvbXBvc2VyIHVuIMOpY3JhbiAoMSBmaWNoaWVyID0gMSByb3V0ZSkiICJSZWFjdCIKCiAgICAgICAgICAgICAgICBnbG9iYWxQcm92aWRlcnMgPSBjb21wb25lbnQgIlByb3ZpZGVycyBnbG9iYXV4IiAiw4l0YXQgdHJhbnN2ZXJzZSBwYXJ0YWfDqSBlbnRyZSBmZWF0dXJlcyA6IHNlc3Npb24gdXRpbGlzYXRldXIsIHdpemFyZCBkZSByw6lzZXJ2YXRpb24gbXVsdGktw6l0YXBlcyIgIlJlYWN0IENvbnRleHQgKEF1dGhDb250ZXh0LCBSZXNlcnZhdGlvbkNvbnRleHQpIgoKICAgICAgICAgICAgICAgIHNoYXJlZFVJID0gY29tcG9uZW50ICJDb21wb3NhbnRzIHBhcnRhZ8OpcyIgIlVJIGfDqW7DqXJpcXVlIHLDqXV0aWxpc2FibGUgZW50cmUgZmVhdHVyZXMgKEhlYWRlciwgRm9vdGVyLCBDVEFCdXR0b24sIENhcmQuLi4pIiAiUmVhY3QgKyBzaGFkY24vdWkiCgogICAgICAgICAgICAgICAgYXBpQ2xpZW50ID0gY29tcG9uZW50ICJDbGllbnQgSFRUUCIgIkluc3RhbmNlIEF4aW9zIGNlbnRyYWxpc8OpZSA6IGJhc2VVUkwsIGNvb2tpZXMsIGludGVyY2VwdGV1ciBkZSByZWZyZXNoIGF1dG9tYXRpcXVlIHN1ciA0MDEiICJBeGlvcyIKCiAgICAgICAgICAgICAgICAjIFBhdHRlcm4gcsOpcMOpdMOpIMOgIGwnaWRlbnRpcXVlIGRhbnMgY2hhcXVlIGZlYXR1cmUgOgogICAgICAgICAgICAgICAgIyBhdXRoLCBhZHJlc3NlLCBjeWNsZSwgZm9yZmFpdCwgcmVzZXJ2YXRpb24sIGludGVydmVudGlvbiwgdXNlciwgYWRtaW4KICAgICAgICAgICAgICAgIGdyb3VwICJNb2R1bGUgRmVhdHVyZSAocGF0dGVybiByw6lww6l0w6kgeDgpIiB7CiAgICAgICAgICAgICAgICAgICAgZmVhdHVyZUNvbXBvbmVudHMgPSBjb21wb25lbnQgIkNvbXBvc2FudHMgRmVhdHVyZSIgIlVJIHNww6ljaWZpcXVlIMOgIHVuZSBmb25jdGlvbm5hbGl0w6kgKGV4OiBMb2dpbkZvcm0sIENyZW5lYXVTZWxlY3RvciwgQXV0aFN0ZXAuLi4pIiAiUmVhY3QgKyBTQ1NTIE1vZHVsZXMiCgogICAgICAgICAgICAgICAgICAgIGZlYXR1cmVIb29rcyA9IGNvbXBvbmVudCAiSG9va3MgRmVhdHVyZSIgIkxvZ2lxdWUgZCfDqXRhdCwgb3JjaGVzdHJlIGwnYXBwZWwgYXUgc2VydmljZSAoZXg6IHVzZUxvZ2luLCB1c2VDcmVuZWF1eC4uLikiICJSZWFjdCBIb29rcyIKCiAgICAgICAgICAgICAgICAgICAgZmVhdHVyZVNlcnZpY2VzID0gY29tcG9uZW50ICJTZXJ2aWNlcyBGZWF0dXJlIiAiQXBwZWxsZSBsJ0FQSSBldCByZXRvdXJuZSBkZXMgZG9ubsOpZXMgdHlww6llcyAoZXg6IGF1dGhTZXJ2aWNlLCByZXNlcnZhdGlvblNlcnZpY2UuLi4pIiAiT2JqZXQgYXN5bmMvYXdhaXQiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGFwaSA9IGNvbnRhaW5lciAiQVBJIEJhY2tlbmQiICJFeHBvc2UgbCdBUEkgUkVTVCwgYXBwbGlxdWUgbGVzIHLDqGdsZXMgbcOpdGllciwgZ8OocmUgbCdhdXRoZW50aWZpY2F0aW9uIEpXVC9SQkFDIiAiTmVzdEpTICsgVHlwZVNjcmlwdCIgewoKICAgICAgICAgICAgICAgIGd1YXJkcyA9IGNvbXBvbmVudCAiR3VhcmRzIiAiQXV0aGVudGlmaWNhdGlvbiBKV1QgKEp3dEF1dGhHdWFyZCkgZXQgY29udHLDtGxlIGRlcyByw7RsZXMgKFJvbGVzR3VhcmQpIiAiTmVzdEpTIEd1YXJkcyArIFBhc3Nwb3J0IgoKICAgICAgICAgICAgICAgIHByaXNtYVNlcnZpY2UgPSBjb21wb25lbnQgIlByaXNtYVNlcnZpY2UiICJQb2ludCBkJ2FjY8OocyB1bmlxdWUgw6AgbGEgYmFzZSBkZSBkb25uw6llcywgaW5qZWN0w6kgZGFucyB0b3VzIGxlcyByZXBvc2l0b3JpZXMiICJQcmlzbWEgQ2xpZW50IgoKICAgICAgICAgICAgICAgIGVtYWlsU2VydmljZSA9IGNvbXBvbmVudCAiU2VydmljZSBFbWFpbCIgIkVudm9pIGQnZW1haWxzIHRyYW5zYWN0aW9ubmVscyAoY29uZmlybWF0aW9uIGRlIGNvbXB0ZSwgbm90aWZpY2F0aW9ucy4uLikiICJOb2RlbWFpbGVyIChAbmVzdGpzLW1vZHVsZXMvbWFpbGVyKSIKCiAgICAgICAgICAgICAgICBzdG9yYWdlU2VydmljZSA9IGNvbXBvbmVudCAiU2VydmljZSBTdG9yYWdlIiAiVXBsb2FkIGV0IGxlY3R1cmUgZGVzIHBob3RvcyBkJ2ludGVydmVudGlvbiIgIkFXUyBTREsgUzMiCgogICAgICAgICAgICAgICAgIyBQYXR0ZXJuIHLDqXDDqXTDqSDDoCBsJ2lkZW50aXF1ZSBkYW5zIGNoYXF1ZSBtb2R1bGUgbcOpdGllciA6CiAgICAgICAgICAgICAgICAjIGFkbWluLCBhZHJlc3NlcywgYWZmZWN0YXRpb25zLCBhdXRoLCBjeWNsZSwgZm9yZmFpdHMsCiAgICAgICAgICAgICAgICAjIGludGVydmVudGlvbiwgcGxhbm5pbmcsIHJlZmVyZW50aWVsLCB1c2Vycywgem9uZXMKICAgICAgICAgICAgICAgIGdyb3VwICJNb2R1bGUgRmVhdHVyZSAocGF0dGVybiByw6lww6l0w6kgeDExKSIgewogICAgICAgICAgICAgICAgICAgIGNvbnRyb2xsZXJzID0gY29tcG9uZW50ICJDb250cm9sbGVycyIgIlJlw6dvaXQgbGEgcmVxdcOqdGUgSFRUUCwgdmFsaWRlIHZpYSBEVE8sIGTDqWzDqGd1ZSBhdSB1c2UgY2FzZSDigJQgYXVjdW5lIGxvZ2lxdWUgbcOpdGllciIgIk5lc3RKUyBDb250cm9sbGVycyIKCiAgICAgICAgICAgICAgICAgICAgdXNlQ2FzZXMgPSBjb21wb25lbnQgIlVzZSBDYXNlcyIgIkxvZ2lxdWUgbcOpdGllciA6IHVuZSBjbGFzc2UgPSB1bmUgb3DDqXJhdGlvbiAoZXg6IENyZWF0ZUludGVydmVudGlvblVzZUNhc2UpIiAiVHlwZVNjcmlwdCIKCiAgICAgICAgICAgICAgICAgICAgcmVwb3NpdG9yaWVzID0gY29tcG9uZW50ICJSZXBvc2l0b3JpZXMiICJJbnRlcmZhY2UgKyBpbXBsw6ltZW50YXRpb24gUHJpc21hLCBkw6ljb3VwbMOpZXMgdmlhIHRva2VuIGQnaW5qZWN0aW9uIiAiUHJpc21hIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CgogICAgICAgICAgICBkYiA9IGNvbnRhaW5lciAiQmFzZSBkZSBkb25uw6llcyIgIlV0aWxpc2F0ZXVycywgem9uZXMsIGNyw6luZWF1eCwgaW50ZXJ2ZW50aW9ucywgcGFpZW1lbnRzLi4uIiAiUG9zdGdyZVNRTCAxNiIgIkRhdGFiYXNlIgogICAgICAgIH0KCiAgICAgICAgIyBTeXN0w6htZXMgZXh0ZXJuZXMgKHRhZyAiRXh0ZXJuYWwiIHBvdXIgbGUgc3R5bGUsIGNmLiBibG9jIHN0eWxlcykKICAgICAgICBnbWFwcyA9IHNvZnR3YXJlU3lzdGVtICJHb29nbGUgTWFwcyBQbGF0Zm9ybSIgIkF1dG9jb21wbGV0ZSBkJ2FkcmVzc2UgKFBsYWNlcykgKyBhZmZpY2hhZ2UgY2FydGUgZXQgZGVzc2luIGRlIHpvbmVzIChNYXBzIEpTKSIgIkV4dGVybmFsIgogICAgICAgIHNtdHAgID0gc29mdHdhcmVTeXN0ZW0gIlNlcnZldXIgU01UUCIgICAgICAgICAgIkVudm9pIGQnZW1haWxzIChiZXN0LWVmZm9ydCkiICJFeHRlcm5hbCIKICAgICAgICBzMyAgICA9IHNvZnR3YXJlU3lzdGVtICJBV1MgUzMiICAgICAgICAgICAgICAgICJTdG9ja2FnZSBkZXMgcGhvdG9zIChiZXN0LWVmZm9ydCkiICJFeHRlcm5hbCIKCiAgICAgICAgIyBSZWxhdGlvbnMgdXRpbGlzYXRldXJzIC0+IGNvbnRlbmV1ciBTUEEKICAgICAgICAjIChpbXBsaXF1ZSBhdXRvbWF0aXF1ZW1lbnQgY2xpZW50IC0+IGhvbWVDeWNsSG9tZSBwb3VyIGxhIHZ1ZSBkZSBjb250ZXh0ZSkKICAgICAgICBjbGllbnQgICAgIC0+IHNwYSAiVXRpbGlzZSIgIkhUVFBTIgogICAgICAgIHRlY2huaWNpZW4gLT4gc3BhICJVdGlsaXNlIiAiSFRUUFMiCiAgICAgICAgYWRtaW4gICAgICAtPiBzcGEgIlV0aWxpc2UiICJIVFRQUyIKCiAgICAgICAgIyBSZWxhdGlvbnMgZW50cmUgY29tcG9zYW50cyBkZSBsJ0FQSQogICAgICAgICMgKGltcGxpcXVlIGF1dG9tYXRpcXVlbWVudCBhcGkgLT4gZGIgLyBhcGkgLT4gc210cCAvIGFwaSAtPiBzMyBhdSBuaXZlYXUgY29udGVuZXVyKQogICAgICAgIGNvbnRyb2xsZXJzIC0+IGd1YXJkcyAgICAiUHJvdMOoZ2UgdmlhIgogICAgICAgIGNvbnRyb2xsZXJzIC0+IHVzZUNhc2VzICAiRMOpbMOoZ3VlIMOgIgoKICAgICAgICB1c2VDYXNlcyAtPiByZXBvc2l0b3JpZXMgICAiQXBwZWxsZSIKICAgICAgICB1c2VDYXNlcyAtPiBlbWFpbFNlcnZpY2UgICAiRW52b2llIGRlcyBlbWFpbHMgKGV4OiBjb25maXJtYXRpb24gZGUgY29tcHRlLCByZWdpc3Rlci9jcmVhdGUtaW50ZXJ2ZW50aW9uKSIKICAgICAgICB1c2VDYXNlcyAtPiBzdG9yYWdlU2VydmljZSAiU3RvY2tlIC8gbGl0IGxlcyBwaG90b3MgKGV4OiB1cGxvYWQtaW50ZXJ2ZW50aW9uLXBob3RvcykiCgogICAgICAgIHJlcG9zaXRvcmllcyAtPiBwcmlzbWFTZXJ2aWNlICJFeMOpY3V0ZSBsZXMgcmVxdcOqdGVzIHZpYSIgIlByaXNtYSBDbGllbnQiCgogICAgICAgIHByaXNtYVNlcnZpY2UgLT4gZGIgICJMaXQgLyDDqWNyaXQgbGVzIGRvbm7DqWVzIiAiU1FML1RDUCIKICAgICAgICBlbWFpbFNlcnZpY2UgIC0+IHNtdHAgIkVudm9pZSBlbWFpbHMiICAgICAgICAgICAgICAgICJTTVRQIgogICAgICAgIHN0b3JhZ2VTZXJ2aWNlIC0+IHMzICAiU3RvY2tlIC8gcsOpY3Vww6hyZSBsZXMgcGhvdG9zIiAiQVdTIFNESyIKCiAgICAgICAgIyBSZWxhdGlvbnMgZW50cmUgY29tcG9zYW50cyBkZSBsYSBTUEEKICAgICAgICAjIChpbXBsaXF1ZSBhdXRvbWF0aXF1ZW1lbnQgc3BhIC0+IGFwaSAvIHNwYSAtPiBnbWFwcyBhdSBuaXZlYXUgY29udGVuZXVyKQogICAgICAgIGNsaWVudCAgICAgLT4gcm91dGVyICJVdGlsaXNlIiAiSFRUUFMiCiAgICAgICAgdGVjaG5pY2llbiAtPiByb3V0ZXIgIlV0aWxpc2UiICJIVFRQUyIKICAgICAgICBhZG1pbiAgICAgIC0+IHJvdXRlciAiVXRpbGlzZSIgIkhUVFBTIgoKICAgICAgICByb3V0ZXIgLT4gcGFnZXMgICAgICAgICAgIlJvdXRlIHZlcnMiCiAgICAgICAgcm91dGVyIC0+IGdsb2JhbFByb3ZpZGVycyAiVsOpcmlmaWUgbCdhdXRoZW50aWZpY2F0aW9uIGV0IGxlIHLDtGxlIChQcm90ZWN0ZWRSb3V0ZSkiCgogICAgICAgIHBhZ2VzIC0+IGZlYXR1cmVDb21wb25lbnRzICJDb21wb3NlIGwnw6ljcmFuIMOgIHBhcnRpciBkZSIKCiAgICAgICAgZmVhdHVyZUNvbXBvbmVudHMgLT4gZmVhdHVyZUhvb2tzICAiRMOpbMOoZ3VlIGxhIGxvZ2lxdWUgw6AiCiAgICAgICAgZmVhdHVyZUNvbXBvbmVudHMgLT4gc2hhcmVkVUkgICAgICAiUsOpdXRpbGlzZSIKICAgICAgICBmZWF0dXJlQ29tcG9uZW50cyAtPiBnbG9iYWxQcm92aWRlcnMgIkNvbnNvbW1lIChjb250ZXh0ZSkiCiAgICAgICAgZmVhdHVyZUNvbXBvbmVudHMgLT4gZ21hcHMgIkFmZmljaGFnZSBjYXJ0ZSArIGRlc3NpbiBkZSB6b25lcyAoY29tcG9zYW50IGTDqWRpw6ksIGV4OiBab25lTWFwRHJhd2VyIOKAlCBmZWF0dXJlIGFkbWluKSIgIk1hcHMgSmF2YVNjcmlwdCBBUEkiCgogICAgICAgIGZlYXR1cmVIb29rcyAtPiBmZWF0dXJlU2VydmljZXMgIkFwcGVsbGUiCiAgICAgICAgZmVhdHVyZUhvb2tzIC0+IGdtYXBzICJBdXRvY29tcGxldGUgKyBkw6ljb21wb3NpdGlvbiBkJ2FkcmVzc2UgKGhvb2sgZMOpZGnDqSwgZXg6IHVzZUFkZHJlc3NBdXRvY29tcGxldGUpIiAiUGxhY2VzIEFQSSIKCiAgICAgICAgZmVhdHVyZVNlcnZpY2VzIC0+IGFwaUNsaWVudCAiRWZmZWN0dWUgbGVzIHJlcXXDqnRlcyB2aWEiCgogICAgICAgIGFwaUNsaWVudCAtPiBjb250cm9sbGVycyAiRmFpdCBkZXMgYXBwZWxzIEFQSSIgIkpTT04vSFRUUFMiCgogICAgICAgICMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAjIE1vZMOobGUgZGUgZMOpcGxvaWVtZW50IChuaXZlYXUgNCkKICAgICAgICAjIFVuIHNldWwgVlBTIGjDqWJlcmdlIGRldXggc3RhY2tzIERvY2tlciBDb21wb3NlIGlzb2zDqWVzCiAgICAgICAgIyAocsOpc2VhdXggZGlzdGluY3RzKSwgZGlzdHJpYnXDqWVzIHBhciB1biB1bmlxdWUgTmdpbnggaMO0dGUKICAgICAgICAjIHF1aSByb3V0ZSBzZWxvbiBsZSBub20gZGUgZG9tYWluZS4KICAgICAgICAjID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIHZwcyA9IGRlcGxveW1lbnRFbnZpcm9ubWVudCAiVlBTIiB7CiAgICAgICAgICAgICMgVW4gZ3JvdXBlIHBhciBzdGFjayA6IGVtcMOqY2hlIFN0cnVjdHVyaXpyIGRlIHJlbGllcgogICAgICAgICAgICAjIGxlcyBpbnN0YW5jZXMgZCd1biBlbnZpcm9ubmVtZW50IMOgIGNlbGxlcyBkZSBsJ2F1dHJlCiAgICAgICAgICAgICMgKGV4OiBzcGEgZHUgc3RhZ2luZyB2ZXJzIGFwaSBkZSBsYSBwcm9kKQogICAgICAgICAgICBzdGFnaW5nR3JvdXAgPSBkZXBsb3ltZW50R3JvdXAgIlN0YWdpbmciCiAgICAgICAgICAgIHByb2RHcm91cCAgICA9IGRlcGxveW1lbnRHcm91cCAiUHJvZHVjdGlvbiIKCiAgICAgICAgICAgIGRlcGxveW1lbnROb2RlICJWUFMgVWJ1bnR1IiAiSMO0dGUgdW5pcXVlLCBwYXJ0YWfDqSBlbnRyZSBsZXMgZGV1eCBlbnZpcm9ubmVtZW50cyIgIkxpbnV4IFVidW50dSArIERvY2tlciBFbmdpbmUiIHsKICAgICAgICAgICAgICAgIGhvc3ROZ2lueCA9IGluZnJhc3RydWN0dXJlTm9kZSAiTmdpbnggaMO0dGUgKyBDZXJ0Ym90IiAiUmV2ZXJzZSBwcm94eSBwdWJsaWMgdW5pcXVlLCB0ZXJtaW5haXNvbiBTU0wgKExldCdzIEVuY3J5cHQpLCByb3V0ZSBzZWxvbiBsZSBub20gZGUgZG9tYWluZSIgIk5naW54IChow7R0ZSwgaG9ycyBEb2NrZXIpIgoKICAgICAgICAgICAgICAgIGRlcGxveW1lbnROb2RlICJTdGFjayBEb2NrZXIgQ29tcG9zZSDigJQgU3RhZ2luZyIgIlLDqXNlYXUgYnJpZGdlIGlzb2zDqSA6IHN0YWdpbmdfbmV0d29yayIgIkRvY2tlciBDb21wb3NlIiB7CiAgICAgICAgICAgICAgICAgICAgc3RhZ2luZ1JldmVyc2VQcm94eSA9IGluZnJhc3RydWN0dXJlTm9kZSAiTmdpbnggKHJldmVyc2UgcHJveHkgaW50ZXJuZSkiICJSb3V0ZSAvIHZlcnMgbGUgZnJvbnRlbmQsIC9hcGkgdmVycyBsZSBiYWNrZW5kIiAibmdpbng6YWxwaW5lIOKAlCAxMjcuMC4wLjE6ODA4MC0+ODAiCgogICAgICAgICAgICAgICAgICAgIHN0YWdpbmdTcGFJbnN0YW5jZSA9IGNvbnRhaW5lckluc3RhbmNlIHNwYSBzdGFnaW5nR3JvdXAKICAgICAgICAgICAgICAgICAgICBzdGFnaW5nQXBpSW5zdGFuY2UgPSBjb250YWluZXJJbnN0YW5jZSBhcGkgc3RhZ2luZ0dyb3VwCiAgICAgICAgICAgICAgICAgICAgY29udGFpbmVySW5zdGFuY2UgZGIgc3RhZ2luZ0dyb3VwCiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgZGVwbG95bWVudE5vZGUgIlN0YWNrIERvY2tlciBDb21wb3NlIOKAlCBQcm9kdWN0aW9uIiAiUsOpc2VhdSBicmlkZ2UgaXNvbMOpIDogcHJvZF9uZXR3b3JrIiAiRG9ja2VyIENvbXBvc2UiIHsKICAgICAgICAgICAgICAgICAgICBwcm9kUmV2ZXJzZVByb3h5ID0gaW5mcmFzdHJ1Y3R1cmVOb2RlICJOZ2lueCAocmV2ZXJzZSBwcm94eSBpbnRlcm5lKSIgIlJvdXRlIC8gdmVycyBsZSBmcm9udGVuZCwgL2FwaSB2ZXJzIGxlIGJhY2tlbmQiICJuZ2lueDphbHBpbmUg4oCUIDEyNy4wLjAuMTo4MDgxLT44MCIKCiAgICAgICAgICAgICAgICAgICAgcHJvZFNwYUluc3RhbmNlID0gY29udGFpbmVySW5zdGFuY2Ugc3BhIHByb2RHcm91cAogICAgICAgICAgICAgICAgICAgIHByb2RBcGlJbnN0YW5jZSA9IGNvbnRhaW5lckluc3RhbmNlIGFwaSBwcm9kR3JvdXAKICAgICAgICAgICAgICAgICAgICBjb250YWluZXJJbnN0YW5jZSBkYiBwcm9kR3JvdXAKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQoKICAgICAgICAgICAgaG9zdE5naW54IC0+IHN0YWdpbmdSZXZlcnNlUHJveHkgIkZvcndhcmQgdmVycyAxMjcuMC4wLjE6ODA4MCDigJQgc3RhZ2luZy5ob21lY3ljbGhvbWUueWFubmlja2Jpb3QuZnIiICJIVFRQIgogICAgICAgICAgICBob3N0TmdpbnggLT4gcHJvZFJldmVyc2VQcm94eSAgICAiRm9yd2FyZCB2ZXJzIDEyNy4wLjAuMTo4MDgxIOKAlCBob21lY3ljbGhvbWUueWFubmlja2Jpb3QuZnIiICAgICAgICAgICJIVFRQIgoKICAgICAgICAgICAgc3RhZ2luZ1JldmVyc2VQcm94eSAtPiBzdGFnaW5nU3BhSW5zdGFuY2UgIlNlcnQgbGVzIGZpY2hpZXJzIHN0YXRpcXVlcyIgIkhUVFAiCiAgICAgICAgICAgIHN0YWdpbmdSZXZlcnNlUHJveHkgLT4gc3RhZ2luZ0FwaUluc3RhbmNlICJSb3V0ZSAvYXBpLyoiICAgICAgICAgICAgICAgIkhUVFAvSlNPTiIKCiAgICAgICAgICAgIHByb2RSZXZlcnNlUHJveHkgLT4gcHJvZFNwYUluc3RhbmNlICJTZXJ0IGxlcyBmaWNoaWVycyBzdGF0aXF1ZXMiICJIVFRQIgogICAgICAgICAgICBwcm9kUmV2ZXJzZVByb3h5IC0+IHByb2RBcGlJbnN0YW5jZSAiUm91dGUgL2FwaS8qIiAgICAgICAgICAgICAgICJIVFRQL0pTT04iCiAgICAgICAgfQogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IGhvbWVDeWNsSG9tZSAiQ29udGV4dGUiICJWdWUgZGUgY29udGV4dGUg4oCUIEhvbWVDeWNsJ0hvbWUiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBjb250YWluZXIgaG9tZUN5Y2xIb21lICJDb250ZW5ldXJzIiAiVnVlIGNvbnRlbmV1cnMg4oCUIEhvbWVDeWNsJ0hvbWUiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBjb21wb25lbnQgc3BhICJDb21wb3NhbnRzRnJvbnRlbmQiICJWdWUgY29tcG9zYW50cyDigJQgQXBwbGljYXRpb24gV2ViIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgIH0KCiAgICAgICAgY29tcG9uZW50IGFwaSAiQ29tcG9zYW50c0JhY2tlbmQiICJWdWUgY29tcG9zYW50cyDigJQgQVBJIEJhY2tlbmQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgfQoKICAgICAgICBkZXBsb3ltZW50IGhvbWVDeWNsSG9tZSB2cHMgIkRlcGxvaWVtZW50IiAiVnVlIGTDqXBsb2llbWVudCDigJQgVlBTIChTdGFnaW5nICsgUHJvZHVjdGlvbikiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCgogICAgICAgICAgICAjIHNwYSAtPiBhcGkgZXN0IHVuZSBkw6lwZW5kYW5jZSBsb2dpcXVlIChKUyBleMOpY3V0w6kgZGFucyBsZSBuYXZpZ2F0ZXVyKSwKICAgICAgICAgICAgIyBwYXMgdW4gYXBwZWwgcsOpc2VhdSBjb250ZW5ldXItw6AtY29udGVuZXVyIDogZW4gcsOpYWxpdMOpIHRvdXQgcGFzc2UgcGFyCiAgICAgICAgICAgICMgbGUgcmV2ZXJzZSBwcm94eS4gT24gcmV0aXJlIGxhIHJlbGF0aW9uIGQnaW5zdGFuY2UgYXV0by1nw6luw6lyw6llIHBvdXIKICAgICAgICAgICAgIyBuZSBwYXMgbGFpc3NlciBjcm9pcmUgw6AgdW4gYXBwZWwgZGlyZWN0IGZyb250ZW5kIC0+IGJhY2tlbmQuCiAgICAgICAgICAgIGV4Y2x1ZGUgInN0YWdpbmdTcGFJbnN0YW5jZSAtPiBzdGFnaW5nQXBpSW5zdGFuY2UiCiAgICAgICAgICAgIGV4Y2x1ZGUgInByb2RTcGFJbnN0YW5jZSAtPiBwcm9kQXBpSW5zdGFuY2UiCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIHNoYXBlIFBlcnNvbgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjRjk3MzE2CiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiU29mdHdhcmUgU3lzdGVtIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0RjNCMzAKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJFeHRlcm5hbCIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOTk5OTk5CiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiQ29udGFpbmVyIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0RjNCMzAKICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJEYXRhYmFzZSIgewogICAgICAgICAgICAgICAgc2hhcGUgQ3lsaW5kZXIKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJDb21wb25lbnQiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI0Y0RkJGNQogICAgICAgICAgICAgICAgY29sb3IgIzRGM0IzMAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkdyb3VwIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjNEYzQjMwCiAgICAgICAgICAgICAgICBzdHJva2VXaWR0aCAzCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiSW5mcmFzdHJ1Y3R1cmUgTm9kZSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjNjY2NjY2CiAgICAgICAgICAgICAgICBjb2xvciAjZmZmZmZmCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRGVwbG95bWVudCBOb2RlIiB7CiAgICAgICAgICAgICAgICBjb2xvciAjNEYzQjMwCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cgp9"
+  },
+  "views" : {
+    "componentViews" : [ {
+      "containerId" : "5",
+      "description" : "Vue composants — Application Web",
+      "dimensions" : {
+        "height" : 2044,
+        "width" : 3554
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 260,
+        "y" : 235
+      }, {
+        "id" : "2",
+        "x" : 275,
+        "y" : 725
+      }, {
+        "id" : "3",
+        "x" : 280,
+        "y" : 1210
+      }, {
+        "id" : "6",
+        "x" : 863,
+        "y" : 280
+      }, {
+        "id" : "7",
+        "x" : 873,
+        "y" : 735
+      }, {
+        "id" : "8",
+        "x" : 1663,
+        "y" : 285
+      }, {
+        "id" : "9",
+        "x" : 878,
+        "y" : 1105
+      }, {
+        "id" : "10",
+        "x" : 2243,
+        "y" : 290
+      }, {
+        "id" : "11",
+        "x" : 1665,
+        "y" : 765
+      }, {
+        "id" : "12",
+        "x" : 1688,
+        "y" : 1205
+      }, {
+        "id" : "13",
+        "x" : 2248,
+        "y" : 765
+      }, {
+        "id" : "14",
+        "x" : 2883,
+        "y" : 295
+      }, {
+        "id" : "23",
+        "x" : 2875,
+        "y" : 1190
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "ComposantsFrontend",
+      "name" : "Component View: HomeCycl'Home - Application Web",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "46"
+      }, {
+        "id" : "47"
+      }, {
+        "id" : "48"
+      }, {
+        "id" : "49"
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "51"
+      }, {
+        "id" : "52"
+      }, {
+        "id" : "53"
+      }, {
+        "id" : "54"
+      }, {
+        "id" : "55"
+      }, {
+        "id" : "58"
+      }, {
+        "id" : "59"
+      }, {
+        "id" : "60"
+      }, {
+        "id" : "62"
+      } ]
+    }, {
+      "containerId" : "14",
+      "description" : "Vue composants — API Backend",
+      "dimensions" : {
+        "height" : 2361,
+        "width" : 3585
+      },
+      "elements" : [ {
+        "id" : "5",
+        "x" : 220,
+        "y" : 1059
+      }, {
+        "id" : "15",
+        "x" : 935,
+        "y" : 1599
+      }, {
+        "id" : "16",
+        "x" : 2225,
+        "y" : 619
+      }, {
+        "id" : "17",
+        "x" : 1580,
+        "y" : 1605
+      }, {
+        "id" : "18",
+        "x" : 2225,
+        "y" : 1069
+      }, {
+        "id" : "19",
+        "x" : 930,
+        "y" : 1061
+      }, {
+        "id" : "20",
+        "x" : 1570,
+        "y" : 1054
+      }, {
+        "id" : "21",
+        "x" : 1570,
+        "y" : 634
+      }, {
+        "id" : "22",
+        "x" : 2235,
+        "y" : 155
+      }, {
+        "id" : "24",
+        "x" : 2935,
+        "y" : 1612
+      }, {
+        "id" : "25",
+        "x" : 2930,
+        "y" : 1062
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "ComposantsBackend",
+      "name" : "Component View: HomeCycl'Home - API Backend",
+      "order" : 4,
+      "relationships" : [ {
+        "id" : "32"
+      }, {
+        "id" : "33"
+      }, {
+        "id" : "34"
+      }, {
+        "id" : "35"
+      }, {
+        "id" : "36"
+      }, {
+        "id" : "37"
+      }, {
+        "id" : "38"
+      }, {
+        "id" : "40"
+      }, {
+        "id" : "43"
+      }, {
+        "id" : "63"
+      } ]
+    } ],
+    "configuration" : {
+      "branding" : { },
+      "lastSavedView" : "ComposantsFrontend",
+      "metadataSymbols" : "SquareBrackets",
+      "styles" : {
+        "elements" : [ {
+          "background" : "#f4fbf5",
+          "color" : "#4f3b30",
+          "tag" : "Component"
+        }, {
+          "background" : "#4f3b30",
+          "color" : "#ffffff",
+          "tag" : "Container"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "color" : "#4f3b30",
+          "tag" : "Deployment Node"
+        }, {
+          "background" : "#999999",
+          "color" : "#ffffff",
+          "tag" : "External"
+        }, {
+          "color" : "#4f3b30",
+          "strokeWidth" : 3,
+          "tag" : "Group"
+        }, {
+          "background" : "#666666",
+          "color" : "#ffffff",
+          "tag" : "Infrastructure Node"
+        }, {
+          "background" : "#f97316",
+          "color" : "#ffffff",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#4f3b30",
+          "color" : "#ffffff",
+          "tag" : "Software System"
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "description" : "Vue conteneurs — HomeCycl'Home",
+      "dimensions" : {
+        "height" : 2650,
+        "width" : 3070
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 200,
+        "y" : 143
+      }, {
+        "id" : "2",
+        "x" : 200,
+        "y" : 843
+      }, {
+        "id" : "3",
+        "x" : 200,
+        "y" : 1543
+      }, {
+        "id" : "5",
+        "x" : 900,
+        "y" : 895
+      }, {
+        "id" : "14",
+        "x" : 1650,
+        "y" : 895
+      }, {
+        "id" : "22",
+        "x" : 2400,
+        "y" : 893
+      }, {
+        "id" : "23",
+        "x" : 1295,
+        "y" : 250
+      }, {
+        "id" : "24",
+        "x" : 1975,
+        "y" : 1535
+      }, {
+        "id" : "25",
+        "x" : 1290,
+        "y" : 1530
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Conteneurs",
+      "name" : "Container View: HomeCycl'Home",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "26"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "30"
+      }, {
+        "id" : "39"
+      }, {
+        "id" : "41"
+      }, {
+        "id" : "44"
+      }, {
+        "id" : "56"
+      }, {
+        "id" : "64"
+      } ],
+      "softwareSystemId" : "4"
+    } ],
+    "deploymentViews" : [ {
+      "description" : "Vue déploiement — VPS (Staging + Production)",
+      "dimensions" : {
+        "height" : 1884,
+        "width" : 2984
+      },
+      "elements" : [ {
+        "id" : "65",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "66",
+        "x" : 1234,
+        "y" : 1228
+      }, {
+        "id" : "67",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "68",
+        "x" : 1614,
+        "y" : 608
+      }, {
+        "id" : "69",
+        "x" : 1618,
+        "y" : 198
+      }, {
+        "id" : "70",
+        "x" : 2293,
+        "y" : 623
+      }, {
+        "id" : "72",
+        "x" : 2288,
+        "y" : 193
+      }, {
+        "id" : "74",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "75",
+        "x" : 859,
+        "y" : 613
+      }, {
+        "id" : "76",
+        "x" : 864,
+        "y" : 183
+      }, {
+        "id" : "77",
+        "x" : 239,
+        "y" : 608
+      }, {
+        "id" : "79",
+        "x" : 254,
+        "y" : 188
+      } ],
+      "environment" : "VPS",
+      "key" : "Deploiement",
+      "name" : "Deployment View: HomeCycl'Home - VPS",
+      "order" : 5,
+      "relationships" : [ {
+        "id" : "73"
+      }, {
+        "id" : "80"
+      }, {
+        "id" : "81"
+      }, {
+        "id" : "82"
+      }, {
+        "id" : "83"
+      }, {
+        "id" : "84"
+      }, {
+        "id" : "85"
+      }, {
+        "id" : "86"
+      } ],
+      "softwareSystemId" : "4"
+    } ],
+    "systemContextViews" : [ {
+      "description" : "Vue de contexte — HomeCycl'Home",
+      "dimensions" : {
+        "height" : 1748,
+        "width" : 2480
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 590,
+        "y" : 220
+      }, {
+        "id" : "2",
+        "x" : 370,
+        "y" : 675
+      }, {
+        "id" : "3",
+        "x" : 495,
+        "y" : 1105
+      }, {
+        "id" : "4",
+        "x" : 1035,
+        "y" : 725
+      }, {
+        "id" : "23",
+        "x" : 1690,
+        "y" : 220
+      }, {
+        "id" : "24",
+        "x" : 1715,
+        "y" : 725
+      }, {
+        "id" : "25",
+        "x" : 1490,
+        "y" : 1190
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "Contexte",
+      "name" : "System Context View: HomeCycl'Home",
+      "order" : 1,
+      "paperSize" : "A5_Landscape",
+      "relationships" : [ {
+        "id" : "27"
+      }, {
+        "id" : "29"
+      }, {
+        "id" : "31"
+      }, {
+        "id" : "42"
+      }, {
+        "id" : "45"
+      }, {
+        "id" : "57"
+      } ],
+      "softwareSystemId" : "4"
+    } ]
+  }
+}

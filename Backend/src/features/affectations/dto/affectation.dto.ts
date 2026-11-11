@@ -2,28 +2,28 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ZoneAffecteeDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nomZone: string;
+    nomZone!: string;
 
     @ApiProperty()
-    isActive: boolean;
+    isActive!: boolean;
 }
 
 export class AffectationDto {
     @ApiProperty()
-    technicienId: string;
+    technicienId!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 
     @ApiProperty()
-    prenom: string;
+    prenom!: string;
 
     @ApiProperty()
-    email: string;
+    email!: string;
 
     @ApiProperty({ type: () => [ZoneAffecteeDto] })
-    zones: ZoneAffecteeDto[];
+    zones!: ZoneAffecteeDto[];
 }

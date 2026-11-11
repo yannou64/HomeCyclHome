@@ -1,98 +1,102 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# HomeCycl'Home — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST NestJS de l'application HomeCycl'Home (réservation d'interventions de réparation et
+d'entretien de vélos à domicile). Voir le [README racine](../README.md) pour la présentation
+générale du projet.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)
+![Jest](https://img.shields.io/badge/Jest-TDD-C21325?logo=jest)
 
-## Description
+## Architecture
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Clean Architecture pragmatique adaptée à NestJS — trois couches (domaine, application,
+infrastructure), organisées autour d'une règle unique : la logique métier ne dépend jamais de
+l'infrastructure. Chaque feature suit le même pattern :
 
-## Project setup
-
-```bash
-$ npm install
+```
+features/<nom>/
+├── controllers/     # HTTP uniquement — délègue aux use cases
+├── use-cases/       # 1 fichier = 1 opération métier, testée en isolation
+├── repositories/     # Interface (contrat) + implémentation Prisma
+└── dto/              # input/ (validés class-validator) et output/
 ```
 
-## Compile and run the project
+Détails complets : [`CLAUDE.md`](./CLAUDE.md) (conventions) et
+[`docs/wiki/architecture.md`](../docs/wiki/architecture.md) (structure détaillée).
+
+## Prérequis
+
+- Node.js 20+
+- PostgreSQL 16 (ou via Docker)
+
+## Variables d'environnement
+
+Copier `.env.example` vers `.env` et renseigner les valeurs :
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+| Variable                | Description                                                        |
+|--------------------------|---------------------------------------------------------------------|
+| `NODE_ENV`               | `development` \| `production` — désactive Swagger en production    |
+| `PORT`                   | Port d'écoute de l'API (défaut `3000`)                              |
+| `DATABASE_URL`           | Chaîne de connexion PostgreSQL, utilisée par Prisma                 |
+| `JWT_ACCESS_SECRET`      | Secret de signature de l'access token (15 min)                      |
+| `JWT_REFRESH_SECRET`     | Secret de signature du refresh token (7 jours)                      |
+| `FRONTEND_URL`           | URL du frontend — CORS et liens dans les emails transactionnels     |
+| `MAIL_HOST`              | Hôte SMTP                                                            |
+| `MAIL_PORT`              | Port SMTP                                                            |
+| `MAIL_USER`              | Identifiant SMTP                                                     |
+| `MAIL_PASS`              | Mot de passe SMTP                                                    |
+| `MAIL_FROM`              | Adresse d'expédition des emails transactionnels                     |
+| `AWS_REGION`              | Région AWS du bucket S3 (photos d'intervention)                     |
+| `AWS_S3_BUCKET`           | Nom du bucket S3                                                     |
+| `AWS_ACCESS_KEY_ID`       | Identifiant de clé AWS — lu automatiquement par le SDK AWS          |
+| `AWS_SECRET_ACCESS_KEY`   | Clé secrète AWS — lue automatiquement par le SDK AWS                |
+
+## Installation et lancement
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run start:dev
 ```
 
-## Deployment
+- API disponible sur `http://localhost:3000/api`
+- Documentation Swagger sur `http://localhost:3000/api-docs` (hors production)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Scripts disponibles
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev     # démarrage en mode watch
+npm run build          # compilation TypeScript
+npm run start:prod     # démarrage depuis le build (dist/)
+npm run lint            # ESLint avec correction automatique
+npm run format          # Prettier
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Tests (TDD)
 
-## Resources
+```bash
+npm run test           # tests unitaires (Jest) — un fichier .spec.ts par use case
+npm run test:watch     # mode watch
+npm run test:cov       # couverture de code
+npm run test:e2e       # tests d'intégration (Supertest)
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Les tests s'exécutent automatiquement sur chaque push via GitHub Actions ; un échec bloque le
+déploiement.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Documentation
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+| Document | Contenu |
+|---|---|
+| [`CLAUDE.md`](./CLAUDE.md) | Conventions de code, architecture, sécurité, règles métier |
+| [`docs/wiki/architecture.md`](../docs/wiki/architecture.md) | Structure des dossiers, modules NestJS |
+| [`docs/wiki/metier.md`](../docs/wiki/metier.md) | Entités, règles métier, MCD/MLD |
+| Swagger UI (`/api-docs`) | Documentation interactive de chaque endpoint |

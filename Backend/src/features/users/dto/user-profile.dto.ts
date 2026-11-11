@@ -4,20 +4,20 @@ export type UserRole = 'client' | 'technicien' | 'admin';
 
 export class UserProfileDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 
     @ApiProperty()
-    prenom: string;
+    prenom!: string;
 
     @ApiProperty()
-    email: string;
+    email!: string;
 
     @ApiProperty()
-    telephone: string;
+    telephone!: string;
 
     @ApiProperty({ enum: ['client', 'technicien', 'admin'] })
-    role: UserRole;
+    role!: UserRole;
 }

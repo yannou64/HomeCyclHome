@@ -18,6 +18,7 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { ACCESS_COOKIE, REFRESH_COOKIE } from '../../../config/cookie.config';
 import { LoginDto } from '../dto/login.dto';
@@ -43,12 +44,14 @@ export class AuthController {
     @ApiCreatedResponse({
         description: 'Compte créé — email de confirmation envoyé',
     })
+    @Throttle({ default: { limit: 5, ttl: 60_000 } })
     @Post('register')
     register(@Body() dto: RegisterDto) {
         return this.registerUseCase.execute(dto);
     }
 
     @ApiOkResponse({ description: 'Email confirmé' })
+    @Throttle({ default: { limit: 5, ttl: 60_000 } })
     @Get('confirm-email')
     confirmEmail(@Query('token') token: string) {
         return this.confirmEmailUseCase.execute(token);
@@ -60,6 +63,7 @@ export class AuthController {
     })
     @ApiOkResponse({ description: 'Connexion réussie — cookies posés' })
     @HttpCode(HttpStatus.OK)
+    @Throttle({ default: { limit: 5, ttl: 60_000 } })
     @Post('login')
     async login(
         @Body() dto: LoginDto,
@@ -80,6 +84,7 @@ export class AuthController {
 
     @ApiOkResponse({ description: 'Token renouvelé' })
     @HttpCode(HttpStatus.OK)
+    @Throttle({ default: { limit: 5, ttl: 60_000 } })
     @Post('refresh')
     async refresh(
         @Req() req: Request,

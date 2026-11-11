@@ -1,14 +1,11 @@
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import {
     CreateCreneauData,
     GenerationRapportDto,
     IndisponibiliteDto,
     PauseRecurrenteDto,
 } from '../dto/planning.dto';
-import {
-    IPlanningRepository,
-    PLANNING_REPO,
-} from '../repositories/planning.repository.interface';
+import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GenerateCreneauxInput = {
     modeleId: string;
@@ -20,10 +17,7 @@ export type GenerateCreneauxInput = {
 const MAX_MOIS = 6;
 
 export class GenerateCreneauxUseCase {
-    constructor(
-        @Inject(PLANNING_REPO)
-        private readonly repo: IPlanningRepository,
-    ) {}
+    constructor(private readonly repo: IPlanningRepository) {}
 
     async execute(input: GenerateCreneauxInput): Promise<GenerationRapportDto> {
         // 1. Charger le modèle

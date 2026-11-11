@@ -37,6 +37,9 @@ export type CreneauInfo = {
     dateDebut: string; // ISO 8601
     dateFin: string; // ISO 8601 — dateDebut + dureeMinutes
     technicienId: string | null;
+    // Optionnel : une réservation mise en attente dans le localStorage avant
+    // l'ajout de ce champ doit rester restaurable après connexion.
+    technicienPrenom?: string | null;
 };
 
 // Données optionnelles saisies avant la confirmation

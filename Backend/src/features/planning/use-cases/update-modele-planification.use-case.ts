@@ -1,21 +1,14 @@
 import {
     BadRequestException,
     ConflictException,
-    Inject,
     NotFoundException,
 } from '@nestjs/common';
 import { UpdateModelePlanificationDto } from '../dto/update-modele-planification.dto';
 import { ModelePlanificationDto } from '../dto/planning.dto';
-import {
-    IPlanningRepository,
-    PLANNING_REPO,
-} from '../repositories/planning.repository.interface';
+import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class UpdateModelePlanificationUseCase {
-    constructor(
-        @Inject(PLANNING_REPO)
-        private readonly repo: IPlanningRepository,
-    ) {}
+    constructor(private readonly repo: IPlanningRepository) {}
 
     async execute(
         id: string,

@@ -1,15 +1,9 @@
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { AffectationDto } from '../dto/affectation.dto';
-import {
-    AFFECTATIONS_REPO,
-    IAffectationsRepository,
-} from '../repositories/affectations.repository.interface';
+import { IAffectationsRepository } from '../repositories/affectations.repository.interface';
 
 export class SetTechnicienZonesUseCase {
-    constructor(
-        @Inject(AFFECTATIONS_REPO)
-        private readonly repo: IAffectationsRepository,
-    ) {}
+    constructor(private readonly repo: IAffectationsRepository) {}
 
     async execute(
         technicienId: string,

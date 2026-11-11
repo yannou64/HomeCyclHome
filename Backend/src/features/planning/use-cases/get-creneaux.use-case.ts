@@ -1,9 +1,6 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { CreneauDto } from '../dto/planning.dto';
-import {
-    IPlanningRepository,
-    PLANNING_REPO,
-} from '../repositories/planning.repository.interface';
+import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GetCreneauxInput = {
     technicienId: string;
@@ -12,10 +9,7 @@ export type GetCreneauxInput = {
 };
 
 export class GetCreneauxUseCase {
-    constructor(
-        @Inject(PLANNING_REPO)
-        private readonly repo: IPlanningRepository,
-    ) {}
+    constructor(private readonly repo: IPlanningRepository) {}
 
     async execute(input: GetCreneauxInput): Promise<CreneauDto[]> {
         if (!input.technicienId) {

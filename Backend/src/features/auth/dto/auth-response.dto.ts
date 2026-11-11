@@ -1,5 +1,5 @@
 export class AuthResponseDto {
-    userId: string;
-    role: string;
-    prenom: string;
+    userId!: string;
+    role!: string;
+    prenom!: string;
 }

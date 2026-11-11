@@ -1,9 +1,5 @@
-import { Inject } from '@nestjs/common';
 import { GenerationRapportDto } from '../dto/planning.dto';
-import {
-    IPlanningRepository,
-    PLANNING_REPO,
-} from '../repositories/planning.repository.interface';
+import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GenerateCreneauxUseCase } from './generate-creneaux.use-case';
 
 export type GenerateAllCreneauxInput = {
@@ -13,7 +9,6 @@ export type GenerateAllCreneauxInput = {
 
 export class GenerateAllCreneauxUseCase {
     constructor(
-        @Inject(PLANNING_REPO)
         private readonly repo: IPlanningRepository,
         private readonly generateUseCase: GenerateCreneauxUseCase,
     ) {}

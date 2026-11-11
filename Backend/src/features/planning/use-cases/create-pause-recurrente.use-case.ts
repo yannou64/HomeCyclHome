@@ -1,16 +1,10 @@
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreatePauseRecurrenteDto } from '../dto/create-pause-recurrente.dto';
 import { PauseRecurrenteDto } from '../dto/planning.dto';
-import {
-    IPlanningRepository,
-    PLANNING_REPO,
-} from '../repositories/planning.repository.interface';
+import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class CreatePauseRecurrenteUseCase {
-    constructor(
-        @Inject(PLANNING_REPO)
-        private readonly repo: IPlanningRepository,
-    ) {}
+    constructor(private readonly repo: IPlanningRepository) {}
 
     async execute(dto: CreatePauseRecurrenteDto): Promise<PauseRecurrenteDto> {
         if (dto.heureFin <= dto.heureDebut) {

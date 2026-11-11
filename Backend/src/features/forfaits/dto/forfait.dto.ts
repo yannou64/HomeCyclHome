@@ -2,20 +2,20 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ForfaitDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 
     @ApiProperty({ nullable: true, type: String })
-    description: string | null;
+    description!: string | null;
 
     @ApiProperty()
-    dureeMinutes: number;
+    dureeMinutes!: number;
 
     @ApiProperty()
-    isActif: boolean;
+    isActif!: boolean;
 
     @ApiProperty({ nullable: true, type: Number })
-    prixActif: number | null;
+    prixActif!: number | null;
 }

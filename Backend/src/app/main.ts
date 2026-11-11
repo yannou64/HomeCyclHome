@@ -2,12 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { Express } from 'express';
+import { helmetConfig } from '../config/helmet.config';
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
+    // Fait confiance aux 2 reverse proxies en prod (Nginx hôte + Nginx interne
+    // Docker) pour lire la vraie IP client via X-Forwarded-For — indispensable
+    // pour que le rate limiting (@nestjs/throttler) compte par visiteur réel.
+    // `set()` est une méthode Express, non exposée par le type INestApplication.
+    // `getInstance()` retourne `any` dans les types NestJS (`ServerInstance` par
+    // défaut) — on caste explicitement en `Express` pour éviter un `any`
+    // implicite (règle @typescript-eslint/no-unsafe-*).
+    const expressInstance = app.getHttpAdapter().getInstance() as Express;
+    expressInstance.set('trust proxy', 2);
+
     app.setGlobalPrefix('api');
+
+    // Headers de sécurité HTTP (X-Frame-Options, HSTS, CSP...)
+    app.use(helmet(helmetConfig));
 
     // Lecture des cookies entrants (nécessaire pour la JWT strategy)
     app.use(cookieParser());

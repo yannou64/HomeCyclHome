@@ -10,7 +10,7 @@ import {
 export class CreatePauseRecurrenteDto {
     @IsString()
     @IsNotEmpty()
-    technicienId: string;
+    technicienId!: string;
 
     // null = pause valable tous les jours (ex: pause déjeuner)
     // 0=lundi … 6=dimanche pour une pause sur un jour précis
@@ -23,12 +23,12 @@ export class CreatePauseRecurrenteDto {
     @IsInt()
     @Min(0)
     @Max(1439)
-    heureDebut: number;
+    heureDebut!: number;
 
     @IsInt()
     @Min(1)
     @Max(1440)
-    heureFin: number;
+    heureFin!: number;
 
     @IsOptional()
     @IsString()

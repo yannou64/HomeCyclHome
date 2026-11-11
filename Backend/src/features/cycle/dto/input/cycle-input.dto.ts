@@ -2,13 +2,13 @@ import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateCycleDto {
     @IsString()
-    libelle: string;
+    libelle!: string;
 
     @IsUUID()
-    marqueId: string;
+    marqueId!: string;
 
     @IsUUID()
-    typeCycleId: string;
+    typeCycleId!: string;
 
     @IsOptional()
     @IsString()
