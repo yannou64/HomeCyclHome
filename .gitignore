@@ -18,12 +18,16 @@ dist
 *.log
 
 # ========================
-# IDE
+# IDE / Système
 # ========================
 .vscode
+# Métadonnées du Finder macOS, créées dans chaque dossier ouvert
+.DS_Store
 
 # ========================
-# Doc
+# Outils externes
 # ========================
-# Annexes de certification (PDF) — conservées en local, non publiées
-docs/annexes
+# Le C4 (Structurizr) et la config Obsidian vivent dans le vault de gestion de
+# projet, pas dans le dépôt : ne pas les y réintroduire
+.structurizr/
+.obsidian/
