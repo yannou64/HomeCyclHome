@@ -1,20 +1,13 @@
 name: CI/CD
 
 on:
+    # Push sur dev / main = fusion d'une PR : c'est ce qui déclenche le build et
+    # le déploiement (staging pour dev, production pour main).
     push:
-        # Branches de travail nommées selon le type Conventional Commits
-        # (feat/, fix/, refactor/, ci/, docs/, test/) + branches de déploiement
-        branches:
-            [
-                dev,
-                main,
-                'feat/**',
-                'fix/**',
-                'refactor/**',
-                'ci/**',
-                'docs/**',
-                'test/**',
-            ]
+        branches: [dev, main]
+    # Une branche de travail est testée via sa PR, sur le résultat de sa fusion
+    # avec la branche cible. Pas de déclenchement sur son push : il ferait
+    # doublon. Pour un retour avant la fin du travail, ouvrir la PR en brouillon.
     pull_request:
         branches: [main, dev]
 

@@ -106,7 +106,8 @@ npm run test          # tests unitaires (Jest)
 npm run test:e2e      # tests d'intégration (Supertest) — en cours de mise en place
 ```
 
-Les tests s'exécutent automatiquement à chaque push via GitHub Actions. Un échec bloque le déploiement.
+Les tests unitaires s'exécutent avant chaque commit (hook `pre-commit`) puis dans
+GitHub Actions sur chaque pull request vers `dev` ou `main`. Un échec bloque le déploiement.
 
 ---
 

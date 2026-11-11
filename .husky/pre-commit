@@ -1,1 +1,4 @@
-cd Frontend && npm run lint && cd ../Backend && npm run lint
+# Avant chaque commit : lint du frontend et du backend, puis tests unitaires
+# du backend (rapides : aucun accès réseau ni base de données).
+# Les tests d'intégration (base de données) seront exécutés par la CI.
+cd Frontend && npm run lint && cd ../Backend && npm run lint && npm test -- --silent

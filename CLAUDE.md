@@ -123,13 +123,21 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
 
 ## 7. Git (conventions obligatoires)
 
-- **Branches :** `main` (production, protégée) · `dev` (staging, intégration) ·
-  branches de travail préfixées par leur type : `feat/`, `fix/`, `refactor/`, `ci/`,
-  `docs/`, `test/`. La CI se déclenche sur ces préfixes.
-- **Flux :** branche de travail → PR → `dev` → PR → `main`.
+- **Branches :** `main` (production) · `dev` (staging, intégration) · branches de
+  travail préfixées par leur type : `feat/`, `fix/`, `refactor/`, `ci/`, `docs/`,
+  `test/`. Ne jamais créer une branche nommée seulement `feat` ou `refactor` : elle
+  bloque le préfixe.
+- **Flux :** branche de travail → PR → `dev` → PR → `main`. Jamais de push direct sur
+  `dev` ni `main`. *Protection GitHub de ces deux branches : en cours de
+  configuration par Yannick (PR obligatoire, checks CI obligatoires).*
+- **CI :** une branche de travail est testée **par sa PR** (sur le résultat de la
+  fusion avec la cible), pas par ses push. Pour un retour avant la fin du travail,
+  ouvrir la PR en brouillon. La fusion dans `dev` déploie le staging, dans `main` la
+  production.
 - **Commits :** Conventional Commits, imposés par Husky + Commitlint
   (`feat`, `fix`, `refactor`, `docs`, `test`, `ci`, `style`). Le hook `pre-commit`
-  lance le lint frontend et backend. Ne jamais proposer un message non conforme.
+  lance le lint frontend et backend, puis les tests unitaires du backend. Ne jamais
+  proposer un message non conforme, ni contourner un hook (`--no-verify`).
 
 ---
 
@@ -143,7 +151,8 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
   étrangères, RBAC de bout en bout. **Première brique de la V2, en cours de mise en
   place** : à construire avec Yannick avant les US.
 - **Frontend** : aucun test (décision ouverte, voir le Journal).
-- Les tests tournent dans la CI ; un échec bloque le déploiement.
+- Les tests unitaires tournent avant chaque commit (`pre-commit`) et dans la CI de
+  chaque PR ; un échec bloque le déploiement.
 
 Détails d'implémentation : `Backend/CLAUDE.md`, section Tests.
 

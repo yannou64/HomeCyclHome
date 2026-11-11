@@ -88,8 +88,8 @@ npm run test:cov       # couverture de code
 npm run test:e2e       # tests d'intégration (Supertest)
 ```
 
-Les tests s'exécutent automatiquement sur chaque push via GitHub Actions ; un échec bloque le
-déploiement.
+Les tests unitaires s'exécutent avant chaque commit (hook `pre-commit`) puis dans GitHub
+Actions sur chaque pull request vers `dev` ou `main` ; un échec bloque le déploiement.
 
 ## Documentation
 
