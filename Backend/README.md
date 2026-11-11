@@ -24,8 +24,7 @@ features/<nom>/
 └── dto/              # input/ (validés class-validator) et output/
 ```
 
-Détails complets : [`CLAUDE.md`](./CLAUDE.md) (conventions) et
-[`docs/wiki/architecture.md`](../docs/wiki/architecture.md) (structure détaillée).
+Détails complets : [`CLAUDE.md`](./CLAUDE.md) (architecture et conventions).
 
 ## Prérequis
 
@@ -96,7 +95,5 @@ déploiement.
 
 | Document | Contenu |
 |---|---|
-| [`CLAUDE.md`](./CLAUDE.md) | Conventions de code, architecture, sécurité, règles métier |
-| [`docs/wiki/architecture.md`](../docs/wiki/architecture.md) | Structure des dossiers, modules NestJS |
-| [`docs/wiki/metier.md`](../docs/wiki/metier.md) | Entités, règles métier, MCD/MLD |
+| [`CLAUDE.md`](./CLAUDE.md) | Architecture, conventions de code, sécurité, stratégie de tests |
 | Swagger UI (`/api-docs`) | Documentation interactive de chaque endpoint |

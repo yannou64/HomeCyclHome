@@ -70,4 +70,4 @@ npm run lint         # ESLint
 | Document | Contenu |
 |---|---|
 | [`CLAUDE.md`](./CLAUDE.md) | Conventions de code, design system, structure des dossiers |
-| [`../docs/wiki/architecture.md`](../docs/wiki/architecture.md) | Architecture globale du projet |
+| [`../CLAUDE.md`](../CLAUDE.md) | Organisation globale du projet |

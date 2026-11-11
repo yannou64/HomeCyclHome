@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky",
-    "sync:wiki": "sh scripts/sync-wiki.sh"
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",

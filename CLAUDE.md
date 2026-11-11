@@ -1,220 +1,194 @@
 # CLAUDE.md — HomeCycl'Home
 
-Ce fichier est lu automatiquement par Claude Code à chaque session.
-Il définit le contexte global du projet, les conventions et la posture de travail.
-Les fichiers `Frontend/CLAUDE.md` et `Backend/CLAUDE.md` complètent ce fichier
-avec les spécificités de chaque couche.
+Lu automatiquement par Claude Code à chaque session. `Frontend/CLAUDE.md` et
+`Backend/CLAUDE.md` le complètent.
+
+**Ce fichier dit *comment* on travaille. *Ce qu'on construit* est spécifié dans le
+vault de gestion de projet (section 2) — ce fichier ne le recopie jamais.**
 
 ---
 
-## 1. Contexte du projet
+## 1. Contexte
 
-**Client :** LeCycleLyonnais
-**Application :** HomeCycl'Home — réservation d'interventions de réparation et
-entretien de vélos à domicile.
-**Cadre :** Projet de certification CDA (Concepteur Développeur d'Applications).
-Les livrables doivent satisfaire des exigences fonctionnelles ET pédagogiques.
-
-**Trois rôles utilisateurs :**
-- `client` — réserve une intervention
-- `technicien` — réalise et clôture l'intervention
-- `admin` — configure et supervise l'activité
-
-**Objectif MVP :** permettre le cycle complet →
-Réservation → Réalisation → Paiement → Clôture
+- **Client :** LeCycleLyonnais — **Application :** HomeCycl'Home, réservation
+  d'interventions d'entretien de vélos à domicile.
+- **Cadre :** projet de certification CDA. Les livrables doivent satisfaire des
+  exigences fonctionnelles ET pédagogiques.
+- **Rôles :** `client` (réserve) · `technicien` (réalise) · `admin` (configure, supervise).
+- **Versions :**
+  - **V1** livrée et figée (tag git `homecyclhome-v1`).
+  - **V2** en cours : refonte du planning et des interventions, espace technicien,
+    alertes. Périmètre, calendrier, ligne de coupe et changements de données :
+    note `Refonte 2.0` du vault.
 
 ---
 
-## 2. Stack technique (choix définitifs — ne pas remettre en question)
+## 2. Sources de vérité
+
+**Vault de gestion de projet** (Obsidian, hors dépôt) :
+```
+/Users/yannickbiot/Documents/Mini Brain/30 Projets/HomeCycl'Home
+```
+Dossier de la V2 : `3. Développement - Suivi et contrôle/V2/`
+
+**Avant tout développement, lire `V2/Assistant IA/Assistant IA - Lisez-moi.md`** :
+ordre de lecture de la spec, ce qui fait foi, définition de fini d'une user story.
+Ses règles s'appliquent telles quelles et ne sont pas répétées ici.
+
+**Une information, un seul endroit :**
+
+| Type d'information | Seul endroit | Qui écrit |
+|---|---|---|
+| Règles de gestion, critères, séquences, données | Spec du vault (`V2/…`, `Refonte 2.0`, `Assistant IA - Glossaire`) | Yannick |
+| Plan : calendrier, périmètre, ligne de coupe | `Refonte 2.0` + Roadmap 2.0 | Yannick |
+| Questions de spec à trancher | `Assistant IA - Écarts d'implémentation` | Claude (constat), Yannick (décision) |
+| Réalisé, décisions techniques, déviations au plan | `Assistant IA - Journal de développement` | Claude |
+| Conventions de code, architecture, façon de tester | Les `CLAUDE.md` du dépôt | Claude, validé par Yannick |
+| Faits déductibles du code (compteurs, listes de fichiers, endpoints) | **Nulle part** — recalculés à la demande | — |
+
+Conséquences :
+- Ne jamais recopier dans le dépôt (CLAUDE.md, README, commentaires de doc) une règle
+  métier, un critère ou une date du plan : renvoyer à la note par son nom.
+- Dans le vault, Claude n'écrit que dans *Écarts* et *Journal*. Il ne coche jamais
+  une case `- [ ]`.
+- Le dossier `V1/` du vault est en lecture seule. Le vault « Brouillon » de la V1 a
+  été supprimé le 11/11/2026 : toute référence à `sprint-actuel.md`, `log.md` ou
+  `metier.md` est obsolète.
+
+---
+
+## 3. Spec et réalité ne se contredisent jamais
+
+- **Aucun écart silencieux.** Si l'implémentation impose de s'écarter de la spec
+  (règle impossible, contradiction entre notes, choix technique qui change une
+  règle) : ajouter une ligne dans *Écarts*, s'arrêter sur ce point, attendre la
+  décision. Yannick corrige la spec et relance `export-ia.py`. Le code suit la spec
+  corrigée. Un critère modifié pendant une US en cours suit le même chemin.
+- **Traçabilité critère → test.** Le `describe` porte le nom exact de l'US, chaque
+  `it` commence par `CA<n>` (rang du critère dans la note, sur deux chiffres) :
+  ```ts
+  describe("US-01 Choisir la couleur d'une zone 2.0", () => {
+      it('CA07 — refuse un nom hors énumération', async () => { /* … */ });
+  });
+  ```
+  La couverture se lit dans les noms de tests ; Yannick coche les cases à partir
+  du rapport de `/terminer-us`.
+- **Audit aux points de contrôle** (C1, C2, C3, fin de V2) : `/audit-alignement`.
+
+---
+
+## 4. Workflow — une user story à la fois
+
+| Étape | Qui | Outil |
+|---|---|---|
+| 1. Lire la spec de l'US, produire le plan de tests `CA<n>`, signaler les écarts | Claude | `/demarrer-us <US>` |
+| 2. Valider le plan de tests | Yannick | — |
+| 3. RED : écrire les tests, les voir échouer | Claude | — |
+| 4. GREEN puis refactor : implémenter jusqu'au vert | Claude | — |
+| 5. Vérifier la définition de fini, rapport de couverture, entrée du Journal | Claude | `/terminer-us <US>` |
+| 6. Cocher les critères, commit, PR vers `dev` | Yannick | — |
+
+Rappel : Yannick se décrit « tête en l'air ». Quand une US semble terminée, proposer
+explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
+
+---
+
+## 5. Stack technique (choix définitifs — ne pas remettre en question)
 
 | Couche | Technologie |
 |---|---|
-| Frontend | React + Vite + TypeScript |
-| Style | SCSS modules (pages client) + Tailwind/shadcn-ui (panneau admin uniquement) |
+| Frontend | React 19 + Vite + TypeScript |
+| Style | SCSS Modules (pages client et technicien) + Tailwind v4 / shadcn-ui (panneau admin uniquement) |
 | Backend | NestJS + TypeScript |
-| ORM | Prisma |
-| Base de données | PostgreSQL |
-| Auth | JWT + Refresh Token + RBAC |
-| Géolocalisation | Google Maps Platform (Geocoding + Autocomplete) |
+| ORM / BDD | Prisma + PostgreSQL |
+| Auth | JWT + refresh token en cookies `HttpOnly` + RBAC |
+| Géolocalisation | Google Maps Platform (Geocoding + Autocomplete) — la vérification de zone est un ray casting côté backend |
 | Calendrier | FullCalendar (version gratuite) |
-| Tests | Jest (TDD, backend uniquement) — Supertest installé mais aucun test d'intégration écrit à ce jour, aucun test frontend |
-| CI/CD | GitHub Actions |
-| Conteneurisation | Docker + Docker Compose (staging + production — pas de conteneurisation en développement local) |
-| Registry | GitHub Container Registry (ghcr.io/yannou64) |
+| Stockage photos | AWS S3 (transit par le backend) |
+| Tests | Jest (unitaires) + Supertest sur PostgreSQL réel (intégration) — backend uniquement |
+| CI/CD | GitHub Actions → GitHub Container Registry (`ghcr.io/yannou64`) → VPS |
+| Conteneurs | Docker Compose en staging et production (pas en développement local) |
 
 ---
 
-## 3. Architecture logicielle
+## 6. Architecture
 
-**Pattern retenu : Clean Architecture pragmatique adaptée à NestJS.**
-
-Séparation stricte entre :
-- Domaine métier (entités, règles)
-- Couche application (use cases)
-- Infrastructure (Prisma, HTTP, externe)
-
-**Architecture découplée frontend / backend via API REST.**
-Ne jamais mélanger logique métier et logique d'affichage.
+- **Clean Architecture pragmatique adaptée à NestJS** : domaine métier, use cases,
+  infrastructure (Prisma, HTTP, services externes) strictement séparés.
+- **Un use case par opération métier**, un fichier par use case.
+- **Frontend et backend découplés** via une API REST. Jamais de logique métier dans
+  l'affichage.
 
 ---
 
-## 4. Infrastructure déployée
+## 7. Git (conventions obligatoires)
 
-- **VPS Linux Ubuntu** avec Nginx hôte + Certbot (SSL Let's Encrypt)
-- **Production :** `homecyclhome.yannickbiot.fr` → port 8081
-- **Staging :** `staging.homecyclhome.yannickbiot.fr` → port 8080
-- Deux stacks Docker Compose isolées (réseaux distincts)
-- Chaque stack : Nginx interne + Frontend + Backend + PostgreSQL
-- Le VPS n'exécute que des images Docker — aucun code source sur le serveur
-
-**Règle critique Docker + UFW :**
-Toujours binder les ports sur `127.0.0.1` pour éviter que Docker bypasse UFW.
+- **Branches :** `main` (production, protégée) · `dev` (staging, intégration) ·
+  branches de travail préfixées par leur type : `feat/`, `fix/`, `refactor/`, `ci/`,
+  `docs/`, `test/`. La CI se déclenche sur ces préfixes.
+- **Flux :** branche de travail → PR → `dev` → PR → `main`.
+- **Commits :** Conventional Commits, imposés par Husky + Commitlint
+  (`feat`, `fix`, `refactor`, `docs`, `test`, `ci`, `style`). Le hook `pre-commit`
+  lance le lint frontend et backend. Ne jamais proposer un message non conforme.
 
 ---
 
-## 5. Conventions Git (obligatoires)
+## 8. Stratégie de tests
 
-**Branches :**
-- `main` — production (protégée)
-- `dev` — staging / intégration
-- `feature/*` — développement d'une fonctionnalité
+- **TDD** : un test par critère d'acceptation, écrit avant le code.
+- **Unitaires (Jest)** : règles pures du `domain/` et logique des use cases, avec un
+  repository simulé. Rapides, mais aveugles aux contraintes de la base.
+- **Intégration (Supertest + PostgreSQL de test)** : tout ce qu'un simulacre ne peut
+  pas prouver — transactions, écritures conditionnelles et concurrence, clés
+  étrangères, RBAC de bout en bout. **Première brique de la V2, en cours de mise en
+  place** : à construire avec Yannick avant les US.
+- **Frontend** : aucun test (décision ouverte, voir le Journal).
+- Les tests tournent dans la CI ; un échec bloque le déploiement.
 
-**Workflow :** `feature/*` → PR → `dev` → PR → `main`
-
-**Commits (Conventional Commits, enforced par Husky + Commitlint) :**
-```
-feat:     nouvelle fonctionnalité
-fix:      correction de bug
-refactor: amélioration sans changement fonctionnel
-docs:     documentation
-test:     ajout ou modification de tests
-ci:       pipeline CI/CD
-style:    formatage, pas de changement logique
-```
-
-Ne jamais proposer un message de commit non conforme à cette convention.
+Détails d'implémentation : `Backend/CLAUDE.md`, section Tests.
 
 ---
 
-## 6. Stratégie de tests (TDD)
+## 9. Infrastructure déployée
 
-- **Approche TDD** : écrire les tests avant le code sur les règles métier critiques
-- **Jest** pour les tests unitaires
-- **Supertest** pour les tests d'intégration API
-- Priorités de test : gestion des créneaux, affectation des zones, contrôle des rôles
-- Les tests s'exécutent automatiquement dans la pipeline GitHub Actions
-- Un échec bloque le déploiement
-
----
-
-## 7. Domaine métier — entités clés
-
-Les entités principales du modèle de données (implémentées, sauf mention contraire) :
-
-`Utilisateur` (rôle en enum) · `Adresse` · `Zone` · `ZonePoint` · `Cycle` · `Marque` · `TypeCycle`
-`Forfait` · `HistoriquePrixForfait` · `TechnicienZone` · `ModelePlanification` · `PauseRecurrente`
-`Indisponibilite` · `Creneau` · `Intervention` · `Photo` (contexte en enum)
-
-**Prévues, non implémentées (Sprint 4 / V2) :** `Paiement` · `Produit` · `LigneCommande` · `HistoriquePrixProduit`
-— voir `metier.md` dans le wiki (section 10) pour le détail.
-
-**Règles métier critiques :**
-- Un créneau est lié à une zone géographique et, via un modèle de planification, à un technicien
-- L'adresse client est validée via Google Maps puis vérifiée contre les zones actives (algorithme Ray Casting côté backend, pas l'API Google Maps)
-- La durée d'une intervention est déterminée par le forfait sélectionné
-- Un créneau devient `is_disponible = false` dès qu'une intervention est créée
-- Le paiement est physique — aucune donnée bancaire n'est stockée
+- **VPS Ubuntu** : Nginx hôte + Certbot (SSL Let's Encrypt).
+- **Production :** `homecyclhome.yannickbiot.fr` → port 8081 —
+  **Staging :** `staging.homecyclhome.yannickbiot.fr` → port 8080.
+- Deux stacks Docker Compose isolées (réseaux distincts), chacune avec Nginx interne,
+  frontend, backend et PostgreSQL. Le VPS n'exécute que des images : aucun code
+  source sur le serveur.
+- **Règle critique Docker + UFW :** toujours binder les ports sur `127.0.0.1`.
+- **Le dépôt GitHub est public** : aucun identifiant, mot de passe ou clé dans un
+  fichier versionné, documentation comprise.
 
 ---
 
-## 8. Parcours client (flux principal)
+## 10. Design system (Frontend)
 
-1. Saisie adresse → validation Google Maps
-2. Vérification zone couverte
-3. Informations cycle (marque, type)
-4. Sélection forfait
-5. Sélection créneau disponible
-6. Demande d'intervention → vérification authentification
-7. Si non authentifié → création de compte
-8. Confirmation → intervention créée, créneau marqué indisponible
+- Couleur principale : orange vif (header, CTA) · secondaire : brun mocha `#4F3B30`
+  (footer, textes) · fond : mint off-white `#F4FBF5` · bloc adresse : vert menthe clair.
+- Typographie : `Grand Hotel` (hero uniquement), `Nunito` (tout le reste).
+- Échelle mobile : hero 28–32px · H1 22–24px · H2 18–20px · H3/body 16px min ·
+  labels 12px · captions 11px min.
+- Header non authentifié : logo à gauche, « Connexion » + « S'inscrire » à droite ;
+  mobile : hamburger → drawer orange. Footer brun foncé avec liens légaux et
+  copyright LeCycleLyonnais.
 
----
-
-## 9. Design system (Frontend)
-
-**Identité visuelle HomeCycl'Home :**
-- Couleur principale : Orange vif (header, CTA)
-- Couleur secondaire : Brun/Mocha foncé `#4F3B30` (footer, textes)
-- Background : Mint off-white `#F4FBF5`
-- Bloc adresse : fond vert menthe clair
-
-**Typographie :**
-- `Grand Hotel` — hero uniquement (script élégant)
-- `Nunito` — tout le reste
-
-**Échelle typographique mobile :**
-- Hero : 28–32px
-- H1 : 22–24px
-- H2 : 18–20px
-- H3/body : 16px min
-- Labels : 12px
-- Captions : 11px min
-
-**Header (état non authentifié) :** logo gauche + "Connexion" + "S'inscrire" droite
-**Header mobile :** hamburger menu → drawer orange avec navigation complète
-**Footer :** fond brun foncé, liens légaux (Mentions légales, CGU, Confidentialité)
-+ copyright LeCycleLyonnais
-
----
-
-## 10. Wiki projet
-
-La mémoire vivante du projet est maintenue dans un vault Obsidian externe, source de
-vérité consultée pendant le travail (édition directe par Yannick, et par les outils :
-hook post-commit, skill `/fin-session`) :
-
-```
-/Users/yannickbiot/Documents/Mini Brain/30 Projets/Brouillon HomeCycl'Home
-```
-
-`docs/wiki/` dans le repo est une copie périodique (versionnée dans Git) de ce vault,
-utile comme preuve de documentation pour la certification CDA — pas la référence à
-jour en cours de session.
-
-Consulter ces fichiers (chemins relatifs au vault) pour le contexte détaillé :
-
-| Fichier | Contenu |
-|---|---|
-| `index.md` | Vue d'ensemble et navigation |
-| `stack.md` | Justification des choix techniques |
-| `architecture.md` | Structure des dossiers, modules NestJS |
-| `metier.md` | Entités, règles métier, MCD/MLD |
-| `Modèle Conceptuel de Données.md` | MCD complet — entités, attributs, associations |
-| `sprint-actuel.md` | État du sprint en cours |
-| `log.md` | Journal des décisions (append-only) |
-| `ia.md` | Configuration IA — CLAUDE.md, wiki, sous-agents, MCP Figma |
-| `01 - features/<nom>/index.md` | Fiche détaillée par feature — fichiers, endpoints, entités |
+Valeurs exactes : `Frontend/src/app/styles/_variables.scss`.
 
 ---
 
 ## 11. Posture de travail
 
-**Yannick est étudiant en CDA — adopter systématiquement une posture pédagogique :**
-- Expliquer le concept ou le principe AVANT de proposer du code
-- Commenter le code de manière détaillée et inline
-- Proposer des alternatives quand elles existent, avec les compromis
-- Ne jamais générer du code sans s'assurer que la logique est comprise
-- Réponses courtes et synthétiques — Yannick pose des questions de suivi
+**Yannick est étudiant en CDA — posture pédagogique systématique :**
+- Expliquer le concept AVANT de proposer du code.
+- Commenter le code de manière détaillée, inline.
+- Proposer les alternatives quand elles existent, avec leurs compromis.
+- Ne jamais générer du code sans s'assurer que la logique est comprise.
+- Réponses courtes et synthétiques — Yannick pose des questions de suivi.
 
-**Autonomie créative :**
-Yannick conserve volontairement sa propre créativité sur l'UI/UX et le design.
-L'IA est un outil d'assistance et de scaffolding, pas de génération complète.
-Ne pas surcharger avec des suggestions visuelles non demandées.
-
-**Rappel de fin de session :**
-Yannick se décrit "tête en l'air" — après un développement significatif (nouvelle feature
-backend ou frontend créée, refactor structurant, ou session ayant touché plus de 10 fichiers),
-proposer explicitement de lancer le skill `/fin-session` (audit `CLAUDE.md`/wiki + mise à jour
-du sprint). Ne jamais le lancer soi-même sans confirmation — proposer, pas agir.
+**Autonomie créative :** Yannick garde la main sur l'UI/UX et le design. L'IA
+assiste et échafaude, elle ne génère pas tout. Pas de suggestions visuelles non
+demandées.
 
 **Langue :** toujours répondre en français.

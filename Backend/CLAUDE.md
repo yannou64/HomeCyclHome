@@ -1,216 +1,195 @@
 # CLAUDE.md — Backend HomeCycl'Home
 
-Ce fichier complète le `CLAUDE.md` racine avec les spécificités du Backend.
-Il est lu automatiquement par Claude Code quand tu travailles dans ce dossier.
+Complète le `CLAUDE.md` racine avec les conventions du backend. Les règles métier
+ne sont pas ici : elles sont dans la spec du vault (racine, section 2).
 
 ---
 
 ## 1. Stack Backend
 
-| Outil               | Usage                                         |
-| ------------------- | --------------------------------------------- |
-| NestJS + TypeScript | Framework API REST                            |
-| Prisma              | ORM — accès base de données                   |
-| PostgreSQL          | Base de données relationnelle                 |
-| JWT + Refresh Token | Authentification stateless                    |
-| Cookie HttpOnly     | Stockage sécurisé des tokens (protection XSS) |
-| bcrypt              | Hashage des mots de passe                     |
-| class-validator     | Validation des DTOs                           |
-| Jest                | Tests unitaires — Supertest installé (`test/jest-e2e.json`) mais aucun test d'intégration écrit à ce jour |
+| Outil | Usage |
+|---|---|
+| NestJS + TypeScript | API REST |
+| Prisma | ORM — schéma dans `prisma/schema.prisma`, client généré dans `generated/prisma` |
+| PostgreSQL | Base de données |
+| JWT + refresh token | Authentification stateless, tokens en cookies `HttpOnly` |
+| bcrypt | Hash des mots de passe |
+| class-validator / class-transformer | Validation et transformation des DTOs |
+| Jest | Tests unitaires (`*.spec.ts` colocalisés) |
+| Supertest | Tests d'intégration (`test/*.e2e-spec.ts`) — première brique V2, en cours |
 
 ---
 
-## 2. Architecture — Clean Architecture pragmatique NestJS
+## 2. Architecture — Clean Architecture pragmatique
 
-Séparation stricte entre trois couches :
+- **Domaine** : règles métier pures, sans dépendance.
+- **Application** : use cases, DTOs, orchestration.
+- **Infrastructure** : repositories Prisma, controllers HTTP, services externes.
 
-- **Domaine** : entités, règles métier, interfaces
-- **Application** : use cases, DTOs, orchestration
-- **Infrastructure** : Prisma, HTTP controllers, services externes
-
-**Règle fondamentale :** la logique métier ne dépend jamais de l'infrastructure.
-Un use case ne doit pas importer Prisma directement.
+**Règle fondamentale :** la logique métier ne dépend jamais de l'infrastructure. Un
+use case n'importe jamais Prisma.
 
 ---
 
-## 3. Structure des dossiers
+## 3. Structure
 
 ```
 src/
-├── app/                         # Noyau NestJS
-│   ├── app.module.ts            # Module racine
-│   ├── app.controller.ts
-│   ├── app.service.ts
-│   └── main.ts                  # Bootstrap + config cookies, CORS, pipes
-│
-├── config/                      # Configuration globale (env, JWT, cookies...)
-│
-├── features/                    # Modules métier (un dossier = un module NestJS)
-│   ├── admin/                   # Back-office (users CRUD, RBAC, stats)
-│   ├── adresses/                # Carnet d'adresses client
-│   ├── affectations/            # Affectation technicien ↔ zone
-│   ├── auth/                    # Authentification
-│   ├── cycle/                   # Gestion des cycles client
-│   ├── email/                   # Service technique d'envoi d'emails
-│   ├── forfaits/                # Catalogue des prestations + historique des prix
-│   ├── intervention/            # Gestion des interventions
-│   ├── planning/                # Créneaux et planification
-│   ├── referentiel/             # Marques, types de cycles
-│   ├── users/                   # Profil utilisateur (self-service)
-│   └── zones/                   # Zones géographiques
-│
-├── shared/                      # Éléments transversaux
-│   ├── database/                # Module Prisma partagé
-│   ├── prisma/                  # PrismaService injectable
-│   ├── guards/                  # RolesGuard (RBAC)
-│   ├── decorators/              # @Roles()
-│   └── storage/                 # StorageService — upload AWS S3
-│
-└── test/                        # Config Jest e2e (jest-e2e.json) — aucun test d'intégration écrit à ce jour
+├── app/          # app.module.ts, main.ts (bootstrap : cookies, CORS, pipes, Swagger)
+├── config/       # cookie, helmet, jwt, throttler
+├── features/     # un dossier = un module NestJS métier
+└── shared/       # prisma/, database/, guards/ (RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
+test/             # configuration et tests d'intégration Supertest
 ```
 
-Liste complète et détaillée par feature (fichiers, endpoints, entités) : voir
-`01 - features/<nom>/index.md` dans le vault (racine `CLAUDE.md`, section 10).
+La liste des modules se lit dans `src/features/` et `src/app/app.module.ts` — elle
+n'est pas recopiée ici.
 
 **Structure interne d'une feature (pattern à respecter) :**
 
 ```
 features/<nom>/
-├── <nom>.module.ts
-├── controllers/
-│   └── <nom>.controller.ts              # HTTP uniquement — délègue aux use cases
-├── domain/                              # Règles métier pures (optionnel)
-│   ├── <regle>.ts                       # Aucun import Nest/Prisma, entrée → sortie
-│   └── <regle>.spec.ts                  # Testable sans mock
+├── <nom>.module.ts                       # câblage DI : token → implémentation Prisma
+├── controllers/<nom>.controller.ts       # HTTP uniquement, délègue aux use cases
+├── domain/                               # règles pures partagées (optionnel)
+│   ├── <regle>.ts                        # aucun import Nest/Prisma, entrée → sortie
+│   └── <regle>.spec.ts
 ├── use-cases/
-│   ├── get-<nom>.use-case.ts            # 1 fichier = 1 opération métier
-│   ├── create-<nom>.use-case.ts
-│   ├── update-<nom>.use-case.ts
-│   ├── delete-<nom>.use-case.ts
-│   └── *.use-case.spec.ts               # Test unitaire colocalisé avec le use case
+│   ├── <verbe>-<nom>.use-case.ts         # 1 fichier = 1 opération métier
+│   └── <verbe>-<nom>.use-case.spec.ts    # test unitaire colocalisé
 ├── repositories/
-│   ├── <nom>.repository.interface.ts    # Contrat TypeScript (interface)
-│   └── <nom>.prisma.repository.ts       # Implémentation Prisma
+│   ├── <nom>.repository.interface.ts     # contrat
+│   └── <nom>.prisma.repository.ts        # implémentation Prisma
 └── dto/
-    ├── input/     # DTOs validés avec class-validator (données entrantes)
-    └── output/    # DTOs de réponse (jamais le modèle Prisma brut)
+    ├── input/                            # validés par class-validator
+    └── output/                           # jamais le modèle Prisma brut
 ```
 
-**Référence :** le module `admin` est l'implémentation de référence de ce pattern.
+**Référence du pattern :** module `admin`.
 
-**Quand créer un `domain/` :** uniquement pour une règle métier qui coche les trois
-critères — elle est métier et non technique, elle est partagée par plusieurs use cases
-(elle n'appartient donc à aucun), et elle est pure (aucune dépendance). Sinon, la règle
-reste dans son use case. Exemple en place : `planning/domain/creneau-reservable.ts`,
-appelée par `GetCreneauxDisponibles` (lecture) et `CreateIntervention` (écriture).
+**Quand créer un `domain/` :** seulement pour une règle qui est métier (pas
+technique), partagée par plusieurs use cases, et pure. Sinon elle reste dans son use
+case. Exemples en place : `planning/domain/creneau-reservable.ts`,
+`planning/domain/jour-travail.ts`.
 
 ---
 
 ## 4. Conventions de code
 
-**Nommage :**
+**Nommage :** modules, controllers et use cases en `PascalCase` suffixé ·
+DTOs préfixés `Create` | `Update` | `Response` · fichiers en `kebab-case` ·
+variables et fonctions en `camelCase`.
 
-- Modules/Controllers/Services : `PascalCase` avec suffixe explicite
-- DTOs : `PascalCase` préfixé `Create` | `Update` | `Response`
-- Fichiers : `kebab-case` (ex: `intervention.service.ts`)
-- Variables/fonctions : `camelCase`
+**Controllers :** reçoivent la requête, appellent le use case, renvoient la réponse.
+Aucune logique métier. Injectent des use cases, jamais un repository.
 
-**DTOs :**
+**Use cases :** une classe = une opération métier. Dépendent d'une interface de
+repository. Portent toutes les vérifications et règles. Lancent des exceptions
+NestJS (`NotFoundException`, `ConflictException`, `ForbiddenException`…).
 
-- Toujours valider avec `class-validator` (`@IsString()`, `@IsEmail()`...)
-- Toujours transformer avec `class-transformer`
-- Ne jamais exposer le `password_hash` dans un DTO de réponse
+**Repositories :** l'interface définit le contrat, l'implémentation Prisma les appels
+réels, le module relie les deux par un token d'injection (voir `admin.module.ts`).
 
-**Controllers :**
-
-- Responsabilité unique : recevoir la requête HTTP, appeler le use case, retourner la réponse
-- Pas de logique métier dans un controller
-- Injectent les use cases (pas le repository directement)
-
-**Use Cases :**
-
-- Une classe = une opération métier (ex: `CreateUserUseCase`)
-- Dépendent d'une interface repository — jamais de `PrismaService` directement
-- Lancent des exceptions NestJS (`NotFoundException`, `ConflictException`...)
-- Contiennent toute la logique métier : vérifications, règles, transformations
-
-**Repository :**
-
-- L'interface (`<nom>.repository.interface.ts`) définit le contrat : quelles méthodes existent
-- L'implémentation (`<nom>.prisma.repository.ts`) contient les appels Prisma réels
-- Le module fait le lien via un token d'injection (voir `admin.module.ts` comme référence)
-- Ce découplage permet de remplacer Prisma par un appel HTTP (microservice futur)
-  sans toucher à la logique des use cases
+**DTOs :** toujours validés et transformés. Jamais de `password_hash` ni de modèle
+Prisma brut en réponse.
 
 ---
 
-## 5. Sécurité
+## 5. Patterns techniques V2 (obligatoires)
 
-**Authentification JWT + Cookie HttpOnly :**
+Ces patterns sont la traduction technique de la spec (glossaire « Écritures » du
+vault). Les règles qu'ils servent restent dans la spec.
 
-- Le `access_token` et le `refresh_token` sont envoyés en cookie `HttpOnly`
-- Configuration cookie : `httpOnly: true`, `secure: true`, `sameSite: 'strict'`
-- Ne jamais retourner le token dans le body de la réponse
-- Le renouvellement du token se fait via un endpoint dédié `/auth/refresh`
+**Transaction « tout ou rien ».** Quand la séquence d'une US place plusieurs
+écritures dans une transaction, elles vivent dans **une seule méthode du
+repository**, via `prisma.$transaction(async (tx) => { … })`. Le use case appelle
+cette méthode ; il ne voit jamais `tx`. Exemples en place :
+`intervention/repositories/interventions.prisma.repository.ts`,
+`forfaits/repositories/forfaits.prisma.repository.ts`.
 
-**RBAC (Role Based Access Control) :**
+**Écriture conditionnelle.** Une écriture qui dépend d'un état attendu se fait par
+`updateMany({ where: { id, <état attendu> }, data })` et **lit `count`** :
+- `count === 1` → la condition était remplie ;
+- `count === 0` → l'état a changé entre-temps : lancer une exception dans la
+  transaction (rollback automatique). Le repository renvoie l'information, le use
+  case traduit en exception métier (`ConflictException`).
 
-- Trois rôles : `client` | `technicien` | `admin`
-- Utiliser des Guards NestJS pour protéger les routes (`@UseGuards(JwtAuthGuard, RolesGuard)`)
-- Décorer les routes avec `@Roles('admin')` etc.
-- Un client ne peut accéder qu'à ses propres ressources
+C'est ce qui règle deux requêtes simultanées sur le même objet. Ne jamais remplacer
+par « lire puis écrire » sans condition.
 
-**Autres mesures :**
+**Fuseau d'exploitation.** Les dates sont stockées en UTC ; **tout calcul de jour se
+fait dans le fuseau d'exploitation, jamais en UTC.** Passer par un utilitaire
+partagé, jamais par `getDate()`, `setHours()` ou `toISOString().slice(0, 10)`. Base
+existante : `planning/domain/jour-travail.ts` (`jourTravail`,
+`bornesDuJourTravail`) — à généraliser en brique partagée au socle V2.
 
-- Mots de passe hashés avec `bcrypt` (jamais stockés en clair)
-- Validation systématique des entrées via `ValidationPipe` global
-- CORS configuré pour n'autoriser que le domaine frontend
-- Headers de sécurité HTTP via `helmet` (`main.ts`) — CSP stricte en production,
-  désactivée hors production pour ne pas bloquer Swagger UI
-  (voir `src/config/helmet.config.ts`)
-- Rate limiting via `@nestjs/throttler` : `ThrottlerGuard` enregistré globalement
-  (`APP_GUARD` dans `app.module.ts`), limite par défaut 100 req/min/IP
-  (`src/config/throttler.config.ts`). Resserré à 5 req/min/IP via `@Throttle()`
-  sur les routes auth non authentifiées (`register`, `confirm-email`, `login`, `refresh`)
-- Aucune donnée bancaire stockée — paiement physique uniquement
+**Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases (par
+exemple le calcul des blocs, utilisé par la réservation et la création par l'admin)
+se code une fois, dans un `domain/`, et se teste seul.
 
----
-
-## 6. Prisma
-
-- `PrismaService` est injectable via `shared/prisma/`
-- Le schéma Prisma est défini dans `prisma/schema.prisma` à la racine du Backend
-- Toujours utiliser les transactions Prisma pour les opérations critiques
-  (ex: créer une intervention ET marquer le créneau indisponible en une seule transaction)
-- Ne jamais exposer les modèles Prisma bruts en réponse API — toujours passer par un DTO
-
-**Règle critique :**
-La création d'une intervention et la mise à jour de `is_disponible = false` sur le créneau
-doivent être atomiques (transaction Prisma) pour éviter les conflits de réservation.
+**Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
+doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
+l'erreur Prisma en exception métier.
 
 ---
 
-## 7. Stratégie de tests (TDD)
+## 6. Sécurité
 
-- **Écrire les tests avant le code** sur les règles métier critiques
-- Tests unitaires Jest : dans chaque feature (`<nom>.spec.ts`) — c'est la seule couche de tests
-  réellement en place aujourd'hui (200+ specs)
-- Tests d'intégration Supertest : `test/jest-e2e.json` est configuré mais **aucun fichier
-  `*.e2e-spec.ts` n'existe encore** — à créer si l'objectif Supertest doit être tenu
-- Priorités de test :
-    - Gestion des créneaux (disponibilité, conflits)
-    - Vérification de zone géographique
-    - Contrôle des rôles (RBAC)
-    - Création d'intervention (transaction atomique)
+**Authentification :** `access_token` et `refresh_token` en cookies
+`httpOnly: true, secure: true, sameSite: 'strict'`. Jamais de token dans le corps
+d'une réponse. Renouvellement via `/auth/refresh`.
+
+**RBAC :** routes protégées par `@UseGuards(JwtAuthGuard, RolesGuard)` +
+`@Roles(...)`. Le rôle ne suffit pas : **le use case vérifie que la ressource
+appartient à l'utilisateur** quand la spec le demande (un client et ses
+interventions, un technicien et les siennes).
+
+**Autres mesures en place :**
+- `ValidationPipe` global (`whitelist`, `transform`).
+- CORS limité au domaine frontend (`FRONTEND_URL`).
+- `helmet` (`src/config/helmet.config.ts`) : CSP stricte en production, désactivée
+  hors production pour Swagger UI.
+- Rate limiting `@nestjs/throttler` global (`src/config/throttler.config.ts`),
+  resserré par `@Throttle()` sur les routes d'authentification non connectées.
+- `trust proxy` à 2 dans `main.ts` (deux reverse proxies en production).
+- Aucune donnée bancaire stockée.
 
 ---
 
-## 8. Règles métier critiques à ne pas contourner
+## 7. Prisma
 
-- Un créneau ne peut être réservé que si `is_disponible = true`
-- L'adresse client doit être dans une zone active avant toute réservation
-- La durée d'une intervention est déterminée par le forfait — non modifiable par le client
-- Un technicien ne peut voir que les interventions de sa zone
-- Un client ne peut accéder qu'à ses propres interventions et cycles
-- Le statut d'une intervention suit ce flux strict :
-  `Planifiée` → `Terminée` | `Annulée`
+- `PrismaService` injectable via `shared/prisma/`.
+- Cycle : modifier `schema.prisma` → `npx prisma migrate dev --name <nom>` → client
+  régénéré.
+- Les migrations V1 sont abandonnées au socle V2 (base réinitialisée, voir
+  `Refonte 2.0`).
+- Le nom Prisma fait foi côté code quand il diffère du MCD.
+
+---
+
+## 8. Tests
+
+**Convention de nommage (obligatoire) :** `describe` = nom exact de l'US, chaque
+`it` commence par `CA<n>` — voir le `CLAUDE.md` racine, section 3. Un critère peut
+avoir plusieurs tests ; chacun porte son `CA<n>`.
+
+**Où va un test :**
+
+| Ce que le critère vérifie | Type | Emplacement |
+|---|---|---|
+| Une règle pure (calcul, validation) | Unitaire | `domain/<regle>.spec.ts` |
+| La logique d'un use case (vérifications, exceptions) | Unitaire, repository simulé | `use-cases/*.use-case.spec.ts` |
+| Une transaction, une écriture conditionnelle, une concurrence, une clé étrangère, un droit d'accès de bout en bout | Intégration, PostgreSQL réel | `test/*.e2e-spec.ts` |
+
+Un test unitaire sur simulacre ne prouve rien des contraintes de la base : un
+critère qui en dépend exige un test d'intégration.
+
+**Commandes :**
+```bash
+npm test            # unitaires
+npm run test:e2e    # intégration (base de test dédiée)
+```
+
+**Tests d'intégration :** première brique de la V2, en cours de mise en place avec
+Yannick. Cette section sera complétée (base de test, garde-fou, helpers) quand elle
+sera construite.
