@@ -11,6 +11,8 @@ import type {
     InterventionForCancel,
     GetAdminInterventionsParams,
 } from './interventions.repository.interface';
+import { bornesDuJourTravail } from '../../planning/domain/jour-travail';
+import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
 import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
@@ -80,6 +82,64 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             },
         });
         return creneau?.modele_planification?.technicien_id ?? null;
+    }
+
+    // Recharge le voisinage du créneau pour rejouer la règle de réservabilité à
+    // l'écriture. Le périmètre — même technicien, même journée — doit rester
+    // identique à celui du regroupement côté lecture, sinon les deux chemins
+    // pourraient diverger.
+    async findCreneauxDuJour(
+        creneauId: string,
+    ): Promise<CreneauAvecTechnicienDto[]> {
+        const cible = await this.prisma.creneau.findUnique({
+            where: { id: creneauId },
+            select: {
+                date_debut: true,
+                zone_id: true,
+                modele_planification: { select: { technicien_id: true } },
+            },
+        });
+        if (!cible) return [];
+
+        const technicienId = cible.modele_planification?.technicien_id ?? null;
+        const { debut, fin } = bornesDuJourTravail(cible.date_debut);
+
+        const creneaux = await this.prisma.creneau.findMany({
+            where: {
+                date_debut: { gte: debut, lte: fin },
+                // Créneau généré : on suit le technicien. Créneau manuel (sans
+                // modèle) : on se rabat sur les autres créneaux manuels de la zone.
+                ...(technicienId
+                    ? { modele_planification: { technicien_id: technicienId } }
+                    : {
+                          modele_planification_id: null,
+                          zone_id: cible.zone_id,
+                      }),
+            },
+            include: {
+                modele_planification: {
+                    select: {
+                        technicien_id: true,
+                        intervalle_minutes: true,
+                        technicien: { select: { prenom: true } },
+                    },
+                },
+            },
+            orderBy: { date_debut: 'asc' },
+        });
+
+        return creneaux.map((c) => ({
+            id: c.id,
+            dateDebut: c.date_debut.toISOString(),
+            dateFin: c.date_fin?.toISOString() ?? null,
+            isDisponible: c.is_disponible,
+            zoneId: c.zone_id,
+            modelePlanificationId: c.modele_planification_id,
+            technicienId: c.modele_planification?.technicien_id ?? null,
+            technicienPrenom: c.modele_planification?.technicien.prenom ?? null,
+            intervalleMinutes:
+                c.modele_planification?.intervalle_minutes ?? Infinity,
+        }));
     }
 
     async getForfaitDuree(forfaitId: string): Promise<number> {

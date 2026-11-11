@@ -3,6 +3,7 @@ import {
     ConflictException,
     UnprocessableEntityException,
 } from '@nestjs/common';
+import { estCreneauReservable } from '../../planning/domain/creneau-reservable';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 import type { EmailService } from '../../email/email.service';
@@ -77,7 +78,24 @@ export class CreateInterventionUseCase {
             dto.forfaitId,
         );
 
-        // 7. Transaction atomique : INSERT Intervention + UPDATE Creneau.is_disponible = false
+        // 7. Rejouer la règle de réservabilité complète — buffers et couverture.
+        // L'étape 1 ne vérifie qu'un seul slot : sans ce contrôle, une requête
+        // directe pourrait réserver un créneau que GET /creneaux n'a jamais proposé
+        // et faire chevaucher deux interventions.
+        const creneauxDuJour = await this.repo.findCreneauxDuJour(
+            dto.creneauId,
+        );
+        const index = creneauxDuJour.findIndex((c) => c.id === dto.creneauId);
+        if (
+            index === -1 ||
+            !estCreneauReservable(creneauxDuJour, index, dureeMinutesSnapshot)
+        ) {
+            throw new ConflictException(
+                "Ce créneau n'est pas réservable pour la durée demandée.",
+            );
+        }
+
+        // 8. Transaction atomique : INSERT Intervention + UPDATE Creneau.is_disponible = false
         const intervention = await this.repo.createInterventionTransaction({
             clientId: utilisateurId,
             cycleId,
@@ -90,7 +108,7 @@ export class CreateInterventionUseCase {
             commentaire: dto.commentaire,
         });
 
-        // 8. Email de confirmation — best-effort, échec non bloquant
+        // 9. Email de confirmation — best-effort, échec non bloquant
         try {
             const client = await this.repo.findClientById(utilisateurId);
             if (client) {

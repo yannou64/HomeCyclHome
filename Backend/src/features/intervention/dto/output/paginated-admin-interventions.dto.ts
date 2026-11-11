@@ -4,8 +4,8 @@ import { AdminInterventionListItemDto } from './admin-intervention-list-item.dto
 
 export class PaginatedAdminInterventionsDto {
     @ApiProperty({ type: () => [AdminInterventionListItemDto] })
-    data: AdminInterventionListItemDto[];
+    data!: AdminInterventionListItemDto[];
 
     @ApiProperty({ type: () => PaginationMetaDto })
-    meta: PaginationMetaDto;
+    meta!: PaginationMetaDto;
 }

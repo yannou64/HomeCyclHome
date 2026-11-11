@@ -193,6 +193,14 @@ export function RecapitulatifStep() {
                         </span>
                     </span>
                 </div>
+                {creneau.technicienPrenom && (
+                    <div className={styles.recapRow}>
+                        <span className={styles.recapLabel}>Technicien</span>
+                        <span className={styles.recapValue}>
+                            {creneau.technicienPrenom}
+                        </span>
+                    </div>
+                )}
             </div>
 
             {!showCommentForm ? (

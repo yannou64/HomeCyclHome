@@ -23,9 +23,10 @@ Il est lu automatiquement par Claude Code quand tu travailles dans ce dossier.
 ```
 src/
 ├── app/                    # Noyau applicatif
-│   ├── config/             # Variables d'environnement, constantes
-│   ├── providers/          # Providers React globaux (QueryClient, Auth...)
-│   ├── router/             # Définition des routes React Router
+│   ├── providers/          # Providers React globaux
+│   │   ├── authContext/    # Session utilisateur (AuthContext, useAuth)
+│   │   └── reservationContext/  # État global du tunnel de réservation
+│   ├── router/             # Routes React Router + ProtectedRoute
 │   ├── styles/             # SCSS global, variables et tokens du design system
 │   ├── App.tsx
 │   └── main.tsx
@@ -50,6 +51,10 @@ src/
     └── utils/              # Fonctions utilitaires pures
 ```
 
+Pas de dossier `app/config/` — les variables d'environnement sont lues directement via
+`import.meta.env.VITE_*`. Pas de `QueryClient` (React Query) dans le projet — la gestion
+des appels API passe uniquement par le pattern Composant → Hook → Service ci-dessous.
+
 **Règle d'organisation :**
 
 - Tout ce qui est spécifique à une fonctionnalité → `features/<nom>/`
@@ -65,7 +70,7 @@ src/
 - Composants React : `PascalCase` (ex: `AddressInput.tsx`)
 - Hooks : `camelCase` préfixé `use` (ex: `useAddressSearch.ts`)
 - Services : `camelCase` suffixé `Service` (ex: `interventionService.ts`)
-- Types/Interfaces : `PascalCase` préfixé `I` pour les interfaces (ex: `IUser`)
+- Types/Interfaces : `PascalCase`, sans préfixe (ex: `AuthSession`, `ForfaitDto`) — c'est la convention réellement suivie dans le code, pas de préfixe `I`
 - Fichiers CSS/styles : `kebab-case`
 
 **Composants :**
@@ -93,7 +98,7 @@ Ici, les règles d'implémentation avec **SCSS Modules**.
 ```
 src/app/styles/
 ├── _base.scss        # Styles de base (body, html, éléments sémantiques)
-├── _fonts.scss       # Déclarations @font-face (Grand Hotel, Poppins)
+├── _fonts.scss       # Déclarations @font-face (Grand Hotel, Nunito)
 ├── _mixins.scss      # Mixins réutilisables (responsive, flex helpers...)
 ├── _reset.scss       # Reset CSS global
 ├── _variables.scss   # Tokens du design system (couleurs, typo, espacements)
@@ -166,14 +171,14 @@ export const featureService = {
 - Le token JWT est stocké dans un cookie `HttpOnly` (inaccessible au JavaScript — protection XSS)
 - Le refresh token est également en cookie `HttpOnly`
 - Le renouvellement du token est silencieux (géré côté backend)
-- Les routes protégées utilisent un `PrivateRoute` wrapper
+- Les routes protégées utilisent un `ProtectedRoute` wrapper (`app/router/ProtectedRoute.tsx`)
 - Le rôle de l'utilisateur (`client` | `technicien` | `admin`) conditionne l'affichage
 
 ---
 
 ## 7. Google Maps Integration
 
-- Utiliser uniquement `@react-google-maps/api`
+- Utiliser uniquement `@googlemaps/js-api-loader` (pas `@react-google-maps/api`, absent du projet)
 - L'Autocomplete est limité aux adresses françaises (`componentRestrictions: { country: 'fr' }`)
 - À la sélection d'une adresse, décomposer via l'API Geocoding pour extraire :
   `numero`, `rue`, `code_postal`, `ville`, `latitude`, `longitude`, `google_place_id`

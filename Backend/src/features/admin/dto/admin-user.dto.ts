@@ -4,34 +4,34 @@ import { PaginationMetaDto } from '../../../shared/dto/pagination-meta.dto';
 
 export class AdminUserDto {
     @ApiProperty()
-    id: string;
+    id!: string;
 
     @ApiProperty()
-    nom: string;
+    nom!: string;
 
     @ApiProperty()
-    prenom: string;
+    prenom!: string;
 
     @ApiProperty()
-    email: string;
+    email!: string;
 
     @ApiProperty()
-    telephone: string;
+    telephone!: string;
 
     @ApiProperty({ enum: ['client', 'technicien', 'admin'] })
-    role: UserRole;
+    role!: UserRole;
 
     @ApiProperty()
-    isActif: boolean;
+    isActif!: boolean;
 
     @ApiProperty()
-    dateCreation: Date;
+    dateCreation!: Date;
 }
 
 export class PaginatedUsersDto {
     @ApiProperty({ type: () => [AdminUserDto] })
-    data: AdminUserDto[];
+    data!: AdminUserDto[];
 
     @ApiProperty({ type: () => PaginationMetaDto })
-    meta: PaginationMetaDto;
+    meta!: PaginationMetaDto;
 }
