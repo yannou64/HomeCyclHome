@@ -10,7 +10,6 @@ import {
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
 import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
 import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
-import type { EmailService } from '../../email/email.service';
 
 // ─── Factories ────────────────────────────────────────────────────────────────
 
@@ -94,13 +93,7 @@ describe('CreateInterventionUseCase', () => {
                 .mockResolvedValue(undefined),
         };
 
-        useCase = new CreateInterventionUseCase(
-            mockRepo,
-            mockEmailService as unknown as Pick<
-                EmailService,
-                'sendInterventionConfirmationEmail'
-            >,
-        );
+        useCase = new CreateInterventionUseCase(mockRepo, mockEmailService);
     });
 
     // ── Cas nominal ──────────────────────────────────────────────────────────

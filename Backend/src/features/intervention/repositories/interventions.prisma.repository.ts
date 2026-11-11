@@ -249,7 +249,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
         return interventions.map((i) => ({
             id: i.id,
-            statut: i.statut as 'Planifiee' | 'Terminee' | 'Annulee',
+            statut: i.statut,
             dateCreation: i.date_creation.toISOString(),
             dateDebut: i.creneau.date_debut?.toISOString() ?? '',
             dateFin: i.creneau.date_fin?.toISOString() ?? null,
@@ -401,7 +401,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         return {
             interventions: interventions.map((i) => ({
                 id: i.id,
-                statut: i.statut as AdminInterventionListItemDto['statut'],
+                statut: i.statut,
                 enRetard:
                     i.statut === 'Planifiee' && i.creneau.date_debut < now,
                 dateDebut: i.creneau.date_debut.toISOString(),
@@ -509,7 +509,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
         return {
             id: intervention.id,
-            statut: intervention.statut as AdminInterventionDetailDto['statut'],
+            statut: intervention.statut,
             enRetard:
                 intervention.statut === 'Planifiee' &&
                 intervention.creneau.date_debut < new Date(),
