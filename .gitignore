@@ -18,9 +18,11 @@ dist
 *.log
 
 # ========================
-# IDE
+# IDE / Système
 # ========================
 .vscode
+# Métadonnées du Finder macOS, créées dans chaque dossier ouvert
+.DS_Store
 
 # ========================
 # Doc
