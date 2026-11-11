@@ -25,7 +25,5 @@ dist
 # ========================
 # Doc
 # ========================
-# docs/wiki est trackée (copie versionnée du vault Obsidian externe) — seule la
-# config locale du plugin Obsidian est exclue
-docs/wiki/.obsidian
+# Annexes de certification (PDF) — conservées en local, non publiées
 docs/annexes

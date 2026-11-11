@@ -90,18 +90,20 @@ npm run dev
 
 | Document | Contenu |
 |---|---|
-| [Documentation API](http://localhost:3000/api-docs) | 68 endpoints documentés — Swagger UI interactif *(local)* |
-| [Architecture](docs/wiki/architecture.md) | Structure des couches, modules NestJS, conventions |
-| [Domaine métier](docs/wiki/metier.md) | Entités, règles métier, flux de réservation |
-| [Choix techniques](docs/wiki/stack.md) | Justification de chaque technologie retenue |
-| [Journal de décisions](docs/wiki/log.md) | Décisions architecturales horodatées (append-only) |
+| [Documentation API](http://localhost:3000/api-docs) | Swagger UI interactif, généré depuis le code *(local)* |
+| [`CLAUDE.md`](CLAUDE.md) | Organisation du projet, workflow, conventions transverses |
+| [`Backend/CLAUDE.md`](Backend/CLAUDE.md) | Architecture et conventions du backend |
+| [`Frontend/CLAUDE.md`](Frontend/CLAUDE.md) | Architecture et conventions du frontend |
+
+La gestion de projet (spécifications, conception, suivi, journal de développement)
+est tenue dans un vault Obsidian privé, hors de ce dépôt.
 
 ## Tests
 
 ```bash
 cd Backend
 npm run test          # tests unitaires (Jest)
-npm run test:e2e      # tests d'intégration (Supertest)
+npm run test:e2e      # tests d'intégration (Supertest) — en cours de mise en place
 ```
 
 Les tests s'exécutent automatiquement à chaque push via GitHub Actions. Un échec bloque le déploiement.
