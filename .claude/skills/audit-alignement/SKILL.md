@@ -44,8 +44,11 @@ Pour `CLAUDE.md`, `Backend/CLAUDE.md` et `Frontend/CLAUDE.md` :
 - un CLAUDE.md recopie-t-il une règle métier, une date du plan ou un compteur
   (interdit par la règle « une information, un seul endroit ») ?
 
-Vérifie aussi la section « Où ça vit dans le code » de
-`Assistant IA - Lisez-moi.md` : les chemins existent-ils toujours ?
+Vérifie aussi `Assistant IA - Lisez-moi.md` :
+- la section « Où ça vit dans le code » : les chemins existent-ils toujours ?
+- le renvoi vers la section « Invariants de sécurité des liens » de
+  `/Users/yannickbiot/Documents/Mini Brain/CLAUDE.md` : cette section existe-t-elle
+  toujours sous ce titre ?
 
 ## Contrôle 4 — Journal ↔ Roadmap
 Compare le tableau Avancement du Journal au calendrier de `Refonte 2.0.md` :
