@@ -24,10 +24,5 @@
     "@commitlint/cli": "^20.4.3",
     "@commitlint/config-conventional": "^20.4.3",
     "husky": "^9.1.7"
-  },
-  "dependencies": {
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.15.1",
-    "react-router-dom": "^7.14.0"
   }
 }
