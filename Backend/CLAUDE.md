@@ -170,8 +170,10 @@ interventions, un technicien et les siennes).
 ## 8. Tests
 
 **Convention de nommage (obligatoire) :** `describe` = nom exact de l'US, chaque
-`it` commence par `CA<n>` — voir le `CLAUDE.md` racine, section 3. Un critère peut
-avoir plusieurs tests ; chacun porte son `CA<n>`.
+`it` commence par le `CAnn` de la note et finit par son étiquette `[RG…]` — voir le
+`CLAUDE.md` racine, section 3. **Un critère, un test** : un seul `it` par `CAnn`
+(`verifier-ca.py` signale un critère testé deux fois). Un critère trop large pour un
+seul test est un écart de spec à signaler, pas une raison de le dédoubler.
 
 **Où va un test :**
 

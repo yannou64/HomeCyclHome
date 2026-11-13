@@ -65,10 +65,13 @@ Conséquences :
   décision. Yannick corrige la spec et relance `export-ia.py`. Le code suit la spec
   corrigée. Un critère modifié pendant une US en cours suit le même chemin.
 - **Traçabilité critère → test.** Le `describe` porte le nom exact de l'US, chaque
-  `it` commence par `CA<n>` (rang du critère dans la note, sur deux chiffres) :
+  `it` commence par le numéro `CAnn` **écrit dans la note** (stable, jamais
+  recompté : les trous sont normaux) et finit par l'étiquette de règle du critère
+  entre crochets. Règle complète : `Assistant IA - Lisez-moi`, « Comment
+  travailler ». Le script `verifier-ca.py` du vault contrôle la correspondance.
   ```ts
   describe("US-01 Choisir la couleur d'une zone 2.0", () => {
-      it('CA07 — refuse un nom hors énumération', async () => { /* … */ });
+      it('CA07 — refuse un nom hors énumération [RG2]', async () => { /* … */ });
   });
   ```
   La couverture se lit dans les noms de tests ; Yannick coche les cases à partir
