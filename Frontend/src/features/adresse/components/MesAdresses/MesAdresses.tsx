@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useAdresses } from '../../hooks/useAdresses';
 import { useAddressAutocomplete } from '../../hooks/useAddressAutocomplete';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
@@ -27,14 +27,18 @@ export function MesAdresses() {
     const [formError, setFormError] = useState<string | null>(null);
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    // Pré-remplissage du formulaire à la sélection d'une adresse existante
-    useEffect(() => {
-        if (selectedId === 'new') {
+    // Clic sur une adresse ou sur « + » : on sélectionne ET on pré-remplit le
+    // formulaire dans le même gestionnaire d'événement (au lieu d'un useEffect
+    // qui observait selectedId et provoquait un second rendu).
+    function selectAdresse(id: string | 'new') {
+        setSelectedId(id);
+        if (id === 'new') {
             setTitreDescription('');
+            // Première adresse du client : principale par défaut.
             setAdressePrincipal(adresses.length === 0);
             clearAddress();
-        } else if (selectedId) {
-            const adresse = adresses.find((a) => a.id === selectedId);
+        } else {
+            const adresse = adresses.find((a) => a.id === id);
             if (adresse) {
                 setTitreDescription(adresse.titreDescription ?? '');
                 setAdressePrincipal(adresse.adressePrincipal);
@@ -42,8 +46,7 @@ export function MesAdresses() {
         }
         setFormError(null);
         setFormSuccess(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedId, adresses]);
+    }
 
     async function handleCreate() {
         if (!decomposedAddress) {
@@ -128,7 +131,7 @@ export function MesAdresses() {
                                 ? styles.chipPrincipal
                                 : '',
                         ].join(' ')}
-                        onClick={() => setSelectedId(adresse.id)}
+                        onClick={() => selectAdresse(adresse.id)}
                     >
                         {chipLabel(adresse)}
                     </button>
@@ -136,7 +139,7 @@ export function MesAdresses() {
                 <button
                     type="button"
                     className={`${styles.chip} ${isNew ? styles.chipActive : ''}`}
-                    onClick={() => setSelectedId('new')}
+                    onClick={() => selectAdresse('new')}
                     aria-label="Ajouter une adresse"
                 >
                     +

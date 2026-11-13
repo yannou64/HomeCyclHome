@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useCycles } from '../../hooks/useCycles';
 import { useReferentiel } from '../../hooks/useReferentiel';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
@@ -40,17 +40,20 @@ export function MesCycles() {
     const [formError, setFormError] = useState<string | null>(null);
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    // Quand on sélectionne un cycle existant, on pré-remplit le formulaire
-    useEffect(() => {
-        if (selectedId === 'new') {
+    // Clic sur un cycle ou sur « + » : on sélectionne ET on pré-remplit le
+    // formulaire dans le même gestionnaire d'événement (au lieu d'un useEffect
+    // qui observait selectedId et provoquait un second rendu).
+    function selectCycle(id: string | 'new') {
+        setSelectedId(id);
+        if (id === 'new') {
             setForm(EMPTY_FORM);
-        } else if (selectedId) {
-            const cycle = cycles.find((c) => c.id === selectedId);
+        } else {
+            const cycle = cycles.find((c) => c.id === id);
             if (cycle) setForm(cycleToForm(cycle));
         }
         setFormError(null);
         setFormSuccess(null);
-    }, [selectedId, cycles]);
+    }
 
     function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -114,7 +117,7 @@ export function MesCycles() {
                         key={cycle.id}
                         type="button"
                         className={`${styles.chip} ${selectedId === cycle.id ? styles.chipActive : ''}`}
-                        onClick={() => setSelectedId(cycle.id)}
+                        onClick={() => selectCycle(cycle.id)}
                     >
                         {cycle.libelle}
                     </button>
@@ -122,7 +125,7 @@ export function MesCycles() {
                 <button
                     type="button"
                     className={`${styles.chip} ${isNew ? styles.chipActive : ''}`}
-                    onClick={() => setSelectedId('new')}
+                    onClick={() => selectCycle('new')}
                     aria-label="Ajouter un cycle"
                 >
                     +
