@@ -1,6 +1,6 @@
 export type InterventionStatut = 'Planifiee' | 'Terminee' | 'Annulee';
 
-export type InterventionClientDto = {
+export type InterventionClient = {
     id: string;
     statut: InterventionStatut;
     dateCreation: string;

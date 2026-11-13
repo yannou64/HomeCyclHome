@@ -1,8 +1,8 @@
-import type { InterventionClientDto } from '../../types/clientIntervention.types';
+import type { InterventionClient } from '../../types/clientIntervention.types';
 import styles from './CancelInterventionDialog.module.scss';
 
 interface CancelInterventionDialogProps {
-    intervention: InterventionClientDto | null;
+    intervention: InterventionClient | null;
     onClose: () => void;
     onConfirm: () => Promise<void>;
 }

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type { ForfaitInfo } from '../../../../app/providers/reservationContext/types/reservation.types';
-import type { ForfaitDto } from '../../../reservation/types/forfait.types';
+import type { Forfait } from '../../../reservation/types/forfait.types';
 import styles from './ForfaitSelector.module.scss';
 
 interface IForfaitSelectorProps {
-    forfaits: ForfaitDto[];
+    forfaits: Forfait[];
     onChange: (forfait: ForfaitInfo | null) => void;
 }
 
@@ -23,7 +23,7 @@ function formatPrix(prix: number | null): string {
 export function ForfaitSelector({ forfaits, onChange }: IForfaitSelectorProps) {
     const [selectedId, setSelectedId] = useState<string>('');
 
-    const handleSelect = (forfait: ForfaitDto) => {
+    const handleSelect = (forfait: Forfait) => {
         setSelectedId(forfait.id);
         onChange({
             forfaitId: forfait.id,

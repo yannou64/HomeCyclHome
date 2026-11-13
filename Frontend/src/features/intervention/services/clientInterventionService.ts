@@ -1,10 +1,9 @@
 import { apiClient } from '../../../shared/services/apiClient';
-import type { InterventionClientDto } from '../types/clientIntervention.types';
+import type { InterventionClient } from '../types/clientIntervention.types';
 
 export const clientInterventionService = {
-    async getMyInterventions(): Promise<InterventionClientDto[]> {
-        const r =
-            await apiClient.get<InterventionClientDto[]>('/interventions');
+    async getMyInterventions(): Promise<InterventionClient[]> {
+        const r = await apiClient.get<InterventionClient[]>('/interventions');
         return r.data;
     },
 

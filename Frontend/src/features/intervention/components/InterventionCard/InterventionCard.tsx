@@ -1,19 +1,19 @@
-import type { InterventionClientDto } from '../../types/clientIntervention.types';
+import type { InterventionClient } from '../../types/clientIntervention.types';
 import styles from './InterventionCard.module.scss';
 
 interface InterventionCardProps {
-    intervention: InterventionClientDto;
+    intervention: InterventionClient;
     onCancel?: () => void;
 }
 
-const STATUT_LABELS: Record<InterventionClientDto['statut'], string> = {
+const STATUT_LABELS: Record<InterventionClient['statut'], string> = {
     Planifiee: 'Planifiée',
     Terminee: 'Terminée',
     Annulee: 'Annulée',
 };
 
 function getEffectiveStatut(
-    statut: InterventionClientDto['statut'],
+    statut: InterventionClient['statut'],
     dateDebut: string,
 ): { label: string; key: string } {
     const todayStart = new Date();

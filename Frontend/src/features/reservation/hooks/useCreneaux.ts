@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { reservationService } from '../services/reservationService';
-import type { CreneauDisponibleDto } from '../types/creneau.types';
+import type { CreneauDisponible } from '../types/creneau.types';
 
 export function useCreneaux(zoneId: string, dureeMinutes: number) {
     // Le loader dépend de la zone et de la durée : recréé (donc rechargé)
@@ -25,7 +25,7 @@ export function useCreneaux(zoneId: string, dureeMinutes: number) {
         data: creneaux,
         isLoading,
         error,
-    } = useAsyncData<CreneauDisponibleDto[]>(
+    } = useAsyncData<CreneauDisponible[]>(
         loadCreneaux,
         [],
         'Impossible de charger les créneaux disponibles.',

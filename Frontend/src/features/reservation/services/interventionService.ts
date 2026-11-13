@@ -1,7 +1,7 @@
 import { apiClient } from '../../../shared/services/apiClient';
 import type {
     CreateInterventionRequest,
-    InterventionCreatedDto,
+    InterventionCreated,
 } from '../types/intervention.types';
 
 // Aplatit AdresseBooking (union discriminée frontend) en objet plat attendu par le backend
@@ -39,7 +39,7 @@ function mapCycle(cycle: CreateInterventionRequest['cycle']) {
 export const interventionService = {
     async create(
         request: CreateInterventionRequest,
-    ): Promise<InterventionCreatedDto> {
+    ): Promise<InterventionCreated> {
         const payload = {
             adresse: mapAdresse(request.adresse),
             cycle: mapCycle(request.cycle),
@@ -47,7 +47,7 @@ export const interventionService = {
             creneauId: request.creneauId,
             commentaire: request.commentaire,
         };
-        const r = await apiClient.post<InterventionCreatedDto>(
+        const r = await apiClient.post<InterventionCreated>(
             '/interventions',
             payload,
         );

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useInterventions } from '../../hooks/useInterventions';
 import { InterventionCard } from '../InterventionCard/InterventionCard';
 import { CancelInterventionDialog } from '../CancelInterventionDialog/CancelInterventionDialog';
-import type { InterventionClientDto } from '../../types/clientIntervention.types';
+import type { InterventionClient } from '../../types/clientIntervention.types';
 import styles from './MesInterventions.module.scss';
 
 export function MesInterventions() {
@@ -16,7 +16,7 @@ export function MesInterventions() {
     } = useInterventions();
 
     const [cancelingIntervention, setCancelingIntervention] =
-        useState<InterventionClientDto | null>(null);
+        useState<InterventionClient | null>(null);
 
     const handleConfirmCancel = async () => {
         if (!cancelingIntervention) return;

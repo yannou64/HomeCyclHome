@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { interventionService } from '../services/interventionService';
 import type {
     CreateInterventionRequest,
-    InterventionCreatedDto,
+    InterventionCreated,
 } from '../types/intervention.types';
 
 export function useCreateIntervention() {
@@ -13,7 +13,7 @@ export function useCreateIntervention() {
         request: CreateInterventionRequest,
         photos?: File[],
     ): Promise<{
-        intervention: InterventionCreatedDto;
+        intervention: InterventionCreated;
         photoUrls: string[];
     }> => {
         setIsLoading(true);

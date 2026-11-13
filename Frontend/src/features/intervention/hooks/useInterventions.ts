@@ -1,6 +1,6 @@
 import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { clientInterventionService } from '../services/clientInterventionService';
-import type { InterventionClientDto } from '../types/clientIntervention.types';
+import type { InterventionClient } from '../types/clientIntervention.types';
 
 // Loader défini hors du composant : référence stable, la liste n'est
 // chargée qu'au montage puis à chaque reload().
@@ -12,7 +12,7 @@ export function useInterventions() {
         isLoading,
         error,
         reload,
-    } = useAsyncData<InterventionClientDto[]>(
+    } = useAsyncData<InterventionClient[]>(
         loadInterventions,
         [],
         'Impossible de charger vos interventions.',

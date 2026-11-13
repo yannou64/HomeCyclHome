@@ -1,4 +1,4 @@
-export type ForfaitDto = {
+export type Forfait = {
     id: string;
     nom: string;
     description: string | null;
