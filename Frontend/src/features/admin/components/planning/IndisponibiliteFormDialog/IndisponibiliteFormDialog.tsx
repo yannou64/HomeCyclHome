@@ -7,6 +7,7 @@ import {
 } from '../../../../../shared/components/ui/dialog';
 import type { CreateIndisponibilitePayload } from '../../../types/planning.types';
 import styles from './IndisponibiliteFormDialog.module.scss';
+import { getApiErrorMessage } from '../../../../../shared/utils/apiError';
 
 interface IndisponibiliteFormDialogProps {
     isOpen: boolean;
@@ -61,17 +62,7 @@ export function IndisponibiliteFormDialog({
             });
             handleClose();
         } catch (err: unknown) {
-            const axiosErr = err as {
-                response?: { data?: { message?: string | string[] } };
-            };
-            const msg = axiosErr?.response?.data?.message;
-            setFormError(
-                typeof msg === 'string'
-                    ? msg
-                    : Array.isArray(msg)
-                      ? msg[0]
-                      : 'Une erreur est survenue.',
-            );
+            setFormError(getApiErrorMessage(err, 'Une erreur est survenue.'));
         }
     };
 

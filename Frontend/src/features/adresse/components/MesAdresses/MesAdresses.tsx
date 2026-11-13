@@ -5,6 +5,7 @@ import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
 import { Form } from '../../../../shared/components/Form/Form';
 import type { Adresse } from '../../types/adresse.types';
 import styles from './MesAdresses.module.scss';
+import { getApiErrorMessage } from '../../../../shared/utils/apiError';
 
 function formatAdresse(a: Adresse): string {
     const num = a.numero ? `${a.numero} ` : '';
@@ -77,9 +78,12 @@ export function MesAdresses() {
             setSelectedId(null);
             setFormSuccess('Adresse ajoutée !');
         } catch (err: unknown) {
-            const msg = (err as { response?: { data?: { message?: string } } })
-                ?.response?.data?.message;
-            setFormError(msg ?? 'Une erreur est survenue. Veuillez réessayer.');
+            setFormError(
+                getApiErrorMessage(
+                    err,
+                    'Une erreur est survenue. Veuillez réessayer.',
+                ),
+            );
         } finally {
             setIsSaving(false);
         }

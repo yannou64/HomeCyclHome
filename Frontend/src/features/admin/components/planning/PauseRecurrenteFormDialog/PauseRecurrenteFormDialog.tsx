@@ -8,6 +8,7 @@ import {
 import { timeToMinutes } from '../../../../../shared/utils/timeUtils';
 import type { CreatePauseRecurrentePayload } from '../../../types/planning.types';
 import styles from './PauseRecurrenteFormDialog.module.scss';
+import { getApiErrorMessage } from '../../../../../shared/utils/apiError';
 
 const JOURS = [
     'Lundi',
@@ -76,17 +77,7 @@ export function PauseRecurrenteFormDialog({
             });
             handleClose();
         } catch (err: unknown) {
-            const axiosErr = err as {
-                response?: { data?: { message?: string | string[] } };
-            };
-            const msg = axiosErr?.response?.data?.message;
-            setFormError(
-                typeof msg === 'string'
-                    ? msg
-                    : Array.isArray(msg)
-                      ? msg[0]
-                      : 'Une erreur est survenue.',
-            );
+            setFormError(getApiErrorMessage(err, 'Une erreur est survenue.'));
         }
     };
 

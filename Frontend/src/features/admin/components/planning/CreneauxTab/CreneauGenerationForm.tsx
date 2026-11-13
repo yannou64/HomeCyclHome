@@ -5,6 +5,7 @@ import type {
     ModelePlanification,
 } from '../../../types/planning.types';
 import styles from './CreneauGenerationForm.module.scss';
+import { getApiErrorMessage } from '../../../../../shared/utils/apiError';
 
 interface CreneauGenerationFormProps {
     modeles: ModelePlanification[];
@@ -43,11 +44,12 @@ export function CreneauGenerationForm({
             const rapport = await onGenerate(payload);
             onRapport(rapport);
         } catch (err: unknown) {
-            const message =
-                (err as { response?: { data?: { message?: string } } })
-                    ?.response?.data?.message ??
-                'Erreur lors de la génération des créneaux.';
-            setError(message);
+            setError(
+                getApiErrorMessage(
+                    err,
+                    'Erreur lors de la génération des créneaux.',
+                ),
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -60,11 +62,12 @@ export function CreneauGenerationForm({
             const rapport = await onGenerateAll(dateFinGeneration || undefined);
             onRapport(rapport);
         } catch (err: unknown) {
-            const message =
-                (err as { response?: { data?: { message?: string } } })
-                    ?.response?.data?.message ??
-                'Erreur lors de la génération des créneaux.';
-            setError(message);
+            setError(
+                getApiErrorMessage(
+                    err,
+                    'Erreur lors de la génération des créneaux.',
+                ),
+            );
         } finally {
             setIsSubmittingAll(false);
         }

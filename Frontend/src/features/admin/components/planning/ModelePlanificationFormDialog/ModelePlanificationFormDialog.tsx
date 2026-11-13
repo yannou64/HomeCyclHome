@@ -16,6 +16,7 @@ import {
     minutesToTime,
 } from '../../../../../shared/utils/timeUtils';
 import styles from './ModelePlanificationFormDialog.module.scss';
+import { getApiErrorMessage } from '../../../../../shared/utils/apiError';
 
 const JOURS = [
     'Lundi',
@@ -146,16 +147,11 @@ export function ModelePlanificationFormDialog({
             await onSubmit(payload);
             onClose();
         } catch (err: unknown) {
-            const axiosErr = err as {
-                response?: { data?: { message?: string | string[] } };
-            };
-            const msg = axiosErr?.response?.data?.message;
             setValidationError(
-                typeof msg === 'string'
-                    ? msg
-                    : Array.isArray(msg)
-                      ? msg[0]
-                      : 'Une erreur est survenue lors de la création du modèle.',
+                getApiErrorMessage(
+                    err,
+                    'Une erreur est survenue lors de la création du modèle.',
+                ),
             );
         }
     };

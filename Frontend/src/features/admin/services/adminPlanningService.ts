@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type { ZoneAffectee } from '../types/affectations.types';
@@ -176,9 +177,9 @@ export const adminPlanningService = {
             return r.data.zones;
         } catch (err) {
             // 404 = technicien sans affectation → pas de zones disponibles
-            const status = (err as { response?: { status?: number } })?.response
-                ?.status;
-            if (status === 404) return [];
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
+                return [];
+            }
             throw err;
         }
     },
