@@ -118,8 +118,14 @@ dur.**
 `shared/components/ui/` (`Dialog`, `Table`, `Tabs`, `Pagination`, `Button`). Ils
 sont stylés par une classe de module passée en `className`. Tailwind ne sert qu'à
 l'intérieur de ces composants : **pas de classes Tailwind dans nos propres
-composants.** Le point d'entrée `app/styles/tailwind.css` est importé par
-`AdminLayout`. Ajout d'un composant : CLI shadcn (`components.json`), helper `cn` dans
+composants.** Deux feuilles :
+- `app/styles/shadcn.css` : utilitaires Tailwind et variables shadcn, **sans
+  preflight**. À importer par tout composant hors admin qui utilise un composant
+  shadcn (exemple : `user/components/DeleteAccountSection`) ;
+- `app/styles/tailwind.css` : `shadcn.css` + preflight, importée **uniquement** par
+  `AdminLayout`. Le preflight remettrait à zéro les styles SCSS du site client.
+
+Ajout d'un composant : CLI shadcn (`components.json`), helper `cn` dans
 `shared/utils/cn`.
 
 **Constantes d'affichage partagées :** une correspondance utilisée à plusieurs

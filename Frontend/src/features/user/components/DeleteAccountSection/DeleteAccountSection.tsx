@@ -9,6 +9,10 @@ import { Card } from '../../../../shared/components/Card/Card';
 import { useDeleteAccount } from '../../hooks/useDeleteAccount';
 import styles from './DeleteAccountSection.module.scss';
 
+// Socle des composants shadcn (positionnement et fond du Dialog), sans le
+// preflight Tailwind réservé à l'admin.
+import '../../../../app/styles/shadcn.css';
+
 export function DeleteAccountSection() {
     const [isOpen, setIsOpen] = useState(false);
     const { handleDeleteAccount, isLoading, error } = useDeleteAccount();
