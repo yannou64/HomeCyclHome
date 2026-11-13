@@ -2,11 +2,11 @@ import { Footer } from '../Footer/Footer';
 import { Header } from '../Header/Header';
 import styles from './LegalPageLayout.module.scss';
 
-type LegalPageLayoutProps = {
+interface LegalPageLayoutProps {
     title: string;
     updated?: string;
     children: React.ReactNode;
-};
+}
 
 export function LegalPageLayout({
     title,
@@ -28,10 +28,10 @@ export function LegalPageLayout({
     );
 }
 
-type LegalSectionProps = {
+interface LegalSectionProps {
     title: string;
     children: React.ReactNode;
-};
+}
 
 export function LegalSection({ title, children }: LegalSectionProps) {
     return (
@@ -42,7 +42,9 @@ export function LegalSection({ title, children }: LegalSectionProps) {
     );
 }
 
-type LegalTextProps = { children: React.ReactNode };
+interface LegalTextProps {
+    children: React.ReactNode;
+}
 
 export function LegalText({ children }: LegalTextProps) {
     return <p className={styles.text}>{children}</p>;

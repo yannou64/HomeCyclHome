@@ -70,9 +70,13 @@ export function useAddressAutocomplete() {
             });
         };
 
-        run().catch((err: unknown) => {
-            console.error('[Autocomplete] erreur de chargement :', err);
-        });
+        void (async () => {
+            try {
+                await run();
+            } catch (err: unknown) {
+                console.error('[Autocomplete] erreur de chargement :', err);
+            }
+        })();
 
         return () => {
             listenerHandle?.remove();

@@ -4,13 +4,13 @@ import styles from './MobileMenu.module.scss';
 
 type NavLinkItem = { label: string; to: string };
 
-type MobileMenuProps = {
+interface MobileMenuProps {
     isOpen: boolean;
     onClose: () => void;
     navLinks: NavLinkItem[];
     onLogout?: () => void;
     isAuthenticated: boolean;
-};
+}
 
 const LEGAL_LINKS: NavLinkItem[] = [
     { label: 'Mentions légales', to: '/mentions-legales' },

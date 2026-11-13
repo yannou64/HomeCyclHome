@@ -9,9 +9,9 @@ import { useState, type ReactNode } from 'react';
 import { AuthContext } from './auth.context';
 import type { AuthSession, AuthContextType } from './types/auth.types';
 
-type AuthProviderProps = {
+interface AuthProviderProps {
     children: ReactNode;
-};
+}
 
 function readInitialSession(): AuthSession | null {
     const stored = localStorage.getItem('session');

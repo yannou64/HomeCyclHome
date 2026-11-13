@@ -1,14 +1,14 @@
 import styles from './CTAButton.module.scss';
 import type { ReactNode } from 'react';
 
-type ButtonProps = {
+interface ButtonProps {
     children: ReactNode;
     type?: 'submit' | 'button' | 'reset';
     disabled?: boolean;
     isLoading?: boolean;
     className?: string;
     onClick?: () => void;
-};
+}
 
 export function CTAButton({
     children,

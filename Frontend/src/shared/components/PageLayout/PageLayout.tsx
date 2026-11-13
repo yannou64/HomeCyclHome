@@ -18,12 +18,12 @@ const CAROUSEL_IMAGES = [
     avis2,
 ];
 
-type PageLayoutProps = {
+interface PageLayoutProps {
     children: React.ReactNode;
     leftContent?: React.ReactNode;
     compact?: boolean;
     noContentScroll?: boolean;
-};
+}
 
 export function PageLayout({
     children,

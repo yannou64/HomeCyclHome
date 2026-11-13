@@ -13,9 +13,9 @@ import type {
 } from './types/reservation.types';
 import { PENDING_RESERVATION_KEY } from './types/reservation.types';
 
-type ReservationProviderProps = {
+interface ReservationProviderProps {
     children: ReactNode;
-};
+}
 
 export function ReservationProvider({ children }: ReservationProviderProps) {
     const [adresse, setAdresse] = useState<AdresseBooking | null>(null);
