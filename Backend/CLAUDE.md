@@ -38,7 +38,7 @@ src/
 ├── app/          # app.module.ts, main.ts (bootstrap : cookies, CORS, pipes, Swagger)
 ├── config/       # cookie, helmet, jwt, throttler
 ├── features/     # un dossier = un module NestJS métier
-└── shared/       # prisma/, database/, guards/ (RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
+└── shared/       # domain/ (règles métier transverses), prisma/, database/, guards/ (RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
 test/             # configuration et tests d'intégration Supertest
 ```
 
@@ -71,6 +71,15 @@ features/<nom>/
 technique), partagée par plusieurs use cases, et pure. Sinon elle reste dans son use
 case. Exemples en place : `planning/domain/creneau-reservable.ts`,
 `planning/domain/jour-travail.ts`.
+
+**Où le mettre :**
+- règle utilisée par un seul module → `features/<module>/domain/` ;
+- règle utilisée par plusieurs modules (fuseau d'exploitation, calcul des blocs,
+  concaténation du commentaire partagé…) → `src/shared/domain/`. Mêmes exigences :
+  aucun import Nest ni Prisma, un `.spec.ts` à côté.
+
+L'écriture conditionnelle n'est pas une règle pure (elle parle à la base) : son aide
+partagée, si elle en a une, va dans `shared/database/`, pas dans `shared/domain/`.
 
 ---
 
@@ -130,7 +139,7 @@ partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 `toISOString().slice(0, 10)`. Les use cases V1 de `planning` bornent encore les
 journées avec `setUTCHours` : dette V1, pas un modèle. Base
 existante : `planning/domain/jour-travail.ts` (`jourTravail`,
-`bornesDuJourTravail`) — à généraliser en brique partagée au socle V2.
+`bornesDuJourTravail`) — à déplacer dans `shared/domain/` au socle V2.
 
 **Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases (par
 exemple le calcul des blocs, utilisé par la réservation et la création par l'admin)
