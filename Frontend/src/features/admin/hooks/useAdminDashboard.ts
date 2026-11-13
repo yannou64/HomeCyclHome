@@ -1,24 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminDashboardService } from '../services/adminDashboardService';
 import type { AdminStats } from '../types/dashboard.types';
 
-export function useAdminDashboard() {
-    const [stats, setStats] = useState<AdminStats | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+// Loader défini hors du composant : référence stable, chargé une fois au montage.
+const loadStats = (): Promise<AdminStats | null> =>
+    adminDashboardService.getStats();
 
-    useEffect(() => {
-        void (async () => {
-            try {
-                const data = await adminDashboardService.getStats();
-                setStats(data);
-            } catch {
-                setError('Impossible de charger les statistiques.');
-            } finally {
-                setIsLoading(false);
-            }
-        })();
-    }, []);
+export function useAdminDashboard() {
+    const {
+        data: stats,
+        isLoading,
+        error,
+    } = useAsyncData(
+        loadStats,
+        null,
+        'Impossible de charger les statistiques.',
+    );
 
     return { stats, isLoading, error };
 }

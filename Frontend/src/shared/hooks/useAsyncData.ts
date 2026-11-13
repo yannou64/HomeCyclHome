@@ -9,6 +9,12 @@ interface LoadedState<T> {
     error: string | null;
 }
 
+export interface AsyncDataOptions {
+    // false : aucun chargement (utilisateur non connecté, dialogue fermé…).
+    // Le chargement part dès que la valeur repasse à true.
+    enabled?: boolean;
+}
+
 export interface AsyncData<T> {
     data: T;
     isLoading: boolean;
@@ -34,6 +40,7 @@ export function useAsyncData<T>(
     loader: () => Promise<T>,
     initialData: T,
     errorMessage: string,
+    { enabled = true }: AsyncDataOptions = {},
 ): AsyncData<T> {
     // Incrémenté par reload() : relance l'effet sans changer de loader.
     const [reloadKey, setReloadKey] = useState(0);
@@ -45,6 +52,7 @@ export function useAsyncData<T>(
     });
 
     useEffect(() => {
+        if (!enabled) return;
         // Passe à true si l'effet est relancé (nouveau filtre, nouvelle page) ou
         // le composant démonté avant la réponse : une réponse arrivée trop tard
         // ne doit pas écraser la plus récente.
@@ -69,14 +77,14 @@ export function useAsyncData<T>(
         return () => {
             ignore = true;
         };
-    }, [loader, reloadKey, errorMessage]);
+    }, [loader, reloadKey, errorMessage, enabled]);
 
     const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
     // État dérivé, calculé à chaque rendu (aucun setState) : on charge tant que
     // le dernier résultat reçu ne correspond pas à la demande en cours.
     const isLoading =
-        loaded.loader !== loader || loaded.reloadKey !== reloadKey;
+        enabled && (loaded.loader !== loader || loaded.reloadKey !== reloadKey);
 
     return {
         data: loaded.data,

@@ -1,25 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { reservationService } from '../services/reservationService';
 import type { ForfaitDto } from '../types/forfait.types';
 
-export function useForfaits() {
-    const [forfaits, setForfaits] = useState<ForfaitDto[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+// Loader défini hors du composant : référence stable, chargé une fois au montage.
+const loadForfaits = () => reservationService.getForfaits();
 
-    useEffect(() => {
-        async function fetch() {
-            try {
-                const data = await reservationService.getForfaits();
-                setForfaits(data);
-            } catch {
-                setError('Impossible de charger les forfaits.');
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        void fetch();
-    }, []);
+export function useForfaits() {
+    const {
+        data: forfaits,
+        isLoading,
+        error,
+    } = useAsyncData<ForfaitDto[]>(
+        loadForfaits,
+        [],
+        'Impossible de charger les forfaits.',
+    );
 
     return { forfaits, isLoading, error };
 }

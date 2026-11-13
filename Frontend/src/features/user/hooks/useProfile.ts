@@ -1,26 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { userService } from '../services/userService';
 import type { UserProfile } from '../types/user.types';
 
+// Loader défini hors du composant : référence stable, chargé une fois au montage.
+const loadProfile = (): Promise<UserProfile | null> => userService.getProfile();
+
 export function useProfile() {
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        async function fetchProfile() {
-            try {
-                const data = await userService.getProfile();
-                setProfile(data);
-            } catch {
-                setError('Impossible de charger le profil.');
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        void fetchProfile();
-    }, []); // tableau vide = exécution unique au montage du composant
+    const {
+        data: profile,
+        isLoading,
+        error,
+    } = useAsyncData(loadProfile, null, 'Impossible de charger le profil.');
 
     return { profile, isLoading, error };
 }
