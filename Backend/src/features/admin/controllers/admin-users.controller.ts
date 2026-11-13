@@ -20,9 +20,9 @@ import {
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
-import { PaginationQueryDto } from '../dto/pagination-query.dto';
-import { CreateAdminUserDto } from '../dto/create-admin-user.dto';
-import { UpdateAdminUserDto } from '../dto/update-admin-user.dto';
+import { GetUsersQueryDto } from '../dto/input/get-users-query.dto';
+import { CreateAdminUserDto } from '../dto/input/create-admin-user.dto';
+import { UpdateAdminUserDto } from '../dto/input/update-admin-user.dto';
 import { GetUsersUseCase } from '../use-cases/get-users.use-case';
 import { CreateUserUseCase } from '../use-cases/create-user.use-case';
 import { UpdateUserUseCase } from '../use-cases/update-user.use-case';
@@ -53,7 +53,7 @@ export class AdminUsersController {
     @ApiQuery({ name: 'isActif', required: false, type: Boolean })
     @ApiOkResponse({ description: 'Liste paginée des utilisateurs' })
     @Get()
-    findAll(@Query() query: PaginationQueryDto) {
+    findAll(@Query() query: GetUsersQueryDto) {
         return this.getUsersUseCase.execute(query);
     }
 

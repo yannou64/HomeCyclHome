@@ -1,4 +1,4 @@
-import { ZoneDto } from '../dto/zone.dto';
+import { ZoneResponseDto } from '../dto/output/zone-response.dto';
 
 export type ZonePointData = {
     latitude: number;
@@ -20,11 +20,11 @@ export type UpdateZoneData = {
 export const ZONES_REPO = 'ZONES_REPO';
 
 export interface IZonesRepository {
-    findAll(): Promise<ZoneDto[]>;
-    findAllActive(): Promise<ZoneDto[]>;
-    findById(id: string): Promise<ZoneDto | null>;
+    findAll(): Promise<ZoneResponseDto[]>;
+    findAllActive(): Promise<ZoneResponseDto[]>;
+    findById(id: string): Promise<ZoneResponseDto | null>;
     existsByNom(nom: string, excludeId?: string): Promise<boolean>;
-    create(data: CreateZoneData): Promise<ZoneDto>;
-    update(id: string, data: UpdateZoneData): Promise<ZoneDto>;
+    create(data: CreateZoneData): Promise<ZoneResponseDto>;
+    update(id: string, data: UpdateZoneData): Promise<ZoneResponseDto>;
     delete(id: string): Promise<void>;
 }

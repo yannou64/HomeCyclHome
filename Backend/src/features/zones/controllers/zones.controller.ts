@@ -1,6 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CheckZoneDto, CheckZoneResultDto } from '../dto/check-zone.dto';
+import { CheckZoneDto } from '../dto/input/check-zone.dto';
+import { CheckZoneResponseDto } from '../dto/output/check-zone-response.dto';
 import { CheckZoneUseCase } from '../use-cases/check-zone.use-case';
 
 @ApiTags('Zones')
@@ -17,7 +18,7 @@ export class ZonesController {
     })
     @HttpCode(HttpStatus.OK)
     @Post('check')
-    check(@Body() dto: CheckZoneDto): Promise<CheckZoneResultDto> {
+    check(@Body() dto: CheckZoneDto): Promise<CheckZoneResponseDto> {
         return this.checkZoneUseCase.execute(dto.latitude, dto.longitude);
     }
 }

@@ -1,11 +1,11 @@
-import { ModelePlanificationDto } from '../dto/planning.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GenerateCreneauxUseCase } from './generate-creneaux.use-case';
 import { GenerateAllCreneauxUseCase } from './generate-all-creneaux.use-case';
 
 // ─── Données de test ─────────────────────────────────────────────────────────
 
-const baseModele: ModelePlanificationDto = {
+const baseModele: ModelePlanificationResponseDto = {
     id: 'modele-1',
     technicienId: 'tech-uuid',
     zoneId: 'zone-uuid',
@@ -18,12 +18,12 @@ const baseModele: ModelePlanificationDto = {
     dateFinValidite: null,
 };
 
-const modele2: ModelePlanificationDto = {
+const modele2: ModelePlanificationResponseDto = {
     ...baseModele,
     id: 'modele-2',
     jourSemaine: 2,
 };
-const modeleInactif: ModelePlanificationDto = {
+const modeleInactif: ModelePlanificationResponseDto = {
     ...baseModele,
     id: 'modele-3',
     isActif: false,

@@ -1,10 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-    CreateCreneauData,
-    GenerationRapportDto,
-    IndisponibiliteDto,
-    PauseRecurrenteDto,
-} from '../dto/planning.dto';
+import { CreateCreneauData } from '../repositories/planning.repository.interface';
+import { GenerationRapportResponseDto } from '../dto/output/generation-rapport-response.dto';
+import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
+import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GenerateCreneauxInput = {
@@ -19,7 +17,9 @@ const MAX_MOIS = 6;
 export class GenerateCreneauxUseCase {
     constructor(private readonly repo: IPlanningRepository) {}
 
-    async execute(input: GenerateCreneauxInput): Promise<GenerationRapportDto> {
+    async execute(
+        input: GenerateCreneauxInput,
+    ): Promise<GenerationRapportResponseDto> {
         // 1. Charger le modèle
         const modele = await this.repo.findModeleById(input.modeleId);
         if (!modele) {
@@ -167,7 +167,7 @@ export class GenerateCreneauxUseCase {
     // Vérifie si un jour entier est couvert par au moins une indisponibilité
     private estJourIndisponible(
         jour: Date,
-        indisponibilites: IndisponibiliteDto[],
+        indisponibilites: IndisponibiliteResponseDto[],
     ): boolean {
         const jourDebut = new Date(jour);
         jourDebut.setUTCHours(0, 0, 0, 0);
@@ -194,7 +194,7 @@ export class GenerateCreneauxUseCase {
     private estDansPause(
         heure: number, // minutes depuis minuit
         jourModele: number, // 0=lundi … 6=dimanche
-        pauses: PauseRecurrenteDto[],
+        pauses: PauseRecurrenteResponseDto[],
     ): boolean {
         return pauses.some((pause) => {
             // La pause s'applique si elle est quotidienne (null) ou sur ce jour précis

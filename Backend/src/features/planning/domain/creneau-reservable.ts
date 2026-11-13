@@ -1,4 +1,4 @@
-import { CreneauAvecTechnicienDto } from '../dto/planning.dto';
+import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
 
 /**
  * Règle métier centrale du tunnel de réservation.
@@ -23,7 +23,7 @@ import { CreneauAvecTechnicienDto } from '../dto/planning.dto';
  * @param dureeMinutes durée du forfait choisi par le client
  */
 export function estCreneauReservable(
-    creneauxDuJour: CreneauAvecTechnicienDto[],
+    creneauxDuJour: CreneauAvecTechnicien[],
     index: number,
     dureeMinutes: number,
 ): boolean {
@@ -80,8 +80,8 @@ export function estCreneauReservable(
 
 // Millisecondes écoulées entre les débuts de deux slots
 function ecartMs(
-    depuis: CreneauAvecTechnicienDto,
-    vers: CreneauAvecTechnicienDto,
+    depuis: CreneauAvecTechnicien,
+    vers: CreneauAvecTechnicien,
 ): number {
     return (
         new Date(vers.dateDebut).getTime() -

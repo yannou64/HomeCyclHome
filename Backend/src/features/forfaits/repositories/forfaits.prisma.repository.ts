@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Forfait, Prisma } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { ForfaitDto } from '../dto/forfait.dto';
+import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 import {
     CreateForfaitData,
     IForfaitsRepository,
@@ -16,7 +16,7 @@ type ForfaitWithPrix = Forfait & {
 export class ForfaitsPrismaRepository implements IForfaitsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findAll(): Promise<ForfaitDto[]> {
+    async findAll(): Promise<ForfaitResponseDto[]> {
         const forfaits = await this.prisma.forfait.findMany({
             orderBy: { nom: 'asc' },
             include: {
@@ -29,7 +29,7 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         return forfaits.map((f) => this.toDto(f));
     }
 
-    async findAllActifs(): Promise<ForfaitDto[]> {
+    async findAllActifs(): Promise<ForfaitResponseDto[]> {
         const forfaits = await this.prisma.forfait.findMany({
             where: { is_actif: true },
             orderBy: { nom: 'asc' },
@@ -43,7 +43,7 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         return forfaits.map((f) => this.toDto(f));
     }
 
-    async findById(id: string): Promise<ForfaitDto | null> {
+    async findById(id: string): Promise<ForfaitResponseDto | null> {
         const forfait = await this.prisma.forfait.findUnique({
             where: { id },
             include: {
@@ -56,14 +56,14 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         return forfait ? this.toDto(forfait) : null;
     }
 
-    async findByNom(nom: string): Promise<ForfaitDto | null> {
+    async findByNom(nom: string): Promise<ForfaitResponseDto | null> {
         const forfait = await this.prisma.forfait.findUnique({
             where: { nom },
         });
         return forfait ? this.toDto(forfait) : null;
     }
 
-    async create(data: CreateForfaitData): Promise<ForfaitDto> {
+    async create(data: CreateForfaitData): Promise<ForfaitResponseDto> {
         const forfait = await this.prisma.forfait.create({
             data: {
                 nom: data.nom,
@@ -75,7 +75,10 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         return this.toDto(forfait);
     }
 
-    async update(id: string, data: UpdateForfaitData): Promise<ForfaitDto> {
+    async update(
+        id: string,
+        data: UpdateForfaitData,
+    ): Promise<ForfaitResponseDto> {
         const forfait = await this.prisma.forfait.update({
             where: { id },
             data: {
@@ -110,7 +113,7 @@ export class ForfaitsPrismaRepository implements IForfaitsRepository {
         });
     }
 
-    private toDto(forfait: ForfaitWithPrix): ForfaitDto {
+    private toDto(forfait: ForfaitWithPrix): ForfaitResponseDto {
         return {
             id: forfait.id,
             nom: forfait.nom,

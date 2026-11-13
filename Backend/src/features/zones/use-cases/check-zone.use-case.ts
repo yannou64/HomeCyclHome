@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { IZonesRepository } from '../repositories/zones.repository.interface';
-import type { CheckZoneResultDto } from '../dto/check-zone.dto';
-import type { ZonePointDto } from '../dto/zone.dto';
+import type { CheckZoneResponseDto } from '../dto/output/check-zone-response.dto';
+import type { ZonePointResponseDto } from '../dto/output/zone-response.dto';
 
 @Injectable()
 export class CheckZoneUseCase {
@@ -10,7 +10,7 @@ export class CheckZoneUseCase {
     async execute(
         latitude: number,
         longitude: number,
-    ): Promise<CheckZoneResultDto> {
+    ): Promise<CheckZoneResponseDto> {
         const zones = await this.repo.findAllActive();
 
         for (const zone of zones) {
@@ -31,7 +31,7 @@ export class CheckZoneUseCase {
     private isPointInPolygon(
         lat: number,
         lng: number,
-        points: ZonePointDto[],
+        points: ZonePointResponseDto[],
     ): boolean {
         let inside = false;
         const n = points.length;

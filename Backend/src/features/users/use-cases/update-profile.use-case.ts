@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { UserProfileDto } from '../dto/user-profile.dto';
+import { UserProfileResponseDto } from '../dto/output/user-profile-response.dto';
 import {
     IUsersRepository,
     UpdateUserData,
@@ -11,7 +11,7 @@ export class UpdateProfileUseCase {
     async execute(
         userId: string,
         data: UpdateUserData,
-    ): Promise<UserProfileDto> {
+    ): Promise<UserProfileResponseDto> {
         // Vérification d'existence avant modification — pattern identique à admin
         const existing = await this.repo.findById(userId);
 

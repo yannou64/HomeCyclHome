@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { AdminStatsDto } from '../dto/admin-stats.dto';
+import { AdminStatsResponseDto } from '../dto/output/admin-stats-response.dto';
 import { IAdminStatsRepository } from './admin-stats.repository.interface';
 
 @Injectable()
 export class AdminStatsPrismaRepository implements IAdminStatsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async getStats(): Promise<AdminStatsDto> {
+    async getStats(): Promise<AdminStatsResponseDto> {
         const [interventionsPlanifiees, zonesCouvertes, nombreTechniciens] =
             await Promise.all([
                 this.prisma.intervention.count({

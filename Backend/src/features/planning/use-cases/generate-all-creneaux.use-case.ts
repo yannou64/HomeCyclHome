@@ -1,4 +1,4 @@
-import { GenerationRapportDto } from '../dto/planning.dto';
+import { GenerationRapportResponseDto } from '../dto/output/generation-rapport-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GenerateCreneauxUseCase } from './generate-creneaux.use-case';
 
@@ -15,7 +15,7 @@ export class GenerateAllCreneauxUseCase {
 
     async execute(
         input: GenerateAllCreneauxInput,
-    ): Promise<GenerationRapportDto> {
+    ): Promise<GenerationRapportResponseDto> {
         const modeles = await this.repo.findModelesByTechnicien(
             input.technicienId,
         );

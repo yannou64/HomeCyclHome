@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UpdateUserDto } from '../dto/input/update-user.dto';
 import { DeleteAccountUseCase } from '../use-cases/delete-account.use-case';
 import { GetProfileUseCase } from '../use-cases/get-profile.use-case';
 import { UpdateProfileUseCase } from '../use-cases/update-profile.use-case';

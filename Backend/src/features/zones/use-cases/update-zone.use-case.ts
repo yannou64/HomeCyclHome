@@ -1,5 +1,5 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { ZoneDto } from '../dto/zone.dto';
+import { ZoneResponseDto } from '../dto/output/zone-response.dto';
 import {
     IZonesRepository,
     UpdateZoneData,
@@ -8,7 +8,7 @@ import {
 export class UpdateZoneUseCase {
     constructor(private readonly repo: IZonesRepository) {}
 
-    async execute(id: string, data: UpdateZoneData): Promise<ZoneDto> {
+    async execute(id: string, data: UpdateZoneData): Promise<ZoneResponseDto> {
         const zone = await this.repo.findById(id);
         if (!zone) {
             throw new NotFoundException(`Zone avec l'id ${id} introuvable`);

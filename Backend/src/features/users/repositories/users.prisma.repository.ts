@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { Utilisateur } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { UserProfileDto } from '../dto/user-profile.dto';
+import { UserProfileResponseDto } from '../dto/output/user-profile-response.dto';
 import { IUsersRepository, UpdateUserData } from './users.repository.interface';
 
 @Injectable()
 export class UsersPrismaRepository implements IUsersRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findById(id: string): Promise<UserProfileDto | null> {
+    async findById(id: string): Promise<UserProfileResponseDto | null> {
         const user = await this.prisma.utilisateur.findUnique({
             where: { id },
         });
         return user ? this.toDto(user) : null;
     }
 
-    async update(id: string, data: UpdateUserData): Promise<UserProfileDto> {
+    async update(
+        id: string,
+        data: UpdateUserData,
+    ): Promise<UserProfileResponseDto> {
         const user = await this.prisma.utilisateur.update({
             where: { id },
             data,
@@ -28,7 +31,7 @@ export class UsersPrismaRepository implements IUsersRepository {
     }
 
     // Garantit qu'on n'expose jamais password_hash ni refresh_token_hash
-    private toDto(user: Utilisateur): UserProfileDto {
+    private toDto(user: Utilisateur): UserProfileResponseDto {
         return {
             id: user.id,
             nom: user.nom,

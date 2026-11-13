@@ -2,7 +2,7 @@ import { ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { EmailService } from '../../email/email.service';
-import { RegisterDto } from '../dto/register.dto';
+import { RegisterDto } from '../dto/input/register.dto';
 import { IAuthRepository } from '../repositories/auth.repository.interface';
 
 export class RegisterUseCase {

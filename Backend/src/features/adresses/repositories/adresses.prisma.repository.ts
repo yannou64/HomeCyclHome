@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import type { IAdressesRepository } from './adresses.repository.interface';
-import type { AdresseDto } from '../dto/output/adresse.dto';
-import type {
-    CreateAdresseInput,
-    UpdateAdresseInput,
-} from '../dto/input/adresse-input.dto';
+import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
+import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
+import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
 import type { Adresse, PeutSeSituer } from '../../../../generated/prisma';
 
 type LiaisonWithAdresse = PeutSeSituer & { adresse: Adresse };
@@ -14,7 +12,7 @@ type LiaisonWithAdresse = PeutSeSituer & { adresse: Adresse };
 export class AdressesPrismaRepository implements IAdressesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findAllByUser(utilisateurId: string): Promise<AdresseDto[]> {
+    async findAllByUser(utilisateurId: string): Promise<AdresseResponseDto[]> {
         const liaisons = await this.prisma.peutSeSituer.findMany({
             where: { utilisateur_id: utilisateurId, is_valide: true },
             include: { adresse: true },
@@ -26,7 +24,7 @@ export class AdressesPrismaRepository implements IAdressesRepository {
     async findByIdAndUser(
         id: string,
         utilisateurId: string,
-    ): Promise<AdresseDto | null> {
+    ): Promise<AdresseResponseDto | null> {
         const liaison = await this.prisma.peutSeSituer.findFirst({
             where: { id, utilisateur_id: utilisateurId, is_valide: true },
             include: { adresse: true },
@@ -46,7 +44,7 @@ export class AdressesPrismaRepository implements IAdressesRepository {
     async create(
         utilisateurId: string,
         data: CreateAdresseInput,
-    ): Promise<AdresseDto> {
+    ): Promise<AdresseResponseDto> {
         // Upsert sur Adresse (déduplication via google_place_id) puis création de la liaison
         const liaison = await this.prisma.$transaction(async (tx) => {
             const adresse = await tx.adresse.upsert({
@@ -80,7 +78,7 @@ export class AdressesPrismaRepository implements IAdressesRepository {
     async updateMetadata(
         id: string,
         data: Pick<UpdateAdresseInput, 'titreDescription'>,
-    ): Promise<AdresseDto> {
+    ): Promise<AdresseResponseDto> {
         const liaison = await this.prisma.peutSeSituer.update({
             where: { id },
             data: { titre_description: data.titreDescription },
@@ -89,7 +87,10 @@ export class AdressesPrismaRepository implements IAdressesRepository {
         return this.toDto(liaison);
     }
 
-    async setPrincipal(id: string, utilisateurId: string): Promise<AdresseDto> {
+    async setPrincipal(
+        id: string,
+        utilisateurId: string,
+    ): Promise<AdresseResponseDto> {
         // Transaction atomique : une seule adresse principale possible par client
         const liaison = await this.prisma.$transaction(async (tx) => {
             await tx.peutSeSituer.updateMany({
@@ -107,7 +108,7 @@ export class AdressesPrismaRepository implements IAdressesRepository {
         return this.toDto(liaison);
     }
 
-    async unsetPrincipal(id: string): Promise<AdresseDto> {
+    async unsetPrincipal(id: string): Promise<AdresseResponseDto> {
         const liaison = await this.prisma.peutSeSituer.update({
             where: { id },
             data: { adresse_principal: false },
@@ -123,7 +124,7 @@ export class AdressesPrismaRepository implements IAdressesRepository {
         });
     }
 
-    private toDto(liaison: LiaisonWithAdresse): AdresseDto {
+    private toDto(liaison: LiaisonWithAdresse): AdresseResponseDto {
         return {
             id: liaison.id,
             adresseId: liaison.adresse_id,

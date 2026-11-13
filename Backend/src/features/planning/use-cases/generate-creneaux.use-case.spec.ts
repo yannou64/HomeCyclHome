@@ -1,11 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-    CreateCreneauData,
-    GenerationRapportDto,
-    IndisponibiliteDto,
-    ModelePlanificationDto,
-    PauseRecurrenteDto,
-} from '../dto/planning.dto';
+import { CreateCreneauData } from '../repositories/planning.repository.interface';
+import { GenerationRapportResponseDto } from '../dto/output/generation-rapport-response.dto';
+import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
+import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GenerateCreneauxUseCase } from './generate-creneaux.use-case';
 
@@ -16,7 +14,7 @@ const DATE_LUNDI = '2026-06-01';
 const DATE_MARDI = '2026-06-02';
 const DATE_MERCREDI = '2026-06-03';
 
-const mockModele: ModelePlanificationDto = {
+const mockModele: ModelePlanificationResponseDto = {
     id: 'modele-uuid',
     technicienId: 'tech-uuid',
     zoneId: 'zone-uuid',
@@ -88,7 +86,7 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait générer les créneaux corrects sur un modèle simple (lundi 9h-11h, 30min)', async () => {
         // Modèle : lundi 9h-11h par 30min → 4 slots (9h, 9h30, 10h, 10h30)
         // Période : du 2026-06-01 au 2026-06-07 (une semaine, un seul lundi)
-        const rapport: GenerationRapportDto = await useCase.execute({
+        const rapport: GenerationRapportResponseDto = await useCase.execute({
             modeleId: 'modele-uuid',
             dateFinGeneration: '2026-06-07',
         });
@@ -146,7 +144,7 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait exclure les slots couverts par une pause quotidienne (jour_semaine=null)', async () => {
         // Pause 9h30-10h00 tous les jours → sur lundi 9h-11h 30min :
         // slots 9h ✓, 9h30 ✗ (couvert par la pause), 10h ✓, 10h30 ✓ → 3 créneaux
-        const pause: PauseRecurrenteDto = {
+        const pause: PauseRecurrenteResponseDto = {
             id: 'pause-uuid',
             technicienId: 'tech-uuid',
             jourSemaine: null, // tous les jours
@@ -170,7 +168,7 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait exclure les slots couverts par une pause sur un jour précis uniquement', async () => {
         // Pause lundi 9h30-10h00 uniquement (jour_semaine=0)
         // Idem : 3 créneaux le lundi
-        const pause: PauseRecurrenteDto = {
+        const pause: PauseRecurrenteResponseDto = {
             id: 'pause-uuid',
             technicienId: 'tech-uuid',
             jourSemaine: 0, // lundi seulement
@@ -192,7 +190,7 @@ describe('GenerateCreneauxUseCase', () => {
 
     it('ne devrait pas exclure les slots si la pause concerne un autre jour de la semaine', async () => {
         // Pause mardi (jourSemaine=1) → ne doit pas affecter les créneaux du lundi
-        const pause: PauseRecurrenteDto = {
+        const pause: PauseRecurrenteResponseDto = {
             id: 'pause-uuid',
             technicienId: 'tech-uuid',
             jourSemaine: 1, // mardi
@@ -217,7 +215,7 @@ describe('GenerateCreneauxUseCase', () => {
     it('devrait exclure tous les slots du jour couvert par une indisponibilité', async () => {
         // Indisponibilité couvre le 2026-06-01 (lundi) → aucun créneau ce jour
         // On génère 2 semaines (2 lundis : 01 et 08) → seul le 08 génère des créneaux
-        const indispo: IndisponibiliteDto = {
+        const indispo: IndisponibiliteResponseDto = {
             id: 'indispo-uuid',
             technicienId: 'tech-uuid',
             dateDebut: `${DATE_LUNDI}T00:00:00.000Z`,

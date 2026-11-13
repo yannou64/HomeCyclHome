@@ -1,7 +1,7 @@
 import { ICyclesRepository } from '../repositories/cycles.repository.interface';
 import { GetCyclesUseCase } from './get-cycles.use-case';
 
-// Fabrique un CycleDto minimal réutilisable dans les tests
+// Fabrique un CycleResponseDto minimal réutilisable dans les tests
 const makeCycle = (override = {}) => ({
     id: 'uuid-1',
     libelle: 'Mon VTT',

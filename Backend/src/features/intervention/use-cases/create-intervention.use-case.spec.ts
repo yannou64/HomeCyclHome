@@ -8,8 +8,8 @@ import {
     type CreateInterventionInput,
 } from './create-intervention.use-case';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
-import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
+import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
+import type { CreneauAvecTechnicien } from '../../planning/dto/output/creneau-response.dto';
 
 // ─── Factories ────────────────────────────────────────────────────────────────
 
@@ -27,7 +27,7 @@ const makeSlot = (
     heure: string,
     id: string,
     disponible = true,
-): CreneauAvecTechnicienDto => ({
+): CreneauAvecTechnicien => ({
     id,
     dateDebut: `2026-06-01T${heure}:00.000Z`,
     dateFin: null,
@@ -41,7 +41,7 @@ const makeSlot = (
 
 // Journée où `cre-1` (08:30) est réservable pour un forfait de 60 min :
 // buffer aller 08:00 · intervention 08:30 + 09:00 · buffer retour 09:30
-const journeeReservable = (): CreneauAvecTechnicienDto[] => [
+const journeeReservable = (): CreneauAvecTechnicien[] => [
     makeSlot('08:00', 'cre-0'),
     makeSlot('08:30', 'cre-1'),
     makeSlot('09:00', 'cre-2'),
@@ -49,8 +49,8 @@ const journeeReservable = (): CreneauAvecTechnicienDto[] => [
 ];
 
 const makeInterventionCreated = (
-    overrides: Partial<InterventionCreatedDto> = {},
-): InterventionCreatedDto => ({
+    overrides: Partial<InterventionCreatedResponseDto> = {},
+): InterventionCreatedResponseDto => ({
     id: 'int-1',
     statut: 'Planifiee',
     dateCreation: new Date().toISOString(),

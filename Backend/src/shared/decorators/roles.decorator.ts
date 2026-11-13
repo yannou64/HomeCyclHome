@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { UserRole } from '../../features/users/dto/user-profile.dto';
+import { UserRole } from '../../features/users/dto/output/user-profile-response.dto';
 
 export const ROLES_KEY = 'roles';
 

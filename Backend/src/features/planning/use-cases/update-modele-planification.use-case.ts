@@ -3,8 +3,8 @@ import {
     ConflictException,
     NotFoundException,
 } from '@nestjs/common';
-import { UpdateModelePlanificationDto } from '../dto/update-modele-planification.dto';
-import { ModelePlanificationDto } from '../dto/planning.dto';
+import { UpdateModelePlanificationDto } from '../dto/input/update-modele-planification.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class UpdateModelePlanificationUseCase {
@@ -13,7 +13,7 @@ export class UpdateModelePlanificationUseCase {
     async execute(
         id: string,
         dto: UpdateModelePlanificationDto,
-    ): Promise<ModelePlanificationDto> {
+    ): Promise<ModelePlanificationResponseDto> {
         // 1. Le modèle doit exister
         const existant = await this.repo.findModeleById(id);
         if (!existant) {

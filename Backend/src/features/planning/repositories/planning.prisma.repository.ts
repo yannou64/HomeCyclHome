@@ -5,13 +5,15 @@ import {
     CreateIndisponibiliteData,
     CreateModeleData,
     CreatePauseData,
-    CreneauAvecTechnicienDto,
-    CreneauDto,
-    IndisponibiliteDto,
-    ModelePlanificationDto,
-    PauseRecurrenteDto,
     UpdateModeleData,
-} from '../dto/planning.dto';
+} from './planning.repository.interface';
+import {
+    CreneauAvecTechnicien,
+    CreneauResponseDto,
+} from '../dto/output/creneau-response.dto';
+import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
+import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
 import { IPlanningRepository } from './planning.repository.interface';
 import {
     Creneau,
@@ -29,7 +31,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async findModelesByTechnicien(
         technicienId: string,
-    ): Promise<ModelePlanificationDto[]> {
+    ): Promise<ModelePlanificationResponseDto[]> {
         const modeles = await this.prisma.modelePlanification.findMany({
             where: { technicien_id: technicienId },
             orderBy: [{ jour_semaine: 'asc' }, { heure_debut: 'asc' }],
@@ -37,7 +39,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return modeles.map((m) => this.toModeleDto(m));
     }
 
-    async findModeleById(id: string): Promise<ModelePlanificationDto | null> {
+    async findModeleById(
+        id: string,
+    ): Promise<ModelePlanificationResponseDto | null> {
         const modele = await this.prisma.modelePlanification.findUnique({
             where: { id },
         });
@@ -52,7 +56,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         dateDebutValidite: Date,
         dateFinValidite: Date | null,
         excludeId?: string,
-    ): Promise<ModelePlanificationDto[]> {
+    ): Promise<ModelePlanificationResponseDto[]> {
         const modeles = await this.prisma.modelePlanification.findMany({
             where: {
                 // On exclut l'entrée en cours de modification (cas update)
@@ -84,7 +88,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async createModele(
         data: CreateModeleData,
-    ): Promise<ModelePlanificationDto> {
+    ): Promise<ModelePlanificationResponseDto> {
         const modele = await this.prisma.modelePlanification.create({
             data: {
                 technicien_id: data.technicienId,
@@ -104,7 +108,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     async updateModele(
         id: string,
         data: UpdateModeleData,
-    ): Promise<ModelePlanificationDto> {
+    ): Promise<ModelePlanificationResponseDto> {
         const modele = await this.prisma.modelePlanification.update({
             where: { id },
             data: {
@@ -141,7 +145,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async findPausesByTechnicien(
         technicienId: string,
-    ): Promise<PauseRecurrenteDto[]> {
+    ): Promise<PauseRecurrenteResponseDto[]> {
         const pauses = await this.prisma.pauseRecurrente.findMany({
             where: { technicien_id: technicienId },
             orderBy: { heure_debut: 'asc' },
@@ -149,14 +153,18 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return pauses.map((p) => this.toPauseDto(p));
     }
 
-    async findPauseById(id: string): Promise<PauseRecurrenteDto | null> {
+    async findPauseById(
+        id: string,
+    ): Promise<PauseRecurrenteResponseDto | null> {
         const pause = await this.prisma.pauseRecurrente.findUnique({
             where: { id },
         });
         return pause ? this.toPauseDto(pause) : null;
     }
 
-    async createPause(data: CreatePauseData): Promise<PauseRecurrenteDto> {
+    async createPause(
+        data: CreatePauseData,
+    ): Promise<PauseRecurrenteResponseDto> {
         const pause = await this.prisma.pauseRecurrente.create({
             data: {
                 technicien_id: data.technicienId,
@@ -177,7 +185,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async findIndisponibilitesByTechnicien(
         technicienId: string,
-    ): Promise<IndisponibiliteDto[]> {
+    ): Promise<IndisponibiliteResponseDto[]> {
         const indispos = await this.prisma.indisponibilite.findMany({
             where: { technicien_id: technicienId },
             orderBy: { date_debut: 'asc' },
@@ -187,7 +195,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async findIndisponibiliteById(
         id: string,
-    ): Promise<IndisponibiliteDto | null> {
+    ): Promise<IndisponibiliteResponseDto | null> {
         const indispo = await this.prisma.indisponibilite.findUnique({
             where: { id },
         });
@@ -196,7 +204,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     async createIndisponibilite(
         data: CreateIndisponibiliteData,
-    ): Promise<IndisponibiliteDto> {
+    ): Promise<IndisponibiliteResponseDto> {
         const indispo = await this.prisma.indisponibilite.create({
             data: {
                 technicien_id: data.technicienId,
@@ -280,7 +288,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         technicienId: string,
         debut: Date,
         fin: Date,
-    ): Promise<CreneauDto[]> {
+    ): Promise<CreneauResponseDto[]> {
         const creneaux = await this.prisma.creneau.findMany({
             where: {
                 modele_planification: { technicien_id: technicienId },
@@ -291,7 +299,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return creneaux.map((c) => this.toCreneauDto(c));
     }
 
-    async findCreneauById(id: string): Promise<CreneauDto | null> {
+    async findCreneauById(id: string): Promise<CreneauResponseDto | null> {
         const creneau = await this.prisma.creneau.findUnique({ where: { id } });
         return creneau ? this.toCreneauDto(creneau) : null;
     }
@@ -300,7 +308,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         zoneId: string,
         debut: Date,
         fin: Date,
-    ): Promise<CreneauAvecTechnicienDto[]> {
+    ): Promise<CreneauAvecTechnicien[]> {
         const creneaux = await this.prisma.creneau.findMany({
             where: {
                 zone_id: zoneId,
@@ -347,7 +355,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
 
     // ── Transformations privées ──────────────────────────────────────────────
 
-    private toModeleDto(m: ModelePlanification): ModelePlanificationDto {
+    private toModeleDto(
+        m: ModelePlanification,
+    ): ModelePlanificationResponseDto {
         return {
             id: m.id,
             technicienId: m.technicien_id,
@@ -362,7 +372,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         };
     }
 
-    private toPauseDto(p: PauseRecurrente): PauseRecurrenteDto {
+    private toPauseDto(p: PauseRecurrente): PauseRecurrenteResponseDto {
         return {
             id: p.id,
             technicienId: p.technicien_id,
@@ -373,7 +383,9 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         };
     }
 
-    private toIndisponibiliteDto(i: Indisponibilite): IndisponibiliteDto {
+    private toIndisponibiliteDto(
+        i: Indisponibilite,
+    ): IndisponibiliteResponseDto {
         return {
             id: i.id,
             technicienId: i.technicien_id,
@@ -383,7 +395,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         };
     }
 
-    private toCreneauDto(c: Creneau): CreneauDto {
+    private toCreneauDto(c: Creneau): CreneauResponseDto {
         return {
             id: c.id,
             dateDebut: c.date_debut.toISOString(),
@@ -402,7 +414,7 @@ export class PlanningPrismaRepository implements IPlanningRepository {
                 technicien: { prenom: string };
             } | null;
         },
-    ): CreneauAvecTechnicienDto {
+    ): CreneauAvecTechnicien {
         return {
             ...this.toCreneauDto(c),
             technicienId: c.modele_planification?.technicien_id ?? null,

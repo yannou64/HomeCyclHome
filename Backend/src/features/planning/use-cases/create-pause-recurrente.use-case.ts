@@ -1,12 +1,14 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreatePauseRecurrenteDto } from '../dto/create-pause-recurrente.dto';
-import { PauseRecurrenteDto } from '../dto/planning.dto';
+import { CreatePauseRecurrenteDto } from '../dto/input/create-pause-recurrente.dto';
+import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class CreatePauseRecurrenteUseCase {
     constructor(private readonly repo: IPlanningRepository) {}
 
-    async execute(dto: CreatePauseRecurrenteDto): Promise<PauseRecurrenteDto> {
+    async execute(
+        dto: CreatePauseRecurrenteDto,
+    ): Promise<PauseRecurrenteResponseDto> {
         if (dto.heureFin <= dto.heureDebut) {
             throw new BadRequestException(
                 "L'heure de fin doit être strictement supérieure à l'heure de début.",

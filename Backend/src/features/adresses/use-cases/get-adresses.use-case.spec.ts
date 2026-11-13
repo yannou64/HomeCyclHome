@@ -1,8 +1,10 @@
 import { GetAdressesUseCase } from './get-adresses.use-case';
 import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
-import type { AdresseDto } from '../dto/output/adresse.dto';
+import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
 
-const makeAdresse = (overrides: Partial<AdresseDto> = {}): AdresseDto => ({
+const makeAdresse = (
+    overrides: Partial<AdresseResponseDto> = {},
+): AdresseResponseDto => ({
     id: 'pss-1',
     adresseId: 'adr-1',
     numero: '12',

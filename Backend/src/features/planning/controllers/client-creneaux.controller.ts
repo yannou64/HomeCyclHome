@@ -5,7 +5,7 @@ import {
     ApiQuery,
     ApiTags,
 } from '@nestjs/swagger';
-import { GetCreneauxDisponiblesQueryDto } from '../dto/get-creneaux-disponibles.dto';
+import { GetCreneauxDisponiblesQueryDto } from '../dto/input/get-creneaux-disponibles-query.dto';
 import { GetCreneauxDisponiblesUseCase } from '../use-cases/get-creneaux-disponibles.use-case';
 
 @ApiTags('Créneaux')

@@ -1,5 +1,5 @@
 import { ConflictException } from '@nestjs/common';
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
     CreateAdminUserData,
     IAdminUsersRepository,
@@ -8,7 +8,7 @@ import {
 export class CreateUserUseCase {
     constructor(private readonly repo: IAdminUsersRepository) {}
 
-    async execute(data: CreateAdminUserData): Promise<AdminUserDto> {
+    async execute(data: CreateAdminUserData): Promise<AdminUserResponseDto> {
         // Règle métier : l'email doit être unique dans le système
         const existing = await this.repo.findByEmail(data.email);
         if (existing) {

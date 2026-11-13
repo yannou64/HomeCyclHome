@@ -1,10 +1,10 @@
-import { TypeCycleDto } from '../dto/type-cycle.dto';
+import { TypeCycleResponseDto } from '../dto/output/type-cycle-response.dto';
 
 export interface ITypeCyclesRepository {
-    findAll(): Promise<TypeCycleDto[]>;
-    findById(id: string): Promise<TypeCycleDto | null>;
-    findByLibelle(libelle: string): Promise<TypeCycleDto | null>;
-    create(libelle: string): Promise<TypeCycleDto>;
-    update(id: string, libelle: string): Promise<TypeCycleDto>;
+    findAll(): Promise<TypeCycleResponseDto[]>;
+    findById(id: string): Promise<TypeCycleResponseDto | null>;
+    findByLibelle(libelle: string): Promise<TypeCycleResponseDto | null>;
+    create(libelle: string): Promise<TypeCycleResponseDto>;
+    update(id: string, libelle: string): Promise<TypeCycleResponseDto>;
     delete(id: string): Promise<void>;
 }

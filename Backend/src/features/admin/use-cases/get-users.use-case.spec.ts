@@ -1,9 +1,11 @@
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import { IAdminUsersRepository } from '../repositories/admin-users.repository.interface';
 import { GetUsersUseCase } from './get-users.use-case';
 
 // Fabrique un utilisateur fictif pour les tests
-const makeUser = (override: Partial<AdminUserDto> = {}): AdminUserDto => ({
+const makeUser = (
+    override: Partial<AdminUserResponseDto> = {},
+): AdminUserResponseDto => ({
     id: 'uuid-1',
     nom: 'Dupont',
     prenom: 'Jean',

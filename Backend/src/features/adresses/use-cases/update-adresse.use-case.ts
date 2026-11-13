@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
-import type { AdresseDto } from '../dto/output/adresse.dto';
-import type { UpdateAdresseInput } from '../dto/input/adresse-input.dto';
+import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
+import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
 
 export class UpdateAdresseUseCase {
     constructor(private readonly repo: IAdressesRepository) {}
@@ -10,13 +10,13 @@ export class UpdateAdresseUseCase {
         id: string,
         utilisateurId: string,
         data: UpdateAdresseInput,
-    ): Promise<AdresseDto> {
+    ): Promise<AdresseResponseDto> {
         const liaison = await this.repo.findByIdAndUser(id, utilisateurId);
         if (!liaison) {
             throw new NotFoundException('Adresse introuvable.');
         }
 
-        let result: AdresseDto | undefined;
+        let result: AdresseResponseDto | undefined;
 
         // Gestion du toggle adresse_principal (prioritaire — peut déclencher une transaction)
         if (data.adressePrincipal === true) {

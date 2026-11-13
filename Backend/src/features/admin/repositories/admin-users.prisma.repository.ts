@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Prisma, Utilisateur } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
     CreateAdminUserData,
     FindManyUsersParams,
@@ -20,7 +20,10 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
         search,
         role,
         isActif,
-    }: FindManyUsersParams): Promise<{ users: AdminUserDto[]; total: number }> {
+    }: FindManyUsersParams): Promise<{
+        users: AdminUserResponseDto[];
+        total: number;
+    }> {
         const where: Prisma.UtilisateurWhereInput = {
             AND: [
                 search
@@ -66,21 +69,21 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
         return { users: users.map((u) => this.toDto(u)), total };
     }
 
-    async findById(id: string): Promise<AdminUserDto | null> {
+    async findById(id: string): Promise<AdminUserResponseDto | null> {
         const user = await this.prisma.utilisateur.findUnique({
             where: { id },
         });
         return user ? this.toDto(user) : null;
     }
 
-    async findByEmail(email: string): Promise<AdminUserDto | null> {
+    async findByEmail(email: string): Promise<AdminUserResponseDto | null> {
         const user = await this.prisma.utilisateur.findUnique({
             where: { email },
         });
         return user ? this.toDto(user) : null;
     }
 
-    async create(data: CreateAdminUserData): Promise<AdminUserDto> {
+    async create(data: CreateAdminUserData): Promise<AdminUserResponseDto> {
         // Le hashage appartient à l'infrastructure — le UseCase ne sait pas comment le mot de passe est stocké
         const password_hash = await bcrypt.hash(data.password, 10);
 
@@ -99,7 +102,10 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
         return this.toDto(user);
     }
 
-    async update(id: string, data: UpdateAdminUserData): Promise<AdminUserDto> {
+    async update(
+        id: string,
+        data: UpdateAdminUserData,
+    ): Promise<AdminUserResponseDto> {
         const user = await this.prisma.utilisateur.update({
             where: { id },
             data,
@@ -112,7 +118,7 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
     }
 
     // Garantit qu'on n'expose jamais password_hash ni refresh_token_hash
-    private toDto(user: Utilisateur): AdminUserDto {
+    private toDto(user: Utilisateur): AdminUserResponseDto {
         return {
             id: user.id,
             nom: user.nom,

@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreneauAvecTechnicienDto } from '../dto/planning.dto';
+import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GetCreneauxDisponiblesUseCase } from './get-creneaux-disponibles.use-case';
 
@@ -28,7 +28,7 @@ function makeCreneau(
         disponible?: boolean;
         jour?: string;
     } = {},
-): CreneauAvecTechnicienDto {
+): CreneauAvecTechnicien {
     const {
         technicien = MARC,
         disponible = true,
@@ -52,7 +52,7 @@ function makeCreneau(
 function journee(
     technicien: Technicien,
     options: { reserves?: string[]; jour?: string } = {},
-): CreneauAvecTechnicienDto[] {
+): CreneauAvecTechnicien[] {
     const { reserves = [], jour } = options;
     return ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30'].map((heure) =>
         makeCreneau(heure, {
@@ -66,8 +66,8 @@ function journee(
 // Le repository renvoie tous les créneaux de la zone triés par date, techniciens
 // mélangés — c'est exactement ce que le use case doit savoir démêler.
 function trierCommeLeRepo(
-    creneaux: CreneauAvecTechnicienDto[],
-): CreneauAvecTechnicienDto[] {
+    creneaux: CreneauAvecTechnicien[],
+): CreneauAvecTechnicien[] {
     return [...creneaux].sort((a, b) => {
         if (a.dateDebut !== b.dateDebut) {
             return a.dateDebut < b.dateDebut ? -1 : 1;

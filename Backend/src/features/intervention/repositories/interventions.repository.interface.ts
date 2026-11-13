@@ -1,8 +1,8 @@
-import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
-import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
-import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
-import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
-import type { AdminInterventionDetailDto } from '../dto/output/admin-intervention-detail.dto';
+import type { CreneauAvecTechnicien } from '../../planning/dto/output/creneau-response.dto';
+import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
+import type { InterventionListItemResponseDto } from '../dto/output/intervention-list-item-response.dto';
+import type { AdminInterventionListItemResponseDto } from '../dto/output/admin-intervention-list-item-response.dto';
+import type { AdminInterventionDetailResponseDto } from '../dto/output/admin-intervention-detail-response.dto';
 
 export type InterventionForCancel = {
     clientId: string;
@@ -65,15 +65,15 @@ export interface IInterventionsRepository {
     // Tous les slots du même technicien sur la même journée que le créneau donné,
     // triés par dateDebut. Nécessaire pour rejouer la règle de réservabilité à
     // l'écriture : elle raisonne sur le voisinage immédiat du créneau.
-    findCreneauxDuJour(creneauId: string): Promise<CreneauAvecTechnicienDto[]>;
+    findCreneauxDuJour(creneauId: string): Promise<CreneauAvecTechnicien[]>;
     getForfaitDuree(forfaitId: string): Promise<number>;
     createInterventionTransaction(
         data: CreateInterventionData,
-    ): Promise<InterventionCreatedDto>;
+    ): Promise<InterventionCreatedResponseDto>;
     findClientById(clientId: string): Promise<ClientInfo | null>;
     getInterventionsByClientId(
         clientId: string,
-    ): Promise<InterventionListItemDto[]>;
+    ): Promise<InterventionListItemResponseDto[]>;
     findInterventionForCancel(
         id: string,
     ): Promise<InterventionForCancel | null>;
@@ -82,12 +82,12 @@ export interface IInterventionsRepository {
         creneauId: string,
     ): Promise<void>;
     findAllInterventions(params: GetAdminInterventionsParams): Promise<{
-        interventions: AdminInterventionListItemDto[];
+        interventions: AdminInterventionListItemResponseDto[];
         total: number;
     }>;
     findInterventionDetailById(
         id: string,
-    ): Promise<AdminInterventionDetailDto | null>;
+    ): Promise<AdminInterventionDetailResponseDto | null>;
     // --- Photos ---
     isInterventionOwnedByClient(
         interventionId: string,

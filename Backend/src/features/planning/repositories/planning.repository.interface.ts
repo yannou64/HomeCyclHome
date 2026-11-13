@@ -1,15 +1,10 @@
 import {
-    CreateCreneauData,
-    CreateIndisponibiliteData,
-    CreateModeleData,
-    CreatePauseData,
-    CreneauAvecTechnicienDto,
-    CreneauDto,
-    IndisponibiliteDto,
-    ModelePlanificationDto,
-    PauseRecurrenteDto,
-    UpdateModeleData,
-} from '../dto/planning.dto';
+    CreneauAvecTechnicien,
+    CreneauResponseDto,
+} from '../dto/output/creneau-response.dto';
+import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
+import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
 
 export const PLANNING_REPO = 'PLANNING_REPO';
 
@@ -18,8 +13,8 @@ export interface IPlanningRepository {
 
     findModelesByTechnicien(
         technicienId: string,
-    ): Promise<ModelePlanificationDto[]>;
-    findModeleById(id: string): Promise<ModelePlanificationDto | null>;
+    ): Promise<ModelePlanificationResponseDto[]>;
+    findModeleById(id: string): Promise<ModelePlanificationResponseDto | null>;
 
     // Retourne les modèles du même technicien qui se chevauchent avec le candidat.
     // excludeId permet d'exclure le modèle en cours de modification (cas update).
@@ -31,31 +26,37 @@ export interface IPlanningRepository {
         dateDebutValidite: Date,
         dateFinValidite: Date | null,
         excludeId?: string,
-    ): Promise<ModelePlanificationDto[]>;
+    ): Promise<ModelePlanificationResponseDto[]>;
 
-    createModele(data: CreateModeleData): Promise<ModelePlanificationDto>;
+    createModele(
+        data: CreateModeleData,
+    ): Promise<ModelePlanificationResponseDto>;
     updateModele(
         id: string,
         data: UpdateModeleData,
-    ): Promise<ModelePlanificationDto>;
+    ): Promise<ModelePlanificationResponseDto>;
     deleteModele(id: string): Promise<void>;
 
     // ── PauseRecurrente ──────────────────────────────────────────────────────
 
-    findPausesByTechnicien(technicienId: string): Promise<PauseRecurrenteDto[]>;
-    findPauseById(id: string): Promise<PauseRecurrenteDto | null>;
-    createPause(data: CreatePauseData): Promise<PauseRecurrenteDto>;
+    findPausesByTechnicien(
+        technicienId: string,
+    ): Promise<PauseRecurrenteResponseDto[]>;
+    findPauseById(id: string): Promise<PauseRecurrenteResponseDto | null>;
+    createPause(data: CreatePauseData): Promise<PauseRecurrenteResponseDto>;
     deletePause(id: string): Promise<void>;
 
     // ── Indisponibilite ──────────────────────────────────────────────────────
 
     findIndisponibilitesByTechnicien(
         technicienId: string,
-    ): Promise<IndisponibiliteDto[]>;
-    findIndisponibiliteById(id: string): Promise<IndisponibiliteDto | null>;
+    ): Promise<IndisponibiliteResponseDto[]>;
+    findIndisponibiliteById(
+        id: string,
+    ): Promise<IndisponibiliteResponseDto | null>;
     createIndisponibilite(
         data: CreateIndisponibiliteData,
-    ): Promise<IndisponibiliteDto>;
+    ): Promise<IndisponibiliteResponseDto>;
     deleteIndisponibilite(id: string): Promise<void>;
 
     // ── Vérifications partagées ──────────────────────────────────────────────
@@ -91,9 +92,9 @@ export interface IPlanningRepository {
         technicienId: string,
         debut: Date,
         fin: Date,
-    ): Promise<CreneauDto[]>;
+    ): Promise<CreneauResponseDto[]>;
 
-    findCreneauById(id: string): Promise<CreneauDto | null>;
+    findCreneauById(id: string): Promise<CreneauResponseDto | null>;
 
     // Retourne TOUS les créneaux d'une zone sur une période (disponibles ET non disponibles)
     // Inclut technicien_id via la relation modele_planification — utilisé par le tunnel client
@@ -101,7 +102,7 @@ export interface IPlanningRepository {
         zoneId: string,
         debut: Date,
         fin: Date,
-    ): Promise<CreneauAvecTechnicienDto[]>;
+    ): Promise<CreneauAvecTechnicien[]>;
 
     deleteCreneau(id: string): Promise<void>;
 
@@ -113,3 +114,38 @@ export interface IPlanningRepository {
         fin: Date,
     ): Promise<number>;
 }
+
+export type CreateModeleData = Omit<
+    ModelePlanificationResponseDto,
+    'id' | 'dateDebutValidite' | 'dateFinValidite'
+> & {
+    dateDebutValidite: Date;
+    dateFinValidite: Date | null;
+};
+
+export type UpdateModeleData = Partial<
+    Omit<
+        ModelePlanificationResponseDto,
+        'id' | 'technicienId' | 'dateDebutValidite' | 'dateFinValidite'
+    > & {
+        dateDebutValidite: Date;
+        dateFinValidite: Date | null;
+    }
+>;
+
+export type CreatePauseData = Omit<PauseRecurrenteResponseDto, 'id'>;
+
+export type CreateIndisponibiliteData = {
+    technicienId: string;
+    dateDebut: Date;
+    dateFin: Date;
+    motif?: string;
+};
+
+export type CreateCreneauData = {
+    dateDebut: Date; // Date native — Prisma attend une Date, pas un string ISO
+    dateFin: null; // toujours null à la génération
+    isDisponible: true; // toujours disponible à la génération
+    zoneId: string;
+    modelePlanificationId: string;
+};

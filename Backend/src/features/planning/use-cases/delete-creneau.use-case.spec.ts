@@ -1,9 +1,9 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { CreneauDto } from '../dto/planning.dto';
+import { CreneauResponseDto } from '../dto/output/creneau-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { DeleteCreneauUseCase } from './delete-creneau.use-case';
 
-const mockCreneauDisponible: CreneauDto = {
+const mockCreneauDisponible: CreneauResponseDto = {
     id: 'creneau-uuid-1',
     dateDebut: '2026-06-01T09:00:00.000Z',
     dateFin: null,
@@ -12,7 +12,7 @@ const mockCreneauDisponible: CreneauDto = {
     modelePlanificationId: 'modele-uuid',
 };
 
-const mockCreneauReserve: CreneauDto = {
+const mockCreneauReserve: CreneauResponseDto = {
     ...mockCreneauDisponible,
     isDisponible: false,
 };

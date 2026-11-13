@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreneauDto } from '../dto/planning.dto';
+import { CreneauResponseDto } from '../dto/output/creneau-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GetCreneauxInput = {
@@ -11,7 +11,7 @@ export type GetCreneauxInput = {
 export class GetCreneauxUseCase {
     constructor(private readonly repo: IPlanningRepository) {}
 
-    async execute(input: GetCreneauxInput): Promise<CreneauDto[]> {
+    async execute(input: GetCreneauxInput): Promise<CreneauResponseDto[]> {
         if (!input.technicienId) {
             throw new BadRequestException('Le technicienId est requis.');
         }

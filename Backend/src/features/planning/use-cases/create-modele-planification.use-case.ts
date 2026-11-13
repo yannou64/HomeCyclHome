@@ -3,8 +3,8 @@ import {
     ConflictException,
     NotFoundException,
 } from '@nestjs/common';
-import { CreateModelePlanificationDto } from '../dto/create-modele-planification.dto';
-import { ModelePlanificationDto } from '../dto/planning.dto';
+import { CreateModelePlanificationDto } from '../dto/input/create-modele-planification.dto';
+import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class CreateModelePlanificationUseCase {
@@ -12,7 +12,7 @@ export class CreateModelePlanificationUseCase {
 
     async execute(
         dto: CreateModelePlanificationDto,
-    ): Promise<ModelePlanificationDto> {
+    ): Promise<ModelePlanificationResponseDto> {
         // 1. Validation métier : les heures doivent former une plage valide
         if (dto.heureFin <= dto.heureDebut) {
             throw new BadRequestException(

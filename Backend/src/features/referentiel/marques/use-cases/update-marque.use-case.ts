@@ -1,11 +1,11 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { MarqueDto } from '../dto/marque.dto';
+import { MarqueResponseDto } from '../dto/output/marque-response.dto';
 import { IMarquesRepository } from '../repositories/marques.repository.interface';
 
 export class UpdateMarqueUseCase {
     constructor(private readonly repo: IMarquesRepository) {}
 
-    async execute(id: string, libelle: string): Promise<MarqueDto> {
+    async execute(id: string, libelle: string): Promise<MarqueResponseDto> {
         const marque = await this.repo.findById(id);
         if (!marque) {
             throw new NotFoundException(`Marque avec l'id ${id} introuvable`);
