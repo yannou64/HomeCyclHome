@@ -1,10 +1,10 @@
 import { GetAdminInterventionsUseCase } from './get-admin-interventions.use-case';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
+import type { AdminInterventionListItemResponseDto } from '../dto/output/admin-intervention-list-item-response.dto';
 
 const makeListItem = (
-    overrides: Partial<AdminInterventionListItemDto> = {},
-): AdminInterventionListItemDto => ({
+    overrides: Partial<AdminInterventionListItemResponseDto> = {},
+): AdminInterventionListItemResponseDto => ({
     id: 'int-1',
     statut: 'Planifiee',
     enRetard: false,

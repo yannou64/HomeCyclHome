@@ -1,5 +1,5 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { ForfaitDto } from '../dto/forfait.dto';
+import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 import {
     IForfaitsRepository,
     UpdateForfaitData,
@@ -8,7 +8,10 @@ import {
 export class UpdateForfaitUseCase {
     constructor(private readonly repo: IForfaitsRepository) {}
 
-    async execute(id: string, data: UpdateForfaitData): Promise<ForfaitDto> {
+    async execute(
+        id: string,
+        data: UpdateForfaitData,
+    ): Promise<ForfaitResponseDto> {
         const forfait = await this.repo.findById(id);
         if (!forfait) {
             throw new NotFoundException(`Forfait avec l'id ${id} introuvable`);

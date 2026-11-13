@@ -1,7 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
-import type { AdresseDto } from '../dto/output/adresse.dto';
-import type { CreateAdresseInput } from '../dto/input/adresse-input.dto';
+import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
+import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
 
 export class CreateAdresseUseCase {
     constructor(private readonly repo: IAdressesRepository) {}
@@ -9,7 +9,7 @@ export class CreateAdresseUseCase {
     async execute(
         utilisateurId: string,
         data: CreateAdresseInput,
-    ): Promise<AdresseDto> {
+    ): Promise<AdresseResponseDto> {
         // Vérifier si cette adresse physique est déjà liée et active pour cet utilisateur
         const existingAdresse = await this.repo.findAdresseByGooglePlaceId(
             data.googlePlaceId,

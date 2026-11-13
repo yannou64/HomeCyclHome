@@ -1,11 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
 import { GetAdminInterventionDetailUseCase } from './get-admin-intervention-detail.use-case';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { AdminInterventionDetailDto } from '../dto/output/admin-intervention-detail.dto';
+import type { AdminInterventionDetailResponseDto } from '../dto/output/admin-intervention-detail-response.dto';
 
 const makeDetail = (
-    overrides: Partial<AdminInterventionDetailDto> = {},
-): AdminInterventionDetailDto => ({
+    overrides: Partial<AdminInterventionDetailResponseDto> = {},
+): AdminInterventionDetailResponseDto => ({
     id: 'int-1',
     statut: 'Planifiee',
     enRetard: false,

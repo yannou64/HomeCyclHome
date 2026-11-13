@@ -1,12 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
-import { UserProfileDto } from '../dto/user-profile.dto';
+import { UserProfileResponseDto } from '../dto/output/user-profile-response.dto';
 import { IUsersRepository } from '../repositories/users.repository.interface';
 import { GetProfileUseCase } from './get-profile.use-case';
 
 // Fabrique un profil fictif pour les tests
 const makeProfile = (
-    override: Partial<UserProfileDto> = {},
-): UserProfileDto => ({
+    override: Partial<UserProfileResponseDto> = {},
+): UserProfileResponseDto => ({
     id: 'uuid-test',
     nom: 'Biot',
     prenom: 'Yannick',

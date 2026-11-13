@@ -86,8 +86,8 @@ partagée, si elle en a une, va dans `shared/database/`, pas dans `shared/domain
 ## 4. Conventions de code
 
 **Nommage :** modules, controllers et use cases en `PascalCase` suffixé ·
-DTOs préfixés `Create` | `Update` | `Response` · fichiers en `kebab-case` ·
-variables et fonctions en `camelCase`.
+DTOs selon le tableau ci-dessous · fichiers en `kebab-case` · variables et
+fonctions en `camelCase`.
 
 **Controllers :** reçoivent la requête, appellent le use case, renvoient la réponse.
 Aucune logique métier. Injectent des use cases, jamais un repository.
@@ -103,7 +103,23 @@ NestJS (`NotFoundException`, `ConflictException`, `ForbiddenException`…).
 réels, le module relie les deux par un token d'injection (voir `admin.module.ts`).
 
 **DTOs :** toujours validés et transformés. Jamais de `password_hash` ni de modèle
-Prisma brut en réponse.
+Prisma brut en réponse. Nommage, appliqué à tous les modules :
+
+| Rôle | Classe | Fichier |
+|---|---|---|
+| Corps de requête | `<Verbe du use case><Ressource>Dto` — `CreateZoneDto`, `SetForfaitPrixDto`, `LoginDto` | `dto/input/create-zone.dto.ts` |
+| Paramètres d'URL | `<Verbe><Ressource>QueryDto` — `GetUsersQueryDto` | `dto/input/get-users-query.dto.ts` |
+| Réponse | `<Ressource>ResponseDto` — `ZoneResponseDto`, `PaginatedUsersResponseDto` | `dto/output/zone-response.dto.ts` |
+| Sous-objet | suffixe du DTO parent : `ZonePointInputDto` en entrée, `ZonePointResponseDto` en sortie | même fichier que le parent |
+
+- Le verbe d'un DTO d'entrée est celui du use case qui le reçoit
+  (`SetForfaitPrixUseCase` ↔ `SetForfaitPrixDto`).
+- Un fichier par DTO principal ; ses sous-objets et son type interne sans décorateur
+  (`CreateAdresseInput`) restent avec lui.
+- Le suffixe `Dto` est réservé aux classes exposées par l'API. Un type interne (données
+  passées au repository, résultat enrichi) s'appelle sans suffixe
+  (`CreneauAvecTechnicien`, `CreateModeleData`) et vit dans l'interface du repository
+  ou à côté du DTO qu'il étend.
 
 ---
 

@@ -1,18 +1,16 @@
-import type { AdresseDto } from '../dto/output/adresse.dto';
-import type {
-    CreateAdresseInput,
-    UpdateAdresseInput,
-} from '../dto/input/adresse-input.dto';
+import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
+import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
+import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
 
 export interface IAdressesRepository {
     // Retourne les liaisons actives (is_valide = true) de l'utilisateur
-    findAllByUser(utilisateurId: string): Promise<AdresseDto[]>;
+    findAllByUser(utilisateurId: string): Promise<AdresseResponseDto[]>;
 
     // Retourne une liaison active pour un utilisateur donné (ownership check)
     findByIdAndUser(
         id: string,
         utilisateurId: string,
-    ): Promise<AdresseDto | null>;
+    ): Promise<AdresseResponseDto | null>;
 
     // Cherche une adresse physique par google_place_id (déduplication à la création)
     findAdresseByGooglePlaceId(
@@ -23,19 +21,22 @@ export interface IAdressesRepository {
     create(
         utilisateurId: string,
         data: CreateAdresseInput,
-    ): Promise<AdresseDto>;
+    ): Promise<AdresseResponseDto>;
 
     // Modifie uniquement titre_description (adresse physique immuable)
     updateMetadata(
         id: string,
         data: Pick<UpdateAdresseInput, 'titreDescription'>,
-    ): Promise<AdresseDto>;
+    ): Promise<AdresseResponseDto>;
 
     // Transaction atomique : reset tous les adresse_principal de l'utilisateur, puis set celui-ci à true
-    setPrincipal(id: string, utilisateurId: string): Promise<AdresseDto>;
+    setPrincipal(
+        id: string,
+        utilisateurId: string,
+    ): Promise<AdresseResponseDto>;
 
     // Passe adresse_principal à false sur cette liaison uniquement
-    unsetPrincipal(id: string): Promise<AdresseDto>;
+    unsetPrincipal(id: string): Promise<AdresseResponseDto>;
 
     // Soft-delete : is_valide = false + date_invalidite = now()
     softDelete(id: string): Promise<void>;

@@ -1,4 +1,4 @@
-import { PaginatedUsersDto } from '../dto/admin-user.dto';
+import { PaginatedUsersResponseDto } from '../dto/output/paginated-users-response.dto';
 import {
     FindManyUsersParams,
     IAdminUsersRepository,
@@ -8,7 +8,9 @@ export class GetUsersUseCase {
     // Le UseCase reçoit le repository par injection — il ne sait pas que c'est Prisma
     constructor(private readonly repo: IAdminUsersRepository) {}
 
-    async execute(params: FindManyUsersParams): Promise<PaginatedUsersDto> {
+    async execute(
+        params: FindManyUsersParams,
+    ): Promise<PaginatedUsersResponseDto> {
         const { users, total } = await this.repo.findMany(params);
 
         return {

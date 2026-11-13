@@ -1,12 +1,14 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreateIndisponibiliteDto } from '../dto/create-indisponibilite.dto';
-import { IndisponibiliteDto } from '../dto/planning.dto';
+import { CreateIndisponibiliteDto } from '../dto/input/create-indisponibilite.dto';
+import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export class CreateIndisponibiliteUseCase {
     constructor(private readonly repo: IPlanningRepository) {}
 
-    async execute(dto: CreateIndisponibiliteDto): Promise<IndisponibiliteDto> {
+    async execute(
+        dto: CreateIndisponibiliteDto,
+    ): Promise<IndisponibiliteResponseDto> {
         const dateDebut = new Date(dto.dateDebut);
         const dateFin = new Date(dto.dateFin);
 

@@ -1,5 +1,5 @@
-import { AdminStatsDto } from '../dto/admin-stats.dto';
+import { AdminStatsResponseDto } from '../dto/output/admin-stats-response.dto';
 
 export interface IAdminStatsRepository {
-    getStats(): Promise<AdminStatsDto>;
+    getStats(): Promise<AdminStatsResponseDto>;
 }

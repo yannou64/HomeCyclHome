@@ -1,10 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { estCreneauReservable } from '../domain/creneau-reservable';
 import { jourTravail } from '../domain/jour-travail';
-import {
-    CreneauAvecTechnicienDto,
-    CreneauDisponibleDto,
-} from '../dto/planning.dto';
+import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
+import { CreneauDisponibleResponseDto } from '../dto/output/creneau-disponible-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 
 export type GetCreneauxDisponiblesInput = {
@@ -19,7 +17,7 @@ export class GetCreneauxDisponiblesUseCase {
 
     async execute(
         input: GetCreneauxDisponiblesInput,
-    ): Promise<CreneauDisponibleDto[]> {
+    ): Promise<CreneauDisponibleResponseDto[]> {
         if (!input.zoneId) {
             throw new BadRequestException('Le zoneId est requis.');
         }
@@ -48,7 +46,7 @@ export class GetCreneauxDisponiblesUseCase {
         const groupes = this.grouperParTechnicienEtJour(creneaux);
 
         // 2. Application de la règle métier, indépendamment sur chaque groupe
-        const proposables: CreneauDisponibleDto[] = [];
+        const proposables: CreneauDisponibleResponseDto[] = [];
         for (const groupe of groupes.values()) {
             for (let i = 0; i < groupe.length; i++) {
                 if (!estCreneauReservable(groupe, i, input.dureeMinutes)) {
@@ -69,9 +67,9 @@ export class GetCreneauxDisponiblesUseCase {
     // un voisin d'index n'est un voisin réel que s'il appartient au même technicien
     // et à la même journée.
     private grouperParTechnicienEtJour(
-        creneaux: CreneauAvecTechnicienDto[],
-    ): Map<string, CreneauAvecTechnicienDto[]> {
-        const groupes = new Map<string, CreneauAvecTechnicienDto[]>();
+        creneaux: CreneauAvecTechnicien[],
+    ): Map<string, CreneauAvecTechnicien[]> {
+        const groupes = new Map<string, CreneauAvecTechnicien[]>();
 
         for (const creneau of creneaux) {
             const cle = `${creneau.technicienId ?? 'manuel'}|${jourTravail(creneau.dateDebut)}`;
@@ -89,9 +87,9 @@ export class GetCreneauxDisponiblesUseCase {
 
     // Le tri garantit que « le premier technicien » est stable d'un appel à l'autre.
     private dedoublonnerParHoraire(
-        proposables: CreneauDisponibleDto[],
-    ): CreneauDisponibleDto[] {
-        const parHoraire = new Map<string, CreneauDisponibleDto>();
+        proposables: CreneauDisponibleResponseDto[],
+    ): CreneauDisponibleResponseDto[] {
+        const parHoraire = new Map<string, CreneauDisponibleResponseDto>();
 
         const tries = [...proposables].sort((a, b) => {
             if (a.dateDebut !== b.dateDebut) {
@@ -110,9 +108,9 @@ export class GetCreneauxDisponiblesUseCase {
     }
 
     private toDto(
-        creneau: CreneauAvecTechnicienDto,
+        creneau: CreneauAvecTechnicien,
         dureeMinutes: number,
-    ): CreneauDisponibleDto {
+    ): CreneauDisponibleResponseDto {
         const dateFin = new Date(
             new Date(creneau.dateDebut).getTime() + dureeMinutes * 60 * 1000,
         );

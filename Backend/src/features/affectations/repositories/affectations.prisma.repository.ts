@@ -6,7 +6,10 @@ import {
     Zone,
 } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { AffectationDto, ZoneAffecteeDto } from '../dto/affectation.dto';
+import {
+    AffectationResponseDto,
+    ZoneAffecteeResponseDto,
+} from '../dto/output/affectation-response.dto';
 import { IAffectationsRepository } from './affectations.repository.interface';
 
 type TechnicienAvecZones = Utilisateur & {
@@ -17,7 +20,7 @@ type TechnicienAvecZones = Utilisateur & {
 export class AffectationsPrismaRepository implements IAffectationsRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findAll(): Promise<AffectationDto[]> {
+    async findAll(): Promise<AffectationResponseDto[]> {
         const techniciens = await this.prisma.utilisateur.findMany({
             where: { role: Role.technicien },
             include: {
@@ -33,7 +36,7 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
 
     async findByTechnicienId(
         technicienId: string,
-    ): Promise<AffectationDto | null> {
+    ): Promise<AffectationResponseDto | null> {
         const technicien = await this.prisma.utilisateur.findFirst({
             where: { id: technicienId, role: Role.technicien },
             include: {
@@ -63,7 +66,7 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
     async setZonesForTechnicien(
         technicienId: string,
         zoneIds: string[],
-    ): Promise<AffectationDto> {
+    ): Promise<AffectationResponseDto> {
         const technicien = await this.prisma.$transaction(async (tx) => {
             // Supprime toutes les affectations existantes pour ce technicien
             await tx.technicienZone.deleteMany({
@@ -99,7 +102,7 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
         });
     }
 
-    private toDto(technicien: TechnicienAvecZones): AffectationDto {
+    private toDto(technicien: TechnicienAvecZones): AffectationResponseDto {
         return {
             technicienId: technicien.id,
             nom: technicien.nom,
@@ -111,7 +114,7 @@ export class AffectationsPrismaRepository implements IAffectationsRepository {
         };
     }
 
-    private toZoneDto(zone: Zone): ZoneAffecteeDto {
+    private toZoneDto(zone: Zone): ZoneAffecteeResponseDto {
         return {
             id: zone.id,
             nomZone: zone.nom_zone,

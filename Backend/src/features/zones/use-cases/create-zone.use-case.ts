@@ -1,5 +1,5 @@
 import { ConflictException } from '@nestjs/common';
-import { ZoneDto } from '../dto/zone.dto';
+import { ZoneResponseDto } from '../dto/output/zone-response.dto';
 import {
     CreateZoneData,
     IZonesRepository,
@@ -8,7 +8,7 @@ import {
 export class CreateZoneUseCase {
     constructor(private readonly repo: IZonesRepository) {}
 
-    async execute(data: CreateZoneData): Promise<ZoneDto> {
+    async execute(data: CreateZoneData): Promise<ZoneResponseDto> {
         const exists = await this.repo.existsByNom(data.nomZone);
         if (exists) {
             throw new ConflictException(

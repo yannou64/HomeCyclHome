@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Zone, ZonePoint } from '../../../../generated/prisma';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import { ZoneDto, ZonePointDto } from '../dto/zone.dto';
+import {
+    ZoneResponseDto,
+    ZonePointResponseDto,
+} from '../dto/output/zone-response.dto';
 import {
     CreateZoneData,
     IZonesRepository,
@@ -14,7 +17,7 @@ type ZoneWithPoints = Zone & { points: ZonePoint[] };
 export class ZonesPrismaRepository implements IZonesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findAll(): Promise<ZoneDto[]> {
+    async findAll(): Promise<ZoneResponseDto[]> {
         const zones = await this.prisma.zone.findMany({
             orderBy: { nom_zone: 'asc' },
             include: { points: { orderBy: { ordre: 'asc' } } },
@@ -22,7 +25,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         return zones.map((z) => this.toDto(z));
     }
 
-    async findAllActive(): Promise<ZoneDto[]> {
+    async findAllActive(): Promise<ZoneResponseDto[]> {
         const zones = await this.prisma.zone.findMany({
             where: { is_active: true },
             include: { points: { orderBy: { ordre: 'asc' } } },
@@ -30,7 +33,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         return zones.map((z) => this.toDto(z));
     }
 
-    async findById(id: string): Promise<ZoneDto | null> {
+    async findById(id: string): Promise<ZoneResponseDto | null> {
         const zone = await this.prisma.zone.findUnique({
             where: { id },
             include: { points: { orderBy: { ordre: 'asc' } } },
@@ -49,7 +52,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         return count > 0;
     }
 
-    async create(data: CreateZoneData): Promise<ZoneDto> {
+    async create(data: CreateZoneData): Promise<ZoneResponseDto> {
         const zone = await this.prisma.zone.create({
             data: {
                 nom_zone: data.nomZone,
@@ -66,7 +69,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         return this.toDto(zone);
     }
 
-    async update(id: string, data: UpdateZoneData): Promise<ZoneDto> {
+    async update(id: string, data: UpdateZoneData): Promise<ZoneResponseDto> {
         const zone = await this.prisma.$transaction(async (tx) => {
             // Remplace les points uniquement si de nouveaux sont fournis
             if (data.points) {
@@ -100,7 +103,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         await this.prisma.zone.delete({ where: { id } });
     }
 
-    private toDto(zone: ZoneWithPoints): ZoneDto {
+    private toDto(zone: ZoneWithPoints): ZoneResponseDto {
         return {
             id: zone.id,
             nomZone: zone.nom_zone,
@@ -110,7 +113,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         };
     }
 
-    private toPointDto(point: ZonePoint): ZonePointDto {
+    private toPointDto(point: ZonePoint): ZonePointResponseDto {
         return {
             // Prisma retourne Decimal pour les champs @db.Decimal → conversion en number
             latitude: Number(point.latitude),

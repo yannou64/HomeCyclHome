@@ -1,6 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { UpdateCycleInput } from '../dto/input/cycle-input.dto';
-import { CycleDto } from '../dto/output/cycle.dto';
+import { UpdateCycleInput } from '../dto/input/update-cycle.dto';
+import { CycleResponseDto } from '../dto/output/cycle-response.dto';
 import { ICyclesRepository } from '../repositories/cycles.repository.interface';
 
 export class UpdateCycleUseCase {
@@ -10,7 +10,7 @@ export class UpdateCycleUseCase {
         id: string,
         utilisateurId: string,
         data: UpdateCycleInput,
-    ): Promise<CycleDto> {
+    ): Promise<CycleResponseDto> {
         const cycle = await this.repo.findById(id);
 
         if (!cycle) {

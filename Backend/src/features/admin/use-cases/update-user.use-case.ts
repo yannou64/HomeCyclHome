@@ -1,5 +1,5 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
     IAdminUsersRepository,
     UpdateAdminUserData,
@@ -11,7 +11,7 @@ export class UpdateUserUseCase {
     async execute(
         targetUserId: string,
         data: UpdateAdminUserData,
-    ): Promise<AdminUserDto> {
+    ): Promise<AdminUserResponseDto> {
         const user = await this.repo.findById(targetUserId);
         if (!user) {
             throw new NotFoundException(

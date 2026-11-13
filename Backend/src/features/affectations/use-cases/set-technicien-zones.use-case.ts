@@ -1,5 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { AffectationDto } from '../dto/affectation.dto';
+import { AffectationResponseDto } from '../dto/output/affectation-response.dto';
 import { IAffectationsRepository } from '../repositories/affectations.repository.interface';
 
 export class SetTechnicienZonesUseCase {
@@ -8,7 +8,7 @@ export class SetTechnicienZonesUseCase {
     async execute(
         technicienId: string,
         zoneIds: string[],
-    ): Promise<AffectationDto> {
+    ): Promise<AffectationResponseDto> {
         if (zoneIds.length === 0) {
             throw new BadRequestException(
                 'Au moins une zone doit être affectée.',

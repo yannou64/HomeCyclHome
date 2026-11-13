@@ -1,9 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreneauDto } from '../dto/planning.dto';
+import { CreneauResponseDto } from '../dto/output/creneau-response.dto';
 import { IPlanningRepository } from '../repositories/planning.repository.interface';
 import { GetCreneauxUseCase } from './get-creneaux.use-case';
 
-const mockCreneau: CreneauDto = {
+const mockCreneau: CreneauResponseDto = {
     id: 'creneau-uuid-1',
     dateDebut: '2026-06-01T09:00:00.000Z',
     dateFin: null,

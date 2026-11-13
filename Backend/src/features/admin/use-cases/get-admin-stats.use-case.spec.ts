@@ -1,4 +1,4 @@
-import { AdminStatsDto } from '../dto/admin-stats.dto';
+import { AdminStatsResponseDto } from '../dto/output/admin-stats-response.dto';
 import { IAdminStatsRepository } from '../repositories/admin-stats.repository.interface';
 import { GetAdminStatsUseCase } from './get-admin-stats.use-case';
 
@@ -14,7 +14,7 @@ describe('GetAdminStatsUseCase', () => {
     });
 
     it('devrait retourner les statistiques fournies par le repository', async () => {
-        const stats: AdminStatsDto = {
+        const stats: AdminStatsResponseDto = {
             interventionsPlanifiees: 5,
             zonesCouvertes: 3,
             nombreTechniciens: 2,
@@ -27,7 +27,7 @@ describe('GetAdminStatsUseCase', () => {
     });
 
     it('devrait déléguer au repository sans modifier les données', async () => {
-        const stats: AdminStatsDto = {
+        const stats: AdminStatsResponseDto = {
             interventionsPlanifiees: 0,
             zonesCouvertes: 0,
             nombreTechniciens: 0,

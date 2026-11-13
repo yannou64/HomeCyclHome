@@ -1,10 +1,10 @@
-import { MarqueDto } from '../dto/marque.dto';
+import { MarqueResponseDto } from '../dto/output/marque-response.dto';
 
 export interface IMarquesRepository {
-    findAll(): Promise<MarqueDto[]>;
-    findById(id: string): Promise<MarqueDto | null>;
-    findByLibelle(libelle: string): Promise<MarqueDto | null>;
-    create(libelle: string): Promise<MarqueDto>;
-    update(id: string, libelle: string): Promise<MarqueDto>;
+    findAll(): Promise<MarqueResponseDto[]>;
+    findById(id: string): Promise<MarqueResponseDto | null>;
+    findByLibelle(libelle: string): Promise<MarqueResponseDto | null>;
+    create(libelle: string): Promise<MarqueResponseDto>;
+    update(id: string, libelle: string): Promise<MarqueResponseDto>;
     delete(id: string): Promise<void>;
 }

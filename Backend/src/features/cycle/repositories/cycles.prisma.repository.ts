@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
-import {
-    CreateCycleInput,
-    UpdateCycleInput,
-} from '../dto/input/cycle-input.dto';
-import { CycleDto } from '../dto/output/cycle.dto';
+import { CreateCycleInput } from '../dto/input/create-cycle.dto';
+import { UpdateCycleInput } from '../dto/input/update-cycle.dto';
+import { CycleResponseDto } from '../dto/output/cycle-response.dto';
 import { ICyclesRepository } from './cycles.repository.interface';
 
 // Type Prisma retourné quand on include marque et type_cycle
@@ -25,7 +23,7 @@ const INCLUDE = { marque: true, type_cycle: true } as const;
 export class CyclesPrismaRepository implements ICyclesRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async findAllByUser(utilisateurId: string): Promise<CycleDto[]> {
+    async findAllByUser(utilisateurId: string): Promise<CycleResponseDto[]> {
         const cycles = await this.prisma.cycle.findMany({
             where: { utilisateur_id: utilisateurId },
             include: INCLUDE,
@@ -34,7 +32,7 @@ export class CyclesPrismaRepository implements ICyclesRepository {
         return cycles.map((c) => this.toDto(c));
     }
 
-    async findById(id: string): Promise<CycleDto | null> {
+    async findById(id: string): Promise<CycleResponseDto | null> {
         const cycle = await this.prisma.cycle.findUnique({
             where: { id },
             include: INCLUDE,
@@ -45,7 +43,7 @@ export class CyclesPrismaRepository implements ICyclesRepository {
     async create(
         utilisateurId: string,
         data: CreateCycleInput,
-    ): Promise<CycleDto> {
+    ): Promise<CycleResponseDto> {
         const cycle = await this.prisma.cycle.create({
             data: {
                 libelle: data.libelle,
@@ -59,7 +57,10 @@ export class CyclesPrismaRepository implements ICyclesRepository {
         return this.toDto(cycle);
     }
 
-    async update(id: string, data: UpdateCycleInput): Promise<CycleDto> {
+    async update(
+        id: string,
+        data: UpdateCycleInput,
+    ): Promise<CycleResponseDto> {
         const cycle = await this.prisma.cycle.update({
             where: { id },
             data: {
@@ -79,7 +80,7 @@ export class CyclesPrismaRepository implements ICyclesRepository {
         await this.prisma.cycle.delete({ where: { id } });
     }
 
-    private toDto(cycle: CycleWithRelations): CycleDto {
+    private toDto(cycle: CycleWithRelations): CycleResponseDto {
         return {
             id: cycle.id,
             libelle: cycle.libelle,

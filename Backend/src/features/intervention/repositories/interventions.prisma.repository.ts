@@ -12,11 +12,11 @@ import type {
     GetAdminInterventionsParams,
 } from './interventions.repository.interface';
 import { bornesDuJourTravail } from '../../planning/domain/jour-travail';
-import type { CreneauAvecTechnicienDto } from '../../planning/dto/planning.dto';
-import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
-import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
-import type { AdminInterventionListItemDto } from '../dto/output/admin-intervention-list-item.dto';
-import type { AdminInterventionDetailDto } from '../dto/output/admin-intervention-detail.dto';
+import type { CreneauAvecTechnicien } from '../../planning/dto/output/creneau-response.dto';
+import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
+import type { InterventionListItemResponseDto } from '../dto/output/intervention-list-item-response.dto';
+import type { AdminInterventionListItemResponseDto } from '../dto/output/admin-intervention-list-item-response.dto';
+import type { AdminInterventionDetailResponseDto } from '../dto/output/admin-intervention-detail-response.dto';
 
 @Injectable()
 export class InterventionsPrismaRepository implements IInterventionsRepository {
@@ -90,7 +90,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
     // pourraient diverger.
     async findCreneauxDuJour(
         creneauId: string,
-    ): Promise<CreneauAvecTechnicienDto[]> {
+    ): Promise<CreneauAvecTechnicien[]> {
         const cible = await this.prisma.creneau.findUnique({
             where: { id: creneauId },
             select: {
@@ -152,7 +152,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
     async createInterventionTransaction(
         data: CreateInterventionData,
-    ): Promise<InterventionCreatedDto> {
+    ): Promise<InterventionCreatedResponseDto> {
         const intervention = await this.prisma.$transaction(async (tx) => {
             const premierCreneau = await tx.creneau.findUniqueOrThrow({
                 where: { id: data.creneauId },
@@ -217,7 +217,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
     async getInterventionsByClientId(
         clientId: string,
-    ): Promise<InterventionListItemDto[]> {
+    ): Promise<InterventionListItemResponseDto[]> {
         const interventions = await this.prisma.intervention.findMany({
             where: { client_id: clientId },
             orderBy: { date_creation: 'desc' },
@@ -327,7 +327,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
     }
 
     async findAllInterventions(params: GetAdminInterventionsParams): Promise<{
-        interventions: AdminInterventionListItemDto[];
+        interventions: AdminInterventionListItemResponseDto[];
         total: number;
     }> {
         const { statut, zoneId, technicienId, page, limit } = params;
@@ -448,7 +448,7 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
     async findInterventionDetailById(
         id: string,
-    ): Promise<AdminInterventionDetailDto | null> {
+    ): Promise<AdminInterventionDetailResponseDto | null> {
         const intervention = await this.prisma.intervention.findUnique({
             where: { id },
             select: {

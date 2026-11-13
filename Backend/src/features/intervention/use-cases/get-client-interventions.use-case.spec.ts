@@ -1,10 +1,10 @@
 import { GetClientInterventionsUseCase } from './get-client-interventions.use-case';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { InterventionListItemDto } from '../dto/output/intervention-list-item.dto';
+import type { InterventionListItemResponseDto } from '../dto/output/intervention-list-item-response.dto';
 
 const makeIntervention = (
-    overrides: Partial<InterventionListItemDto> = {},
-): InterventionListItemDto => ({
+    overrides: Partial<InterventionListItemResponseDto> = {},
+): InterventionListItemResponseDto => ({
     id: 'int-1',
     statut: 'Planifiee',
     dateCreation: '2026-06-10T10:00:00.000Z',

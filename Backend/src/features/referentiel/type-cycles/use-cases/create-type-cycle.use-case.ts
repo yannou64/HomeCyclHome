@@ -1,11 +1,11 @@
 import { ConflictException } from '@nestjs/common';
-import { TypeCycleDto } from '../dto/type-cycle.dto';
+import { TypeCycleResponseDto } from '../dto/output/type-cycle-response.dto';
 import { ITypeCyclesRepository } from '../repositories/type-cycles.repository.interface';
 
 export class CreateTypeCycleUseCase {
     constructor(private readonly repo: ITypeCyclesRepository) {}
 
-    async execute(libelle: string): Promise<TypeCycleDto> {
+    async execute(libelle: string): Promise<TypeCycleResponseDto> {
         const existing = await this.repo.findByLibelle(libelle);
         if (existing) {
             throw new ConflictException(

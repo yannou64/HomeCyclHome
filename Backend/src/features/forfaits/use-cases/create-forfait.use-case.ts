@@ -1,5 +1,5 @@
 import { ConflictException } from '@nestjs/common';
-import { ForfaitDto } from '../dto/forfait.dto';
+import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 import {
     CreateForfaitData,
     IForfaitsRepository,
@@ -8,7 +8,7 @@ import {
 export class CreateForfaitUseCase {
     constructor(private readonly repo: IForfaitsRepository) {}
 
-    async execute(data: CreateForfaitData): Promise<ForfaitDto> {
+    async execute(data: CreateForfaitData): Promise<ForfaitResponseDto> {
         const existing = await this.repo.findByNom(data.nom);
         if (existing) {
             throw new ConflictException(

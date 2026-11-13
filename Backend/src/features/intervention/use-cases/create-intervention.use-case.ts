@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { estCreneauReservable } from '../../planning/domain/creneau-reservable';
 import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { InterventionCreatedDto } from '../dto/output/intervention-created.dto';
+import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
 import type { EmailService } from '../../email/email.service';
 
 // Type plat compatible avec CreateInterventionDto (class-validator).
@@ -47,7 +47,7 @@ export class CreateInterventionUseCase {
     async execute(
         utilisateurId: string,
         dto: CreateInterventionInput,
-    ): Promise<InterventionCreatedDto> {
+    ): Promise<InterventionCreatedResponseDto> {
         // 1. Vérifier la disponibilité du créneau — garde critique contre les double-réservations
         const disponible = await this.repo.isCreneauDisponible(dto.creneauId);
         if (!disponible) {

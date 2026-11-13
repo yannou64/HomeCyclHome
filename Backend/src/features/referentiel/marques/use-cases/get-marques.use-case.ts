@@ -1,10 +1,10 @@
-import { MarqueDto } from '../dto/marque.dto';
+import { MarqueResponseDto } from '../dto/output/marque-response.dto';
 import { IMarquesRepository } from '../repositories/marques.repository.interface';
 
 export class GetMarquesUseCase {
     constructor(private readonly repo: IMarquesRepository) {}
 
-    execute(): Promise<MarqueDto[]> {
+    execute(): Promise<MarqueResponseDto[]> {
         return this.repo.findAll();
     }
 }

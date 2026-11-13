@@ -1,7 +1,7 @@
-import { UserRole } from '../../users/dto/user-profile.dto';
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { UserRole } from '../../users/dto/output/user-profile-response.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 
-// Paramètres acceptés par findMany — reflète les filtres de PaginationQueryDto
+// Paramètres acceptés par findMany — reflète les filtres de GetUsersQueryDto
 export type FindManyUsersParams = {
     page: number;
     limit: number;
@@ -29,10 +29,13 @@ export type UpdateAdminUserData = Partial<
 export interface IAdminUsersRepository {
     findMany(
         params: FindManyUsersParams,
-    ): Promise<{ users: AdminUserDto[]; total: number }>;
-    findById(id: string): Promise<AdminUserDto | null>;
-    findByEmail(email: string): Promise<AdminUserDto | null>;
-    create(data: CreateAdminUserData): Promise<AdminUserDto>;
-    update(id: string, data: UpdateAdminUserData): Promise<AdminUserDto>;
+    ): Promise<{ users: AdminUserResponseDto[]; total: number }>;
+    findById(id: string): Promise<AdminUserResponseDto | null>;
+    findByEmail(email: string): Promise<AdminUserResponseDto | null>;
+    create(data: CreateAdminUserData): Promise<AdminUserResponseDto>;
+    update(
+        id: string,
+        data: UpdateAdminUserData,
+    ): Promise<AdminUserResponseDto>;
     delete(id: string): Promise<void>;
 }

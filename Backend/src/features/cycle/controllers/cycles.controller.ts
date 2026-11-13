@@ -20,7 +20,8 @@ import {
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CreateCycleDto, UpdateCycleDto } from '../dto/input/cycle-input.dto';
+import { CreateCycleDto } from '../dto/input/create-cycle.dto';
+import { UpdateCycleDto } from '../dto/input/update-cycle.dto';
 import { CreateCycleUseCase } from '../use-cases/create-cycle.use-case';
 import { DeleteCycleUseCase } from '../use-cases/delete-cycle.use-case';
 import { GetCyclesUseCase } from '../use-cases/get-cycles.use-case';

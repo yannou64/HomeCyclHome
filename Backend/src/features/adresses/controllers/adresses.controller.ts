@@ -24,10 +24,8 @@ import { GetAdressesUseCase } from '../use-cases/get-adresses.use-case';
 import { CreateAdresseUseCase } from '../use-cases/create-adresse.use-case';
 import { UpdateAdresseUseCase } from '../use-cases/update-adresse.use-case';
 import { DeleteAdresseUseCase } from '../use-cases/delete-adresse.use-case';
-import {
-    CreateAdresseDto,
-    UpdateAdresseDto,
-} from '../dto/input/adresse-input.dto';
+import { CreateAdresseDto } from '../dto/input/create-adresse.dto';
+import { UpdateAdresseDto } from '../dto/input/update-adresse.dto';
 
 @ApiTags('Adresses')
 @ApiCookieAuth('access_token')

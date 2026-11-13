@@ -1,9 +1,9 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { AdminUserDto } from '../dto/admin-user.dto';
+import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import { IAdminUsersRepository } from '../repositories/admin-users.repository.interface';
 import { UpdateUserUseCase } from './update-user.use-case';
 
-const existingUser: AdminUserDto = {
+const existingUser: AdminUserResponseDto = {
     id: 'user-123',
     nom: 'Dupont',
     prenom: 'Jean',
@@ -54,7 +54,7 @@ describe('UpdateUserUseCase', () => {
     });
 
     it('devrait lever ConflictException si le nouvel email appartient à un autre utilisateur', async () => {
-        const otherUser: AdminUserDto = {
+        const otherUser: AdminUserResponseDto = {
             ...existingUser,
             id: 'other-456',
             email: 'other@email.com',

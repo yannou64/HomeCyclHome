@@ -9,7 +9,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { GetAdminStatsUseCase } from '../use-cases/get-admin-stats.use-case';
-import { AdminStatsDto } from '../dto/admin-stats.dto';
+import { AdminStatsResponseDto } from '../dto/output/admin-stats-response.dto';
 
 @ApiTags('Administration — Utilisateurs')
 @ApiCookieAuth('access_token')
@@ -25,10 +25,10 @@ export class AdminStatsController {
     })
     @ApiOkResponse({
         description: 'KPIs du tableau de bord',
-        type: AdminStatsDto,
+        type: AdminStatsResponseDto,
     })
     @Get()
-    get(): Promise<AdminStatsDto> {
+    get(): Promise<AdminStatsResponseDto> {
         return this.getStatsUseCase.execute();
     }
 }

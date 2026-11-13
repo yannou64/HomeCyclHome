@@ -1,4 +1,4 @@
-import { CreneauAvecTechnicienDto } from '../dto/planning.dto';
+import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
 import { estCreneauReservable } from './creneau-reservable';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -8,7 +8,7 @@ function slot(
     heure: string,
     disponible = true,
     intervalleMinutes = 30,
-): CreneauAvecTechnicienDto {
+): CreneauAvecTechnicien {
     return {
         id: `slot-${heure}`,
         dateDebut: `2026-06-01T${heure}:00.000Z`,
@@ -28,7 +28,7 @@ function slot(
 //
 //  idx   0     1     2     3     4     5     6     7  │  8     9    10    11
 //      08:00 08:30 09:00 09:30 10:00 10:30 11:00 11:30│14:00 14:30 15:00 15:30
-function journeeType(): CreneauAvecTechnicienDto[] {
+function journeeType(): CreneauAvecTechnicien[] {
     return [
         slot('08:00'),
         slot('08:30'),

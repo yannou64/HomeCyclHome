@@ -2,7 +2,7 @@ import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { jwtAccessConfig, jwtRefreshConfig } from '../../../config/jwt.config';
-import { LoginDto } from '../dto/login.dto';
+import { LoginDto } from '../dto/input/login.dto';
 import { IAuthRepository } from '../repositories/auth.repository.interface';
 
 export type LoginResult = {

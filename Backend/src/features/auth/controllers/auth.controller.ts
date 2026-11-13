@@ -21,8 +21,8 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { ACCESS_COOKIE, REFRESH_COOKIE } from '../../../config/cookie.config';
-import { LoginDto } from '../dto/login.dto';
-import { RegisterDto } from '../dto/register.dto';
+import { LoginDto } from '../dto/input/login.dto';
+import { RegisterDto } from '../dto/input/register.dto';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { ConfirmEmailUseCase } from '../use-cases/confirm-email.use-case';
 import { LoginUseCase } from '../use-cases/login.use-case';

@@ -1,10 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
 import { CheckZoneUseCase } from './check-zone.use-case';
 import type { IZonesRepository } from '../repositories/zones.repository.interface';
-import type { ZoneDto } from '../dto/zone.dto';
+import type { ZoneResponseDto } from '../dto/output/zone-response.dto';
 
 // Carré autour de Lyon-centre (lat 45.74–45.76, lng 4.83–4.87)
-const makeZone = (overrides: Partial<ZoneDto> = {}): ZoneDto => ({
+const makeZone = (
+    overrides: Partial<ZoneResponseDto> = {},
+): ZoneResponseDto => ({
     id: 'zone-1',
     nomZone: 'Lyon Centre',
     isActive: true,
