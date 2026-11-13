@@ -21,7 +21,7 @@ import {
     ModelePlanification,
     PauseRecurrente,
     Role,
-} from '../../../../generated/prisma';
+} from '../../../generated/prisma/client';
 
 @Injectable()
 export class PlanningPrismaRepository implements IPlanningRepository {

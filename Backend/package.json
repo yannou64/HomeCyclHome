@@ -29,17 +29,20 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.4.5",
     "@nestjs/throttler": "^6.5.0",
-    "@prisma/client": "^6.19.2",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.10",
     "helmet": "^8.3.0",
     "multer": "^2.2.0",
     "nodemailer": "^10.5.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "prisma": "^6.19.2",
+    "pg": "^8.23.1",
+    "prisma": "^7.10.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
@@ -58,6 +61,7 @@
     "@types/node": "^22.10.7",
     "@types/nodemailer": "^8.0.0",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "^8.23.1",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -94,17 +98,17 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!generated/**"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
   "allowScripts": {
     "@parcel/watcher@2.6.0": true,
-    "@prisma/client@6.19.2": true,
-    "@prisma/engines@6.19.3": true,
     "bcrypt@6.0.0": true,
-    "prisma@6.19.3": true,
-    "@scarf/scarf": false
+    "@scarf/scarf": false,
+    "@prisma/engines@7.10.1": true,
+    "prisma@7.10.1": true
   }
 }

@@ -4,7 +4,7 @@ import type { IAdressesRepository } from './adresses.repository.interface';
 import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
 import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
 import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
-import type { Adresse, PeutSeSituer } from '../../../../generated/prisma';
+import type { Adresse, PeutSeSituer } from '../../../generated/prisma/client';
 
 type LiaisonWithAdresse = PeutSeSituer & { adresse: Adresse };
 

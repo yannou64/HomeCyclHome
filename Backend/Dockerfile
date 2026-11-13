@@ -28,11 +28,15 @@ WORKDIR /app
 # Copie le code compilé depuis le stage builder
 COPY --from=builder /app/dist ./dist
 
-# Copie le client Prisma généré (nécessaire au runtime)
-COPY --from=builder /app/generated ./generated
+# Le client Prisma est généré dans src/generated : il est compilé avec le reste
+# du code dans dist/, aucune copie séparée n'est nécessaire.
 
 # Copie le schéma et les migrations Prisma (nécessaires pour migrate deploy)
 COPY --from=builder /app/prisma ./prisma
+
+# Copie la configuration Prisma : depuis Prisma 7, l'URL de la base n'est plus
+# dans schema.prisma, migrate deploy la lit dans prisma.config.ts
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 # Copie les fichiers de dépendances
 COPY package*.json ./

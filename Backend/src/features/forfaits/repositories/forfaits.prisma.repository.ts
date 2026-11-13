@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Forfait, Prisma } from '../../../../generated/prisma';
+import { Forfait, Prisma } from '../../../generated/prisma/client';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 import {
