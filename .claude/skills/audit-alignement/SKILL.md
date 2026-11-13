@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 Périmètre : **$ARGUMENTS** (vide = toute la V2).
 
-Vault de la V2 :
+Vault de la V2 (noté `<V2>` ci-dessous ; `<dépôt>` = racine du dépôt de code) :
 ```
 /Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
@@ -27,8 +27,14 @@ Pour chaque US du périmètre ayant une entrée dans le Journal de développemen
    ```
    et compare-la à celle notée dans le Journal. **Différente = la spec a changé après
    l'implémentation** : identifie les critères ajoutés, retirés ou reformulés.
-2. Compare les critères (`CA01`…) aux tests (`describe` = nom de l'US, `it('CA..`) :
-   critères sans test, tests orphelins, numérotation décalée.
+2. Compare les critères aux tests avec le vérificateur du vault, une seule fois pour
+   tout le périmètre :
+   ```bash
+   python3 "/Users/yannickbiot/Mini Brain/.claude/skills/_shared/cascade/verifier-ca.py" "<V2>" "<dépôt>"
+   ```
+   Critères sans test, tests dont le `CA` n'existe pas dans la note, étiquettes
+   `[RG…]` divergentes, `describe` sans US, RG sans critère. Les numéros `CAnn`
+   sont ceux écrits dans les notes, jamais recomptés.
 3. Cases cochées dans le vault mais sans test qui passe, et l'inverse (information
    pour Yannick — tu ne coches ni ne décoches rien).
 
