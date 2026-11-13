@@ -2,7 +2,7 @@
 name: terminer-us
 description: Clôt le développement d'une user story de la V2 — lance les tests, vérifie la définition de fini, produit le rapport de couverture CA<n>, propose l'entrée du Journal de développement et le message de commit. À lancer par Yannick quand une user story semble terminée.
 argument-hint: <nom de l'US, ex. "US-01 Choisir la couleur d'une zone 2.0">
-allowed-tools: [Read, Grep, Glob, Edit, Bash(npm test:*), Bash(npm run test:e2e:*), Bash(npm run lint:*), Bash(npx jest:*), Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(awk:*), Bash(sed:*), Bash(shasum:*)]
+allowed-tools: [Read, Grep, Glob, Edit, Bash(npm test:*), Bash(npm run test:e2e:*), Bash(npm run lint:*), Bash(npx jest:*), Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(awk:*), Bash(sed:*), Bash(shasum:*), Bash(find:*), Bash(python3:*)]
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 User story : **$ARGUMENTS**
 
-Vault de la V2 :
+Vault de la V2 (noté `<V2>` ci-dessous ; `<dépôt>` = racine du dépôt de code) :
 ```
 /Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
@@ -24,18 +24,28 @@ Depuis `Backend/` : `npm test`, puis `npm run test:e2e` si des tests d'intégrat
 existent. Si un test échoue, arrête-toi : montre l'échec, l'US n'est pas terminée.
 
 ## Étape 2 — Rapport de couverture
-1. Relis les critères de l'US dans sa note (section « Critères d'acceptation ») et
-   numérote-les `CA01`, `CA02`… dans l'ordre des lignes.
-2. Retrouve les tests : `grep -rn "<nom exact de l'US>"` dans `Backend/src` et
-   `Backend/test`, puis les `it('CA..` de ces `describe`.
-3. Produis le tableau :
+1. Trouve la note de l'US sans lire l'Index :
+   `find "<V2>" -name "$ARGUMENTS.md" -not -path "*/Assistant IA/*"`.
+   Relis ses critères (section « Critères d'acceptation ») : **le numéro `CAnn` et
+   l'étiquette `(RG…)` sont ceux écrits dans la note. Ne renumérote jamais**, les
+   trous de numérotation sont normaux.
+2. **Contrôle mécanique** : lance le vérificateur du vault avec le dépôt, et garde
+   les lignes de cette US et celles qui citent un fichier de test :
+   ```bash
+   python3 "/Users/yannickbiot/Mini Brain/.claude/skills/_shared/cascade/verifier-ca.py" "<V2>" "<dépôt>" \
+     | grep -F -e "$ARGUMENTS" -e "spec.ts"
+   ```
+   Il signale les critères sans test, les tests dont le `CA` n'existe pas dans la
+   note, les étiquettes `[RG…]` absentes ou divergentes, les `describe` sans US.
+   Chaque erreur qui concerne l'US est un point à corriger avant de conclure.
+3. Retrouve les tests eux-mêmes (`grep -rn "<nom exact de l'US>"` dans `Backend/src`
+   et `Backend/test`) et produis le tableau :
 
-| CA | Critère (résumé) | Test(s) | Statut |
-|---|---|---|---|
+| CA | RG | Critère (résumé) | Test(s) | Statut |
+|---|---|---|---|---|
 
 Statuts : **couvert** (au moins un test qui passe) · **non couvert** · **manuel**
 (critère visuel, non automatisable — à vérifier par Yannick).
-Signale aussi les tests orphelins (un `CA<n>` qui ne correspond à aucun critère).
 
 ## Étape 3 — Définition de fini
 Vérifie, en citant le code :
