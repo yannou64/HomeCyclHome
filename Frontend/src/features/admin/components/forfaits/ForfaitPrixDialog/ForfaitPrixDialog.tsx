@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -23,14 +23,46 @@ export function ForfaitPrixDialog({
   onSubmit,
   item,
 }: ForfaitPrixDialogProps) {
-  const [form, setForm] = useState({ montant: '', dateDebut: today() });
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className={styles.content}>
+        <DialogHeader>
+          <DialogTitle className={styles.title}>
+            Définir un prix — {item?.nom}
+          </DialogTitle>
+        </DialogHeader>
+
+        {item?.prixActif !== null && item?.prixActif !== undefined && (
+          <p className={styles.currentPrice}>
+            Prix actuel : <strong>{item.prixActif} €</strong>
+          </p>
+        )}
+
+        {/* Monté à chaque ouverture, démonté à la fermeture : l'état du
+            formulaire repart toujours du forfait sélectionné. */}
+        <ForfaitPrixForm item={item} onSubmit={onSubmit} onClose={onClose} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+interface ForfaitPrixFormProps {
+  item: Forfait | null;
+  onSubmit: (payload: { montant: number; dateDebut: string }) => Promise<void>;
+  onClose: () => void;
+}
+
+// Contenu du dialogue. Rendu à l'intérieur de <DialogContent>, que Radix
+// démonte à la fermeture : chaque ouverture crée un nouvel état, initialisé
+// directement par useState, sans effet de recopie.
+function ForfaitPrixForm({ item, onSubmit, onClose }: ForfaitPrixFormProps) {
+  // Fonction d'initialisation : exécutée une seule fois, au montage.
+  const [form, setForm] = useState(() => ({
+    montant: item?.prixActif != null ? String(item.prixActif) : '',
+    dateDebut: today(),
+  }));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setForm({ montant: item?.prixActif != null ? String(item.prixActif) : '', dateDebut: today() });
-    setError(null);
-  }, [item, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,73 +79,57 @@ export function ForfaitPrixDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={styles.content}>
-        <DialogHeader>
-          <DialogTitle className={styles.title}>
-            Définir un prix — {item?.nom}
-          </DialogTitle>
-        </DialogHeader>
+    <form onSubmit={handleSubmit} className={styles.form} noValidate>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="montant">
+          Nouveau montant (€)
+        </label>
+        <input
+          id="montant"
+          type="number"
+          className={styles.input}
+          value={form.montant}
+          onChange={(e) => setForm((f) => ({ ...f, montant: e.target.value }))}
+          min={0}
+          step={0.01}
+          required
+          autoFocus
+        />
+      </div>
 
-        {item?.prixActif !== null && item?.prixActif !== undefined && (
-          <p className={styles.currentPrice}>
-            Prix actuel : <strong>{item.prixActif} €</strong>
-          </p>
-        )}
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="dateDebut">
+          Date d'application
+        </label>
+        <input
+          id="dateDebut"
+          type="date"
+          className={styles.input}
+          value={form.dateDebut}
+          onChange={(e) => setForm((f) => ({ ...f, dateDebut: e.target.value }))}
+          required
+        />
+      </div>
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="montant">
-              Nouveau montant (€)
-            </label>
-            <input
-              id="montant"
-              type="number"
-              className={styles.input}
-              value={form.montant}
-              onChange={(e) => setForm((f) => ({ ...f, montant: e.target.value }))}
-              min={0}
-              step={0.01}
-              required
-              autoFocus
-            />
-          </div>
+      {error && <p className={styles.error}>{error}</p>}
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="dateDebut">
-              Date d'application
-            </label>
-            <input
-              id="dateDebut"
-              type="date"
-              className={styles.input}
-              value={form.dateDebut}
-              onChange={(e) => setForm((f) => ({ ...f, dateDebut: e.target.value }))}
-              required
-            />
-          </div>
-
-          {error && <p className={styles.error}>{error}</p>}
-
-          <div className={styles.actions}>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'En cours...' : 'Valider'}
-            </button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.cancelButton}
+          onClick={onClose}
+          disabled={isSubmitting}
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'En cours...' : 'Valider'}
+        </button>
+      </div>
+    </form>
   );
 }
