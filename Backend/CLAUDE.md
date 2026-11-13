@@ -83,8 +83,11 @@ variables et fonctions en `camelCase`.
 **Controllers :** reçoivent la requête, appellent le use case, renvoient la réponse.
 Aucune logique métier. Injectent des use cases, jamais un repository.
 
-**Use cases :** une classe = une opération métier. Dépendent d'une interface de
-repository. Portent toutes les vérifications et règles. Lancent des exceptions
+**Use cases :** une classe = une opération métier. Classe TypeScript **sans
+décorateur Nest** (pas d'`@Injectable`) : le module la construit par un `useFactory`
+qui lui injecte le repository par son token (voir `admin.module.ts`). C'est ce qui
+la garde indépendante du framework et testable avec un simple `new`. Dépendent d'une
+interface de repository. Portent toutes les vérifications et règles. Lancent des exceptions
 NestJS (`NotFoundException`, `ConflictException`, `ForbiddenException`…).
 
 **Repositories :** l'interface définit le contrat, l'implémentation Prisma les appels
@@ -103,9 +106,12 @@ vault). Les règles qu'ils servent restent dans la spec.
 **Transaction « tout ou rien ».** Quand la séquence d'une US place plusieurs
 écritures dans une transaction, elles vivent dans **une seule méthode du
 repository**, via `prisma.$transaction(async (tx) => { … })`. Le use case appelle
-cette méthode ; il ne voit jamais `tx`. Exemples en place :
-`intervention/repositories/interventions.prisma.repository.ts`,
-`forfaits/repositories/forfaits.prisma.repository.ts`.
+cette méthode ; il ne voit jamais `tx`. Exemples en place, **pour la forme de la
+transaction seulement** : `forfaits/repositories/forfaits.prisma.repository.ts`,
+`intervention/repositories/interventions.prisma.repository.ts`. ⚠️ Dans ce dernier,
+le `updateMany` des créneaux n'est **pas** conditionnel (dette V1, refondue par la
+réservation V2) : ne pas le recopier. Aucune écriture conditionnelle n'existe encore
+dans le code ; la brique partagée est posée au socle V2.
 
 **Écriture conditionnelle.** Une écriture qui dépend d'un état attendu se fait par
 `updateMany({ where: { id, <état attendu> }, data })` et **lit `count`** :
@@ -119,7 +125,10 @@ par « lire puis écrire » sans condition.
 
 **Fuseau d'exploitation.** Les dates sont stockées en UTC ; **tout calcul de jour se
 fait dans le fuseau d'exploitation, jamais en UTC.** Passer par un utilitaire
-partagé, jamais par `getDate()`, `setHours()` ou `toISOString().slice(0, 10)`. Base
+partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
+(`setUTCHours(0, 0, 0, 0)`, `getUTCDate()`, `getUTCDay()`…) ou
+`toISOString().slice(0, 10)`. Les use cases V1 de `planning` bornent encore les
+journées avec `setUTCHours` : dette V1, pas un modèle. Base
 existante : `planning/domain/jour-travail.ts` (`jourTravail`,
 `bornesDuJourTravail`) — à généraliser en brique partagée au socle V2.
 

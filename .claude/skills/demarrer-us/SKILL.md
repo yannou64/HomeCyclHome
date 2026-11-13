@@ -69,7 +69,16 @@ commandes indiquées. Ne lis jamais en entier l'Index des spécifications ni une
 6. `Assistant IA/Assistant IA - Glossaire.md` seulement si un terme bloque.
 
 ## Étape 3 — Confronter au code
-Repère dans le dépôt ce qui existe déjà pour cette US : module (voir « Où ça vit dans
+Lis d'abord les conventions, explicitement (un `CLAUDE.md` de sous-dossier n'est pas
+chargé automatiquement tant qu'aucun fichier du dossier n'a été lu) :
+- `Backend/CLAUDE.md`, sections 4 (conventions), 5 (patterns V2) et 8 (tests) ;
+- `Frontend/CLAUDE.md`, sections 2, 3 et 5, si l'US touche le frontend.
+
+Le code de la V1 n'est pas un modèle pour les patterns V2 (écriture conditionnelle,
+fuseau) : en cas de différence entre le code existant et `Backend/CLAUDE.md`, c'est
+le `CLAUDE.md` qui fait foi.
+
+Repère ensuite dans le dépôt ce qui existe déjà pour cette US : module (voir « Où ça vit dans
 le code » dans le Lisez-moi), use cases, schéma Prisma, composants, et un éventuel
 `describe` qui porte déjà le nom de l'US. Repère aussi ce qui est à créer ou à
 modifier. Pas de lecture exhaustive : juste assez pour situer le travail.
