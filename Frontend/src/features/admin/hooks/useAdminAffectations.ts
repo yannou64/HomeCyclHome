@@ -1,37 +1,27 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminAffectationsService } from '../services/adminAffectationsService';
 import type { Affectation, SetTechnicienZonesPayload } from '../types/affectations.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadAffectations = () => adminAffectationsService.getAll();
+
 export function useAdminAffectations() {
-  const [items, setItems] = useState<Affectation[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminAffectationsService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les affectations.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+  const {
+    data: items,
+    isLoading,
+    error,
+    reload,
+  } = useAsyncData<Affectation[]>(loadAffectations, [], 'Impossible de charger les affectations.');
 
   const setZones = async (technicienId: string, payload: SetTechnicienZonesPayload) => {
     await adminAffectationsService.setZones(technicienId, payload);
-    await fetchItems();
+    reload();
   };
 
   const deleteAffectation = async (technicienId: string) => {
     await adminAffectationsService.delete(technicienId);
-    await fetchItems();
+    reload();
   };
 
   return { items, isLoading, error, setZones, deleteAffectation };

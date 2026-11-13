@@ -1,42 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { cycleService } from '../services/cycleService';
 import type { Cycle, CreateCyclePayload, UpdateCyclePayload } from '../types/cycle.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadCycles = () => cycleService.getAll();
+
 export function useCycles() {
-    const [cycles, setCycles] = useState<Cycle[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchCycles = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const data = await cycleService.getAll();
-            setCycles(data);
-        } catch {
-            setError('Impossible de charger vos cycles.');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        void fetchCycles();
-    }, [fetchCycles]);
+    const {
+        data: cycles,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Cycle[]>(loadCycles, [], 'Impossible de charger vos cycles.');
 
     const createCycle = async (payload: CreateCyclePayload) => {
         await cycleService.create(payload);
-        await fetchCycles();
+        reload();
     };
 
     const updateCycle = async (id: string, payload: UpdateCyclePayload) => {
         await cycleService.update(id, payload);
-        await fetchCycles();
+        reload();
     };
 
     const deleteCycle = async (id: string) => {
         await cycleService.delete(id);
-        await fetchCycles();
+        reload();
     };
 
     return { cycles, isLoading, error, createCycle, updateCycle, deleteCycle };

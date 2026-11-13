@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminPlanningService } from '../services/adminPlanningService';
 import type {
   Creneau,
@@ -14,102 +15,103 @@ import type {
 } from '../types/planning.types';
 import type { AdminUser } from '../types/admin.types';
 
+// Données de planification d'un technicien, chargées ensemble.
+interface DonneesTechnicien {
+  modeles: ModelePlanification[];
+  pauses: PauseRecurrente[];
+  indisponibilites: Indisponibilite[];
+}
+
+const AUCUNE_DONNEE: DonneesTechnicien = { modeles: [], pauses: [], indisponibilites: [] };
+
 export function useAdminPlanning() {
   const [techniciens, setTechniciens] = useState<AdminUser[]>([]);
   const [selectedTechnicienId, setSelectedTechnicienId] = useState<string>('');
 
-  const [modeles, setModeles] = useState<ModelePlanification[]>([]);
-  const [pauses, setPauses] = useState<PauseRecurrente[]>([]);
-  const [indisponibilites, setIndisponibilites] = useState<Indisponibilite[]>([]);
   const [creneaux, setCreneaux] = useState<Creneau[]>([]);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [techniciensError, setTechniciensError] = useState<string | null>(null);
   const [isLoadingCreneaux, setIsLoadingCreneaux] = useState(false);
   const [creneauxError, setCreneauxError] = useState<string | null>(null);
 
-  // Chargement initial : liste des techniciens
+  // Chargement initial : liste des techniciens. Le setState a lieu après
+  // l'await, dans l'effet lui-même : autorisé par set-state-in-effect.
   useEffect(() => {
     void (async () => {
       try {
         const data = await adminPlanningService.getTechniciens();
         setTechniciens(data);
       } catch {
-        setError('Impossible de charger la liste des techniciens.');
+        setTechniciensError('Impossible de charger la liste des techniciens.');
       }
     })();
   }, []);
 
-  // Rechargement réactif : quand le technicien sélectionné change
-  const fetchAllForTechnicien = useCallback(async (technicienId: string) => {
-    if (!technicienId) {
-      setModeles([]);
-      setPauses([]);
-      setIndisponibilites([]);
-      return;
-    }
+  // Le loader dépend du technicien sélectionné : useCallback ne le recrée que
+  // lorsqu'il change, ce qui déclenche le rechargement de ses données.
+  const loadDonnees = useCallback(async (): Promise<DonneesTechnicien> => {
+    if (!selectedTechnicienId) return AUCUNE_DONNEE;
+    const [modeles, pauses, indisponibilites] = await Promise.all([
+      adminPlanningService.getModeles(selectedTechnicienId),
+      adminPlanningService.getPauses(selectedTechnicienId),
+      adminPlanningService.getIndisponibilites(selectedTechnicienId),
+    ]);
+    return { modeles, pauses, indisponibilites };
+  }, [selectedTechnicienId]);
 
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [m, p, i] = await Promise.all([
-        adminPlanningService.getModeles(technicienId),
-        adminPlanningService.getPauses(technicienId),
-        adminPlanningService.getIndisponibilites(technicienId),
-      ]);
-      setModeles(m);
-      setPauses(p);
-      setIndisponibilites(i);
-    } catch {
-      setError('Impossible de charger les données de planification.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const {
+    data: { modeles, pauses, indisponibilites },
+    isLoading,
+    error: donneesError,
+    reload,
+  } = useAsyncData(
+    loadDonnees,
+    AUCUNE_DONNEE,
+    'Impossible de charger les données de planification.',
+  );
 
-  useEffect(() => {
-    void fetchAllForTechnicien(selectedTechnicienId);
-  }, [selectedTechnicienId, fetchAllForTechnicien]);
+  // Une seule erreur exposée, comme avant : celle des techniciens d'abord.
+  const error = techniciensError ?? donneesError;
 
   // ── Mutations modèles ───────────────────────────────────────────────────────
 
   const createModele = async (payload: CreateModelePlanificationPayload) => {
     await adminPlanningService.createModele(payload);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   const updateModele = async (id: string, payload: UpdateModelePlanificationPayload) => {
     await adminPlanningService.updateModele(id, payload);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   const deleteModele = async (id: string) => {
     await adminPlanningService.deleteModele(id);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   // ── Mutations pauses ────────────────────────────────────────────────────────
 
   const createPause = async (payload: CreatePauseRecurrentePayload) => {
     await adminPlanningService.createPause(payload);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   const deletePause = async (id: string) => {
     await adminPlanningService.deletePause(id);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   // ── Mutations indisponibilités ──────────────────────────────────────────────
 
   const createIndisponibilite = async (payload: CreateIndisponibilitePayload) => {
     await adminPlanningService.createIndisponibilite(payload);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   const deleteIndisponibilite = async (id: string) => {
     await adminPlanningService.deleteIndisponibilite(id);
-    await fetchAllForTechnicien(selectedTechnicienId);
+    reload();
   };
 
   // ── Créneaux ────────────────────────────────────────────────────────────────

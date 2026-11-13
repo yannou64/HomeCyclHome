@@ -1,47 +1,37 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminUsersService } from '../services/adminUsersService';
 import type {
-    AdminUser,
     CreateUserPayload,
     GetUsersParams,
-    PaginationMeta,
+    PaginatedUsers,
     UpdateUserPayload,
 } from '../types/admin.types';
 
-export function useAdminUsers() {
-    const [users, setUsers] = useState<AdminUser[]>([]);
-    const [meta, setMeta] = useState<PaginationMeta>({
-        total: 0,
-        page: 1,
-        limit: 6,
-        totalPages: 1,
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+// Page vide affichée avant la première réponse.
+const EMPTY_PAGE: PaginatedUsers = {
+    data: [],
+    meta: { total: 0, page: 1, limit: 6, totalPages: 1 },
+};
 
+export function useAdminUsers() {
     const [filters, setFilters] = useState<GetUsersParams>({
         page: 1,
         limit: 6,
     });
 
-    const fetchUsers = useCallback(async (params: GetUsersParams) => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const result = await adminUsersService.getUsers(params);
-            setUsers(result.data);
-            setMeta(result.meta);
-        } catch {
-            setError('Impossible de charger les utilisateurs.');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    // Recharge automatiquement quand les filtres changent
-    useEffect(() => {
-        void fetchUsers(filters);
-    }, [filters, fetchUsers]);
+    // Le loader dépend des filtres : useCallback ne le recrée que lorsqu'ils
+    // changent, ce qui déclenche un rechargement (et isLoading passe à true).
+    const loadUsers = useCallback(
+        () => adminUsersService.getUsers(filters),
+        [filters],
+    );
+    const { data, isLoading, error, reload } = useAsyncData(
+        loadUsers,
+        EMPTY_PAGE,
+        'Impossible de charger les utilisateurs.',
+    );
+    const { data: users, meta } = data;
 
     const setPage = (page: number) =>
         setFilters((prev) => ({ ...prev, page }));
@@ -57,17 +47,17 @@ export function useAdminUsers() {
 
     const createUser = async (payload: CreateUserPayload) => {
         await adminUsersService.createUser(payload);
-        await fetchUsers(filters);
+        reload();
     };
 
     const updateUser = async (id: string, payload: UpdateUserPayload) => {
         await adminUsersService.updateUser(id, payload);
-        await fetchUsers(filters);
+        reload();
     };
 
     const deleteUser = async (id: string) => {
         await adminUsersService.deleteUser(id);
-        await fetchUsers(filters);
+        reload();
     };
 
     return {

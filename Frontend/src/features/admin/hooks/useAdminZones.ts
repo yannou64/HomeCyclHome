@@ -1,42 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminZonesService } from '../services/adminZonesService';
 import type { Zone, CreateZonePayload, UpdateZonePayload } from '../types/zones.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadZones = () => adminZonesService.getAll();
+
 export function useAdminZones() {
-  const [items, setItems] = useState<Zone[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminZonesService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les zones.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+  const {
+    data: items,
+    isLoading,
+    error,
+    reload,
+  } = useAsyncData<Zone[]>(loadZones, [], 'Impossible de charger les zones.');
 
   const createZone = async (payload: CreateZonePayload) => {
     await adminZonesService.create(payload);
-    await fetchItems();
+    reload();
   };
 
   const updateZone = async (id: string, payload: UpdateZonePayload) => {
     await adminZonesService.update(id, payload);
-    await fetchItems();
+    reload();
   };
 
   const deleteZone = async (id: string) => {
     await adminZonesService.delete(id);
-    await fetchItems();
+    reload();
   };
 
   return { items, isLoading, error, createZone, updateZone, deleteZone };

@@ -1,42 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminMarquesService } from '../services/adminMarquesService';
 import type { CycleItemPayload, Marque } from '../types/cycles.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadMarques = () => adminMarquesService.getAll();
+
 export function useAdminMarques() {
-  const [items, setItems] = useState<Marque[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminMarquesService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les marques.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+  const {
+    data: items,
+    isLoading,
+    error,
+    reload,
+  } = useAsyncData<Marque[]>(loadMarques, [], 'Impossible de charger les marques.');
 
   const createItem = async (payload: CycleItemPayload) => {
     await adminMarquesService.create(payload);
-    await fetchItems();
+    reload();
   };
 
   const updateItem = async (id: string, payload: CycleItemPayload) => {
     await adminMarquesService.update(id, payload);
-    await fetchItems();
+    reload();
   };
 
   const deleteItem = async (id: string) => {
     await adminMarquesService.delete(id);
-    await fetchItems();
+    reload();
   };
 
   return { items, isLoading, error, createItem, updateItem, deleteItem };

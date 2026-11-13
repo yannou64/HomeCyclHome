@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminInterventionsService } from '../services/adminInterventionsService';
 import type {
-    AdminInterventionListItem,
     ActiveInterventionTab,
     GetAdminInterventionsParams,
+    PaginatedAdminInterventions,
 } from '../types/adminIntervention.types';
-import type { PaginationMeta } from '../../../shared/types/pagination.types';
 
 const TAB_TO_STATUT: Record<ActiveInterventionTab, GetAdminInterventionsParams['statut']> = {
     planifiees: 'Planifiee',
@@ -15,42 +15,37 @@ const TAB_TO_STATUT: Record<ActiveInterventionTab, GetAdminInterventionsParams['
 
 const LIMIT = 6;
 
+// Page vide affichée avant la première réponse.
+const EMPTY_PAGE: PaginatedAdminInterventions = {
+    data: [],
+    meta: { total: 0, page: 1, limit: LIMIT, totalPages: 1 },
+};
+
 export function useAdminInterventions() {
-    const [interventions, setInterventions] = useState<AdminInterventionListItem[]>([]);
-    const [meta, setMeta] = useState<PaginationMeta>({ total: 0, page: 1, limit: LIMIT, totalPages: 1 });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTabState] = useState<ActiveInterventionTab>('planifiees');
     const [zoneId, setZoneIdState] = useState<string | undefined>(undefined);
     const [technicienId, setTechnicienIdState] = useState<string | undefined>(undefined);
     const [page, setPage] = useState(1);
 
-    const fetchInterventions = useCallback(
-        async (params: GetAdminInterventionsParams) => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const result = await adminInterventionsService.getInterventions(params);
-                setInterventions(result.data);
-                setMeta(result.meta);
-            } catch {
-                setError('Impossible de charger les interventions.');
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [],
+    // Le loader dépend de l'onglet, des filtres et de la page : useCallback ne
+    // le recrée que lorsqu'ils changent, ce qui déclenche un rechargement.
+    const loadInterventions = useCallback(
+        () =>
+            adminInterventionsService.getInterventions({
+                statut: TAB_TO_STATUT[activeTab],
+                zoneId,
+                technicienId,
+                page,
+                limit: LIMIT,
+            }),
+        [activeTab, zoneId, technicienId, page],
     );
-
-    useEffect(() => {
-        void fetchInterventions({
-            statut: TAB_TO_STATUT[activeTab],
-            zoneId,
-            technicienId,
-            page,
-            limit: LIMIT,
-        });
-    }, [activeTab, zoneId, technicienId, page, fetchInterventions]);
+    const { data, isLoading, error } = useAsyncData(
+        loadInterventions,
+        EMPTY_PAGE,
+        'Impossible de charger les interventions.',
+    );
+    const { data: interventions, meta } = data;
 
     const setActiveTab = (tab: ActiveInterventionTab) => {
         setActiveTabState(tab);
