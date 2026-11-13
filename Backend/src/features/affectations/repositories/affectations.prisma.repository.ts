@@ -4,7 +4,7 @@ import {
     TechnicienZone,
     Utilisateur,
     Zone,
-} from '../../../../generated/prisma';
+} from '../../../generated/prisma/client';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import {
     AffectationResponseDto,

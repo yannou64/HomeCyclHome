@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Zone, ZonePoint } from '../../../../generated/prisma';
+import { Zone, ZonePoint } from '../../../generated/prisma/client';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import {
     ZoneResponseDto,
