@@ -26,9 +26,15 @@ function NonAuthSelector() {
 
     const handleSubmit = async () => {
         if (!decomposedAddress) return;
-        const zone = await checkZone(decomposedAddress.latitude, decomposedAddress.longitude);
+        const zone = await checkZone(
+            decomposedAddress.latitude,
+            decomposedAddress.longitude,
+        );
         if (!zone) return;
-        setAdresseAndZone({ source: 'autocomplete', data: decomposedAddress }, zone);
+        setAdresseAndZone(
+            { source: 'autocomplete', data: decomposedAddress },
+            zone,
+        );
         goToStep('cycle');
     };
 
@@ -88,9 +94,15 @@ function AuthSelector() {
         if (showNewInput) {
             // Mode nouvelle adresse : on utilise l'autocomplete
             if (!decomposedAddress) return;
-            const zone = await checkZone(decomposedAddress.latitude, decomposedAddress.longitude);
+            const zone = await checkZone(
+                decomposedAddress.latitude,
+                decomposedAddress.longitude,
+            );
             if (!zone) return;
-            setAdresseAndZone({ source: 'autocomplete', data: decomposedAddress }, zone);
+            setAdresseAndZone(
+                { source: 'autocomplete', data: decomposedAddress },
+                zone,
+            );
         } else {
             // Mode adresse enregistrée
             const adresse = activeAdresses.find((a) => a.id === selectedId);

@@ -12,7 +12,10 @@ export function useCreateIntervention() {
     const createIntervention = async (
         request: CreateInterventionRequest,
         photos?: File[],
-    ): Promise<{ intervention: InterventionCreatedDto; photoUrls: string[] }> => {
+    ): Promise<{
+        intervention: InterventionCreatedDto;
+        photoUrls: string[];
+    }> => {
         setIsLoading(true);
         setError(null);
         try {

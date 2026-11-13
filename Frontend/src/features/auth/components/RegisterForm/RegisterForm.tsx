@@ -66,27 +66,38 @@ export function RegisterForm() {
         <>
             <h2 className={styles.title}>Créer un compte</h2>
             <Form className={styles.form} onSubmit={handleSubmit}>
-
                 {/* Prénom + Nom en deux colonnes */}
                 <div className={styles.nameRow}>
                     <div className={styles.field}>
-                        <label htmlFor="prenom" className={styles.label}>Prénom</label>
+                        <label htmlFor="prenom" className={styles.label}>
+                            Prénom
+                        </label>
                         <div className={styles.inputWrapper}>
                             <input
-                                id="prenom" name="prenom" type="text"
-                                className={styles.input} placeholder="Ex: Yannick"
-                                value={formData.prenom} onChange={handleChange}
+                                id="prenom"
+                                name="prenom"
+                                type="text"
+                                className={styles.input}
+                                placeholder="Ex: Yannick"
+                                value={formData.prenom}
+                                onChange={handleChange}
                                 autoComplete="given-name"
                             />
                         </div>
                     </div>
                     <div className={styles.field}>
-                        <label htmlFor="nom" className={styles.label}>Nom</label>
+                        <label htmlFor="nom" className={styles.label}>
+                            Nom
+                        </label>
                         <div className={styles.inputWrapper}>
                             <input
-                                id="nom" name="nom" type="text"
-                                className={styles.input} placeholder="Ex: Biot"
-                                value={formData.nom} onChange={handleChange}
+                                id="nom"
+                                name="nom"
+                                type="text"
+                                className={styles.input}
+                                placeholder="Ex: Biot"
+                                value={formData.nom}
+                                onChange={handleChange}
                                 autoComplete="family-name"
                             />
                         </div>
@@ -94,68 +105,123 @@ export function RegisterForm() {
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="email" className={styles.label}>Email</label>
+                    <label htmlFor="email" className={styles.label}>
+                        Email
+                    </label>
                     <div className={styles.inputWrapper}>
                         <input
-                            id="email" name="email" type="email"
-                            className={styles.input} placeholder="Ex: nomPrenom@gmail.com"
-                            value={formData.email} onChange={handleChange}
+                            id="email"
+                            name="email"
+                            type="email"
+                            className={styles.input}
+                            placeholder="Ex: nomPrenom@gmail.com"
+                            value={formData.email}
+                            onChange={handleChange}
                             autoComplete="email"
                         />
-                        <img src={emailIcon} alt="" className={styles.inputIcon} aria-hidden="true" />
+                        <img
+                            src={emailIcon}
+                            alt=""
+                            className={styles.inputIcon}
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="telephone" className={styles.label}>Téléphone</label>
+                    <label htmlFor="telephone" className={styles.label}>
+                        Téléphone
+                    </label>
                     <div className={styles.inputWrapper}>
                         <input
-                            id="telephone" name="telephone" type="tel"
-                            className={styles.input} placeholder="Ex: 06 12 34 56 78"
-                            value={formData.telephone} onChange={handleChange}
+                            id="telephone"
+                            name="telephone"
+                            type="tel"
+                            className={styles.input}
+                            placeholder="Ex: 06 12 34 56 78"
+                            value={formData.telephone}
+                            onChange={handleChange}
                             autoComplete="tel"
                         />
-                        <img src={phoneIcon} alt="" className={styles.inputIcon} aria-hidden="true" />
+                        <img
+                            src={phoneIcon}
+                            alt=""
+                            className={styles.inputIcon}
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="password" className={styles.label}>Mot de passe</label>
+                    <label htmlFor="password" className={styles.label}>
+                        Mot de passe
+                    </label>
                     <div className={styles.inputWrapper}>
                         <input
-                            id="password" name="password"
+                            id="password"
+                            name="password"
                             type={showPassword ? 'text' : 'password'}
-                            className={styles.input} placeholder="8 caractères minimum comprenant chiffres"
-                            value={formData.password} onChange={handleChange}
+                            className={styles.input}
+                            placeholder="8 caractères minimum comprenant chiffres"
+                            value={formData.password}
+                            onChange={handleChange}
                             autoComplete="new-password"
                         />
                         <button
-                            type="button" className={styles.eyeButton}
+                            type="button"
+                            className={styles.eyeButton}
                             onClick={() => setShowPassword((prev) => !prev)}
-                            aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                            aria-label={
+                                showPassword
+                                    ? 'Masquer le mot de passe'
+                                    : 'Afficher le mot de passe'
+                            }
                         >
-                            <img src={showPassword ? eyeOpenIcon : eyeClosedIcon} alt="" aria-hidden="true" />
+                            <img
+                                src={showPassword ? eyeOpenIcon : eyeClosedIcon}
+                                alt=""
+                                aria-hidden="true"
+                            />
                         </button>
                     </div>
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="confirmPassword" className={styles.label}>Confirmer Mot de passe</label>
+                    <label htmlFor="confirmPassword" className={styles.label}>
+                        Confirmer Mot de passe
+                    </label>
                     <div className={styles.inputWrapper}>
                         <input
-                            id="confirmPassword" name="confirmPassword"
+                            id="confirmPassword"
+                            name="confirmPassword"
                             type={showConfirmPassword ? 'text' : 'password'}
-                            className={styles.input} placeholder="8 caractères minimum comprenant chiffres"
+                            className={styles.input}
+                            placeholder="8 caractères minimum comprenant chiffres"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             autoComplete="new-password"
                         />
                         <button
-                            type="button" className={styles.eyeButton}
-                            onClick={() => setShowConfirmPassword((prev) => !prev)}
-                            aria-label={showConfirmPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                            type="button"
+                            className={styles.eyeButton}
+                            onClick={() =>
+                                setShowConfirmPassword((prev) => !prev)
+                            }
+                            aria-label={
+                                showConfirmPassword
+                                    ? 'Masquer le mot de passe'
+                                    : 'Afficher le mot de passe'
+                            }
                         >
-                            <img src={showConfirmPassword ? eyeOpenIcon : eyeClosedIcon} alt="" aria-hidden="true" />
+                            <img
+                                src={
+                                    showConfirmPassword
+                                        ? eyeOpenIcon
+                                        : eyeClosedIcon
+                                }
+                                alt=""
+                                aria-hidden="true"
+                            />
                         </button>
                     </div>
                 </div>
@@ -167,14 +233,22 @@ export function RegisterForm() {
                         onChange={(e) => setAcceptCgu(e.target.checked)}
                         className={styles.checkbox}
                     />
-                    <span className={styles.checkboxLabel}>J'accepte les CGU</span>
+                    <span className={styles.checkboxLabel}>
+                        J'accepte les CGU
+                    </span>
                 </label>
 
                 {(formError ?? error) && (
                     <p className={styles.error}>{formError ?? error}</p>
                 )}
 
-                <CTAButton type="submit" disabled={!canSubmit} isLoading={isLoading}>S'inscrire</CTAButton>
+                <CTAButton
+                    type="submit"
+                    disabled={!canSubmit}
+                    isLoading={isLoading}
+                >
+                    S'inscrire
+                </CTAButton>
             </Form>
             <p className={styles.loginLink}>
                 Déjà un compte ? <Link to="/login">Se connecter</Link>

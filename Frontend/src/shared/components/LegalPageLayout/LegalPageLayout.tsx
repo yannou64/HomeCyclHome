@@ -8,7 +8,11 @@ type LegalPageLayoutProps = {
     children: React.ReactNode;
 };
 
-export function LegalPageLayout({ title, updated, children }: LegalPageLayoutProps) {
+export function LegalPageLayout({
+    title,
+    updated,
+    children,
+}: LegalPageLayoutProps) {
     return (
         <>
             <Header />

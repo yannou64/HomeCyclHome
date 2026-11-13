@@ -46,7 +46,12 @@ export function LoginForm() {
                             onChange={handleChange}
                             autoComplete="email"
                         />
-                        <img src={emailIcon} alt="" className={styles.inputIcon} aria-hidden="true" />
+                        <img
+                            src={emailIcon}
+                            alt=""
+                            className={styles.inputIcon}
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
                 <div className={styles.field}>
@@ -68,14 +73,28 @@ export function LoginForm() {
                             type="button"
                             className={styles.eyeButton}
                             onClick={() => setShowPassword((prev) => !prev)}
-                            aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                            aria-label={
+                                showPassword
+                                    ? 'Masquer le mot de passe'
+                                    : 'Afficher le mot de passe'
+                            }
                         >
-                            <img src={showPassword ? eyeOpenIcon : eyeClosedIcon} alt="" aria-hidden="true" />
+                            <img
+                                src={showPassword ? eyeOpenIcon : eyeClosedIcon}
+                                alt=""
+                                aria-hidden="true"
+                            />
                         </button>
                     </div>
                 </div>
                 {error && <p className={styles.error}>{error}</p>}
-                <CTAButton type="submit" disabled={!canSubmit} isLoading={isLoading}>Connexion</CTAButton>
+                <CTAButton
+                    type="submit"
+                    disabled={!canSubmit}
+                    isLoading={isLoading}
+                >
+                    Connexion
+                </CTAButton>
             </Form>
             <p className={styles.registerLink}>
                 Pas de compte ? <Link to="/inscription">S'inscrire</Link>

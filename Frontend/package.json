@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{ts,tsx,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,scss}\""
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",

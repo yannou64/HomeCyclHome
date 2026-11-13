@@ -37,7 +37,9 @@ function mapCycle(cycle: CreateInterventionRequest['cycle']) {
 }
 
 export const interventionService = {
-    async create(request: CreateInterventionRequest): Promise<InterventionCreatedDto> {
+    async create(
+        request: CreateInterventionRequest,
+    ): Promise<InterventionCreatedDto> {
         const payload = {
             adresse: mapAdresse(request.adresse),
             cycle: mapCycle(request.cycle),
@@ -45,7 +47,10 @@ export const interventionService = {
             creneauId: request.creneauId,
             commentaire: request.commentaire,
         };
-        const r = await apiClient.post<InterventionCreatedDto>('/interventions', payload);
+        const r = await apiClient.post<InterventionCreatedDto>(
+            '/interventions',
+            payload,
+        );
         return r.data;
     },
 

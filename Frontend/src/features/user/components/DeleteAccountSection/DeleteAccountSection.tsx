@@ -42,8 +42,9 @@ export function DeleteAccountSection() {
                     </DialogHeader>
 
                     <p className={styles.dialogMessage}>
-                        Cette action est <strong>irréversible</strong>. Votre compte
-                        et tous vos vélos enregistrés seront définitivement supprimés.
+                        Cette action est <strong>irréversible</strong>. Votre
+                        compte et tous vos vélos enregistrés seront
+                        définitivement supprimés.
                     </p>
 
                     {error && <p className={styles.error}>{error}</p>}
@@ -61,7 +62,9 @@ export function DeleteAccountSection() {
                             onClick={handleConfirm}
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Suppression…' : 'Supprimer mon compte'}
+                            {isLoading
+                                ? 'Suppression…'
+                                : 'Supprimer mon compte'}
                         </button>
                     </div>
                 </DialogContent>

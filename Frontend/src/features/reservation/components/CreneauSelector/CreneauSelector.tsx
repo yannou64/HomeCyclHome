@@ -12,7 +12,10 @@ import type { CreneauInfo } from '../../../../app/providers/reservationContext/t
 import styles from './CreneauSelector.module.scss';
 
 function formatTime(iso: string): string {
-    return new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
 }
 
 function toLocalDateString(date: Date): string {
@@ -31,7 +34,9 @@ function formatDisplayDate(dateStr: string): string {
 }
 
 function formatDayName(dateStr: string): string {
-    return new Date(`${dateStr}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'long' });
+    return new Date(`${dateStr}T12:00:00`).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+    });
 }
 
 export function CreneauSelector() {
@@ -46,7 +51,9 @@ export function CreneauSelector() {
     );
 
     const today = toLocalDateString(new Date());
-    const maxDate = toLocalDateString(new Date(new Date().getTime() + 28 * 24 * 60 * 60 * 1000));
+    const maxDate = toLocalDateString(
+        new Date(new Date().getTime() + 28 * 24 * 60 * 60 * 1000),
+    );
 
     const [currentDate, setCurrentDate] = useState(today);
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -70,7 +77,9 @@ export function CreneauSelector() {
     // Ouvre le sélecteur de date natif du navigateur
     const handleCalendarOpen = () => {
         if (!dateInputRef.current) return;
-        const input = dateInputRef.current as HTMLInputElement & { showPicker?: () => void };
+        const input = dateInputRef.current as HTMLInputElement & {
+            showPicker?: () => void;
+        };
         if (typeof input.showPicker === 'function') {
             input.showPicker();
         } else {
@@ -109,7 +118,9 @@ export function CreneauSelector() {
             start: c.dateDebut,
             end: isSelected
                 ? c.dateFin
-                : new Date(new Date(c.dateDebut).getTime() + slotDurationMs).toISOString(),
+                : new Date(
+                      new Date(c.dateDebut).getTime() + slotDurationMs,
+                  ).toISOString(),
             extendedProps: {
                 dateFin: c.dateFin,
                 isSelected,
@@ -121,7 +132,8 @@ export function CreneauSelector() {
         };
     });
 
-    if (isLoading) return <p className={styles.statusText}>Chargement des créneaux...</p>;
+    if (isLoading)
+        return <p className={styles.statusText}>Chargement des créneaux...</p>;
     if (error) return <p className={styles.errorText}>{error}</p>;
 
     const firstAvailableDate =
@@ -150,10 +162,17 @@ export function CreneauSelector() {
                         </button>
 
                         {/* Bouton central : affiche date + jour, ouvre le picker au clic */}
-                        <button className={styles.dateTrigger} onClick={handleCalendarOpen}>
-                            <span className={styles.dateText}>{formatDisplayDate(currentDate)}</span>
+                        <button
+                            className={styles.dateTrigger}
+                            onClick={handleCalendarOpen}
+                        >
+                            <span className={styles.dateText}>
+                                {formatDisplayDate(currentDate)}
+                            </span>
                             <span className={styles.dateSeparator}> · </span>
-                            <span className={styles.dayName}>{formatDayName(currentDate)}</span>
+                            <span className={styles.dayName}>
+                                {formatDayName(currentDate)}
+                            </span>
                         </button>
 
                         {/* Input caché — piloté par handleDateChange et showPicker */}
@@ -180,58 +199,73 @@ export function CreneauSelector() {
                     </div>
 
                     <div className={styles.calendarScrollArea}>
-                    <FullCalendar
-                        ref={calendarRef}
-                        plugins={[timeGridPlugin, interactionPlugin]}
-                        initialView="timeGridDay"
-                        initialDate={firstAvailableDate}
-                        locale={frLocale}
-                        headerToolbar={false}
-                        allDaySlot={false}
-                        validRange={{ start: new Date() }}
-                        slotMinTime="08:00:00"
-                        slotMaxTime="19:00:00"
-                        events={events}
-                        eventClick={handleEventClick}
-                        height="auto"
-                        datesSet={(dateInfo) => {
-                            setCurrentDate(toLocalDateString(dateInfo.start));
-                        }}
-                        eventContent={(arg) => {
-                            const isSelected = arg.event.extendedProps['isSelected'] as boolean;
-                            const technicienPrenom = arg.event.extendedProps[
-                                'technicienPrenom'
-                            ] as string | null;
+                        <FullCalendar
+                            ref={calendarRef}
+                            plugins={[timeGridPlugin, interactionPlugin]}
+                            initialView="timeGridDay"
+                            initialDate={firstAvailableDate}
+                            locale={frLocale}
+                            headerToolbar={false}
+                            allDaySlot={false}
+                            validRange={{ start: new Date() }}
+                            slotMinTime="08:00:00"
+                            slotMaxTime="19:00:00"
+                            events={events}
+                            eventClick={handleEventClick}
+                            height="auto"
+                            datesSet={(dateInfo) => {
+                                setCurrentDate(
+                                    toLocalDateString(dateInfo.start),
+                                );
+                            }}
+                            eventContent={(arg) => {
+                                const isSelected = arg.event.extendedProps[
+                                    'isSelected'
+                                ] as boolean;
+                                const technicienPrenom = arg.event
+                                    .extendedProps['technicienPrenom'] as
+                                    string | null;
 
-                            // Bloc non sélectionné : hauteur d'un seul slot, on se
-                            // limite au prénom du technicien.
-                            if (!isSelected) {
+                                // Bloc non sélectionné : hauteur d'un seul slot, on se
+                                // limite au prénom du technicien.
+                                if (!isSelected) {
+                                    return (
+                                        <div className={styles.eventContent}>
+                                            {technicienPrenom && (
+                                                <span
+                                                    className={
+                                                        styles.eventTechnicien
+                                                    }
+                                                >
+                                                    {technicienPrenom}
+                                                </span>
+                                            )}
+                                        </div>
+                                    );
+                                }
+
+                                const dateFin = arg.event.extendedProps[
+                                    'dateFin'
+                                ] as string;
                                 return (
                                     <div className={styles.eventContent}>
+                                        <span className={styles.eventTime}>
+                                            {formatTime(arg.event.startStr)} →{' '}
+                                            {formatTime(dateFin)}
+                                        </span>
                                         {technicienPrenom && (
-                                            <span className={styles.eventTechnicien}>
-                                                {technicienPrenom}
+                                            <span
+                                                className={
+                                                    styles.eventTechnicien
+                                                }
+                                            >
+                                                avec {technicienPrenom}
                                             </span>
                                         )}
                                     </div>
                                 );
-                            }
-
-                            const dateFin = arg.event.extendedProps['dateFin'] as string;
-                            return (
-                                <div className={styles.eventContent}>
-                                    <span className={styles.eventTime}>
-                                        {formatTime(arg.event.startStr)} → {formatTime(dateFin)}
-                                    </span>
-                                    {technicienPrenom && (
-                                        <span className={styles.eventTechnicien}>
-                                            avec {technicienPrenom}
-                                        </span>
-                                    )}
-                                </div>
-                            );
-                        }}
-                    />
+                            }}
+                        />
                     </div>
                 </div>
             )}
@@ -244,7 +278,10 @@ export function CreneauSelector() {
                 >
                     Confirmer ce créneau
                 </CTAButton>
-                <button className={styles.backButton} onClick={() => goToStep('cycle')}>
+                <button
+                    className={styles.backButton}
+                    onClick={() => goToStep('cycle')}
+                >
                     Retour
                 </button>
             </div>

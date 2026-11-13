@@ -1,6 +1,10 @@
 import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adresseService } from '../services/adresseService';
-import type { Adresse, CreateAdressePayload, UpdateAdressePayload } from '../types/adresse.types';
+import type {
+    Adresse,
+    CreateAdressePayload,
+    UpdateAdressePayload,
+} from '../types/adresse.types';
 
 // Loader défini hors du composant : référence stable, la liste n'est
 // chargée qu'au montage puis à chaque reload().
@@ -12,7 +16,11 @@ export function useAdresses() {
         isLoading,
         error,
         reload,
-    } = useAsyncData<Adresse[]>(loadAdresses, [], 'Impossible de charger vos adresses.');
+    } = useAsyncData<Adresse[]>(
+        loadAdresses,
+        [],
+        'Impossible de charger vos adresses.',
+    );
 
     const createAdresse = async (payload: CreateAdressePayload) => {
         await adresseService.create(payload);
@@ -29,5 +37,12 @@ export function useAdresses() {
         reload();
     };
 
-    return { adresses, isLoading, error, createAdresse, updateAdresse, deleteAdresse };
+    return {
+        adresses,
+        isLoading,
+        error,
+        createAdresse,
+        updateAdresse,
+        deleteAdresse,
+    };
 }

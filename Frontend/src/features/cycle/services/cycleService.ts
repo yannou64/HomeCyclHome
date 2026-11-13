@@ -1,5 +1,9 @@
 import { apiClient } from '../../../shared/services/apiClient';
-import type { Cycle, CreateCyclePayload, UpdateCyclePayload } from '../types/cycle.types';
+import type {
+    Cycle,
+    CreateCyclePayload,
+    UpdateCyclePayload,
+} from '../types/cycle.types';
 
 export const cycleService = {
     async getAll(): Promise<Cycle[]> {

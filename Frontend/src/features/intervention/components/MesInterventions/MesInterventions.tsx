@@ -6,8 +6,14 @@ import type { InterventionClientDto } from '../../types/clientIntervention.types
 import styles from './MesInterventions.module.scss';
 
 export function MesInterventions() {
-    const { precedentes, aujourdhui, planifiees, isLoading, error, cancelIntervention } =
-        useInterventions();
+    const {
+        precedentes,
+        aujourdhui,
+        planifiees,
+        isLoading,
+        error,
+        cancelIntervention,
+    } = useInterventions();
 
     const [cancelingIntervention, setCancelingIntervention] =
         useState<InterventionClientDto | null>(null);
@@ -18,14 +24,17 @@ export function MesInterventions() {
     };
 
     if (isLoading) {
-        return <p className={styles.message}>Chargement de vos interventions…</p>;
+        return (
+            <p className={styles.message}>Chargement de vos interventions…</p>
+        );
     }
 
     if (error) {
         return <p className={styles.error}>{error}</p>;
     }
 
-    const totalCount = precedentes.length + aujourdhui.length + planifiees.length;
+    const totalCount =
+        precedentes.length + aujourdhui.length + planifiees.length;
     if (totalCount === 0) {
         return (
             <p className={styles.message}>
@@ -46,7 +55,9 @@ export function MesInterventions() {
                             <InterventionCard
                                 key={intervention.id}
                                 intervention={intervention}
-                                onCancel={() => setCancelingIntervention(intervention)}
+                                onCancel={() =>
+                                    setCancelingIntervention(intervention)
+                                }
                             />
                         ))}
                     </div>

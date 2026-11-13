@@ -22,7 +22,10 @@ export function useAdminInterventionFilters() {
 
         void (async () => {
             try {
-                const result = await adminUsersService.getUsers({ role: 'technicien', limit: 100 });
+                const result = await adminUsersService.getUsers({
+                    role: 'technicien',
+                    limit: 100,
+                });
                 setTechniciens(result.data);
             } catch {
                 setLoadError('Impossible de charger les techniciens.');

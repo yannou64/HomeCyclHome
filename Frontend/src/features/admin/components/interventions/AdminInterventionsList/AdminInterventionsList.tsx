@@ -18,7 +18,10 @@ import type { PaginationMeta } from '../../../../../shared/types/pagination.type
 import type { AdminInterventionListItem } from '../../../types/adminIntervention.types';
 import type { AdminUser } from '../../../types/admin.types';
 import type { Zone } from '../../../types/zones.types';
-import { getDisplayStatut, getStatutLabel } from '../../../utils/interventionStatut';
+import {
+    getDisplayStatut,
+    getStatutLabel,
+} from '../../../utils/interventionStatut';
 import { AdminInterventionsFilterBar } from '../AdminInterventionsFilterBar/AdminInterventionsFilterBar';
 import styles from './AdminInterventionsList.module.scss';
 
@@ -83,7 +86,9 @@ export function AdminInterventionsList({
 
             {/* Liste */}
             {!isLoading && !error && interventions.length === 0 && (
-                <p className={styles.message}>Aucune intervention à afficher.</p>
+                <p className={styles.message}>
+                    Aucune intervention à afficher.
+                </p>
             )}
 
             {!isLoading && !error && interventions.length > 0 && (
@@ -99,7 +104,8 @@ export function AdminInterventionsList({
                     </TableHeader>
                     <TableBody>
                         {interventions.map((intervention) => {
-                            const displayStatut = getDisplayStatut(intervention);
+                            const displayStatut =
+                                getDisplayStatut(intervention);
                             return (
                                 <TableRow
                                     key={intervention.id}
@@ -108,21 +114,36 @@ export function AdminInterventionsList({
                                     role="button"
                                     tabIndex={0}
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
+                                        if (
+                                            e.key === 'Enter' ||
+                                            e.key === ' '
+                                        ) {
                                             onRowClick(intervention.id);
                                         }
                                     }}
                                 >
-                                    <TableCell>{formatDateTime(intervention.dateDebut)}</TableCell>
-                                    <TableCell>{intervention.zone.nom}</TableCell>
                                     <TableCell>
-                                        {intervention.technicien
-                                            ? `${intervention.technicien.prenom} ${intervention.technicien.nom}`
-                                            : <span className={styles.unassigned}>Non assigné</span>}
+                                        {formatDateTime(intervention.dateDebut)}
                                     </TableCell>
-                                    <TableCell>{intervention.forfaitNom}</TableCell>
                                     <TableCell>
-                                        <span className={`${styles.badge} ${styles[`badge${displayStatut}`]}`}>
+                                        {intervention.zone.nom}
+                                    </TableCell>
+                                    <TableCell>
+                                        {intervention.technicien ? (
+                                            `${intervention.technicien.prenom} ${intervention.technicien.nom}`
+                                        ) : (
+                                            <span className={styles.unassigned}>
+                                                Non assigné
+                                            </span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {intervention.forfaitNom}
+                                    </TableCell>
+                                    <TableCell>
+                                        <span
+                                            className={`${styles.badge} ${styles[`badge${displayStatut}`]}`}
+                                        >
                                             {getStatutLabel(displayStatut)}
                                         </span>
                                     </TableCell>
@@ -141,13 +162,21 @@ export function AdminInterventionsList({
                                 href="#"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    if (meta.page > 1) onPageChange(meta.page - 1);
+                                    if (meta.page > 1)
+                                        onPageChange(meta.page - 1);
                                 }}
                                 aria-disabled={meta.page === 1}
-                                className={meta.page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                                className={
+                                    meta.page === 1
+                                        ? 'pointer-events-none opacity-40'
+                                        : undefined
+                                }
                             />
                         </PaginationItem>
-                        {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                        {Array.from(
+                            { length: meta.totalPages },
+                            (_, i) => i + 1,
+                        ).map((p) => (
                             <PaginationItem key={p}>
                                 <PaginationLink
                                     href="#"
@@ -166,11 +195,14 @@ export function AdminInterventionsList({
                                 href="#"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    if (meta.page < meta.totalPages) onPageChange(meta.page + 1);
+                                    if (meta.page < meta.totalPages)
+                                        onPageChange(meta.page + 1);
                                 }}
                                 aria-disabled={meta.page === meta.totalPages}
                                 className={
-                                    meta.page === meta.totalPages ? 'pointer-events-none opacity-40' : undefined
+                                    meta.page === meta.totalPages
+                                        ? 'pointer-events-none opacity-40'
+                                        : undefined
                                 }
                             />
                         </PaginationItem>

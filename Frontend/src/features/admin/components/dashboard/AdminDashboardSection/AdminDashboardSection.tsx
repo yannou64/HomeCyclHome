@@ -41,8 +41,13 @@ export function AdminDashboardSection() {
             <div className={styles.grid}>
                 {STAT_CARDS.map(({ key, label, Icon, colorClass }) => (
                     <div key={key} className={styles.card}>
-                        <Icon className={`${styles.icon} ${styles[colorClass]}`} strokeWidth={1.5} />
-                        <span className={`${styles.value} ${styles[colorClass]}`}>
+                        <Icon
+                            className={`${styles.icon} ${styles[colorClass]}`}
+                            strokeWidth={1.5}
+                        />
+                        <span
+                            className={`${styles.value} ${styles[colorClass]}`}
+                        >
                             {isLoading ? '—' : (stats?.[key] ?? 0)}
                         </span>
                         <span className={styles.label}>{label}</span>

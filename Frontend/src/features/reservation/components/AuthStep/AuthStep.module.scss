@@ -57,7 +57,9 @@
     font-size: $font-size-body;
     font-weight: $font-semibold;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
 
     &:hover {
         background-color: $color-myOrange;

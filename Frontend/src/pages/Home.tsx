@@ -20,7 +20,8 @@ export default function Home() {
     const { currentStep, goToStep, restoreFromStorage } = useReservation();
     const { isAuthenticated } = useAuth();
 
-    const [pendingData, setPendingData] = useState<PendingReservationStorage | null>(null);
+    const [pendingData, setPendingData] =
+        useState<PendingReservationStorage | null>(null);
 
     // Détecte une réservation en attente dans le localStorage lorsqu'un utilisateur
     // vient de se connecter. Affiche une bannière de confirmation plutôt que de
@@ -42,7 +43,13 @@ export default function Home() {
 
             try {
                 const data = JSON.parse(raw) as PendingReservationStorage;
-                if (!data.adresse || !data.zone || !data.cycle || !data.forfait || !data.creneau) {
+                if (
+                    !data.adresse ||
+                    !data.zone ||
+                    !data.cycle ||
+                    !data.forfait ||
+                    !data.creneau
+                ) {
                     localStorage.removeItem(PENDING_RESERVATION_KEY);
                     if (currentStep === 'auth') goToStep('adresse');
                     return;
@@ -86,11 +93,15 @@ export default function Home() {
                     />
                 ) : (
                     <>
-                        {currentStep === 'adresse'      && <AdresseSelector />}
-                        {currentStep === 'cycle'        && <CycleEtForfaitForm />}
-                        {currentStep === 'creneau'      && <CreneauSelector />}
-                        {currentStep === 'auth'         && !isAuthenticated && <AuthStep />}
-                        {currentStep === 'confirmation' && <RecapitulatifStep />}
+                        {currentStep === 'adresse' && <AdresseSelector />}
+                        {currentStep === 'cycle' && <CycleEtForfaitForm />}
+                        {currentStep === 'creneau' && <CreneauSelector />}
+                        {currentStep === 'auth' && !isAuthenticated && (
+                            <AuthStep />
+                        )}
+                        {currentStep === 'confirmation' && (
+                            <RecapitulatifStep />
+                        )}
                     </>
                 )}
             </PageLayout>

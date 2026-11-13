@@ -1,6 +1,10 @@
 import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { cycleService } from '../services/cycleService';
-import type { Cycle, CreateCyclePayload, UpdateCyclePayload } from '../types/cycle.types';
+import type {
+    Cycle,
+    CreateCyclePayload,
+    UpdateCyclePayload,
+} from '../types/cycle.types';
 
 // Loader défini hors du composant : référence stable, la liste n'est
 // chargée qu'au montage puis à chaque reload().
@@ -12,7 +16,11 @@ export function useCycles() {
         isLoading,
         error,
         reload,
-    } = useAsyncData<Cycle[]>(loadCycles, [], 'Impossible de charger vos cycles.');
+    } = useAsyncData<Cycle[]>(
+        loadCycles,
+        [],
+        'Impossible de charger vos cycles.',
+    );
 
     const createCycle = async (payload: CreateCyclePayload) => {
         await cycleService.create(payload);

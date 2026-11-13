@@ -12,7 +12,11 @@ export function useInterventions() {
         isLoading,
         error,
         reload,
-    } = useAsyncData<InterventionClientDto[]>(loadInterventions, [], 'Impossible de charger vos interventions.');
+    } = useAsyncData<InterventionClientDto[]>(
+        loadInterventions,
+        [],
+        'Impossible de charger vos interventions.',
+    );
 
     const cancelIntervention = async (id: string) => {
         await clientInterventionService.cancelIntervention(id);
@@ -32,7 +36,8 @@ export function useInterventions() {
         return d >= todayStart && d < tomorrowStart;
     });
     const planifiees = interventions.filter(
-        (i) => new Date(i.dateDebut) >= tomorrowStart && i.statut === 'Planifiee',
+        (i) =>
+            new Date(i.dateDebut) >= tomorrowStart && i.statut === 'Planifiee',
     );
 
     return {

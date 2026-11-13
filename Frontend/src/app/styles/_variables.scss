@@ -34,11 +34,11 @@ $font-size-label: 0.75rem;
 $font-size-caption: 0.688rem;
 
 //spacing
-$spacing-xs: 0.5rem;   // 8px
-$spacing-sm: 1rem;     // 16px
-$spacing-md: 1.5rem;   // 24px
-$spacing-lg: 2rem;     // 32px
-$spacing-xl: 3rem;     // 48px
+$spacing-xs: 0.5rem; // 8px
+$spacing-sm: 1rem; // 16px
+$spacing-md: 1.5rem; // 24px
+$spacing-lg: 2rem; // 32px
+$spacing-xl: 3rem; // 48px
 
 // border-radius
 $radius-sm: 4px;
@@ -57,8 +57,6 @@ $bp-desktop: 1024px;
 
 // Largeur maximale du contenu sur grands écrans
 $max-width-content: 1440px;
-
-
 
 // Variables en css natif pour réutilisation par le navigateur
 :root {

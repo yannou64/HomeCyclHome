@@ -50,11 +50,16 @@ export function ForfaitSelector({ forfaits, onChange }: IForfaitSelectorProps) {
                         checked={selectedId === f.id}
                         onChange={() => handleSelect(f)}
                     />
-                    <span className={styles.radioIndicator} aria-hidden="true" />
+                    <span
+                        className={styles.radioIndicator}
+                        aria-hidden="true"
+                    />
                     <div className={styles.cardContent}>
                         <p className={styles.cardNom}>{f.nom}</p>
                         {f.description && (
-                            <p className={styles.cardDescription}>{f.description}</p>
+                            <p className={styles.cardDescription}>
+                                {f.description}
+                            </p>
                         )}
                         <div className={styles.cardMeta}>
                             <span>{formatDuree(f.dureeMinutes)}</span>

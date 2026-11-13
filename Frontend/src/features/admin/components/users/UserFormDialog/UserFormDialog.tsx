@@ -5,7 +5,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
-import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
+import type {
+    AdminUser,
+    CreateUserPayload,
+    UpdateUserPayload,
+} from '../../../types/admin.types';
 import styles from './UserFormDialog.module.scss';
 
 interface UserFormDialogProps {
@@ -34,7 +38,12 @@ const EMPTY_FORM: FormState = {
     password: '',
 };
 
-export function UserFormDialog({ isOpen, onClose, onSubmit, user }: UserFormDialogProps) {
+export function UserFormDialog({
+    isOpen,
+    onClose,
+    onSubmit,
+    user,
+}: UserFormDialogProps) {
     const isEditing = !!user;
 
     return (
@@ -42,7 +51,9 @@ export function UserFormDialog({ isOpen, onClose, onSubmit, user }: UserFormDial
             <DialogContent className={styles.content}>
                 <DialogHeader>
                     <DialogTitle className={styles.title}>
-                        {isEditing ? 'Modifier l\'utilisateur' : 'Ajouter un utilisateur'}
+                        {isEditing
+                            ? "Modifier l'utilisateur"
+                            : 'Ajouter un utilisateur'}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -100,7 +111,13 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
             if (isEditing) {
                 // En édition, on n'envoie pas le mot de passe (champ ignoré)
                 const { nom, prenom, email, telephone, role } = form;
-                await onSubmit({ nom, prenom, email, telephone, role } as UpdateUserPayload);
+                await onSubmit({
+                    nom,
+                    prenom,
+                    email,
+                    telephone,
+                    role,
+                } as UpdateUserPayload);
             } else {
                 await onSubmit(form as CreateUserPayload);
             }
@@ -116,7 +133,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
             <div className={styles.row}>
                 <div className={styles.field}>
-                    <label className={styles.label} htmlFor="prenom">Prénom</label>
+                    <label className={styles.label} htmlFor="prenom">
+                        Prénom
+                    </label>
                     <input
                         id="prenom"
                         name="prenom"
@@ -128,7 +147,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
                     />
                 </div>
                 <div className={styles.field}>
-                    <label className={styles.label} htmlFor="nom">Nom</label>
+                    <label className={styles.label} htmlFor="nom">
+                        Nom
+                    </label>
                     <input
                         id="nom"
                         name="nom"
@@ -142,7 +163,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
             </div>
 
             <div className={styles.field}>
-                <label className={styles.label} htmlFor="email">Email</label>
+                <label className={styles.label} htmlFor="email">
+                    Email
+                </label>
                 <input
                     id="email"
                     name="email"
@@ -155,7 +178,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
             </div>
 
             <div className={styles.field}>
-                <label className={styles.label} htmlFor="telephone">Téléphone</label>
+                <label className={styles.label} htmlFor="telephone">
+                    Téléphone
+                </label>
                 <input
                     id="telephone"
                     name="telephone"
@@ -169,7 +194,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
             </div>
 
             <div className={styles.field}>
-                <label className={styles.label} htmlFor="role">Rôle</label>
+                <label className={styles.label} htmlFor="role">
+                    Rôle
+                </label>
                 <select
                     id="role"
                     name="role"
@@ -186,7 +213,9 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
             {/* Mot de passe uniquement en création */}
             {!isEditing && (
                 <div className={styles.field}>
-                    <label className={styles.label} htmlFor="password">Mot de passe</label>
+                    <label className={styles.label} htmlFor="password">
+                        Mot de passe
+                    </label>
                     <input
                         id="password"
                         name="password"
@@ -216,7 +245,11 @@ function UserForm({ user, onSubmit, onClose }: UserFormProps) {
                     className={styles.submitButton}
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ? 'En cours...' : isEditing ? 'Enregistrer' : 'Créer'}
+                    {isSubmitting
+                        ? 'En cours...'
+                        : isEditing
+                          ? 'Enregistrer'
+                          : 'Créer'}
                 </button>
             </div>
         </form>

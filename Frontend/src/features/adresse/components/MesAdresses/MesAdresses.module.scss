@@ -31,7 +31,10 @@
     border-radius: $radius-full;
     background-color: $color-myLightGreen;
     cursor: pointer;
-    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+    transition:
+        border-color 0.15s,
+        background-color 0.15s,
+        color 0.15s;
 
     &:hover {
         border-color: $color-myOrange;

@@ -7,7 +7,10 @@ import type {
     PaginatedAdminInterventions,
 } from '../types/adminIntervention.types';
 
-const TAB_TO_STATUT: Record<ActiveInterventionTab, GetAdminInterventionsParams['statut']> = {
+const TAB_TO_STATUT: Record<
+    ActiveInterventionTab,
+    GetAdminInterventionsParams['statut']
+> = {
     planifiees: 'Planifiee',
     enRetard: 'enRetard',
     archivees: 'archivees',
@@ -22,9 +25,12 @@ const EMPTY_PAGE: PaginatedAdminInterventions = {
 };
 
 export function useAdminInterventions() {
-    const [activeTab, setActiveTabState] = useState<ActiveInterventionTab>('planifiees');
+    const [activeTab, setActiveTabState] =
+        useState<ActiveInterventionTab>('planifiees');
     const [zoneId, setZoneIdState] = useState<string | undefined>(undefined);
-    const [technicienId, setTechnicienIdState] = useState<string | undefined>(undefined);
+    const [technicienId, setTechnicienIdState] = useState<string | undefined>(
+        undefined,
+    );
     const [page, setPage] = useState(1);
 
     // Le loader dépend de l'onglet, des filtres et de la page : useCallback ne

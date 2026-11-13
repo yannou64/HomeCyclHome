@@ -51,8 +51,12 @@ export function Header() {
                         {isAuthenticated && session && (
                             <span className={styles.userInfo}>
                                 {(() => {
-                                  const prenom = session.prenom.charAt(0).toUpperCase() + session.prenom.slice(1);
-                                  return session.role === 'client' ? `Bienvenue ${prenom}` : prenom;
+                                    const prenom =
+                                        session.prenom.charAt(0).toUpperCase() +
+                                        session.prenom.slice(1);
+                                    return session.role === 'client'
+                                        ? `Bienvenue ${prenom}`
+                                        : prenom;
                                 })()}
                                 {session.role !== 'client' && (
                                     <span

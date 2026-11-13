@@ -33,8 +33,7 @@ export function useAdminUsers() {
     );
     const { data: users, meta } = data;
 
-    const setPage = (page: number) =>
-        setFilters((prev) => ({ ...prev, page }));
+    const setPage = (page: number) => setFilters((prev) => ({ ...prev, page }));
 
     const setSearch = (search: string) =>
         setFilters((prev) => ({ ...prev, search, page: 1 }));

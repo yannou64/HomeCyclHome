@@ -3,7 +3,8 @@ import type { InterventionClientDto } from '../types/clientIntervention.types';
 
 export const clientInterventionService = {
     async getMyInterventions(): Promise<InterventionClientDto[]> {
-        const r = await apiClient.get<InterventionClientDto[]>('/interventions');
+        const r =
+            await apiClient.get<InterventionClientDto[]>('/interventions');
         return r.data;
     },
 

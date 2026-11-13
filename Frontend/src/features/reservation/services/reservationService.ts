@@ -5,7 +5,10 @@ import type { CreneauDisponibleDto } from '../types/creneau.types';
 
 export const reservationService = {
     async checkZone(latitude: number, longitude: number): Promise<ZoneInfo> {
-        const r = await apiClient.post<ZoneInfo>('/zones/check', { latitude, longitude });
+        const r = await apiClient.post<ZoneInfo>('/zones/check', {
+            latitude,
+            longitude,
+        });
         return r.data;
     },
 

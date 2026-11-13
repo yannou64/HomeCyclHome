@@ -8,8 +8,8 @@
 
 @include desktop {
     .main {
-        min-height: 0;    // annule le min-height mobile
-        flex: 1;          // remplit l'espace entre Header et Footer
+        min-height: 0; // annule le min-height mobile
+        flex: 1; // remplit l'espace entre Header et Footer
         overflow-y: auto; // scroll localisé ici, Header et Footer restent visibles
     }
 }

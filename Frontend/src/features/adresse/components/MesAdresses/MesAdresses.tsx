@@ -16,8 +16,16 @@ function chipLabel(a: Adresse): string {
 }
 
 export function MesAdresses() {
-    const { adresses, isLoading, error, createAdresse, updateAdresse, deleteAdresse } = useAdresses();
-    const { inputRef, decomposedAddress, clearAddress } = useAddressAutocomplete();
+    const {
+        adresses,
+        isLoading,
+        error,
+        createAdresse,
+        updateAdresse,
+        deleteAdresse,
+    } = useAdresses();
+    const { inputRef, decomposedAddress, clearAddress } =
+        useAddressAutocomplete();
 
     // null = rien sélectionné, 'new' = création, string = id (PeutSeSituer.id) sélectionné
     const [selectedId, setSelectedId] = useState<string | 'new' | null>(null);
@@ -50,7 +58,9 @@ export function MesAdresses() {
 
     async function handleCreate() {
         if (!decomposedAddress) {
-            setFormError('Veuillez sélectionner une adresse dans la liste de suggestions.');
+            setFormError(
+                'Veuillez sélectionner une adresse dans la liste de suggestions.',
+            );
             return;
         }
 
@@ -111,7 +121,8 @@ export function MesAdresses() {
     const isNew = selectedId === 'new';
     const selectedAdresse = adresses.find((a) => a.id === selectedId);
 
-    if (isLoading) return <p className={styles.loading}>Chargement de vos adresses…</p>;
+    if (isLoading)
+        return <p className={styles.loading}>Chargement de vos adresses…</p>;
     if (error) return <p className={styles.error}>{error}</p>;
 
     return (
@@ -127,7 +138,8 @@ export function MesAdresses() {
                         className={[
                             styles.chip,
                             selectedId === adresse.id ? styles.chipActive : '',
-                            adresse.adressePrincipal && selectedId !== adresse.id
+                            adresse.adressePrincipal &&
+                            selectedId !== adresse.id
                                 ? styles.chipPrincipal
                                 : '',
                         ].join(' ')}
@@ -148,7 +160,10 @@ export function MesAdresses() {
 
             {/* Formulaire de création */}
             {isNew && (
-                <Form className={styles.form} onSubmit={() => void handleCreate()}>
+                <Form
+                    className={styles.form}
+                    onSubmit={() => void handleCreate()}
+                >
                     <div className={styles.field}>
                         <label htmlFor="autocomplete" className={styles.label}>
                             Adresse
@@ -164,7 +179,10 @@ export function MesAdresses() {
                     </div>
 
                     <div className={styles.field}>
-                        <label htmlFor="titreDescriptionNew" className={styles.label}>
+                        <label
+                            htmlFor="titreDescriptionNew"
+                            className={styles.label}
+                        >
                             Label (optionnel)
                         </label>
                         <input
@@ -181,14 +199,16 @@ export function MesAdresses() {
 
                     {adresses.length > 0 && (
                         <div className={styles.toggleRow}>
-                            <span className={styles.toggleLabel}>Adresse principale</span>
+                            <span className={styles.toggleLabel}>
+                                Adresse principale
+                            </span>
                             <label className={styles.toggleWrapper}>
                                 <input
                                     type="checkbox"
                                     checked={adressePrincipal}
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                        setAdressePrincipal(e.target.checked)
-                                    }
+                                    onChange={(
+                                        e: ChangeEvent<HTMLInputElement>,
+                                    ) => setAdressePrincipal(e.target.checked)}
                                 />
                                 <span
                                     className={`${styles.toggleSlider} ${adressePrincipal ? styles.toggleSliderActive : ''}`}
@@ -198,9 +218,15 @@ export function MesAdresses() {
                     )}
 
                     {formError && <p className={styles.error}>{formError}</p>}
-                    {formSuccess && <p className={styles.success}>{formSuccess}</p>}
+                    {formSuccess && (
+                        <p className={styles.success}>{formSuccess}</p>
+                    )}
 
-                    <CTAButton type="submit" isLoading={isSaving} disabled={!decomposedAddress}>
+                    <CTAButton
+                        type="submit"
+                        isLoading={isSaving}
+                        disabled={!decomposedAddress}
+                    >
                         Enregistrer
                     </CTAButton>
                 </Form>
@@ -208,15 +234,23 @@ export function MesAdresses() {
 
             {/* Formulaire d'édition */}
             {selectedId && !isNew && selectedAdresse && (
-                <Form className={styles.form} onSubmit={() => void handleUpdate()}>
+                <Form
+                    className={styles.form}
+                    onSubmit={() => void handleUpdate()}
+                >
                     {/* Adresse physique — lecture seule */}
                     <div className={styles.field}>
                         <span className={styles.label}>Adresse</span>
-                        <p className={styles.addressReadonly}>{formatAdresse(selectedAdresse)}</p>
+                        <p className={styles.addressReadonly}>
+                            {formatAdresse(selectedAdresse)}
+                        </p>
                     </div>
 
                     <div className={styles.field}>
-                        <label htmlFor="titreDescriptionEdit" className={styles.label}>
+                        <label
+                            htmlFor="titreDescriptionEdit"
+                            className={styles.label}
+                        >
                             Label (optionnel)
                         </label>
                         <input
@@ -233,7 +267,9 @@ export function MesAdresses() {
 
                     {/* Toggle adresse principale */}
                     <div className={styles.toggleRow}>
-                        <span className={styles.toggleLabel}>Adresse principale</span>
+                        <span className={styles.toggleLabel}>
+                            Adresse principale
+                        </span>
                         <label className={styles.toggleWrapper}>
                             <input
                                 type="checkbox"
@@ -249,7 +285,9 @@ export function MesAdresses() {
                     </div>
 
                     {formError && <p className={styles.error}>{formError}</p>}
-                    {formSuccess && <p className={styles.success}>{formSuccess}</p>}
+                    {formSuccess && (
+                        <p className={styles.success}>{formSuccess}</p>
+                    )}
 
                     <CTAButton type="submit" isLoading={isSaving}>
                         Modifier

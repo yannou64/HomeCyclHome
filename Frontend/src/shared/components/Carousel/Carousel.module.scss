@@ -3,8 +3,12 @@
 // Animation de défilement de droite à gauche
 // -50% car les images sont dupliquées : on défile exactement un jeu complet
 @keyframes scrollLeft {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 .carousel {
@@ -30,8 +34,8 @@
 
 .slide {
     height: 100%;
-    width: auto;        // garde le ratio de l'image
+    width: auto; // garde le ratio de l'image
     object-fit: cover;
-    flex-shrink: 0;     // empêche la compression des slides
+    flex-shrink: 0; // empêche la compression des slides
     display: block;
 }

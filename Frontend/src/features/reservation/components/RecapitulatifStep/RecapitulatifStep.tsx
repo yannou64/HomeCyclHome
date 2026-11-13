@@ -29,7 +29,10 @@ function formatDate(iso: string): string {
 }
 
 function formatTime(iso: string): string {
-    return new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit',
+    });
 }
 
 function formatDuree(minutes: number): string {
@@ -41,13 +44,15 @@ function formatDuree(minutes: number): string {
 }
 
 export function RecapitulatifStep() {
-    const { adresse, cycle, forfait, creneau, commentaire, reset, goToStep } = useReservation();
+    const { adresse, cycle, forfait, creneau, commentaire, reset, goToStep } =
+        useReservation();
     const { createIntervention, isLoading, error } = useCreateIntervention();
     const navigate = useNavigate();
 
     const [showCommentForm, setShowCommentForm] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [confirmationData, setConfirmationData] = useState<ConfirmationData | null>(null);
+    const [confirmationData, setConfirmationData] =
+        useState<ConfirmationData | null>(null);
 
     const handleSubmit = async () => {
         if (!adresse || !cycle || !forfait || !creneau) return;
@@ -81,21 +86,30 @@ export function RecapitulatifStep() {
     };
 
     if (isSuccess && confirmationData) {
-        const { forfait: f, creneau: c, adresseLabel, commentaire: commentaireSaisi, photoUrls } =
-            confirmationData;
+        const {
+            forfait: f,
+            creneau: c,
+            adresseLabel,
+            commentaire: commentaireSaisi,
+            photoUrls,
+        } = confirmationData;
         return (
             <div className={styles.successContainer}>
                 <div className={styles.successIcon}>✓</div>
-                <h2 className={styles.successTitle}>Intervention confirmée !</h2>
+                <h2 className={styles.successTitle}>
+                    Intervention confirmée !
+                </h2>
                 <p className={styles.successText}>
-                    Votre demande a bien été enregistrée.
-                    Un email de confirmation vous a été envoyé.
+                    Votre demande a bien été enregistrée. Un email de
+                    confirmation vous a été envoyé.
                 </p>
 
                 <div className={styles.summaryCard}>
                     <div className={styles.summaryRow}>
                         <span className={styles.summaryLabel}>Date</span>
-                        <span className={styles.summaryValue}>{formatDate(c.dateDebut)}</span>
+                        <span className={styles.summaryValue}>
+                            {formatDate(c.dateDebut)}
+                        </span>
                     </div>
                     <div className={styles.summaryRow}>
                         <span className={styles.summaryLabel}>Horaire</span>
@@ -115,7 +129,9 @@ export function RecapitulatifStep() {
                     </div>
                     <div className={styles.summaryRow}>
                         <span className={styles.summaryLabel}>Adresse</span>
-                        <span className={styles.summaryValue}>{adresseLabel}</span>
+                        <span className={styles.summaryValue}>
+                            {adresseLabel}
+                        </span>
                     </div>
                 </div>
 
@@ -128,7 +144,9 @@ export function RecapitulatifStep() {
 
                 {photoUrls.length > 0 && (
                     <div className={styles.successPhotos}>
-                        <span className={styles.summaryLabel}>Photos enregistrées</span>
+                        <span className={styles.summaryLabel}>
+                            Photos enregistrées
+                        </span>
                         <div className={styles.photosGrid}>
                             {photoUrls.map((url) => (
                                 <a
@@ -138,14 +156,23 @@ export function RecapitulatifStep() {
                                     rel="noopener noreferrer"
                                     className={styles.photoLink}
                                 >
-                                    <img src={url} alt="Photo du vélo" className={styles.photo} />
+                                    <img
+                                        src={url}
+                                        alt="Photo du vélo"
+                                        className={styles.photo}
+                                    />
                                 </a>
                             ))}
                         </div>
                     </div>
                 )}
 
-                <CTAButton onClick={() => { reset(); navigate('/'); }}>
+                <CTAButton
+                    onClick={() => {
+                        reset();
+                        navigate('/');
+                    }}
+                >
                     Retour à l'accueil
                 </CTAButton>
             </div>
@@ -180,7 +207,8 @@ export function RecapitulatifStep() {
                         {forfait.nom}
                         <span className={styles.recapMeta}>
                             {formatDuree(forfait.dureeMinutes)}
-                            {forfait.prix !== null && ` · ${forfait.prix.toFixed(2)} €`}
+                            {forfait.prix !== null &&
+                                ` · ${forfait.prix.toFixed(2)} €`}
                         </span>
                     </span>
                 </div>
@@ -189,7 +217,8 @@ export function RecapitulatifStep() {
                     <span className={styles.recapValue}>
                         {formatDate(creneau.dateDebut)}
                         <span className={styles.recapMeta}>
-                            {formatTime(creneau.dateDebut)} → {formatTime(creneau.dateFin)}
+                            {formatTime(creneau.dateDebut)} →{' '}
+                            {formatTime(creneau.dateFin)}
                         </span>
                     </span>
                 </div>
@@ -220,9 +249,14 @@ export function RecapitulatifStep() {
 
             <div className={styles.actions}>
                 <CTAButton onClick={handleSubmit} disabled={isLoading}>
-                    {isLoading ? 'Validation en cours…' : 'Valider l\'intervention'}
+                    {isLoading
+                        ? 'Validation en cours…'
+                        : "Valider l'intervention"}
                 </CTAButton>
-                <button className={styles.backButton} onClick={() => goToStep('creneau')}>
+                <button
+                    className={styles.backButton}
+                    onClick={() => goToStep('creneau')}
+                >
                     Retour
                 </button>
             </div>

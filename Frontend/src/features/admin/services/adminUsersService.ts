@@ -9,7 +9,9 @@ import type {
 
 export const adminUsersService = {
     async getUsers(params: GetUsersParams): Promise<PaginatedUsers> {
-        const r = await apiClient.get<PaginatedUsers>('/admin/users', { params });
+        const r = await apiClient.get<PaginatedUsers>('/admin/users', {
+            params,
+        });
         return r.data;
     },
 
@@ -18,8 +20,14 @@ export const adminUsersService = {
         return r.data;
     },
 
-    async updateUser(id: string, payload: UpdateUserPayload): Promise<AdminUser> {
-        const r = await apiClient.patch<AdminUser>(`/admin/users/${id}`, payload);
+    async updateUser(
+        id: string,
+        payload: UpdateUserPayload,
+    ): Promise<AdminUser> {
+        const r = await apiClient.patch<AdminUser>(
+            `/admin/users/${id}`,
+            payload,
+        );
         return r.data;
     },
 

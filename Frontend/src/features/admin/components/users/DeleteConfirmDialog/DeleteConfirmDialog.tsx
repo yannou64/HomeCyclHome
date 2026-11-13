@@ -38,7 +38,10 @@ export function DeleteConfirmDialog({
 
                 <p className={styles.message}>
                     Êtes-vous sûr de vouloir supprimer{' '}
-                    <strong>{user.prenom} {user.nom}</strong> ?
+                    <strong>
+                        {user.prenom} {user.nom}
+                    </strong>{' '}
+                    ?
                     <br />
                     Cette action est irréversible.
                 </p>
@@ -47,7 +50,10 @@ export function DeleteConfirmDialog({
                     <button className={styles.cancelButton} onClick={onClose}>
                         Annuler
                     </button>
-                    <button className={styles.confirmButton} onClick={handleConfirm}>
+                    <button
+                        className={styles.confirmButton}
+                        onClick={handleConfirm}
+                    >
                         Supprimer
                     </button>
                 </div>

@@ -40,11 +40,16 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
         const selected = Array.from(e.target.files ?? []);
         if (selected.length === 0) return;
         // Les URLs sont créées ici, au moment de la mutation — pas dans un effet
-        const newEntries = selected.map((f) => ({ file: f, preview: URL.createObjectURL(f) }));
+        const newEntries = selected.map((f) => ({
+            file: f,
+            preview: URL.createObjectURL(f),
+        }));
         setPhotos((prev) => {
             const combined = [...prev, ...newEntries];
             // Révoque les URLs des entrées exclues si on dépasse MAX_PHOTOS
-            combined.slice(MAX_PHOTOS).forEach((e) => URL.revokeObjectURL(e.preview));
+            combined
+                .slice(MAX_PHOTOS)
+                .forEach((e) => URL.revokeObjectURL(e.preview));
             return combined.slice(0, MAX_PHOTOS);
         });
         e.target.value = '';
@@ -64,7 +69,10 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
 
     return (
         <Form className={styles.container} onSubmit={handleContinue}>
-            <h2 className={styles.sectionTitle}>Informations complémentaires <span className={styles.facultatif}>(facultatif)</span></h2>
+            <h2 className={styles.sectionTitle}>
+                Informations complémentaires{' '}
+                <span className={styles.facultatif}>(facultatif)</span>
+            </h2>
 
             <div className={styles.field}>
                 <label htmlFor="commentaire" className={styles.label}>
@@ -94,11 +102,22 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
                             onClick={() => cameraInputRef.current?.click()}
                             aria-label="Prendre une photo"
                         >
-                            <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                <circle cx="12" cy="13" r="4"/>
+                            <svg
+                                className={styles.uploadIcon}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                <circle cx="12" cy="13" r="4" />
                             </svg>
-                            <span className={styles.uploadText}>Prendre une photo</span>
+                            <span className={styles.uploadText}>
+                                Prendre une photo
+                            </span>
                         </button>
                         <button
                             type="button"
@@ -106,12 +125,29 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
                             onClick={() => fileInputRef.current?.click()}
                             aria-label="Choisir depuis la galerie"
                         >
-                            <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <polyline points="21 15 16 10 5 21"/>
+                            <svg
+                                className={styles.uploadIcon}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <rect
+                                    x="3"
+                                    y="3"
+                                    width="18"
+                                    height="18"
+                                    rx="2"
+                                />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <polyline points="21 15 16 10 5 21" />
                             </svg>
-                            <span className={styles.uploadText}>Depuis la galerie</span>
+                            <span className={styles.uploadText}>
+                                Depuis la galerie
+                            </span>
                         </button>
                     </div>
                 )}
@@ -142,7 +178,10 @@ export function CommentaireEtPhotosForm({ embedded = false }: Props) {
                 {photos.length > 0 && (
                     <div className={styles.previewGrid}>
                         {photos.map((entry, i) => (
-                            <div key={entry.preview} className={styles.previewItem}>
+                            <div
+                                key={entry.preview}
+                                className={styles.previewItem}
+                            >
                                 <img
                                     src={entry.preview}
                                     alt={`Photo ${i + 1}`}

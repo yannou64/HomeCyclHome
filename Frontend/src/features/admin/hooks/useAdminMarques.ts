@@ -7,27 +7,31 @@ import type { CycleItemPayload, Marque } from '../types/cycles.types';
 const loadMarques = () => adminMarquesService.getAll();
 
 export function useAdminMarques() {
-  const {
-    data: items,
-    isLoading,
-    error,
-    reload,
-  } = useAsyncData<Marque[]>(loadMarques, [], 'Impossible de charger les marques.');
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Marque[]>(
+        loadMarques,
+        [],
+        'Impossible de charger les marques.',
+    );
 
-  const createItem = async (payload: CycleItemPayload) => {
-    await adminMarquesService.create(payload);
-    reload();
-  };
+    const createItem = async (payload: CycleItemPayload) => {
+        await adminMarquesService.create(payload);
+        reload();
+    };
 
-  const updateItem = async (id: string, payload: CycleItemPayload) => {
-    await adminMarquesService.update(id, payload);
-    reload();
-  };
+    const updateItem = async (id: string, payload: CycleItemPayload) => {
+        await adminMarquesService.update(id, payload);
+        reload();
+    };
 
-  const deleteItem = async (id: string) => {
-    await adminMarquesService.delete(id);
-    reload();
-  };
+    const deleteItem = async (id: string) => {
+        await adminMarquesService.delete(id);
+        reload();
+    };
 
-  return { items, isLoading, error, createItem, updateItem, deleteItem };
+    return { items, isLoading, error, createItem, updateItem, deleteItem };
 }
