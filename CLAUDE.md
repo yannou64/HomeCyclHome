@@ -101,7 +101,7 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
 | Couche | Technologie |
 |---|---|
 | Frontend | React 19 + Vite + TypeScript |
-| Style | SCSS Modules (pages client et technicien) + Tailwind v4 / shadcn-ui (panneau admin uniquement) |
+| Style | SCSS Modules (tous les composants) + shadcn-ui stylé en SCSS (panneau admin) ; Tailwind v4 uniquement à l'intérieur des composants shadcn |
 | Backend | NestJS + TypeScript |
 | ORM / BDD | Prisma + PostgreSQL |
 | Auth | JWT + refresh token en cookies `HttpOnly` + RBAC |
