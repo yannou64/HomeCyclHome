@@ -1,3 +1,9 @@
+// Charge Backend/.env dans process.env AVANT tout autre import : certains
+// fichiers (jwt.config.ts…) lisent process.env dès leur import. Jusqu'à
+// Prisma 6, le client Prisma le faisait implicitement ; Prisma 7 ne le fait
+// plus. En Docker, il n'y a pas de .env : les variables viennent du compose
+// et cette ligne ne fait rien.
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
