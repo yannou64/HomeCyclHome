@@ -1,71 +1,68 @@
 # CLAUDE.md — Frontend HomeCycl'Home
 
-Ce fichier complète le `CLAUDE.md` racine avec les spécificités du Frontend.
-Il est lu automatiquement par Claude Code quand tu travailles dans ce dossier.
-Les règles d'affichage métier (libellés, statuts visibles, ce que chaque rôle voit)
-sont dans la spec du vault, pas ici.
+Complète le `CLAUDE.md` racine avec les conventions du frontend. Les règles
+d'affichage métier (libellés, statuts visibles, ce que chaque rôle voit) sont dans la
+spec du vault, pas ici.
+
+**Ces conventions décrivent le code tel qu'il est.** Un nouveau code les suit ; un
+code existant qui s'en écarte est corrigé quand on le touche.
 
 ---
 
-## 1. Stack Frontend
+## 1. Stack
 
-| Outil                  | Usage                                                   |
-| ---------------------- | ------------------------------------------------------- |
-| React 19 + Vite        | Framework + bundler                                     |
-| TypeScript             | Typage statique strict                                  |
-| SCSS Modules           | Styles scopés par composant (pages client et technicien) |
-| Tailwind v4 + shadcn-ui | Panneau admin uniquement (voir section 4)              |
-| React Router 7         | Routing SPA                                             |
-| FullCalendar           | Calendriers (réservation, planning)                     |
-| Google Maps JS API     | Autocomplete adresse                                    |
+| Outil | Usage |
+|---|---|
+| React 19 + Vite | Framework + bundler |
+| TypeScript (`strict`) | Typage statique |
+| React Router 7 | Routing SPA, pages chargées en `React.lazy()` |
+| Axios | Client HTTP unique (`shared/services/apiClient`) |
+| SCSS Modules | Styles de tous les composants, admin compris (section 4) |
+| shadcn/ui (Radix) | Composants d'interface de l'admin (`shared/components/ui/`) |
+| Tailwind v4 | Uniquement à l'intérieur des composants shadcn |
+| FullCalendar | Calendriers (réservation, planning) |
+| Google Maps JS API | Autocomplete d'adresse (section 7) |
+| Prettier | Formatage, configuration `.prettierrc` à la racine du dépôt |
 
 **Tests :** aucun test frontend (décision ouverte, consignée dans le Journal de
-développement du vault).
+développement du vault). Un changement de comportement se vérifie à la main.
 
 ---
 
-## 2. Structure des dossiers
+## 2. Structure
 
 ```
 src/
-├── app/                    # Noyau applicatif
-│   ├── providers/          # Providers React globaux
-│   │   ├── authContext/    # Session utilisateur (AuthContext, useAuth)
-│   │   └── reservationContext/  # État global du tunnel de réservation
-│   ├── router/             # Routes React Router + ProtectedRoute
-│   ├── styles/             # SCSS global, variables et tokens du design system
-│   ├── App.tsx
+├── app/
+│   ├── providers/<nom>Context/   # un contexte global = 4 éléments :
+│   │                             #   <nom>.context.ts (createContext),
+│   │                             #   <Nom>Context.tsx (Provider),
+│   │                             #   use<Nom>.ts (hook d'accès), types/
+│   ├── router/                   # ProtectedRoute
+│   ├── styles/                   # SCSS global, tokens du design system, tailwind.css
+│   ├── App.tsx                   # routes, pages en lazy()
 │   └── main.tsx
-│
-├── assets/                 # Images, fonts, icônes statiques
-│
-├── features/               # Fonctionnalités métier (feature-based)
-│   └── auth/               # Exemple : authentification
-│       ├── components/     # Composants spécifiques à la feature
-│       ├── hooks/          # Hooks React spécifiques
-│       ├── services/       # Appels API liés à la feature
-│       └── types/          # Types TypeScript de la feature
-│
-├── pages/                  # Pages de l'application (1 fichier = 1 route)
-│   └── Home.tsx
-│
-└── shared/                 # Éléments transversaux réutilisables
-    ├── components/         # Composants génériques (Button, Input, Modal...)
-    ├── hooks/              # Hooks génériques (useDebounce, useFetch...)
-    ├── services/           # Services partagés (axios instance, auth token...)
-    ├── types/              # Types TypeScript globaux
-    └── utils/              # Fonctions utilitaires pures
+├── assets/
+├── features/<nom>/               # une fonctionnalité métier
+│   ├── components/<Composant>/   # <Composant>.tsx + <Composant>.module.scss
+│   ├── hooks/                    # use<Quelque chose>.ts
+│   ├── services/                 # <nom>Service.ts
+│   ├── types/                    # <nom>.types.ts
+│   └── utils/                    # fonctions pures (optionnel)
+├── pages/                        # une page = une route, orchestre des features
+└── shared/
+    ├── components/               # composants génériques ; ui/ = shadcn (généré)
+    ├── hooks/                    # useAsyncData, usePagination, useIsMobile…
+    ├── services/                 # apiClient (instance Axios + intercepteurs)
+    ├── types/                    # types transverses
+    └── utils/                    # apiError, cn, timeUtils…
 ```
 
-Pas de dossier `app/config/` — les variables d'environnement sont lues directement via
-`import.meta.env.VITE_*`. Pas de `QueryClient` (React Query) dans le projet — la gestion
-des appels API passe uniquement par le pattern Composant → Hook → Service ci-dessous.
-
-**Règle d'organisation :**
-
-- Tout ce qui est spécifique à une fonctionnalité → `features/<nom>/`
-- Tout ce qui est réutilisable entre features → `shared/`
-- Une page = un fichier dans `pages/` qui orchestre des composants de `features/`
+- Spécifique à une fonctionnalité → `features/<nom>/` ; réutilisé par plusieurs →
+  `shared/`.
+- Pas de `app/config/` : les variables d'environnement se lisent par
+  `import.meta.env.VITE_*`. Pas de React Query : les appels passent par le schéma de
+  la section 5.
 
 ---
 
@@ -73,159 +70,182 @@ des appels API passe uniquement par le pattern Composant → Hook → Service ci
 
 **Nommage :**
 
-- Composants React : `PascalCase` (ex: `AddressInput.tsx`)
-- Hooks : `camelCase` préfixé `use` (ex: `useAddressSearch.ts`)
-- Services : `camelCase` suffixé `Service` (ex: `interventionService.ts`)
-- Types/Interfaces : `PascalCase`, sans préfixe (ex: `AuthSession`, `ForfaitDto`) — c'est la convention réellement suivie dans le code, pas de préfixe `I`
-- Fichiers CSS/styles : `kebab-case`
+| Élément | Convention | Exemple |
+|---|---|---|
+| Composant | `PascalCase`, un dossier par composant | `ForfaitFormDialog/ForfaitFormDialog.tsx` |
+| Props | `interface <Composant>Props` | `interface ForfaitFormDialogProps` |
+| Hook | `use` + `camelCase` | `useAdminForfaits.ts` |
+| Service | objet `<nom>Service` | `adminForfaitsService.ts` |
+| Fichier de types | `<nom>.types.ts` | `forfaits.types.ts` |
+| Type d'une réponse API | nom de la ressource, sans suffixe | `Forfait`, `AdminUser`, `PaginatedUsers` |
+| Corps de requête | suffixe `Payload` | `CreateZonePayload` |
+| Paramètres d'URL | suffixe `Params` | `GetUsersParams` |
+| Classe CSS (module) | `camelCase` | `.headerWrapper` |
 
-**Composants :**
+- Données : `type` ; props de composant : `interface`. Pas de préfixe `I`.
 
-- Toujours des composants fonctionnels avec hooks
-- Props typées avec une interface dédiée
-- Un composant = une responsabilité unique
-- Éviter les composants de plus de 150 lignes — découper si nécessaire
+**Exports :** composants en `export function` nommé. Les **pages** sont les seules en
+`export default`, parce que `React.lazy()` l'exige.
 
-**TypeScript :**
+**TypeScript :** `strict`, jamais `any`. Pas de transtypage forcé (`as { … }`) pour
+lire une erreur : `getApiErrorMessage` ou `axios.isAxiosError` (section 5).
 
-- `strict: true` dans tsconfig — ne jamais utiliser `any`
-- Typer explicitement les props, les retours de fonctions et les états
-- Les types partagés vont dans `shared/types/`, les types locaux dans `features/<nom>/types/`
+**Composants :** fonctionnels, une responsabilité. Viser moins de 150 lignes ;
+plusieurs composants existants dépassent : on les découpe quand on les modifie, pas
+dans un lot à part.
+
+**Formatage :** `npm run format` (Prettier, configuration racine : 4 espaces,
+guillemets simples, virgules finales). `npm run format:check` doit passer avant un
+commit. Les composants `shared/components/ui/` ne sont pas formatés (code généré).
 
 ---
 
-## 4. Design system — règles d'implémentation
+## 4. Styles et design system
 
-Se référer au `CLAUDE.md` racine pour les valeurs (couleurs, typo).
-Ici, les règles d'implémentation avec **SCSS Modules**.
+Valeurs du design system : `CLAUDE.md` racine et `src/app/styles/_variables.scss`.
+**Toujours consulter `_variables.scss` avant d'écrire un style ; jamais de valeur en
+dur.**
 
-**Organisation des styles (déjà en place dans `src/app/styles/`) :**
+**SCSS Modules partout**, admin compris :
+- un `<Composant>.module.scss` colocalisé par composant ;
+- variables importées par chemin relatif vers `app/styles/index`, par exemple depuis
+  `src/features/auth/components/LoginForm/` :
+  `@use '../../../../app/styles/index' as *;` ;
+- jamais de style global dans un module (uniquement dans `global.scss`) ;
+- `composes` pour réutiliser une classe entre modules.
 
-```
-src/app/styles/
-├── _base.scss        # Styles de base (body, html, éléments sémantiques)
-├── _fonts.scss       # Déclarations @font-face (Grand Hotel, Nunito)
-├── _mixins.scss      # Mixins réutilisables (responsive, flex helpers...)
-├── _reset.scss       # Reset CSS global
-├── _variables.scss   # Tokens du design system (couleurs, typo, espacements)
-├── _index.scss       # Barrel — réexporte tous les partials
-└── global.scss       # Entrée principale — importe _index.scss
-```
-
-Chaque composant possède son propre fichier `MonComposant.module.scss` colocalisé.
-Pour importer les variables dans un module : chemin relatif vers `app/styles/index`.
-Exemple depuis `src/features/auth/components/LoginForm/` : `@use '../../../../app/styles/index' as *;`
-Compter les `../` selon la profondeur du fichier par rapport à `src/`.
-
-**Toutes les valeurs du design system (couleurs, typographie, espacements) sont définies
-dans `src/app/styles/_variables.scss`. Toujours consulter ce fichier avant d'implémenter
-un composant — ne jamais écrire de valeurs en dur.**
-
-**Règles SCSS Modules :**
-
-- Un fichier `MonComposant.module.scss` par composant, colocalisé
-- Utiliser `composes` pour réutiliser des classes entre modules si besoin
-- Toujours importer les variables via un chemin relatif vers `app/styles/index` (ex: `@use '../../../app/styles/index' as *;`)
-- Ne jamais écrire de styles globaux dans un module — uniquement dans `global.scss`
-- Nommage des classes en `camelCase` dans les modules (ex: `.headerWrapper`)
-
-**Panneau admin — Tailwind v4 + shadcn-ui :**
-
-- Réservé aux écrans d'administration ; ne jamais l'utiliser sur les pages client ou
-  technicien, qui restent en SCSS Modules.
-- Composants shadcn dans `src/shared/components/ui/`, point d'entrée Tailwind
-  `src/app/styles/tailwind.css`, helper `src/shared/utils/cn` (config :
-  `components.json`).
+**Admin — shadcn/ui :** les écrans d'administration utilisent les composants de
+`shared/components/ui/` (`Dialog`, `Table`, `Tabs`, `Pagination`, `Button`). Ils
+sont stylés par une classe de module passée en `className`. Tailwind ne sert qu'à
+l'intérieur de ces composants : **pas de classes Tailwind dans nos propres
+composants.** Le point d'entrée `app/styles/tailwind.css` est importé par
+`AdminLayout`. Ajout d'un composant : CLI shadcn (`components.json`), helper `cn` dans
+`shared/utils/cn`.
 
 **Constantes d'affichage partagées :** une correspondance utilisée à plusieurs
-endroits (par exemple nom de couleur de zone → code hexadécimal) vit dans **un seul
-fichier** de `shared/`, importé partout. Ses valeurs viennent de la spec.
+endroits (couleur de zone → code hexadécimal…) vit dans un seul fichier de `shared/`.
+Ses valeurs viennent de la spec.
 
-**Composants UI clés identifiés dans la maquette :**
+**Styles inline :** seulement pour une valeur calculée à l'exécution (variable CSS,
+durée d'animation).
 
-- `Header` — deux états : `unauthenticated` | `authenticated`
-- `MobileMenu` — drawer orange avec navigation complète
-- `AddressBlock` — champ Google Autocomplete + bouton CTA groupés visuellement
-- `Footer` — fond mocha, liens légaux + copyright
+**Composants UI clés de la maquette :** `Header` (états `unauthenticated` |
+`authenticated`), `MobileMenu` (drawer orange), `AddressBlock` (Autocomplete + CTA),
+`Footer` (fond mocha, liens légaux, copyright).
 
 ---
 
-## 5. Appels API
+## 5. Données, appels API et état
 
-- Les appels spécifiques à une feature → `features/<nom>/services/`
-- Les éléments transversaux (instance Axios, intercepteurs) → `shared/services/`
-- Ne jamais faire d'appel API directement dans un composant
+**Schéma obligatoire :** `Composant → Hook → Service → API`. Un composant n'importe
+jamais un service ni `apiClient`.
 
-**Pattern à respecter :**
-
-```
-Composant → Hook → Service → API Backend
-```
-
-**Forme du service (objet nommé — obligatoire) :**
+**Service :** un objet nommé, `async/await`, retourne `r.data`. Référence :
+`features/admin/services/adminUsersService.ts`.
 
 ```typescript
-// featureService.ts
 export const featureService = {
-  async getX(params: GetXParams): Promise<X> {
-    const r = await apiClient.get<X>('/endpoint', { params });
-    return r.data;
-  },
-  async createX(payload: CreateXPayload): Promise<X> {
-    const r = await apiClient.post<X>('/endpoint', payload);
-    return r.data;
-  },
+    async getAll(): Promise<Feature[]> {
+        const r = await apiClient.get<Feature[]>('/endpoint');
+        return r.data;
+    },
 };
 ```
 
-- Toujours exporter un objet nommé (jamais des fonctions isolées)
-- Toujours utiliser `async/await` (jamais `.then()/.catch()`), y compris dans les hooks et composants qui consomment un service
-- **Référence :** `features/admin/services/adminUsersService.ts` est l'implémentation de référence
+**Charger une donnée : `shared/hooks/useAsyncData`.** Aucun hook ne gère son
+chargement à la main.
+
+```typescript
+const loadForfaits = () => adminForfaitsService.getAll(); // hors du composant
+
+export function useAdminForfaits() {
+    const { data: items, isLoading, error, reload } = useAsyncData<Forfait[]>(
+        loadForfaits, [], 'Impossible de charger les forfaits.',
+    );
+    const createItem = async (payload: ForfaitPayload) => {
+        await adminForfaitsService.create(payload);
+        reload(); // recharge après une modification
+    };
+    return { items, isLoading, error, createItem };
+}
+```
+
+- Le **loader doit être stable** : défini hors du composant, ou en `useCallback` avec
+  ses dépendances (filtres, page, identifiant). Quand elles changent, la donnée est
+  rechargée et `isLoading` repasse à `true` tout seul.
+- `{ enabled: false }` suspend le chargement (dialogue fermé, utilisateur non
+  connecté).
+- Référence avec filtres : `features/admin/hooks/useAdminUsers.ts`.
+
+**Déclencher une action** (connexion, envoi de formulaire, suppression) : état local
+`isLoading` / `error` modifié **dans la fonction appelée par l'événement**. Référence :
+`features/user/hooks/useUpdateProfile.ts`.
+
+**Erreurs de l'API :** `getApiErrorMessage(err, 'Message par défaut')`
+(`shared/utils/apiError`) dans le `catch`. Il gère le message unique d'une exception
+métier et la liste de messages du `ValidationPipe`.
+
+**Effets et état (règle `react-hooks/set-state-in-effect`, imposée par le lint) :**
+- jamais de `setState` synchrone dans un `useEffect` ; un effet sert à se
+  synchroniser avec l'extérieur (API, DOM, abonnement) ;
+- un état qui découle d'une action de l'utilisateur se modifie dans le gestionnaire
+  d'événement (référence : `selectCycle` dans `cycle/components/MesCycles`) ;
+- ce qui se calcule à partir d'autres données ne se stocke pas : on le calcule au
+  rendu ;
+- **formulaire dans un dialogue :** l'état vit dans un sous-composant rendu dans
+  `<DialogContent>`, que Radix démonte à la fermeture ; il s'initialise par
+  `useState(() => …)` à chaque ouverture. Référence :
+  `admin/components/forfaits/ForfaitFormDialog`.
 
 ---
 
-## 6. Gestion de l'authentification
+## 6. Authentification
 
-- Le token JWT est stocké dans un cookie `HttpOnly` (inaccessible au JavaScript — protection XSS)
-- Le refresh token est également en cookie `HttpOnly`
-- Le renouvellement du token est silencieux (géré côté backend)
-- Les routes protégées utilisent un `ProtectedRoute` wrapper (`app/router/ProtectedRoute.tsx`)
-- Le rôle de l'utilisateur (`client` | `technicien` | `admin`) conditionne l'affichage
+- `access_token` et `refresh_token` en cookies `HttpOnly`, inaccessibles au
+  JavaScript. Renouvellement silencieux par l'intercepteur de `apiClient`.
+- Session et rôle via `useAuth()` (`app/providers/authContext`).
+- Routes protégées : `ProtectedRoute` (`app/router/ProtectedRoute.tsx`) avec `roles`.
 
 ---
 
-## 7. Google Maps Integration
+## 7. Google Maps
 
-- Utiliser uniquement `@googlemaps/js-api-loader` (pas `@react-google-maps/api`, absent du projet)
-- L'Autocomplete est limité aux adresses françaises (`componentRestrictions: { country: 'fr' }`)
-- À la sélection d'une adresse, décomposer via l'API Geocoding pour extraire :
-  `numero`, `rue`, `code_postal`, `ville`, `latitude`, `longitude`, `google_place_id`
-- Ne jamais stocker une adresse brute — toujours la décomposer avant envoi au backend
+- Uniquement `@googlemaps/js-api-loader` (pas `@react-google-maps/api`).
+- Autocomplete limité à la France (`componentRestrictions: { country: 'fr' }`).
+- Une adresse sélectionnée est décomposée (`numero`, `rue`, `codePostal`, `ville`,
+  `latitude`, `longitude`, `googlePlaceId`) avant envoi : jamais d'adresse brute.
+  Implémentation : `features/adresse/hooks/useAddressAutocomplete.ts`.
 
 ---
 
 ## 8. Maquettes — vault puis Figma
 
-**Écrans V2 :** les wireframes et maquettes de travail sont dans le vault
+**Écrans V2 :** wireframes et maquettes de travail dans le vault
 (`2. Conception/4. Wireframes/` : `planning 2.0`, `intervention 2.0` ;
-`2. Conception/5. Maquettes/` : `Maquette-planning 2.0`). Les lire avant d'implémenter
-un écran V2 : ils fixent la structure et le parcours.
+`2. Conception/5. Maquettes/` : `Maquette-planning 2.0`). Les lire avant
+d'implémenter un écran V2 : ils fixent la structure et le parcours.
 
-**Espace technicien :** conçu mobile d'abord (usage terrain), desktop ensuite.
+**Espace technicien :** mobile d'abord (usage terrain), desktop ensuite.
 
-**MCP Figma** (valeurs visuelles des composants existants) :
-
-1. Consulter la maquette Figma via MCP
-2. Extraire les valeurs exactes (dimensions, couleurs, espacements)
-3. Implémenter en SCSS Modules en respectant ces valeurs
-4. Signaler toute incohérence entre maquette, wireframe du vault et design system
+**MCP Figma** (valeurs visuelles des composants existants) : consulter la maquette,
+extraire les valeurs exactes, implémenter en SCSS Modules, signaler toute
+incohérence entre maquette, wireframe du vault et design system.
 
 ---
 
 ## 9. Points d'attention
 
-- **Responsive first** : commencer mobile, adapter desktop
-- **Accessibilité** : attributs ARIA, roles sémantiques HTML, focus visible
-- **Performance** : lazy loading des pages avec `React.lazy()`
-- **Variables d'environnement** : préfixées `VITE_` obligatoirement
-- Ne jamais commit de clé API en dur — toujours via `.env`
+- **Responsive first** : mobile, puis desktop.
+- **Accessibilité** : attributs ARIA, HTML sémantique, focus visible.
+- **Variables d'environnement** préfixées `VITE_` ; jamais de clé API en dur.
+
+---
+
+## 10. Avant de commiter
+
+Depuis `Frontend/` :
+```bash
+npm run lint          # aussi lancé par le hook pre-commit et la CI
+npm run format:check
+npm run build         # type-check + build Vite
+```
