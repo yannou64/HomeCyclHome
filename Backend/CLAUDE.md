@@ -10,7 +10,7 @@ ne sont pas ici : elles sont dans la spec du vault (racine, section 2).
 | Outil | Usage |
 |---|---|
 | NestJS + TypeScript | API REST |
-| Prisma | ORM — schéma dans `prisma/schema.prisma`, client généré dans `generated/prisma` |
+| Prisma 7 | ORM — schéma dans `prisma/schema.prisma`, configuration (URL de la base) dans `prisma.config.ts`, client généré dans `src/generated/prisma` (non versionné) |
 | PostgreSQL | Base de données |
 | JWT + refresh token | Authentification stateless, tokens en cookies `HttpOnly` |
 | bcrypt | Hash des mots de passe |
@@ -192,9 +192,13 @@ interventions, un technicien et les siennes).
 
 ## 7. Prisma
 
-- `PrismaService` injectable via `shared/prisma/`.
-- Cycle : modifier `schema.prisma` → `npx prisma migrate dev --name <nom>` → client
-  régénéré.
+- `PrismaService` injectable via `shared/prisma/`. Il construit le client avec
+  l'adaptateur `@prisma/adapter-pg` (pilote `pg`) : c'est là, et dans
+  `prisma.config.ts` pour le CLI, que se lit `DATABASE_URL`, jamais dans le schéma.
+- Import des types et du client : `generated/prisma/client` (chemin relatif depuis
+  `src/`), uniquement dans les repositories et `PrismaService`.
+- Cycle : modifier `schema.prisma` → `npx prisma migrate dev --name <nom>` →
+  `npx prisma generate` (Prisma 7 ne régénère plus le client pendant `migrate dev`).
 - Les migrations V1 sont abandonnées au socle V2 (base réinitialisée, voir
   `Refonte 2.0`).
 - Le nom Prisma fait foi côté code quand il diffère du MCD.
