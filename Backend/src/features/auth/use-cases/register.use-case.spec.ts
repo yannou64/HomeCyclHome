@@ -1,5 +1,5 @@
 import { ConflictException } from '@nestjs/common';
-import { EmailService } from '../../email/email.service';
+import type { EmailService } from '../../email/email.service';
 import { IAuthRepository } from '../repositories/auth.repository.interface';
 import { RegisterUseCase } from './register.use-case';
 
@@ -22,10 +22,7 @@ describe('RegisterUseCase', () => {
             clearRefreshTokenHash: jest.fn(),
         };
         mockEmailService = { sendConfirmationEmail: jest.fn() };
-        useCase = new RegisterUseCase(
-            mockRepo,
-            mockEmailService as unknown as EmailService,
-        );
+        useCase = new RegisterUseCase(mockRepo, mockEmailService);
     });
 
     it('devrait lever ConflictException si email déjà utilisé', async () => {

@@ -1,14 +1,18 @@
 import { ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { EmailService } from '../../email/email.service';
-import { RegisterDto } from '../dto/input/register.dto';
-import { IAuthRepository } from '../repositories/auth.repository.interface';
+import type { EmailService } from '../../email/email.service';
+import type { RegisterDto } from '../dto/input/register.dto';
+import type { IAuthRepository } from '../repositories/auth.repository.interface';
 
 export class RegisterUseCase {
     constructor(
         private readonly repo: IAuthRepository,
-        private readonly emailService: EmailService,
+        // Pick : le use case ne dépend que de la méthode qu'il appelle.
+        private readonly emailService: Pick<
+            EmailService,
+            'sendConfirmationEmail'
+        >,
     ) {}
 
     async execute(dto: RegisterDto): Promise<{ message: string }> {
