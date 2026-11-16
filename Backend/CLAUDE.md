@@ -190,7 +190,13 @@ l'admin ; ses tests couvrent CA05 à CA13 de l'US-02 de *Réserver*.
 
 **Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
 doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
-l'erreur Prisma en exception métier.
+l'erreur Prisma en exception métier. Les deux se combinent quand une course est
+possible entre le contrôle et l'écriture : le use case contrôle, et le repository
+traduit la violation qui survient malgré tout. Brique partagée :
+`shared/database/violation-cle-etrangere.ts` — `estViolationCleEtrangere(err)`
+(code Prisma `P2003`) dans le `catch` du repository, qui renvoie l'information au
+use case (exemple en tête du fichier). Prouvée sur PostgreSQL :
+`test/supprimer-compte.e2e-spec.ts`, CA06.
 
 ---
 
@@ -299,6 +305,8 @@ En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variable
 | `viderLaBase(prisma)` | `TRUNCATE … CASCADE` de toutes les tables sauf `_prisma_migrations` ; à appeler en `beforeEach` |
 | `creerUtilisateur(prisma, role)` | Utilisateur actif, email unique, mot de passe `MOT_DE_PASSE_DE_TEST` |
 | `seConnecter(app, utilisateur)` | Connexion par la vraie route `/api/auth/login`, renvoie les cookies à passer en `.set('Cookie', cookies)` |
+| `creerIntervention(prisma, options?)` | Intervention avec tout ce qu'elle exige (client, technicien, cycle, adresse liée, forfait, prix) ; options `statut`, `clientId`, `technicienId` pour réutiliser un utilisateur déjà connecté |
+| `creerCycle(prisma, utilisateurId)` · `creerAdresseDe(prisma, utilisateurId)` | Un cycle de l'utilisateur ; une `Adresse` et son lien `PeutSeSituer` (renvoie les deux ids) |
 
 Une fabrique manque pour un test : l'ajouter dans `test/helpers/fabriques.ts`,
 écrite directement avec Prisma, jamais par l'API qu'on est en train de tester.
