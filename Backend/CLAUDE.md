@@ -249,6 +249,48 @@ npm test            # unitaires
 npm run test:e2e    # intégration (base de test dédiée)
 ```
 
-**Tests d'intégration :** première brique de la V2, en cours de mise en place avec
-Yannick. Cette section sera complétée (base de test, garde-fou, helpers) quand elle
-sera construite.
+### Banc de tests d'intégration
+
+Une requête HTTP réelle (Supertest) traverse l'application réelle — guards,
+controller, use case, repository Prisma — jusqu'à une base PostgreSQL de test.
+
+**Mise en place locale (une fois) :**
+1. `createdb homecycl_test` (base vide, même propriétaire que `homecycl`) ;
+2. copier `Backend/.env.test.example` en `Backend/.env.test` et y mettre le
+   `DATABASE_URL` de `homecycl_test`. Fichier non versionné ; aucune vraie clé
+   n'y est nécessaire (email et S3 sont remplacés par des faux).
+
+En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variables
+(`.github/workflows/ci-cd.yml`) : pas de `.env.test`.
+
+**Ce qui se passe à `npm run test:e2e` :**
+- `test/setup/charger-env-test.ts` charge `.env.test` (prioritaire sur `.env`) et
+  applique le **garde-fou** : arrêt si le nom de la base ne finit pas par `_test` ;
+- `test/setup/global-setup.ts` applique les migrations manquantes
+  (`prisma migrate deploy`), une fois par lancement, sans rien effacer ;
+- les fichiers de test s'exécutent l'un après l'autre (`--runInBand`) : ils
+  partagent la même base.
+
+**Utilitaires (`test/helpers/`) :**
+
+| Utilitaire | Rôle |
+|---|---|
+| `creerApplicationDeTest()` | Démarre `AppModule` avec `configurerApplication` (même configuration que `main.ts`) ; `EmailService` et `StorageService` remplacés par des `jest.fn()` consultables (`t.email`, `t.stockage`) ; expose `t.prisma` pour préparer et vérifier la base |
+| `viderLaBase(prisma)` | `TRUNCATE … CASCADE` de toutes les tables sauf `_prisma_migrations` ; à appeler en `beforeEach` |
+| `creerUtilisateur(prisma, role)` | Utilisateur actif, email unique, mot de passe `MOT_DE_PASSE_DE_TEST` |
+| `seConnecter(app, utilisateur)` | Connexion par la vraie route `/api/auth/login`, renvoie les cookies à passer en `.set('Cookie', cookies)` |
+
+Une fabrique manque pour un test : l'ajouter dans `test/helpers/fabriques.ts`,
+écrite directement avec Prisma, jamais par l'API qu'on est en train de tester.
+
+**Écrire un test d'intégration :** fichier `test/<sujet>.e2e-spec.ts`, `describe`
+= nom exact de l'US, `it('CAnn — … [RGn]')` (convention section précédente).
+Modèle : `test/banc-integration.e2e-spec.ts` (application créée en `beforeAll`,
+base vidée en `beforeEach`, `app.close()` en `afterAll`). Il vérifie le banc
+lui-même et ne porte pas de `CAnn`.
+
+**Remise à zéro complète de la base de test** (migrations réécrites, base
+corrompue) : à la main, par Yannick, jamais par l'IA (Prisma bloque
+`migrate reset` lancé par un agent) :
+`dropdb homecycl_test && createdb homecycl_test`, puis `npm run test:e2e`, qui
+réapplique toutes les migrations.

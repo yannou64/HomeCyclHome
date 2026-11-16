@@ -159,8 +159,8 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
   avec un repository simulé. Rapides, mais aveugles aux contraintes de la base.
 - **Intégration (Supertest + PostgreSQL de test)** : tout ce qu'un simulacre ne peut
   pas prouver — transactions, écritures conditionnelles et concurrence, clés
-  étrangères, RBAC de bout en bout. **Première brique de la V2, en cours de mise en
-  place** : à construire avec Yannick avant les US.
+  étrangères, RBAC de bout en bout. Banc en place (base `homecycl_test`, garde-fou,
+  lancé par la CI) : mise en place et utilitaires dans `Backend/CLAUDE.md`, section Tests.
 - **Frontend** : aucun test (décision ouverte, voir le Journal).
 - Les tests unitaires tournent avant chaque commit (`pre-commit`) et dans la CI de
   chaque PR ; un échec bloque le déploiement.

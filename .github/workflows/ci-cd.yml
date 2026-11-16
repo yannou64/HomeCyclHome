@@ -37,10 +37,43 @@ jobs:
             - run: cd Backend && npx prisma generate
             - run: cd Backend && npm run lint
 
+    # Tests unitaires puis tests d'intégration (Supertest + PostgreSQL).
+    # Les deux dans ce job : test-backend est un check obligatoire des PR.
     test-backend:
         runs-on: ubuntu-latest
+        # Base PostgreSQL jetable, détruite à la fin du job. Ses identifiants
+        # ne protègent rien : ce ne sont pas des secrets.
+        services:
+            postgres:
+                image: postgres:16-alpine
+                env:
+                    POSTGRES_USER: ci
+                    POSTGRES_PASSWORD: ci
+                    POSTGRES_DB: homecycl_test
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd "pg_isready -U ci -d homecycl_test"
+                    --health-interval 5s
+                    --health-timeout 5s
+                    --health-retries 10
+        # En CI, pas de .env.test : les variables viennent d'ici. Le nom de la
+        # base finit par _test, sinon le garde-fou du banc arrête les tests.
         env:
-            DATABASE_URL: 'postgresql://dummy:dummy@localhost:5432/dummy'
+            NODE_ENV: test
+            DATABASE_URL: 'postgresql://ci:ci@localhost:5432/homecycl_test'
+            JWT_ACCESS_SECRET: secret-acces-ci
+            JWT_REFRESH_SECRET: secret-refresh-ci
+            FRONTEND_URL: 'http://localhost:5173'
+            MAIL_HOST: localhost
+            MAIL_PORT: '1025'
+            MAIL_USER: ci
+            MAIL_PASS: ci
+            MAIL_FROM: 'ci@homecyclhome.test'
+            AWS_REGION: eu-west-3
+            AWS_S3_BUCKET: bucket-ci
+            AWS_ACCESS_KEY_ID: ci
+            AWS_SECRET_ACCESS_KEY: ci
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -49,6 +82,7 @@ jobs:
             - run: cd Backend && npm ci
             - run: cd Backend && npx prisma generate
             - run: cd Backend && npm test
+            - run: cd Backend && npm run test:e2e
 
     # ----  BUILD AND PUSH GHCR
     build-and-push-staging:
