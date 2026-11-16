@@ -1,4 +1,4 @@
-import { UserRole } from '../../users/dto/output/user-profile-response.dto';
+import { UserRole } from '../../../shared/types/user-role';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 
 // Jeton d'injection : l'interface disparaît à la compilation, Nest

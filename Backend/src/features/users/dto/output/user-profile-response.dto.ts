@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export type UserRole = 'client' | 'technicien' | 'admin';
+import { UserRole } from '../../../../shared/types/user-role';
 
 export class UserProfileResponseDto {
     @ApiProperty()
