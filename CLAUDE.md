@@ -155,8 +155,8 @@ explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
 ## 8. Stratégie de tests
 
 - **TDD** : un test par critère d'acceptation, écrit avant le code.
-- **Unitaires (Jest)** : règles pures du `domain/` et logique des use cases, avec un
-  repository simulé. Rapides, mais aveugles aux contraintes de la base.
+- **Unitaires (Jest)** : règles pures de `shared/domain/` et logique des use cases,
+  avec un repository simulé. Rapides, mais aveugles aux contraintes de la base.
 - **Intégration (Supertest + PostgreSQL de test)** : tout ce qu'un simulacre ne peut
   pas prouver — transactions, écritures conditionnelles et concurrence, clés
   étrangères, RBAC de bout en bout. **Première brique de la V2, en cours de mise en
