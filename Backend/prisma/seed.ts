@@ -250,12 +250,12 @@ async function main(): Promise<void> {
     // La cliente : une adresse principale dans Lyon Est et un vélo
     const adresse = await prisma.adresse.create({
         data: {
-            numero: '3',
-            rue: 'Rue de la Viabert',
+            numero: '20',
+            rue: 'Rue Paul Bert',
             code_postal: '69003',
             ville: 'Lyon',
-            latitude: 45.7605,
-            longitude: 4.8615,
+            latitude: 45.7578,
+            longitude: 4.8487,
             google_place_id: 'seed-adresse-lyon-est',
         },
     });
