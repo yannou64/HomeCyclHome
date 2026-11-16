@@ -13,12 +13,15 @@ import * as bcrypt from 'bcrypt';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
 import {
-    bornesDuJourTravail,
-    jourTravail,
+    ajouterJours,
+    aujourdHui,
+    instantDuJour,
+    jourDeSemaine,
+    type JourCalendaire,
 } from '../src/shared/domain/jour-travail';
 import { PASSWORD_HASH_ROUNDS } from '../src/config/password.config';
 
-const UN_JOUR_MS = 24 * 60 * 60 * 1000;
+const UN_JOUR_MS = 24 * 60 * 60 * 1000; // ancienneté du prix, pas un calcul de jour
 const DUREE_CRENEAU_MIN = 30;
 const NB_JOURS_PLANIFIES = 10; // jours ouvrés planifiés à partir de demain
 
@@ -42,29 +45,12 @@ const prisma = new PrismaClient({
 
 // ─── Dates dans le fuseau d'exploitation ─────────────────────────────────────
 
-// Instant UTC correspondant à `minutes` après minuit, heure de Paris, le jour
-// calendaire de `jour`. Passe par bornesDuJourTravail : aucun calcul en UTC.
-function aMinutes(jour: Date, minutes: number): Date {
-    const { debut } = bornesDuJourTravail(jour);
-    return new Date(debut.getTime() + minutes * 60 * 1000);
-}
-
-// Jour de la semaine d'une date calendaire « YYYY-MM-DD » (0 = dimanche).
-// La date est lue à midi UTC : le résultat ne dépend d'aucun fuseau.
-function jourDeSemaine(jourCalendaire: string): number {
-    return new Date(`${jourCalendaire}T12:00:00Z`).getUTCDay();
-}
-
 // Les prochains jours ouvrés (lundi à vendredi), à partir de demain à Paris.
-function prochainsJoursOuvres(nombre: number): Date[] {
-    const jours: Date[] = [];
-    const aujourdHui = bornesDuJourTravail(new Date()).debut;
+function prochainsJoursOuvres(nombre: number): JourCalendaire[] {
+    const jours: JourCalendaire[] = [];
     for (let k = 1; jours.length < nombre; k++) {
-        // Midi du jour k : loin de minuit, donc sans ambiguïté de fuseau
-        const jour = new Date(
-            aujourdHui.getTime() + k * UN_JOUR_MS + 12 * 3600 * 1000,
-        );
-        const js = jourDeSemaine(jourTravail(jour));
+        const jour = ajouterJours(aujourdHui(), k);
+        const js = jourDeSemaine(jour);
         if (js >= 1 && js <= 5) jours.push(jour);
     }
     return jours;
@@ -236,7 +222,7 @@ async function main(): Promise<void> {
                 }[] = [];
                 for (let m = debut; m < fin; m += DUREE_CRENEAU_MIN) {
                     creneaux.push({
-                        date_debut: aMinutes(jour, m),
+                        date_debut: instantDuJour(jour, m),
                         technicien_id: technicien.id,
                         zone_id: zone.id,
                     });
@@ -288,7 +274,7 @@ async function main(): Promise<void> {
             adresse_id: adresse.id,
             historique_prix_forfait_id: revision.historique_prix[0].id,
             duree_minutes_snapshot: revision.duree_minutes,
-            date_prevue: aMinutes(premierJour, 9 * 60 + 30),
+            date_prevue: instantDuJour(premierJour, 9 * 60 + 30),
             commentaire_client: 'Le vélo est dans le local au rez-de-chaussée.',
         },
     });
@@ -303,7 +289,7 @@ async function main(): Promise<void> {
             where: {
                 technicien_id_date_debut: {
                     technicien_id: technicienEst.id,
-                    date_debut: aMinutes(premierJour, minutes),
+                    date_debut: instantDuJour(premierJour, minutes),
                 },
             },
             data: {

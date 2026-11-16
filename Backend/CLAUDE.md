@@ -165,11 +165,10 @@ par « lire puis écrire » sans condition.
 fait dans le fuseau d'exploitation, jamais en UTC.** Passer par un utilitaire
 partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 (`setUTCHours(0, 0, 0, 0)`, `getUTCDate()`, `getUTCDay()`…) ou
-`toISOString().slice(0, 10)`. Les use cases V1 de `planning` bornent encore les
-journées avec `setUTCHours` : dette V1, pas un modèle. Base
-existante : `shared/domain/jour-travail.ts` (`jourTravail`, `bornesDuJourTravail`).
-⚠️ `bornesDuJourTravail` est fausse les jours de changement d'heure (journée de 23 h
-ou 25 h comptée comme 24 h) : à corriger au socle V2.
+`toISOString().slice(0, 10)`. Brique partagée : `shared/domain/jour-travail.ts`, type `JourCalendaire` (`YYYY-MM-DD`) :
+`jourTravail`, `aujourdHui`, `instantDuJour(jour, minutes)` (heure d'horloge de
+Paris → instant UTC), `bornesDuJourTravail`, `ajouterJours`, `jourDeSemaine`. Justes
+aux changements d'heure (journées de 23 h et 25 h testées).
 
 **Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases (par
 exemple le calcul des blocs, utilisé par la réservation et la création par l'admin)
