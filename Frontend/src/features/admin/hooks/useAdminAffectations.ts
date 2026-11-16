@@ -1,38 +1,38 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminAffectationsService } from '../services/adminAffectationsService';
-import type { Affectation, SetTechnicienZonesPayload } from '../types/affectations.types';
+import type {
+    Affectation,
+    SetTechnicienZonesPayload,
+} from '../types/affectations.types';
+
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadAffectations = () => adminAffectationsService.getAll();
 
 export function useAdminAffectations() {
-  const [items, setItems] = useState<Affectation[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Affectation[]>(
+        loadAffectations,
+        [],
+        'Impossible de charger les affectations.',
+    );
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminAffectationsService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les affectations.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    const setZones = async (
+        technicienId: string,
+        payload: SetTechnicienZonesPayload,
+    ) => {
+        await adminAffectationsService.setZones(technicienId, payload);
+        reload();
+    };
 
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+    const deleteAffectation = async (technicienId: string) => {
+        await adminAffectationsService.delete(technicienId);
+        reload();
+    };
 
-  const setZones = async (technicienId: string, payload: SetTechnicienZonesPayload) => {
-    await adminAffectationsService.setZones(technicienId, payload);
-    await fetchItems();
-  };
-
-  const deleteAffectation = async (technicienId: string) => {
-    await adminAffectationsService.delete(technicienId);
-    await fetchItems();
-  };
-
-  return { items, isLoading, error, setZones, deleteAffectation };
+    return { items, isLoading, error, setZones, deleteAffectation };
 }

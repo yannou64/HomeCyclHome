@@ -1,33 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminPlanningService } from '../services/adminPlanningService';
 import type { ZoneAffectee } from '../types/affectations.types';
 
-// Zones affectées à un technicien — chargées uniquement quand le dialog s'ouvre
+// Zones affectées à un technicien : chargées à chaque ouverture du dialogue
+// (enabled), jamais quand il est fermé.
 export function useZonesForTechnicien(technicienId: string, isOpen: boolean) {
-  const [zones, setZones] = useState<ZoneAffectee[]>([]);
-  const [isLoadingZones, setIsLoadingZones] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+    // Le loader dépend du technicien : recréé (donc rechargé) quand il change.
+    const loadZones = useCallback(
+        () => adminPlanningService.getZonesForTechnicien(technicienId),
+        [technicienId],
+    );
+    const {
+        data: zones,
+        isLoading: isLoadingZones,
+        error: loadError,
+    } = useAsyncData<ZoneAffectee[]>(
+        loadZones,
+        [],
+        'Impossible de charger les zones du technicien.',
+        { enabled: isOpen },
+    );
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    let cancelled = false;
-
-    void (async () => {
-      setIsLoadingZones(true);
-      setLoadError(null);
-      try {
-        const data = await adminPlanningService.getZonesForTechnicien(technicienId);
-        if (!cancelled) setZones(data);
-      } catch {
-        if (!cancelled) setLoadError('Impossible de charger les zones du technicien.');
-      } finally {
-        if (!cancelled) setIsLoadingZones(false);
-      }
-    })();
-
-    return () => { cancelled = true; };
-  }, [isOpen, technicienId]);
-
-  return { zones, isLoadingZones, loadError };
+    return { zones, isLoadingZones, loadError };
 }

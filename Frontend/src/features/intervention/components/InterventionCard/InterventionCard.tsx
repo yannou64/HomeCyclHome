@@ -1,19 +1,19 @@
-import type { InterventionClientDto } from '../../types/clientIntervention.types';
+import type { InterventionClient } from '../../types/clientIntervention.types';
 import styles from './InterventionCard.module.scss';
 
 interface InterventionCardProps {
-    intervention: InterventionClientDto;
+    intervention: InterventionClient;
     onCancel?: () => void;
 }
 
-const STATUT_LABELS: Record<InterventionClientDto['statut'], string> = {
+const STATUT_LABELS: Record<InterventionClient['statut'], string> = {
     Planifiee: 'Planifiée',
     Terminee: 'Terminée',
     Annulee: 'Annulée',
 };
 
 function getEffectiveStatut(
-    statut: InterventionClientDto['statut'],
+    statut: InterventionClient['statut'],
     dateDebut: string,
 ): { label: string; key: string } {
     const todayStart = new Date();
@@ -41,9 +41,19 @@ function formatTime(dateString: string): string {
     });
 }
 
-export function InterventionCard({ intervention, onCancel }: InterventionCardProps) {
-    const { statut, dateDebut, forfaitNom, dureeMinutesSnapshot, adresse, cycle, commentaire } =
-        intervention;
+export function InterventionCard({
+    intervention,
+    onCancel,
+}: InterventionCardProps) {
+    const {
+        statut,
+        dateDebut,
+        forfaitNom,
+        dureeMinutesSnapshot,
+        adresse,
+        cycle,
+        commentaire,
+    } = intervention;
 
     const adresseFormatee = `${adresse.numero ? adresse.numero + ' ' : ''}${adresse.rue}, ${adresse.codePostal} ${adresse.ville}`;
     const effectiveStatut = getEffectiveStatut(statut, dateDebut);
@@ -55,7 +65,9 @@ export function InterventionCard({ intervention, onCancel }: InterventionCardPro
                     <span className={styles.date}>{formatDate(dateDebut)}</span>
                     <span className={styles.time}>{formatTime(dateDebut)}</span>
                 </div>
-                <span className={`${styles.badge} ${styles[`badge${effectiveStatut.key}`]}`}>
+                <span
+                    className={`${styles.badge} ${styles[`badge${effectiveStatut.key}`]}`}
+                >
                     {effectiveStatut.label}
                 </span>
             </div>

@@ -12,8 +12,8 @@ export type CreateInterventionRequest = {
     commentaire?: string;
 };
 
-// Réponse du backend — miroir de InterventionCreatedDto
-export type InterventionCreatedDto = {
+// Réponse du backend — miroir de InterventionCreated
+export type InterventionCreated = {
     id: string;
     statut: 'Planifiee' | 'Terminee' | 'Annulee';
     dateCreation: string;

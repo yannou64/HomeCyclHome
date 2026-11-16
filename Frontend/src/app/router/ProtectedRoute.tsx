@@ -3,10 +3,10 @@ import { useAuth } from '../../app/providers/authContext/useAuth';
 import type { Role } from '../../app/providers/authContext/types/auth.types';
 import type { ReactNode } from 'react';
 
-type ProtectedRouteProps = {
+interface ProtectedRouteProps {
     children: ReactNode;
     roles?: Role[]; // si absent → toute session valide suffit
-};
+}
 
 export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
     const { session, isAuthenticated } = useAuth();

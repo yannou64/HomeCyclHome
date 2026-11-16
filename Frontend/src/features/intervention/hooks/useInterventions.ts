@@ -1,32 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { clientInterventionService } from '../services/clientInterventionService';
-import type { InterventionClientDto } from '../types/clientIntervention.types';
+import type { InterventionClient } from '../types/clientIntervention.types';
+
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadInterventions = () => clientInterventionService.getMyInterventions();
 
 export function useInterventions() {
-    const [interventions, setInterventions] = useState<InterventionClientDto[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchInterventions = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const data = await clientInterventionService.getMyInterventions();
-            setInterventions(data);
-        } catch {
-            setError('Impossible de charger vos interventions.');
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        void fetchInterventions();
-    }, [fetchInterventions]);
+    const {
+        data: interventions,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<InterventionClient[]>(
+        loadInterventions,
+        [],
+        'Impossible de charger vos interventions.',
+    );
 
     const cancelIntervention = async (id: string) => {
         await clientInterventionService.cancelIntervention(id);
-        await fetchInterventions();
+        reload();
     };
 
     const todayStart = new Date();
@@ -42,7 +36,8 @@ export function useInterventions() {
         return d >= todayStart && d < tomorrowStart;
     });
     const planifiees = interventions.filter(
-        (i) => new Date(i.dateDebut) >= tomorrowStart && i.statut === 'Planifiee',
+        (i) =>
+            new Date(i.dateDebut) >= tomorrowStart && i.statut === 'Planifiee',
     );
 
     return {

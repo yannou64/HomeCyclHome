@@ -195,6 +195,9 @@ interventions, un technicien et les siennes).
 - `PrismaService` injectable via `shared/prisma/`. Il construit le client avec
   l'adaptateur `@prisma/adapter-pg` (pilote `pg`) : c'est là, et dans
   `prisma.config.ts` pour le CLI, que se lit `DATABASE_URL`, jamais dans le schéma.
+- Variables d'environnement : `Backend/.env` est chargé par `import 'dotenv/config'`
+  en première ligne de `src/app/main.ts` pour l'application, et par `prisma.config.ts`
+  pour le CLI (Prisma 7 ne le charge plus de lui-même). En Docker, elles viennent du `docker-compose`.
 - Import des types et du client : `generated/prisma/client` (chemin relatif depuis
   `src/`), uniquement dans les repositories et `PrismaService`.
 - Cycle : modifier `schema.prisma` → `npx prisma migrate dev --name <nom>` →

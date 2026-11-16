@@ -17,8 +17,8 @@ export function AuthStep() {
         <div className={styles.container}>
             <h2 className={styles.title}>Connectez-vous pour finaliser</h2>
             <p className={styles.description}>
-                Votre réservation est presque prête. Connectez-vous ou créez un compte
-                pour valider votre intervention.
+                Votre réservation est presque prête. Connectez-vous ou créez un
+                compte pour valider votre intervention.
             </p>
 
             <div className={styles.actions}>

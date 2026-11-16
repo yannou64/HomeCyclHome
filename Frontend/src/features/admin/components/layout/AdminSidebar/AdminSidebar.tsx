@@ -26,7 +26,10 @@ interface AdminSidebarProps {
     onSectionChange: (section: AdminSection) => void;
 }
 
-export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
+export function AdminSidebar({
+    activeSection,
+    onSectionChange,
+}: AdminSidebarProps) {
     return (
         <aside className={styles.sidebar} aria-label="Menu d'administration">
             <nav>
@@ -36,7 +39,11 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                             <button
                                 className={`${styles.menuItem} ${activeSection === section ? styles.active : ''}`}
                                 onClick={() => onSectionChange(section)}
-                                aria-current={activeSection === section ? 'page' : undefined}
+                                aria-current={
+                                    activeSection === section
+                                        ? 'page'
+                                        : undefined
+                                }
                             >
                                 {label}
                             </button>

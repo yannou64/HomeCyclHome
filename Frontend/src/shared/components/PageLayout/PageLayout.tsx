@@ -6,38 +6,47 @@ import styles from './PageLayout.module.scss';
 import fondEcranLyonMobile from '../../../assets/images/FondEcranLyonMobile.webp';
 import fondEcranLyonDesktop from '../../../assets/images/FondEcranLyonDesktop.webp';
 import reparationVeloMobile from '../../../assets/images/ReparationVeloMobile.webp';
-import reparationVeloMobile2 from '../../../assets/images/ReparationVeloMobile2.webp'
+import reparationVeloMobile2 from '../../../assets/images/ReparationVeloMobile2.webp';
 import avis1 from '../../../assets/images/Avis1.webp';
-import avis2 from '../../../assets/images/Avis2.webp'
+import avis2 from '../../../assets/images/Avis2.webp';
 
 // Images passées au carousel — à enrichir quand de nouvelles photos seront disponibles
 const CAROUSEL_IMAGES = [
     reparationVeloMobile,
     avis1,
     reparationVeloMobile2,
-    avis2
+    avis2,
 ];
 
-type PageLayoutProps = {
+interface PageLayoutProps {
     children: React.ReactNode;
     leftContent?: React.ReactNode;
     compact?: boolean;
     noContentScroll?: boolean;
-};
+}
 
-export function PageLayout({ children, leftContent, compact = true, noContentScroll = false }: PageLayoutProps) {
+export function PageLayout({
+    children,
+    leftContent,
+    compact = true,
+    noContentScroll = false,
+}: PageLayoutProps) {
     return (
-        <div className={`${styles.pageLayout} ${compact ? styles.compact : ''} ${noContentScroll ? styles.noContentScroll : ''}`}>
+        <div
+            className={`${styles.pageLayout} ${compact ? styles.compact : ''} ${noContentScroll ? styles.noContentScroll : ''}`}
+        >
             {/* ── Section HAUTE ─────────────────────────────────────────────
                 Mobile  : image Lyon + dégradé vers le vert menthe (bas)
                 Desktop : image Lyon pleine hauteur (colonne gauche) + logo centré
             ─────────────────────────────────────────────────────────────── */}
             <div
                 className={styles.topSection}
-                style={{
-                    '--bg-mobile': `url(${fondEcranLyonMobile})`,
-                    '--bg-desktop': `url(${fondEcranLyonDesktop})`,
-                } as React.CSSProperties}
+                style={
+                    {
+                        '--bg-mobile': `url(${fondEcranLyonMobile})`,
+                        '--bg-desktop': `url(${fondEcranLyonDesktop})`,
+                    } as React.CSSProperties
+                }
             >
                 <div className={styles.leftOverlay}>
                     <HeroBrand />

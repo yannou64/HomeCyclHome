@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import type { IZonesRepository } from '../repositories/zones.repository.interface';
 import type { CheckZoneResponseDto } from '../dto/output/check-zone-response.dto';
 import type { ZonePointResponseDto } from '../dto/output/zone-response.dto';
 
-@Injectable()
+// Pas de décorateur Nest : construit par le module (useFactory, zones.module.ts).
 export class CheckZoneUseCase {
     constructor(private readonly repo: IZonesRepository) {}
 

@@ -1,5 +1,9 @@
 import { apiClient } from '../../../shared/services/apiClient';
-import type { Adresse, CreateAdressePayload, UpdateAdressePayload } from '../types/adresse.types';
+import type {
+    Adresse,
+    CreateAdressePayload,
+    UpdateAdressePayload,
+} from '../types/adresse.types';
 
 export const adresseService = {
     async getAll(): Promise<Adresse[]> {

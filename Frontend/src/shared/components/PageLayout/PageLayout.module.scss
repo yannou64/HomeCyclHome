@@ -7,7 +7,7 @@
 .pageLayout {
     display: flex;
     flex-direction: column;
-    flex: 1;      // s'étire entre Header et Footer (chaîne sticky footer)
+    flex: 1; // s'étire entre Header et Footer (chaîne sticky footer)
     min-height: 0; // permet au flex item de se comprimer en dessous de son contenu
 }
 
@@ -16,7 +16,11 @@
     height: 280px;
     flex-shrink: 0;
     background-image:
-        linear-gradient(to bottom, transparent 40%, #{$color-myLightGreen} 100%),
+        linear-gradient(
+            to bottom,
+            transparent 40%,
+            #{$color-myLightGreen} 100%
+        ),
         var(--bg-mobile); // URL injectée via style inline depuis le TSX
     background-size: cover;
     background-position: center top;
@@ -60,7 +64,11 @@
         left: 0;
         right: 0;
         height: 55%;
-        background: linear-gradient(to bottom, #{$color-myLightGreen}, transparent);
+        background: linear-gradient(
+            to bottom,
+            #{$color-myLightGreen},
+            transparent
+        );
         z-index: 1;
         pointer-events: none; // ne bloque pas les interactions sous lui
     }
@@ -86,12 +94,20 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 .compact {
-    .topSection    { display: none; }
-    .mobileHero    { display: none; }
-    .bottomSection { display: none; }
+    .topSection {
+        display: none;
+    }
+    .mobileHero {
+        display: none;
+    }
+    .bottomSection {
+        display: none;
+    }
 
     @include desktop {
-        .topSection { display: flex; } // restaurer la colonne photo gauche
+        .topSection {
+            display: flex;
+        } // restaurer la colonne photo gauche
     }
 }
 
@@ -110,7 +126,7 @@
     .topSection {
         grid-column: 1;
         grid-row: 1 / 3; // occupe toute la hauteur de la grille
-        height: auto;    // la grille détermine la hauteur
+        height: auto; // la grille détermine la hauteur
         background-image: var(--bg-desktop);
         background-size: cover;
         background-position: center;

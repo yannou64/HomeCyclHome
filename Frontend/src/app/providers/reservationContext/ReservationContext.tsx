@@ -13,9 +13,9 @@ import type {
 } from './types/reservation.types';
 import { PENDING_RESERVATION_KEY } from './types/reservation.types';
 
-type ReservationProviderProps = {
+interface ReservationProviderProps {
     children: ReactNode;
-};
+}
 
 export function ReservationProvider({ children }: ReservationProviderProps) {
     const [adresse, setAdresse] = useState<AdresseBooking | null>(null);
@@ -23,7 +23,9 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
     const [cycle, setCycleState] = useState<CycleBooking | null>(null);
     const [forfait, setForfaitState] = useState<ForfaitInfo | null>(null);
     const [creneau, setCreneauState] = useState<CreneauInfo | null>(null);
-    const [commentaire, setCommentaireState] = useState<CommentaireInfo | null>(null);
+    const [commentaire, setCommentaireState] = useState<CommentaireInfo | null>(
+        null,
+    );
     const [currentStep, setCurrentStep] = useState<ReservationStep>('adresse');
 
     const setAdresseAndZone = (a: AdresseBooking, z: ZoneInfo) => {
@@ -53,7 +55,13 @@ export function ReservationProvider({ children }: ReservationProviderProps) {
 
     const savePendingToStorage = () => {
         if (!adresse || !zone || !cycle || !forfait || !creneau) return;
-        const data: PendingReservationStorage = { adresse, zone, cycle, forfait, creneau };
+        const data: PendingReservationStorage = {
+            adresse,
+            zone,
+            cycle,
+            forfait,
+            creneau,
+        };
         localStorage.setItem(PENDING_RESERVATION_KEY, JSON.stringify(data));
     };
 

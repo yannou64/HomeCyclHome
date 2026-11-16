@@ -5,7 +5,10 @@ import {
     DialogTitle,
 } from '../../../../../shared/components/ui/dialog';
 import { useAdminInterventionDetail } from '../../../hooks/useAdminInterventionDetail';
-import { getDisplayStatut, getStatutLabel } from '../../../utils/interventionStatut';
+import {
+    getDisplayStatut,
+    getStatutLabel,
+} from '../../../utils/interventionStatut';
 import styles from './AdminInterventionDetailDialog.module.scss';
 
 interface AdminInterventionDetailDialogProps {
@@ -46,7 +49,9 @@ export function AdminInterventionDetailDialog({
                     <div className={styles.body}>
                         {/* Statut + dates */}
                         <div className={styles.header}>
-                            <span className={`${styles.badge} ${styles[`badge${getDisplayStatut(detail)}`]}`}>
+                            <span
+                                className={`${styles.badge} ${styles[`badge${getDisplayStatut(detail)}`]}`}
+                            >
                                 {getStatutLabel(getDisplayStatut(detail))}
                             </span>
                             <span className={styles.dateDebut}>
@@ -60,36 +65,55 @@ export function AdminInterventionDetailDialog({
                                 <h3 className={styles.sectionTitle}>Client</h3>
                                 <dl className={styles.dl}>
                                     <dt>Nom</dt>
-                                    <dd>{detail.client.prenom} {detail.client.nom}</dd>
+                                    <dd>
+                                        {detail.client.prenom}{' '}
+                                        {detail.client.nom}
+                                    </dd>
                                     <dt>Email</dt>
                                     <dd>{detail.client.email}</dd>
                                     <dt>Téléphone</dt>
                                     <dd>{detail.client.telephone}</dd>
                                     <dt>Adresse</dt>
                                     <dd>
-                                        {detail.adresse.numero && `${detail.adresse.numero} `}
-                                        {detail.adresse.rue}<br />
-                                        {detail.adresse.codePostal} {detail.adresse.ville}
+                                        {detail.adresse.numero &&
+                                            `${detail.adresse.numero} `}
+                                        {detail.adresse.rue}
+                                        <br />
+                                        {detail.adresse.codePostal}{' '}
+                                        {detail.adresse.ville}
                                     </dd>
                                 </dl>
                             </section>
 
                             {/* Intervention */}
                             <section className={styles.section}>
-                                <h3 className={styles.sectionTitle}>Intervention</h3>
+                                <h3 className={styles.sectionTitle}>
+                                    Intervention
+                                </h3>
                                 <dl className={styles.dl}>
                                     <dt>Forfait</dt>
-                                    <dd>{detail.forfaitNom} ({detail.dureeMinutesSnapshot} min)</dd>
+                                    <dd>
+                                        {detail.forfaitNom} (
+                                        {detail.dureeMinutesSnapshot} min)
+                                    </dd>
                                     <dt>Zone</dt>
                                     <dd>{detail.zone.nom}</dd>
                                     <dt>Technicien</dt>
                                     <dd>
-                                        {detail.technicien
-                                            ? `${detail.technicien.prenom} ${detail.technicien.nom}`
-                                            : <span className={styles.unassigned}>Non assigné</span>}
+                                        {detail.technicien ? (
+                                            `${detail.technicien.prenom} ${detail.technicien.nom}`
+                                        ) : (
+                                            <span className={styles.unassigned}>
+                                                Non assigné
+                                            </span>
+                                        )}
                                     </dd>
                                     <dt>Vélo</dt>
-                                    <dd>{detail.cycle.libelle} — {detail.cycle.marque} · {detail.cycle.type}</dd>
+                                    <dd>
+                                        {detail.cycle.libelle} —{' '}
+                                        {detail.cycle.marque} ·{' '}
+                                        {detail.cycle.type}
+                                    </dd>
                                 </dl>
                             </section>
                         </div>
@@ -97,15 +121,21 @@ export function AdminInterventionDetailDialog({
                         {/* Commentaire */}
                         {detail.commentaire && (
                             <section className={styles.section}>
-                                <h3 className={styles.sectionTitle}>Commentaire</h3>
-                                <p className={styles.commentaire}>{detail.commentaire}</p>
+                                <h3 className={styles.sectionTitle}>
+                                    Commentaire
+                                </h3>
+                                <p className={styles.commentaire}>
+                                    {detail.commentaire}
+                                </p>
                             </section>
                         )}
 
                         {/* Photos client */}
                         {detail.photosClient.length > 0 && (
                             <section className={styles.section}>
-                                <h3 className={styles.sectionTitle}>Photos client</h3>
+                                <h3 className={styles.sectionTitle}>
+                                    Photos client
+                                </h3>
                                 <div className={styles.photosGrid}>
                                     {detail.photosClient.map((p) => (
                                         <a
@@ -129,7 +159,9 @@ export function AdminInterventionDetailDialog({
                         {/* Photos technicien */}
                         {detail.photosTechnicien.length > 0 && (
                             <section className={styles.section}>
-                                <h3 className={styles.sectionTitle}>Photos technicien</h3>
+                                <h3 className={styles.sectionTitle}>
+                                    Photos technicien
+                                </h3>
                                 <div className={styles.photosGrid}>
                                     {detail.photosTechnicien.map((p) => (
                                         <a

@@ -27,7 +27,9 @@ export function RestoreCard({ pendingData, onConfirm, onDecline }: Props) {
             <div className={styles.summary}>
                 <span className={styles.summaryItem}>{forfait.nom}</span>
                 <span className={styles.summaryDot}>·</span>
-                <span className={styles.summaryItem}>{formatDate(creneau.dateDebut)}</span>
+                <span className={styles.summaryItem}>
+                    {formatDate(creneau.dateDebut)}
+                </span>
             </div>
             <p className={styles.description}>
                 Vous avez commencé une réservation avant de vous connecter.

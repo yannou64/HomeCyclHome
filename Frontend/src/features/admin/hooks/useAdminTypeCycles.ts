@@ -1,43 +1,37 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminTypeCyclesService } from '../services/adminTypeCyclesService';
 import type { CycleItemPayload, TypeCycle } from '../types/cycles.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadTypeCycles = () => adminTypeCyclesService.getAll();
+
 export function useAdminTypeCycles() {
-  const [items, setItems] = useState<TypeCycle[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<TypeCycle[]>(
+        loadTypeCycles,
+        [],
+        'Impossible de charger les types de cycles.',
+    );
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminTypeCyclesService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les types de cycles.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    const createItem = async (payload: CycleItemPayload) => {
+        await adminTypeCyclesService.create(payload);
+        reload();
+    };
 
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+    const updateItem = async (id: string, payload: CycleItemPayload) => {
+        await adminTypeCyclesService.update(id, payload);
+        reload();
+    };
 
-  const createItem = async (payload: CycleItemPayload) => {
-    await adminTypeCyclesService.create(payload);
-    await fetchItems();
-  };
+    const deleteItem = async (id: string) => {
+        await adminTypeCyclesService.delete(id);
+        reload();
+    };
 
-  const updateItem = async (id: string, payload: CycleItemPayload) => {
-    await adminTypeCyclesService.update(id, payload);
-    await fetchItems();
-  };
-
-  const deleteItem = async (id: string) => {
-    await adminTypeCyclesService.delete(id);
-    await fetchItems();
-  };
-
-  return { items, isLoading, error, createItem, updateItem, deleteItem };
+    return { items, isLoading, error, createItem, updateItem, deleteItem };
 }

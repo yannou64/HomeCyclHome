@@ -1,43 +1,37 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminZonesService } from '../services/adminZonesService';
-import type { Zone, CreateZonePayload, UpdateZonePayload } from '../types/zones.types';
+import type {
+    Zone,
+    CreateZonePayload,
+    UpdateZonePayload,
+} from '../types/zones.types';
+
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadZones = () => adminZonesService.getAll();
 
 export function useAdminZones() {
-  const [items, setItems] = useState<Zone[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Zone[]>(loadZones, [], 'Impossible de charger les zones.');
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminZonesService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les zones.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    const createZone = async (payload: CreateZonePayload) => {
+        await adminZonesService.create(payload);
+        reload();
+    };
 
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+    const updateZone = async (id: string, payload: UpdateZonePayload) => {
+        await adminZonesService.update(id, payload);
+        reload();
+    };
 
-  const createZone = async (payload: CreateZonePayload) => {
-    await adminZonesService.create(payload);
-    await fetchItems();
-  };
+    const deleteZone = async (id: string) => {
+        await adminZonesService.delete(id);
+        reload();
+    };
 
-  const updateZone = async (id: string, payload: UpdateZonePayload) => {
-    await adminZonesService.update(id, payload);
-    await fetchItems();
-  };
-
-  const deleteZone = async (id: string) => {
-    await adminZonesService.delete(id);
-    await fetchItems();
-  };
-
-  return { items, isLoading, error, createZone, updateZone, deleteZone };
+    return { items, isLoading, error, createZone, updateZone, deleteZone };
 }

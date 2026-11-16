@@ -1,43 +1,37 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminMarquesService } from '../services/adminMarquesService';
 import type { CycleItemPayload, Marque } from '../types/cycles.types';
 
+// Loader défini hors du composant : référence stable, la liste n'est
+// chargée qu'au montage puis à chaque reload().
+const loadMarques = () => adminMarquesService.getAll();
+
 export function useAdminMarques() {
-  const [items, setItems] = useState<Marque[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Marque[]>(
+        loadMarques,
+        [],
+        'Impossible de charger les marques.',
+    );
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminMarquesService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les marques.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    const createItem = async (payload: CycleItemPayload) => {
+        await adminMarquesService.create(payload);
+        reload();
+    };
 
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+    const updateItem = async (id: string, payload: CycleItemPayload) => {
+        await adminMarquesService.update(id, payload);
+        reload();
+    };
 
-  const createItem = async (payload: CycleItemPayload) => {
-    await adminMarquesService.create(payload);
-    await fetchItems();
-  };
+    const deleteItem = async (id: string) => {
+        await adminMarquesService.delete(id);
+        reload();
+    };
 
-  const updateItem = async (id: string, payload: CycleItemPayload) => {
-    await adminMarquesService.update(id, payload);
-    await fetchItems();
-  };
-
-  const deleteItem = async (id: string) => {
-    await adminMarquesService.delete(id);
-    await fetchItems();
-  };
-
-  return { items, isLoading, error, createItem, updateItem, deleteItem };
+    return { items, isLoading, error, createItem, updateItem, deleteItem };
 }

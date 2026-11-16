@@ -38,7 +38,9 @@ export function AdminInterventionsFilterBar({
             <select
                 className={styles.select}
                 value={technicienId ?? ''}
-                onChange={(e) => onTechnicienFilter(e.target.value || undefined)}
+                onChange={(e) =>
+                    onTechnicienFilter(e.target.value || undefined)
+                }
                 aria-label="Filtrer par technicien"
             >
                 <option value="">Tous les techniciens</option>

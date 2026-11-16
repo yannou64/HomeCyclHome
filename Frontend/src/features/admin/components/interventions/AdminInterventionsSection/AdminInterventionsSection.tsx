@@ -57,13 +57,22 @@ export function AdminInterventionsSection() {
                 className={styles.tabs}
             >
                 <TabsList className={styles.tabsList}>
-                    <TabsTrigger value="planifiees" className={styles.tabsTrigger}>
+                    <TabsTrigger
+                        value="planifiees"
+                        className={styles.tabsTrigger}
+                    >
                         Planifiées
                     </TabsTrigger>
-                    <TabsTrigger value="enRetard" className={styles.tabsTrigger}>
+                    <TabsTrigger
+                        value="enRetard"
+                        className={styles.tabsTrigger}
+                    >
                         En retard
                     </TabsTrigger>
-                    <TabsTrigger value="archivees" className={styles.tabsTrigger}>
+                    <TabsTrigger
+                        value="archivees"
+                        className={styles.tabsTrigger}
+                    >
                         Archivées
                     </TabsTrigger>
                 </TabsList>

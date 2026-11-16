@@ -122,7 +122,9 @@ export function CycleSelector({
                         id="type-cycle-select"
                         className={styles.select}
                         value={typeCycleId}
-                        onChange={(e) => handleNewFieldChange('type', e.target.value)}
+                        onChange={(e) =>
+                            handleNewFieldChange('type', e.target.value)
+                        }
                     >
                         <option value="">-- Sélectionner un type --</option>
                         {typesCycles.map((t) => (
@@ -139,7 +141,9 @@ export function CycleSelector({
                         id="marque-select"
                         className={styles.select}
                         value={marqueId}
-                        onChange={(e) => handleNewFieldChange('marque', e.target.value)}
+                        onChange={(e) =>
+                            handleNewFieldChange('marque', e.target.value)
+                        }
                     >
                         <option value="">-- Sélectionner une marque --</option>
                         {marques.map((m) => (

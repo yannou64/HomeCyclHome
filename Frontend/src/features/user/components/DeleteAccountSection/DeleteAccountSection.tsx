@@ -9,6 +9,10 @@ import { Card } from '../../../../shared/components/Card/Card';
 import { useDeleteAccount } from '../../hooks/useDeleteAccount';
 import styles from './DeleteAccountSection.module.scss';
 
+// Socle des composants shadcn (positionnement et fond du Dialog), sans le
+// preflight Tailwind réservé à l'admin.
+import '../../../../app/styles/shadcn.css';
+
 export function DeleteAccountSection() {
     const [isOpen, setIsOpen] = useState(false);
     const { handleDeleteAccount, isLoading, error } = useDeleteAccount();
@@ -42,8 +46,9 @@ export function DeleteAccountSection() {
                     </DialogHeader>
 
                     <p className={styles.dialogMessage}>
-                        Cette action est <strong>irréversible</strong>. Votre compte
-                        et tous vos vélos enregistrés seront définitivement supprimés.
+                        Cette action est <strong>irréversible</strong>. Votre
+                        compte et tous vos vélos enregistrés seront
+                        définitivement supprimés.
                     </p>
 
                     {error && <p className={styles.error}>{error}</p>}
@@ -61,7 +66,9 @@ export function DeleteAccountSection() {
                             onClick={handleConfirm}
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Suppression…' : 'Supprimer mon compte'}
+                            {isLoading
+                                ? 'Suppression…'
+                                : 'Supprimer mon compte'}
                         </button>
                     </div>
                 </DialogContent>

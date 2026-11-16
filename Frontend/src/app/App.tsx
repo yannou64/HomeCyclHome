@@ -21,24 +21,39 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/inscription" element={<RegisterPage />} />
                 <Route path="/confirmer-email" element={<ConfirmEmailPage />} />
-                <Route path="/profil" element={
-                    <ProtectedRoute>
-                        <ProfilPage />
-                    </ProtectedRoute>
-                } />
-                <Route path="/interventions" element={
-                    <ProtectedRoute>
-                        <InterventionsPage />
-                    </ProtectedRoute>
-                } />
-                <Route path="/admin" element={
-                    <ProtectedRoute roles={['admin']}>
-                        <AdminPage />
-                    </ProtectedRoute>
-                } />
-                <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
+                <Route
+                    path="/profil"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/interventions"
+                    element={
+                        <ProtectedRoute>
+                            <InterventionsPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedRoute roles={['admin']}>
+                            <AdminPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/mentions-legales"
+                    element={<MentionsLegalesPage />}
+                />
                 <Route path="/cgu" element={<CguPage />} />
-                <Route path="/confidentialite" element={<ConfidentialitePage />} />
+                <Route
+                    path="/confidentialite"
+                    element={<ConfidentialitePage />}
+                />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Suspense>

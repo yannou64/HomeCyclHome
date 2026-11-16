@@ -11,14 +11,19 @@ import { AdminAffectationsSection } from '../../affectations/AdminAffectationsSe
 import { AdminPlanningSection } from '../../planning/AdminPlanningSection/AdminPlanningSection';
 import { AdminInterventionsSection } from '../../interventions/AdminInterventionsSection/AdminInterventionsSection';
 import { useAdminUsers } from '../../../hooks/useAdminUsers';
-import type { AdminUser, CreateUserPayload, UpdateUserPayload } from '../../../types/admin.types';
+import type {
+    AdminUser,
+    CreateUserPayload,
+    UpdateUserPayload,
+} from '../../../types/admin.types';
 import styles from './AdminLayout.module.scss';
 
 // Tailwind chargé uniquement dans le contexte admin
 import '../../../../../app/styles/tailwind.css';
 
 export function AdminLayout() {
-    const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
+    const [activeSection, setActiveSection] =
+        useState<AdminSection>('dashboard');
     const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
     const [deletingUser, setDeletingUser] = useState<AdminUser | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -54,7 +59,9 @@ export function AdminLayout() {
         setEditingUser(null);
     };
 
-    const handleFormSubmit = async (data: CreateUserPayload | UpdateUserPayload) => {
+    const handleFormSubmit = async (
+        data: CreateUserPayload | UpdateUserPayload,
+    ) => {
         if (editingUser) {
             await updateUser(editingUser.id, data as UpdateUserPayload);
         } else {

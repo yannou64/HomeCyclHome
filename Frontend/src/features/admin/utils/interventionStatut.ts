@@ -1,6 +1,7 @@
 import type { AdminInterventionListItem } from '../types/adminIntervention.types';
 
-export type InterventionDisplayStatut = 'Planifiee' | 'EnRetard' | 'Terminee' | 'Annulee';
+export type InterventionDisplayStatut =
+    'Planifiee' | 'EnRetard' | 'Terminee' | 'Annulee';
 
 const STATUT_LABELS: Record<InterventionDisplayStatut, string> = {
     Planifiee: 'Planifiée',
@@ -20,6 +21,8 @@ export function getDisplayStatut(
     return intervention.statut;
 }
 
-export function getStatutLabel(displayStatut: InterventionDisplayStatut): string {
+export function getStatutLabel(
+    displayStatut: InterventionDisplayStatut,
+): string {
     return STATUT_LABELS[displayStatut];
 }

@@ -1,10 +1,10 @@
 import styles from './Carousel.module.scss';
 
-type CarouselProps = {
+interface CarouselProps {
     images: string[];
     alt?: string;
     speed?: number; // durée en secondes pour un cycle complet
-};
+}
 
 export function Carousel({ images, alt = '', speed = 25 }: CarouselProps) {
     // Les images sont dupliquées pour créer la boucle infinie seamless :

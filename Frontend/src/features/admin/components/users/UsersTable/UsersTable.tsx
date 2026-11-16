@@ -14,7 +14,11 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from '../../../../../shared/components/ui/pagination';
-import type { AdminUser, GetUsersParams, PaginationMeta } from '../../../types/admin.types';
+import type {
+    AdminUser,
+    GetUsersParams,
+    PaginationMeta,
+} from '../../../types/admin.types';
 import styles from './UsersTable.module.scss';
 
 function StatutBadge({ isActif }: { isActif: boolean }) {
@@ -103,7 +107,9 @@ export function UsersTable({
                     className={styles.select}
                     onChange={(e) =>
                         onStatutFilter(
-                            e.target.value === '' ? undefined : e.target.value === 'true',
+                            e.target.value === ''
+                                ? undefined
+                                : e.target.value === 'true',
                         )
                     }
                 >
@@ -176,13 +182,21 @@ export function UsersTable({
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        if (filters.page! > 1) onPageChange(filters.page! - 1);
+                                        if (filters.page! > 1)
+                                            onPageChange(filters.page! - 1);
                                     }}
                                     aria-disabled={filters.page === 1}
-                                    className={filters.page === 1 ? 'pointer-events-none opacity-40' : undefined}
+                                    className={
+                                        filters.page === 1
+                                            ? 'pointer-events-none opacity-40'
+                                            : undefined
+                                    }
                                 />
                             </PaginationItem>
-                            {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                            {Array.from(
+                                { length: meta.totalPages },
+                                (_, i) => i + 1,
+                            ).map((p) => (
                                 <PaginationItem key={p}>
                                     <PaginationLink
                                         href="#"
@@ -201,11 +215,16 @@ export function UsersTable({
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        if (filters.page! < meta.totalPages) onPageChange(filters.page! + 1);
+                                        if (filters.page! < meta.totalPages)
+                                            onPageChange(filters.page! + 1);
                                     }}
-                                    aria-disabled={filters.page === meta.totalPages}
+                                    aria-disabled={
+                                        filters.page === meta.totalPages
+                                    }
                                     className={
-                                        filters.page === meta.totalPages ? 'pointer-events-none opacity-40' : undefined
+                                        filters.page === meta.totalPages
+                                            ? 'pointer-events-none opacity-40'
+                                            : undefined
                                     }
                                 />
                             </PaginationItem>

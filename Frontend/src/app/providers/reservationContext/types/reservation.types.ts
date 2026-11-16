@@ -50,12 +50,7 @@ export type CommentaireInfo = {
 };
 
 export type ReservationStep =
-    | 'adresse'
-    | 'cycle'
-    | 'forfait'
-    | 'creneau'
-    | 'auth'
-    | 'confirmation';
+    'adresse' | 'cycle' | 'forfait' | 'creneau' | 'auth' | 'confirmation';
 
 // Clé localStorage pour persister le tunnel entre l'auth et le retour sur /
 export const PENDING_RESERVATION_KEY = 'homecyclhome_pending_reservation';

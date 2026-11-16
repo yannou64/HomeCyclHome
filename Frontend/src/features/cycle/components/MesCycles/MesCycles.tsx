@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useCycles } from '../../hooks/useCycles';
 import { useReferentiel } from '../../hooks/useReferentiel';
 import { CTAButton } from '../../../../shared/components/CTAButton/CTAButton';
@@ -30,7 +30,8 @@ function cycleToForm(cycle: Cycle): FormState {
 }
 
 export function MesCycles() {
-    const { cycles, isLoading, error, createCycle, updateCycle, deleteCycle } = useCycles();
+    const { cycles, isLoading, error, createCycle, updateCycle, deleteCycle } =
+        useCycles();
     const { marques, typesCycles, isLoading: refLoading } = useReferentiel();
 
     // null = rien sélectionné, 'new' = création, string = id du cycle sélectionné
@@ -40,19 +41,26 @@ export function MesCycles() {
     const [formError, setFormError] = useState<string | null>(null);
     const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
-    // Quand on sélectionne un cycle existant, on pré-remplit le formulaire
-    useEffect(() => {
-        if (selectedId === 'new') {
+    // Clic sur un cycle ou sur « + » : on sélectionne ET on pré-remplit le
+    // formulaire dans le même gestionnaire d'événement (au lieu d'un useEffect
+    // qui observait selectedId et provoquait un second rendu).
+    function selectCycle(id: string | 'new') {
+        setSelectedId(id);
+        if (id === 'new') {
             setForm(EMPTY_FORM);
-        } else if (selectedId) {
-            const cycle = cycles.find((c) => c.id === selectedId);
+        } else {
+            const cycle = cycles.find((c) => c.id === id);
             if (cycle) setForm(cycleToForm(cycle));
         }
         setFormError(null);
         setFormSuccess(null);
-    }, [selectedId, cycles]);
+    }
 
-    function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+    function handleChange(
+        e: ChangeEvent<
+            HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >,
+    ) {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
@@ -100,7 +108,8 @@ export function MesCycles() {
 
     const isNew = selectedId === 'new';
 
-    if (isLoading) return <p className={styles.loading}>Chargement de vos cycles…</p>;
+    if (isLoading)
+        return <p className={styles.loading}>Chargement de vos cycles…</p>;
     if (error) return <p className={styles.error}>{error}</p>;
 
     return (
@@ -114,7 +123,7 @@ export function MesCycles() {
                         key={cycle.id}
                         type="button"
                         className={`${styles.chip} ${selectedId === cycle.id ? styles.chipActive : ''}`}
-                        onClick={() => setSelectedId(cycle.id)}
+                        onClick={() => selectCycle(cycle.id)}
                     >
                         {cycle.libelle}
                     </button>
@@ -122,7 +131,7 @@ export function MesCycles() {
                 <button
                     type="button"
                     className={`${styles.chip} ${isNew ? styles.chipActive : ''}`}
-                    onClick={() => setSelectedId('new')}
+                    onClick={() => selectCycle('new')}
                     aria-label="Ajouter un cycle"
                 >
                     +
@@ -131,10 +140,14 @@ export function MesCycles() {
 
             {/* Formulaire — affiché uniquement si un cycle est sélectionné ou en création */}
             {selectedId !== null && (
-                <Form className={styles.form} onSubmit={() => void handleSubmit()}>
-
+                <Form
+                    className={styles.form}
+                    onSubmit={() => void handleSubmit()}
+                >
                     <div className={styles.field}>
-                        <label htmlFor="libelle" className={styles.label}>Libellé</label>
+                        <label htmlFor="libelle" className={styles.label}>
+                            Libellé
+                        </label>
                         <input
                             id="libelle"
                             name="libelle"
@@ -148,7 +161,9 @@ export function MesCycles() {
                     </div>
 
                     <div className={styles.field}>
-                        <label htmlFor="marqueId" className={styles.label}>Marque</label>
+                        <label htmlFor="marqueId" className={styles.label}>
+                            Marque
+                        </label>
                         <select
                             id="marqueId"
                             name="marqueId"
@@ -160,13 +175,17 @@ export function MesCycles() {
                         >
                             <option value="">Sélectionner une marque</option>
                             {marques.map((m) => (
-                                <option key={m.id} value={m.id}>{m.libelle}</option>
+                                <option key={m.id} value={m.id}>
+                                    {m.libelle}
+                                </option>
                             ))}
                         </select>
                     </div>
 
                     <div className={styles.field}>
-                        <label htmlFor="typeCycleId" className={styles.label}>Type de cycle</label>
+                        <label htmlFor="typeCycleId" className={styles.label}>
+                            Type de cycle
+                        </label>
                         <select
                             id="typeCycleId"
                             name="typeCycleId"
@@ -178,13 +197,17 @@ export function MesCycles() {
                         >
                             <option value="">Sélectionner un type</option>
                             {typesCycles.map((t) => (
-                                <option key={t.id} value={t.id}>{t.libelle}</option>
+                                <option key={t.id} value={t.id}>
+                                    {t.libelle}
+                                </option>
                             ))}
                         </select>
                     </div>
 
                     <div className={styles.field}>
-                        <label htmlFor="particularite" className={styles.label}>Particularités</label>
+                        <label htmlFor="particularite" className={styles.label}>
+                            Particularités
+                        </label>
                         <textarea
                             id="particularite"
                             name="particularite"
@@ -197,7 +220,9 @@ export function MesCycles() {
                     </div>
 
                     {formError && <p className={styles.error}>{formError}</p>}
-                    {formSuccess && <p className={styles.success}>{formSuccess}</p>}
+                    {formSuccess && (
+                        <p className={styles.success}>{formSuccess}</p>
+                    )}
 
                     <CTAButton type="submit" isLoading={isSaving}>
                         {isNew ? 'Enregistrer' : 'Modifier'}

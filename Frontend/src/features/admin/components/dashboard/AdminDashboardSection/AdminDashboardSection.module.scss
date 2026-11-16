@@ -45,9 +45,15 @@
     height: 3rem;
 }
 
-.colorBrown  { color: $color-myBrown; }
-.colorViolet { color: $color-myViolet; }
-.colorYellow { color: $color-myYellow; }
+.colorBrown {
+    color: $color-myBrown;
+}
+.colorViolet {
+    color: $color-myViolet;
+}
+.colorYellow {
+    color: $color-myYellow;
+}
 
 .value {
     font-size: 2.5rem;

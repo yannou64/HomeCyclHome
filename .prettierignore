@@ -14,3 +14,5 @@ Backend/prisma/migrations
 # Environnement
 .env
 .env.*
+# Composants shadcn générés : gardés tels que produits par le CLI shadcn
+Frontend/src/shared/components/ui

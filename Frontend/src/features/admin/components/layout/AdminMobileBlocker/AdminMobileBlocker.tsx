@@ -25,8 +25,8 @@ export function AdminMobileBlocker() {
                 </h2>
 
                 <p className={styles.description}>
-                    Pour accéder à l&apos;administration connectez-vous
-                    depuis un ordinateur
+                    Pour accéder à l&apos;administration connectez-vous depuis
+                    un ordinateur
                 </p>
 
                 <Link to="/" className={styles.button}>

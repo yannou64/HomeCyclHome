@@ -15,13 +15,24 @@ type FetchAction =
 
 function fetchReducer(_: FetchState, action: FetchAction): FetchState {
     switch (action.type) {
-        case 'start':   return { detail: null, isLoading: true, error: null };
-        case 'success': return { detail: action.payload, isLoading: false, error: null };
-        case 'error':   return { detail: null, isLoading: false, error: 'Impossible de charger le détail.' };
+        case 'start':
+            return { detail: null, isLoading: true, error: null };
+        case 'success':
+            return { detail: action.payload, isLoading: false, error: null };
+        case 'error':
+            return {
+                detail: null,
+                isLoading: false,
+                error: 'Impossible de charger le détail.',
+            };
     }
 }
 
-const INITIAL_STATE: FetchState = { detail: null, isLoading: false, error: null };
+const INITIAL_STATE: FetchState = {
+    detail: null,
+    isLoading: false,
+    error: null,
+};
 
 export function useAdminInterventionDetail(id: string | null) {
     const [state, dispatch] = useReducer(fetchReducer, INITIAL_STATE);
@@ -34,14 +45,17 @@ export function useAdminInterventionDetail(id: string | null) {
 
         void (async () => {
             try {
-                const data = await adminInterventionsService.getInterventionDetail(id);
+                const data =
+                    await adminInterventionsService.getInterventionDetail(id);
                 if (active) dispatch({ type: 'success', payload: data });
             } catch {
                 if (active) dispatch({ type: 'error' });
             }
         })();
 
-        return () => { active = false; };
+        return () => {
+            active = false;
+        };
     }, [id]);
 
     return state;

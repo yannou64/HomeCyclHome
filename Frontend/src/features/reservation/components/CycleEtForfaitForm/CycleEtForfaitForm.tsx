@@ -19,14 +19,24 @@ export function CycleEtForfaitForm() {
     const { setCycle, setForfait, goToStep } = useReservation();
 
     const { marques, typesCycles, isLoading: refLoading } = useReferentiel();
-    const { forfaits, isLoading: forfaitsLoading, error: forfaitsError } = useForfaits();
-    const { cycles, isLoading: cyclesLoading } = useUserCyclesForReservation(isAuthenticated);
+    const {
+        forfaits,
+        isLoading: forfaitsLoading,
+        error: forfaitsError,
+    } = useForfaits();
+    const { cycles, isLoading: cyclesLoading } =
+        useUserCyclesForReservation(isAuthenticated);
 
-    const [selectedCycle, setSelectedCycle] = useState<CycleBooking | null>(null);
-    const [selectedForfait, setSelectedForfait] = useState<ForfaitInfo | null>(null);
+    const [selectedCycle, setSelectedCycle] = useState<CycleBooking | null>(
+        null,
+    );
+    const [selectedForfait, setSelectedForfait] = useState<ForfaitInfo | null>(
+        null,
+    );
 
     // On attend aussi les cycles si l'utilisateur est connecté
-    const isLoading = refLoading || forfaitsLoading || (isAuthenticated && cyclesLoading);
+    const isLoading =
+        refLoading || forfaitsLoading || (isAuthenticated && cyclesLoading);
     const canSubmit = !!selectedCycle && !!selectedForfait;
 
     const handleSubmit = () => {
@@ -42,7 +52,9 @@ export function CycleEtForfaitForm() {
 
     return (
         <Form className={styles.container} onSubmit={handleSubmit}>
-            <h2 className={styles.sectionTitle}>Votre vélo et votre prestation</h2>
+            <h2 className={styles.sectionTitle}>
+                Votre vélo et votre prestation
+            </h2>
 
             <CycleSelector
                 typesCycles={typesCycles}
@@ -52,11 +64,16 @@ export function CycleEtForfaitForm() {
             />
 
             <div className={styles.forfaitSection}>
-                <span className={styles.forfaitLabel}>Choisissez votre forfait</span>
+                <span className={styles.forfaitLabel}>
+                    Choisissez votre forfait
+                </span>
                 {forfaitsError ? (
                     <p className={styles.errorText}>{forfaitsError}</p>
                 ) : (
-                    <ForfaitSelector forfaits={forfaits} onChange={setSelectedForfait} />
+                    <ForfaitSelector
+                        forfaits={forfaits}
+                        onChange={setSelectedForfait}
+                    />
                 )}
             </div>
 
@@ -64,7 +81,11 @@ export function CycleEtForfaitForm() {
                 <CTAButton type="submit" disabled={!canSubmit}>
                     Choisir un créneau
                 </CTAButton>
-                <button type="button" className={styles.backButton} onClick={() => goToStep('adresse')}>
+                <button
+                    type="button"
+                    className={styles.backButton}
+                    onClick={() => goToStep('adresse')}
+                >
                     Retour
                 </button>
             </div>

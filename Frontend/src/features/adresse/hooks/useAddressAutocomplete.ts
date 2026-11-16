@@ -20,7 +20,8 @@ export function useAddressAutocomplete() {
     const [inputEl, setInputEl] = useState<HTMLInputElement | null>(null);
     // useRef donne un accès impératif mutable à l'élément (écriture de .value)
     const inputElRef = useRef<HTMLInputElement | null>(null);
-    const [decomposedAddress, setDecomposedAddress] = useState<DecomposedAddress | null>(null);
+    const [decomposedAddress, setDecomposedAddress] =
+        useState<DecomposedAddress | null>(null);
 
     // Callback ref : React appelle cette fonction avec l'élément réel
     // quand l'input est monté, et avec null quand il est démonté.
@@ -55,7 +56,9 @@ export function useAddressAutocomplete() {
                 const components = place.address_components;
 
                 setDecomposedAddress({
-                    numero: extractComponent(components, 'street_number') || undefined,
+                    numero:
+                        extractComponent(components, 'street_number') ||
+                        undefined,
                     rue: extractComponent(components, 'route'),
                     codePostal: extractComponent(components, 'postal_code'),
                     ville: extractComponent(components, 'locality'),
@@ -67,9 +70,13 @@ export function useAddressAutocomplete() {
             });
         };
 
-        run().catch((err: unknown) => {
-            console.error('[Autocomplete] erreur de chargement :', err);
-        });
+        void (async () => {
+            try {
+                await run();
+            } catch (err: unknown) {
+                console.error('[Autocomplete] erreur de chargement :', err);
+            }
+        })();
 
         return () => {
             listenerHandle?.remove();

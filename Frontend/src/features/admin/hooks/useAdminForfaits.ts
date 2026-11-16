@@ -1,48 +1,54 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useAsyncData } from '../../../shared/hooks/useAsyncData';
 import { adminForfaitsService } from '../services/adminForfaitsService';
 import type { Forfait, ForfaitPayload } from '../types/forfaits.types';
 
+// Loader défini hors du composant : sa référence ne change jamais, donc la
+// liste n'est chargée qu'au montage puis à chaque reload().
+const loadForfaits = () => adminForfaitsService.getAll();
+
 export function useAdminForfaits() {
-  const [items, setItems] = useState<Forfait[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: items,
+        isLoading,
+        error,
+        reload,
+    } = useAsyncData<Forfait[]>(
+        loadForfaits,
+        [],
+        'Impossible de charger les forfaits.',
+    );
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await adminForfaitsService.getAll();
-      setItems(result);
-    } catch {
-      setError('Impossible de charger les forfaits.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    // Chaque modification recharge la liste une fois la requête terminée.
+    const createItem = async (payload: ForfaitPayload) => {
+        await adminForfaitsService.create(payload);
+        reload();
+    };
 
-  useEffect(() => {
-    void fetchItems();
-  }, [fetchItems]);
+    const updateItem = async (id: string, payload: ForfaitPayload) => {
+        await adminForfaitsService.update(id, payload);
+        reload();
+    };
 
-  const createItem = async (payload: ForfaitPayload) => {
-    await adminForfaitsService.create(payload);
-    await fetchItems();
-  };
+    const deleteItem = async (id: string) => {
+        await adminForfaitsService.delete(id);
+        reload();
+    };
 
-  const updateItem = async (id: string, payload: ForfaitPayload) => {
-    await adminForfaitsService.update(id, payload);
-    await fetchItems();
-  };
+    const setPrix = async (
+        id: string,
+        payload: { montant: number; dateDebut: string },
+    ) => {
+        await adminForfaitsService.setPrix(id, payload);
+        reload();
+    };
 
-  const deleteItem = async (id: string) => {
-    await adminForfaitsService.delete(id);
-    await fetchItems();
-  };
-
-  const setPrix = async (id: string, payload: { montant: number; dateDebut: string }) => {
-    await adminForfaitsService.setPrix(id, payload);
-    await fetchItems();
-  };
-
-  return { items, isLoading, error, createItem, updateItem, deleteItem, setPrix };
+    return {
+        items,
+        isLoading,
+        error,
+        createItem,
+        updateItem,
+        deleteItem,
+        setPrix,
+    };
 }

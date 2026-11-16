@@ -18,7 +18,12 @@ export function Footer() {
                     {LEGAL_LINKS.map((link, index) => (
                         <Fragment key={link.to}>
                             {index > 0 && (
-                                <span aria-hidden="true" className={styles.separator}>·</span>
+                                <span
+                                    aria-hidden="true"
+                                    className={styles.separator}
+                                >
+                                    ·
+                                </span>
                             )}
                             <Link to={link.to} className={styles.legalLink}>
                                 {link.label}
@@ -26,7 +31,9 @@ export function Footer() {
                         </Fragment>
                     ))}
                 </nav>
-                <p className={styles.copyright}>© LeCycleLyonnais {currentYear}</p>
+                <p className={styles.copyright}>
+                    © LeCycleLyonnais {currentYear}
+                </p>
             </div>
         </footer>
     );

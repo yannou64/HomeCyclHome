@@ -8,8 +8,13 @@ import type { UserProfile } from '../../types/user.types';
 import styles from './ProfileForm.module.scss';
 
 // Reçoit un profil garanti non-null — initialise l'état directement depuis la prop
-function ProfileFormFields({ initialProfile }: { initialProfile: UserProfile }) {
-    const { handleUpdateProfile, isLoading, error, isSuccess } = useUpdateProfile();
+function ProfileFormFields({
+    initialProfile,
+}: {
+    initialProfile: UserProfile;
+}) {
+    const { handleUpdateProfile, isLoading, error, isSuccess } =
+        useUpdateProfile();
 
     const [formData, setFormData] = useState({
         nom: initialProfile.nom,
@@ -29,26 +34,35 @@ function ProfileFormFields({ initialProfile }: { initialProfile: UserProfile }) 
         <>
             <h2 className={styles.title}>Mon profil</h2>
             <Form className={styles.form} onSubmit={handleSubmit}>
-
                 <div className={styles.nameRow}>
                     <div className={styles.field}>
-                        <label htmlFor="prenom" className={styles.label}>Prénom</label>
+                        <label htmlFor="prenom" className={styles.label}>
+                            Prénom
+                        </label>
                         <div className={styles.inputWrapper}>
                             <input
-                                id="prenom" name="prenom" type="text"
+                                id="prenom"
+                                name="prenom"
+                                type="text"
                                 className={styles.input}
-                                value={formData.prenom} onChange={handleChange}
+                                value={formData.prenom}
+                                onChange={handleChange}
                                 autoComplete="given-name"
                             />
                         </div>
                     </div>
                     <div className={styles.field}>
-                        <label htmlFor="nom" className={styles.label}>Nom</label>
+                        <label htmlFor="nom" className={styles.label}>
+                            Nom
+                        </label>
                         <div className={styles.inputWrapper}>
                             <input
-                                id="nom" name="nom" type="text"
+                                id="nom"
+                                name="nom"
+                                type="text"
                                 className={styles.input}
-                                value={formData.nom} onChange={handleChange}
+                                value={formData.nom}
+                                onChange={handleChange}
                                 autoComplete="family-name"
                             />
                         </div>
@@ -56,20 +70,32 @@ function ProfileFormFields({ initialProfile }: { initialProfile: UserProfile }) 
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="telephone" className={styles.label}>Téléphone</label>
+                    <label htmlFor="telephone" className={styles.label}>
+                        Téléphone
+                    </label>
                     <div className={styles.inputWrapper}>
                         <input
-                            id="telephone" name="telephone" type="tel"
+                            id="telephone"
+                            name="telephone"
+                            type="tel"
                             className={styles.input}
-                            value={formData.telephone} onChange={handleChange}
+                            value={formData.telephone}
+                            onChange={handleChange}
                             autoComplete="tel"
                         />
-                        <img src={phoneIcon} alt="" className={styles.inputIcon} aria-hidden="true" />
+                        <img
+                            src={phoneIcon}
+                            alt=""
+                            className={styles.inputIcon}
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
 
                 {error && <p className={styles.error}>{error}</p>}
-                {isSuccess && <p className={styles.success}>Profil mis à jour !</p>}
+                {isSuccess && (
+                    <p className={styles.success}>Profil mis à jour !</p>
+                )}
 
                 <CTAButton type="submit" isLoading={isLoading}>
                     Enregistrer

@@ -4,13 +4,13 @@ import styles from './MobileMenu.module.scss';
 
 type NavLinkItem = { label: string; to: string };
 
-type MobileMenuProps = {
+interface MobileMenuProps {
     isOpen: boolean;
     onClose: () => void;
     navLinks: NavLinkItem[];
     onLogout?: () => void;
     isAuthenticated: boolean;
-};
+}
 
 const LEGAL_LINKS: NavLinkItem[] = [
     { label: 'Mentions légales', to: '/mentions-legales' },
@@ -18,7 +18,13 @@ const LEGAL_LINKS: NavLinkItem[] = [
     { label: 'Confidentialité', to: '/confidentialite' },
 ];
 
-export function MobileMenu({ isOpen, onClose, navLinks, onLogout, isAuthenticated }: MobileMenuProps) {
+export function MobileMenu({
+    isOpen,
+    onClose,
+    navLinks,
+    onLogout,
+    isAuthenticated,
+}: MobileMenuProps) {
     return (
         <>
             {/* Fond semi-transparent — clic pour fermer */}
@@ -38,14 +44,26 @@ export function MobileMenu({ isOpen, onClose, navLinks, onLogout, isAuthenticate
                 {/* En-tête du drawer : logo + bouton fermer */}
                 <div className={styles.drawerHeader}>
                     <Link to="/" onClick={onClose}>
-                        <img src={logoMiniRondWhite} alt="HomeCycl'Home" className={styles.logo} />
+                        <img
+                            src={logoMiniRondWhite}
+                            alt="HomeCycl'Home"
+                            className={styles.logo}
+                        />
                     </Link>
                     <button
                         className={styles.closeBtn}
                         onClick={onClose}
                         aria-label="Fermer le menu"
                     >
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <svg
+                            width="28"
+                            height="28"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                        >
                             <line x1="18" y1="6" x2="6" y2="18" />
                             <line x1="6" y1="6" x2="18" y2="18" />
                         </svg>
@@ -59,7 +77,9 @@ export function MobileMenu({ isOpen, onClose, navLinks, onLogout, isAuthenticate
                             <NavLink
                                 to={link.to}
                                 className={({ isActive }) =>
-                                    isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+                                    isActive
+                                        ? `${styles.navLink} ${styles.active}`
+                                        : styles.navLink
                                 }
                                 onClick={onClose}
                                 end={link.to === '/'}
@@ -72,7 +92,10 @@ export function MobileMenu({ isOpen, onClose, navLinks, onLogout, isAuthenticate
                         <li>
                             <button
                                 className={styles.logoutBtn}
-                                onClick={() => { onLogout?.(); onClose(); }}
+                                onClick={() => {
+                                    onLogout?.();
+                                    onClose();
+                                }}
                             >
                                 Déconnexion
                             </button>
@@ -86,7 +109,11 @@ export function MobileMenu({ isOpen, onClose, navLinks, onLogout, isAuthenticate
                 <ul className={styles.legalList}>
                     {LEGAL_LINKS.map((link) => (
                         <li key={link.to}>
-                            <Link to={link.to} className={styles.legalLink} onClick={onClose}>
+                            <Link
+                                to={link.to}
+                                className={styles.legalLink}
+                                onClick={onClose}
+                            >
                                 {link.label}
                             </Link>
                         </li>

@@ -1,10 +1,10 @@
 import type { ReactNode, FormEvent } from 'react';
 
-type FormProps = {
+interface FormProps {
     children: ReactNode;
     onSubmit: () => void;
     className?: string;
-};
+}
 
 // Centralise le e.preventDefault() + onSubmit — garantit la soumission au clavier
 // (touche Entrée) partout où un CTAButton type="submit" est utilisé.
