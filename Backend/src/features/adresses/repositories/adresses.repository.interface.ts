@@ -2,6 +2,10 @@ import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
 import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
 import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
 
+// Jeton d'injection : l'interface disparaît à la compilation, Nest
+// retrouve l'implémentation par ce nom (voir le module).
+export const ADRESSES_REPO = 'ADRESSES_REPO';
+
 export interface IAdressesRepository {
     // Retourne les liaisons actives (is_valide = true) de l'utilisateur
     findAllByUser(utilisateurId: string): Promise<AdresseResponseDto[]>;

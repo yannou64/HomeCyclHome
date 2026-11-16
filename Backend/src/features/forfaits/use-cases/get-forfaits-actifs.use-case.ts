@@ -1,8 +1,15 @@
+import { Injectable, Inject } from '@nestjs/common';
 import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
-import { IForfaitsRepository } from '../repositories/forfaits.repository.interface';
+import {
+    FORFAITS_REPO,
+    type IForfaitsRepository,
+} from '../repositories/forfaits.repository.interface';
 
+@Injectable()
 export class GetForfaitsActifsUseCase {
-    constructor(private readonly repo: IForfaitsRepository) {}
+    constructor(
+        @Inject(FORFAITS_REPO) private readonly repo: IForfaitsRepository,
+    ) {}
 
     async execute(): Promise<ForfaitResponseDto[]> {
         return this.repo.findAllActifs();

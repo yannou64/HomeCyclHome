@@ -4,6 +4,10 @@ import type { InterventionListItemResponseDto } from '../dto/output/intervention
 import type { AdminInterventionListItemResponseDto } from '../dto/output/admin-intervention-list-item-response.dto';
 import type { AdminInterventionDetailResponseDto } from '../dto/output/admin-intervention-detail-response.dto';
 
+// Jeton d'injection : l'interface disparaît à la compilation, Nest
+// retrouve l'implémentation par ce nom (voir le module).
+export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
+
 export type InterventionForCancel = {
     clientId: string;
     statut: string;

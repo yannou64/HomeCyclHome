@@ -30,107 +30,25 @@ import { ClientCreneauxController } from './controllers/client-creneaux.controll
             useClass: PlanningPrismaRepository,
         },
         // Modèles de planification
-        {
-            provide: GetModelesPlanificationUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GetModelesPlanificationUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: CreateModelePlanificationUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new CreateModelePlanificationUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: UpdateModelePlanificationUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new UpdateModelePlanificationUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: DeleteModelePlanificationUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new DeleteModelePlanificationUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
+        GetModelesPlanificationUseCase,
+        CreateModelePlanificationUseCase,
+        UpdateModelePlanificationUseCase,
+        DeleteModelePlanificationUseCase,
         // Pauses récurrentes
-        {
-            provide: GetPausesRecurrentesUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GetPausesRecurrentesUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: CreatePauseRecurrenteUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new CreatePauseRecurrenteUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: DeletePauseRecurrenteUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new DeletePauseRecurrenteUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
+        GetPausesRecurrentesUseCase,
+        CreatePauseRecurrenteUseCase,
+        DeletePauseRecurrenteUseCase,
         // Indisponibilités
-        {
-            provide: GetIndisponibilitesUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GetIndisponibilitesUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: CreateIndisponibiliteUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new CreateIndisponibiliteUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: DeleteIndisponibiliteUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new DeleteIndisponibiliteUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
+        GetIndisponibilitesUseCase,
+        CreateIndisponibiliteUseCase,
+        DeleteIndisponibiliteUseCase,
         // Créneaux
-        {
-            provide: GenerateCreneauxUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GenerateCreneauxUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: GenerateAllCreneauxUseCase,
-            useFactory: (
-                repo: PlanningPrismaRepository,
-                generate: GenerateCreneauxUseCase,
-            ) => new GenerateAllCreneauxUseCase(repo, generate),
-            inject: [PLANNING_REPO, GenerateCreneauxUseCase],
-        },
-        {
-            provide: GetCreneauxUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GetCreneauxUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: DeleteCreneauUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new DeleteCreneauUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: DeleteCreneauxDisponiblesUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new DeleteCreneauxDisponiblesUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
-        {
-            provide: GetCreneauxDisponiblesUseCase,
-            useFactory: (repo: PlanningPrismaRepository) =>
-                new GetCreneauxDisponiblesUseCase(repo),
-            inject: [PLANNING_REPO],
-        },
+        GenerateCreneauxUseCase,
+        GenerateAllCreneauxUseCase,
+        GetCreneauxUseCase,
+        DeleteCreneauUseCase,
+        DeleteCreneauxDisponiblesUseCase,
+        GetCreneauxDisponiblesUseCase,
     ],
 })
 export class PlanningModule {}

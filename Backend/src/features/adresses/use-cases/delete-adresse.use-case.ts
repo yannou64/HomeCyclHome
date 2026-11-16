@@ -1,8 +1,19 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
+import {
+    BadRequestException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    ADRESSES_REPO,
+    type IAdressesRepository,
+} from '../repositories/adresses.repository.interface';
 
+@Injectable()
 export class DeleteAdresseUseCase {
-    constructor(private readonly repo: IAdressesRepository) {}
+    constructor(
+        @Inject(ADRESSES_REPO) private readonly repo: IAdressesRepository,
+    ) {}
 
     async execute(id: string, utilisateurId: string): Promise<void> {
         const liaison = await this.repo.findByIdAndUser(id, utilisateurId);

@@ -1,10 +1,21 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { CreateIndisponibiliteDto } from '../dto/input/create-indisponibilite.dto';
 import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
-import { IPlanningRepository } from '../repositories/planning.repository.interface';
+import {
+    PLANNING_REPO,
+    type IPlanningRepository,
+} from '../repositories/planning.repository.interface';
 
+@Injectable()
 export class CreateIndisponibiliteUseCase {
-    constructor(private readonly repo: IPlanningRepository) {}
+    constructor(
+        @Inject(PLANNING_REPO) private readonly repo: IPlanningRepository,
+    ) {}
 
     async execute(
         dto: CreateIndisponibiliteDto,

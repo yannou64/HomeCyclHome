@@ -1,12 +1,23 @@
-import { ForbiddenException, BadRequestException } from '@nestjs/common';
-import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
-import type { StorageService } from '../../../shared/storage/storage.service';
+import {
+    ForbiddenException,
+    BadRequestException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    INTERVENTIONS_REPO,
+    type IInterventionsRepository,
+} from '../repositories/interventions.repository.interface';
+import { StorageService } from '../../../shared/storage/storage.service';
 
 const MAX_PHOTOS = 5;
 
+@Injectable()
 export class UploadInterventionPhotosUseCase {
     constructor(
+        @Inject(INTERVENTIONS_REPO)
         private readonly repo: IInterventionsRepository,
+        @Inject(StorageService)
         private readonly storage: Pick<StorageService, 'uploadFile'>,
     ) {}
 

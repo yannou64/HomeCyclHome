@@ -1,11 +1,17 @@
-import type {
-    IInterventionsRepository,
-    GetAdminInterventionsParams,
+import { Injectable, Inject } from '@nestjs/common';
+import {
+    INTERVENTIONS_REPO,
+    type IInterventionsRepository,
+    type GetAdminInterventionsParams,
 } from '../repositories/interventions.repository.interface';
 import type { PaginatedAdminInterventionsResponseDto } from '../dto/output/paginated-admin-interventions-response.dto';
 
+@Injectable()
 export class GetAdminInterventionsUseCase {
-    constructor(private readonly repo: IInterventionsRepository) {}
+    constructor(
+        @Inject(INTERVENTIONS_REPO)
+        private readonly repo: IInterventionsRepository,
+    ) {}
 
     async execute(
         params: GetAdminInterventionsParams,

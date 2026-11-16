@@ -1,9 +1,15 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable, Inject } from '@nestjs/common';
 import { MarqueResponseDto } from '../dto/output/marque-response.dto';
-import { IMarquesRepository } from '../repositories/marques.repository.interface';
+import {
+    MARQUES_REPO,
+    type IMarquesRepository,
+} from '../repositories/marques.repository.interface';
 
+@Injectable()
 export class CreateMarqueUseCase {
-    constructor(private readonly repo: IMarquesRepository) {}
+    constructor(
+        @Inject(MARQUES_REPO) private readonly repo: IMarquesRepository,
+    ) {}
 
     async execute(libelle: string): Promise<MarqueResponseDto> {
         const existing = await this.repo.findByLibelle(libelle);

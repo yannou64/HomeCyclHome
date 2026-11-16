@@ -14,30 +14,10 @@ import { SetTechnicienZonesUseCase } from './use-cases/set-technicien-zones.use-
             provide: AFFECTATIONS_REPO,
             useClass: AffectationsPrismaRepository,
         },
-        {
-            provide: GetAffectationsUseCase,
-            useFactory: (repo: AffectationsPrismaRepository) =>
-                new GetAffectationsUseCase(repo),
-            inject: [AFFECTATIONS_REPO],
-        },
-        {
-            provide: SetTechnicienZonesUseCase,
-            useFactory: (repo: AffectationsPrismaRepository) =>
-                new SetTechnicienZonesUseCase(repo),
-            inject: [AFFECTATIONS_REPO],
-        },
-        {
-            provide: DeleteTechnicienAffectationsUseCase,
-            useFactory: (repo: AffectationsPrismaRepository) =>
-                new DeleteTechnicienAffectationsUseCase(repo),
-            inject: [AFFECTATIONS_REPO],
-        },
-        {
-            provide: GetAffectationByTechnicienUseCase,
-            useFactory: (repo: AffectationsPrismaRepository) =>
-                new GetAffectationByTechnicienUseCase(repo),
-            inject: [AFFECTATIONS_REPO],
-        },
+        GetAffectationsUseCase,
+        SetTechnicienZonesUseCase,
+        DeleteTechnicienAffectationsUseCase,
+        GetAffectationByTechnicienUseCase,
     ],
 })
 export class AffectationsModule {}

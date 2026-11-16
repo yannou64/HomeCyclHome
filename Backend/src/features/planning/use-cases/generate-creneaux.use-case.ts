@@ -1,5 +1,13 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreateCreneauData } from '../repositories/planning.repository.interface';
+import {
+    BadRequestException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    PLANNING_REPO,
+    type CreateCreneauData,
+} from '../repositories/planning.repository.interface';
 import { GenerationRapportResponseDto } from '../dto/output/generation-rapport-response.dto';
 import { IndisponibiliteResponseDto } from '../dto/output/indisponibilite-response.dto';
 import { PauseRecurrenteResponseDto } from '../dto/output/pause-recurrente-response.dto';
@@ -14,8 +22,11 @@ export type GenerateCreneauxInput = {
 
 const MAX_MOIS = 6;
 
+@Injectable()
 export class GenerateCreneauxUseCase {
-    constructor(private readonly repo: IPlanningRepository) {}
+    constructor(
+        @Inject(PLANNING_REPO) private readonly repo: IPlanningRepository,
+    ) {}
 
     async execute(
         input: GenerateCreneauxInput,

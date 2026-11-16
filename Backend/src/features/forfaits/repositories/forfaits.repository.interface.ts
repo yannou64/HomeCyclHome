@@ -1,5 +1,9 @@
 import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 
+// Jeton d'injection : l'interface disparaît à la compilation, Nest
+// retrouve l'implémentation par ce nom (voir le module).
+export const FORFAITS_REPO = 'FORFAITS_REPO';
+
 export type CreateForfaitData = {
     nom: string;
     description?: string;

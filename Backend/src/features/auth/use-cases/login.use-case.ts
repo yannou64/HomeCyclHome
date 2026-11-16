@@ -1,9 +1,17 @@
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import {
+    ForbiddenException,
+    UnauthorizedException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { jwtAccessConfig, jwtRefreshConfig } from '../../../config/jwt.config';
 import { LoginDto } from '../dto/input/login.dto';
-import { IAuthRepository } from '../repositories/auth.repository.interface';
+import {
+    AUTH_REPO,
+    type IAuthRepository,
+} from '../repositories/auth.repository.interface';
 
 export type LoginResult = {
     userId: string;
@@ -13,9 +21,10 @@ export type LoginResult = {
     refreshToken: string;
 };
 
+@Injectable()
 export class LoginUseCase {
     constructor(
-        private readonly repo: IAuthRepository,
+        @Inject(AUTH_REPO) private readonly repo: IAuthRepository,
         private readonly jwtService: JwtService,
     ) {}
 

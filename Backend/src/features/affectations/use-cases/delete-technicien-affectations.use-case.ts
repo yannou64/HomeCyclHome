@@ -1,8 +1,15 @@
-import { NotFoundException } from '@nestjs/common';
-import { IAffectationsRepository } from '../repositories/affectations.repository.interface';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
+import {
+    AFFECTATIONS_REPO,
+    type IAffectationsRepository,
+} from '../repositories/affectations.repository.interface';
 
+@Injectable()
 export class DeleteTechnicienAffectationsUseCase {
-    constructor(private readonly repo: IAffectationsRepository) {}
+    constructor(
+        @Inject(AFFECTATIONS_REPO)
+        private readonly repo: IAffectationsRepository,
+    ) {}
 
     async execute(technicienId: string): Promise<void> {
         const existe = await this.repo.technicienExists(technicienId);

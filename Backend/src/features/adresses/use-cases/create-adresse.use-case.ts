@@ -1,10 +1,16 @@
-import { ConflictException } from '@nestjs/common';
-import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
+import { ConflictException, Injectable, Inject } from '@nestjs/common';
+import {
+    ADRESSES_REPO,
+    type IAdressesRepository,
+} from '../repositories/adresses.repository.interface';
 import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
 import type { CreateAdresseInput } from '../dto/input/create-adresse.dto';
 
+@Injectable()
 export class CreateAdresseUseCase {
-    constructor(private readonly repo: IAdressesRepository) {}
+    constructor(
+        @Inject(ADRESSES_REPO) private readonly repo: IAdressesRepository,
+    ) {}
 
     async execute(
         utilisateurId: string,

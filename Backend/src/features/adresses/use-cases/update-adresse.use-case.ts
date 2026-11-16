@@ -1,10 +1,16 @@
-import { NotFoundException } from '@nestjs/common';
-import type { IAdressesRepository } from '../repositories/adresses.repository.interface';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
+import {
+    ADRESSES_REPO,
+    type IAdressesRepository,
+} from '../repositories/adresses.repository.interface';
 import type { AdresseResponseDto } from '../dto/output/adresse-response.dto';
 import type { UpdateAdresseInput } from '../dto/input/update-adresse.dto';
 
+@Injectable()
 export class UpdateAdresseUseCase {
-    constructor(private readonly repo: IAdressesRepository) {}
+    constructor(
+        @Inject(ADRESSES_REPO) private readonly repo: IAdressesRepository,
+    ) {}
 
     async execute(
         id: string,

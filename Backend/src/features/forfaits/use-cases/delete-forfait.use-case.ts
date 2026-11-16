@@ -1,8 +1,14 @@
-import { NotFoundException } from '@nestjs/common';
-import { IForfaitsRepository } from '../repositories/forfaits.repository.interface';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
+import {
+    FORFAITS_REPO,
+    type IForfaitsRepository,
+} from '../repositories/forfaits.repository.interface';
 
+@Injectable()
 export class DeleteForfaitUseCase {
-    constructor(private readonly repo: IForfaitsRepository) {}
+    constructor(
+        @Inject(FORFAITS_REPO) private readonly repo: IForfaitsRepository,
+    ) {}
 
     async execute(id: string): Promise<void> {
         const forfait = await this.repo.findById(id);

@@ -1,10 +1,21 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+    ForbiddenException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { UpdateCycleInput } from '../dto/input/update-cycle.dto';
 import { CycleResponseDto } from '../dto/output/cycle-response.dto';
-import { ICyclesRepository } from '../repositories/cycles.repository.interface';
+import {
+    CYCLES_REPO,
+    type ICyclesRepository,
+} from '../repositories/cycles.repository.interface';
 
+@Injectable()
 export class UpdateCycleUseCase {
-    constructor(private readonly repo: ICyclesRepository) {}
+    constructor(
+        @Inject(CYCLES_REPO) private readonly repo: ICyclesRepository,
+    ) {}
 
     async execute(
         id: string,

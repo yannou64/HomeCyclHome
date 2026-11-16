@@ -1,9 +1,13 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
 import { UserProfileResponseDto } from '../dto/output/user-profile-response.dto';
-import { IUsersRepository } from '../repositories/users.repository.interface';
+import {
+    USERS_REPO,
+    type IUsersRepository,
+} from '../repositories/users.repository.interface';
 
+@Injectable()
 export class GetProfileUseCase {
-    constructor(private readonly repo: IUsersRepository) {}
+    constructor(@Inject(USERS_REPO) private readonly repo: IUsersRepository) {}
 
     async execute(userId: string): Promise<UserProfileResponseDto> {
         const user = await this.repo.findById(userId);

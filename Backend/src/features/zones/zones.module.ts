@@ -17,42 +17,12 @@ import { UpdateZoneUseCase } from './use-cases/update-zone.use-case';
             provide: ZONES_REPO,
             useClass: ZonesPrismaRepository,
         },
-        {
-            provide: GetZonesUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new GetZonesUseCase(repo),
-            inject: [ZONES_REPO],
-        },
-        {
-            provide: GetZoneByIdUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new GetZoneByIdUseCase(repo),
-            inject: [ZONES_REPO],
-        },
-        {
-            provide: CreateZoneUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new CreateZoneUseCase(repo),
-            inject: [ZONES_REPO],
-        },
-        {
-            provide: UpdateZoneUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new UpdateZoneUseCase(repo),
-            inject: [ZONES_REPO],
-        },
-        {
-            provide: DeleteZoneUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new DeleteZoneUseCase(repo),
-            inject: [ZONES_REPO],
-        },
-        {
-            provide: CheckZoneUseCase,
-            useFactory: (repo: ZonesPrismaRepository) =>
-                new CheckZoneUseCase(repo),
-            inject: [ZONES_REPO],
-        },
+        GetZonesUseCase,
+        GetZoneByIdUseCase,
+        CreateZoneUseCase,
+        UpdateZoneUseCase,
+        DeleteZoneUseCase,
+        CheckZoneUseCase,
     ],
 })
 export class ZonesModule {}

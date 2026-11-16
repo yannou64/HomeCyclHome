@@ -1,8 +1,19 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { IPlanningRepository } from '../repositories/planning.repository.interface';
+import {
+    ConflictException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    PLANNING_REPO,
+    type IPlanningRepository,
+} from '../repositories/planning.repository.interface';
 
+@Injectable()
 export class DeleteCreneauUseCase {
-    constructor(private readonly repo: IPlanningRepository) {}
+    constructor(
+        @Inject(PLANNING_REPO) private readonly repo: IPlanningRepository,
+    ) {}
 
     async execute(id: string): Promise<void> {
         const creneau = await this.repo.findCreneauById(id);
