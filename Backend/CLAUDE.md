@@ -77,7 +77,7 @@ features/<nom>/
   modules : fuseau d'exploitation, réservabilité d'un créneau, puis calcul des blocs
   et concaténation du commentaire partagé (socle V2). Aucun import Nest, Prisma ni
   `features/` ; un `.spec.ts` à côté. Exemples en place :
-  `shared/domain/creneau-reservable.ts`, `shared/domain/jour-travail.ts`.
+  `shared/domain/blocs.ts`, `shared/domain/jour-travail.ts`.
 
 Pas de dossier `domain/` dans un module : « domaine » désigne ici la couche des règles
 pures, à ne pas confondre avec un module (domaine fonctionnel).
@@ -148,8 +148,6 @@ vault). Les règles qu'ils servent restent dans la spec.
 repository**, via `prisma.$transaction(async (tx) => { … })`. Le use case appelle
 cette méthode ; il ne voit jamais `tx`. Exemple en place, **pour la forme de la
 transaction seulement** : `forfaits/repositories/forfaits.prisma.repository.ts`.
-Aucune écriture conditionnelle n'existe encore dans le code ; la brique partagée est
-posée au socle V2.
 
 **Écriture conditionnelle.** Une écriture qui dépend d'un état attendu se fait par
 `updateMany({ where: { id, <état attendu> }, data })` et **lit `count`** :
@@ -159,21 +157,36 @@ posée au socle V2.
   case traduit en exception métier (`ConflictException`).
 
 C'est ce qui règle deux requêtes simultanées sur le même objet. Ne jamais remplacer
-par « lire puis écrire » sans condition.
+par « lire puis écrire » sans condition. Brique partagée :
+`shared/database/ecriture-conditionnelle.ts` — `exigerLignesModifiees(resultat,
+attendu)` dans la transaction, `estEtatModifieEntreTemps(err)` dans le `catch` du
+repository (exemple complet en tête du fichier). Prouvée en concurrence :
+`test/ecriture-conditionnelle.e2e-spec.ts`.
+
+**Commentaire partagé.** Chaque ajout à `Interventions.commentaire_technicien` passe
+par `entreeCommentaire(maintenant, auteur, texte)` (`shared/domain/commentaire-partage.ts`,
+format « JJ/MM/AAAA HH:MM — Auteur : texte », heure de Paris), puis
+`ajouterAuCommentaire(tx, interventionId, entree)` (`shared/database/commentaire-partage.ts`),
+qui concatène en tête en une requête SQL. Jamais de « lire, concaténer, écrire » en
+TypeScript : deux ajouts simultanés perdraient une entrée.
 
 **Fuseau d'exploitation.** Les dates sont stockées en UTC ; **tout calcul de jour se
 fait dans le fuseau d'exploitation, jamais en UTC.** Passer par un utilitaire
 partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 (`setUTCHours(0, 0, 0, 0)`, `getUTCDate()`, `getUTCDay()`…) ou
-`toISOString().slice(0, 10)`. Les use cases V1 de `planning` bornent encore les
-journées avec `setUTCHours` : dette V1, pas un modèle. Base
-existante : `shared/domain/jour-travail.ts` (`jourTravail`, `bornesDuJourTravail`).
-⚠️ `bornesDuJourTravail` est fausse les jours de changement d'heure (journée de 23 h
-ou 25 h comptée comme 24 h) : à corriger au socle V2.
+`toISOString().slice(0, 10)`. Brique partagée : `shared/domain/jour-travail.ts`,
+type `JourCalendaire` (`YYYY-MM-DD`) :
+`jourTravail`, `aujourdHui`, `instantDuJour(jour, minutes)` (heure d'horloge de
+Paris → instant UTC), `bornesDuJourTravail`, `ajouterJours`, `jourDeSemaine`. Justes
+aux changements d'heure (journées de 23 h et 25 h testées).
 
-**Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases (par
-exemple le calcul des blocs, utilisé par la réservation et la création par l'admin)
-se code une fois, dans `shared/domain/`, et se teste seul.
+**Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases se
+code une fois, dans `shared/domain/`, et se teste seul. **Calcul des blocs** :
+`shared/domain/blocs.ts` — `nombreDeCreneaux(duree)` (arrondi au multiple de 30
+supérieur), `finArrondie`, `blocsPossibles(creneaux, zoneId, duree)` (blocs
+déplacement + N créneaux + déplacement, avec les ids à réserver et les déplacements
+réutilisés). Utilisé par la réservation et par la création d'une intervention par
+l'admin ; ses tests couvrent CA05 à CA13 de l'US-02 de *Réserver*.
 
 **Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
 doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
