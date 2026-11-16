@@ -29,8 +29,8 @@ export class InterventionListItemResponseDto {
     @ApiProperty()
     id!: string;
 
-    @ApiProperty({ enum: ['Planifiee', 'Terminee', 'Annulee'] })
-    statut!: 'Planifiee' | 'Terminee' | 'Annulee';
+    @ApiProperty({ enum: ['Planifiee', 'Realisee', 'Annulee', 'EnConflit'] })
+    statut!: 'Planifiee' | 'Realisee' | 'Annulee' | 'EnConflit';
 
     @ApiProperty()
     dateCreation!: string;

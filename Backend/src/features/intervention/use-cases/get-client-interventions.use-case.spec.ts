@@ -39,7 +39,7 @@ describe('GetClientInterventionsUseCase', () => {
     it('retourne la liste des interventions du client', async () => {
         const interventions = [
             makeIntervention(),
-            makeIntervention({ id: 'int-2', statut: 'Terminee' }),
+            makeIntervention({ id: 'int-2', statut: 'Realisee' }),
         ];
         mockRepo.getInterventionsByClientId.mockResolvedValue(interventions);
 

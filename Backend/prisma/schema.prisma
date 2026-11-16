@@ -14,34 +14,61 @@ enum Role {
   admin
 }
 
+// Statuts d'une intervention (glossaire V2) : pas de statut « Clôturé », la
+// clôture est portée par date_cloture.
 enum StatutIntervention {
   Planifiee
-  Terminee
+  Realisee
   Annulee
+  EnConflit
+}
+
+// Statuts d'un créneau de 30 minutes (glossaire V2)
+enum StatutCreneau {
+  Libre
+  InterventionReservee
+  Deplacement
+}
+
+// Palette fixe des zones (Refonte 2.0, Énumérations) : la base enregistre le
+// nom, l'interface fait la correspondance avec le code hexadécimal.
+enum CouleurZone {
+  Rouge
+  Orange
+  Jaune
+  Lime
+  Vert
+  Turquoise
+  Cyan
+  Bleu
+  Indigo
+  Violet
+  Prune
+  Rose
 }
 
 model Utilisateur {
-  id                       String    @id @default(uuid())
+  id                       String                @id @default(uuid())
   nom                      String
   prenom                   String
-  email                    String    @unique
+  email                    String                @unique
   password_hash            String
   telephone                String
-  role                     Role      @default(client)
-  is_actif                 Boolean   @default(false)
-  email_confirmation_token String?   @unique
+  role                     Role                  @default(client)
+  is_actif                 Boolean               @default(false)
+  email_confirmation_token String?               @unique
   token_expires_at         DateTime?
   refresh_token_hash       String?
-  date_creation            DateTime  @default(now())
-  date_maj                 DateTime  @updatedAt
+  date_creation            DateTime              @default(now())
+  date_maj                 DateTime              @updatedAt
   date_dernier_login       DateTime?
-  cycles                   Cycle[]               // relation inverse : un utilisateur possède plusieurs cycles
-  adresses                 PeutSeSituer[]        // relation inverse : adresses liées au client
-  zones_affectees          TechnicienZone[]      // relation inverse : zones affectées au technicien
+  cycles                   Cycle[] // relation inverse : un utilisateur possède plusieurs cycles
+  adresses                 PeutSeSituer[] // relation inverse : adresses liées au client
+  zones_affectees          TechnicienZone[] // relation inverse : zones affectées au technicien
   modeles_planification    ModelePlanification[] // relation inverse : modèles de planification du technicien
-  pauses_recurrentes       PauseRecurrente[]     // relation inverse : pauses récurrentes du technicien
-  indisponibilites         Indisponibilite[]     // relation inverse : absences ponctuelles du technicien
-  interventions            Intervention[]        // relation inverse : interventions du client
+  creneaux                 Creneau[] // relation inverse : créneaux du technicien
+  interventions            Intervention[]        @relation("InterventionClient") // interventions du client
+  interventions_technicien Intervention[]        @relation("InterventionTechnicien") // interventions assurées par le technicien
 
   @@map("Utilisateurs")
 }
@@ -71,11 +98,11 @@ model Adresse {
 // Porte les métadonnées propres à la relation (label, statut, adresse principale)
 model PeutSeSituer {
   id                String    @id @default(uuid())
-  titre_description String?                      // label personnalisé affiché dans le dropdown (nullable)
-  adresse_principal Boolean   @default(false)    // une seule adresse principale par client (règle enforced par transaction)
-  is_valide         Boolean   @default(true)     // soft-delete : false = désactivée, ligne conservée pour l'historique
+  titre_description String? // label personnalisé affiché dans le dropdown (nullable)
+  adresse_principal Boolean   @default(false) // une seule adresse principale par client (règle enforced par transaction)
+  is_valide         Boolean   @default(true) // soft-delete : false = désactivée, ligne conservée pour l'historique
   date_creation     DateTime  @default(now())
-  date_invalidite   DateTime?                    // renseigné lors du soft-delete
+  date_invalidite   DateTime? // renseigné lors du soft-delete
 
   utilisateur_id String
   adresse_id     String
@@ -103,10 +130,10 @@ model TypeCycle {
 }
 
 model Cycle {
-  id            String      @id @default(uuid())
-  libelle       String                           // nom choisi par l'utilisateur (ex: "Mon VTT de trail")
-  particularite String?                          // champ libre optionnel (ex: "roues 29 pouces")
-  date_creation DateTime    @default(now())
+  id            String   @id @default(uuid())
+  libelle       String // nom choisi par l'utilisateur (ex: "Mon VTT de trail")
+  particularite String? // champ libre optionnel (ex: "roues 29 pouces")
+  date_creation DateTime @default(now())
 
   // Clés étrangères (colonnes réelles en base)
   utilisateur_id String
@@ -114,32 +141,31 @@ model Cycle {
   type_cycle_id  String
 
   // Relations Prisma (navigation, pas de colonne créée)
-  utilisateur   Utilisateur  @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
-  marque        Marque       @relation(fields: [marque_id], references: [id])
-  type_cycle    TypeCycle    @relation(fields: [type_cycle_id], references: [id])
+  utilisateur   Utilisateur    @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  marque        Marque         @relation(fields: [marque_id], references: [id])
+  type_cycle    TypeCycle      @relation(fields: [type_cycle_id], references: [id])
   interventions Intervention[] // relation inverse : interventions pour ce cycle
 
   @@map("Cycles")
 }
 
 model Forfait {
-  id              String                   @id @default(uuid())
-  nom             String                   @unique
+  id              String                  @id @default(uuid())
+  nom             String                  @unique
   description     String?
   duree_minutes   Int
-  is_actif        Boolean                  @default(true)
-  date_creation   DateTime                 @default(now())
-  historique_prix HistoriquePrixForfait[]  // relation virtuelle — aucune colonne créée
-  interventions   Intervention[]           // relation inverse : interventions pour ce forfait
+  is_actif        Boolean                 @default(true)
+  date_creation   DateTime                @default(now())
+  historique_prix HistoriquePrixForfait[] // relation virtuelle — aucune colonne créée
 
   @@map("Forfaits")
 }
 
 model HistoriquePrixForfait {
-  id         String    @id @default(uuid())
-  montant    Decimal   @db.Decimal(10, 2)
-  date_debut DateTime
-  date_fin   DateTime?
+  id            String         @id @default(uuid())
+  montant       Decimal        @db.Decimal(10, 2)
+  date_debut    DateTime
+  date_fin      DateTime?
   forfait_id    String
   forfait       Forfait        @relation(fields: [forfait_id], references: [id])
   interventions Intervention[] // relation inverse : interventions ayant ce snapshot de prix
@@ -148,14 +174,17 @@ model HistoriquePrixForfait {
 }
 
 model Zone {
-  id            String      @id @default(uuid())
-  nom_zone      String      @unique
-  is_active     Boolean     @default(true)
-  date_creation DateTime    @default(now())
+  id                    String                @id @default(uuid())
+  nom_zone              String                @unique
+  is_active             Boolean               @default(true)
+  // Aucune unicité : deux zones peuvent avoir la même couleur. Rouge, la
+  // première de la palette, est celle que l'interface présélectionne.
+  couleur               CouleurZone           @default(Rouge)
+  date_creation         DateTime              @default(now())
   points                ZonePoint[]
-  techniciens_affectes  TechnicienZone[]      // relation inverse : techniciens affectés à cette zone
+  techniciens_affectes  TechnicienZone[] // relation inverse : techniciens affectés à cette zone
   modeles_planification ModelePlanification[] // relation inverse : modèles de planification sur cette zone
-  creneaux              Creneau[]             // relation inverse : créneaux générés sur cette zone
+  creneaux              Creneau[] // relation inverse : créneaux de la zone
 
   @@map("Zones")
 }
@@ -184,126 +213,141 @@ model TechnicienZone {
 
 // ─── Planification ───────────────────────────────────────────────────────────
 
+// Modèle : une saisie préremplie pour planifier (intitulé, blocs horaires,
+// zone, jours). Il ne produit aucun créneau et aucun créneau ne s'y rattache.
 model ModelePlanification {
-  id                   String    @id @default(uuid())
-  // 0=lundi, 1=mardi, 2=mercredi, 3=jeudi, 4=vendredi, 5=samedi, 6=dimanche
-  jour_semaine         Int
-  // Heures stockées en minutes depuis minuit pour simplifier les calculs d'overlap
-  // Exemples : 8h30 → 510, 17h00 → 1020
-  heure_debut          Int
-  heure_fin            Int
-  // Durée de chaque créneau généré (ex: 60 = créneaux d'une heure)
-  intervalle_minutes   Int
-  is_actif             Boolean   @default(true)
-  date_debut_validite  DateTime
-  date_fin_validite    DateTime? // null = valable indéfiniment
-  date_creation        DateTime  @default(now())
+  id            String   @id @default(uuid())
+  intitule      String
+  lundi         Boolean  @default(false)
+  mardi         Boolean  @default(false)
+  mercredi      Boolean  @default(false)
+  jeudi         Boolean  @default(false)
+  vendredi      Boolean  @default(false)
+  samedi        Boolean  @default(false)
+  dimanche      Boolean  @default(false)
+  date_creation DateTime @default(now())
 
-  technicien_id        String
-  zone_id              String
+  technicien_id String
+  // Obligatoire (RG5 d'Administrer les modèles) ; écart avec le 0,1 du MCD
+  // consigné dans le vault le 16/11/2026.
+  zone_id       String
 
-  technicien           Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
-  zone                 Zone        @relation(fields: [zone_id], references: [id], onDelete: Cascade)
-  creneaux             Creneau[]   // relation inverse : créneaux générés depuis ce modèle
+  technicien Utilisateur   @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+  zone       Zone          @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+  blocs      BlocHoraire[]
 
   @@map("ModelesPlanification")
 }
 
-model PauseRecurrente {
-  id            String    @id @default(uuid())
-  // null = la pause s'applique tous les jours de la semaine
-  jour_semaine  Int?
-  heure_debut   Int       // minutes depuis minuit
-  heure_fin     Int       // minutes depuis minuit
-  description   String?
-  date_creation DateTime  @default(now())
+// Plage horaire d'un modèle. Heures en minutes depuis minuit (8h30 → 510),
+// bornées à la plage 7h00–20h00 par le code. Un modèle porte plusieurs blocs.
+model BlocHoraire {
+  id    String @id @default(uuid())
+  debut Int
+  fin   Int
 
-  technicien_id String
-  technicien    Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+  modele_planification_id String
+  modele_planification    ModelePlanification @relation(fields: [modele_planification_id], references: [id], onDelete: Cascade)
 
-  @@map("PausesRecurrentes")
+  @@map("BlocsHoraires")
 }
 
-model Indisponibilite {
-  id            String   @id @default(uuid())
-  date_debut    DateTime
-  date_fin      DateTime
-  motif         String?
-  date_creation DateTime @default(now())
-
-  technicien_id String
-  technicien    Utilisateur @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
-
-  @@map("Indisponibilites")
-}
-
-// Creneau : entité cible de la génération (HOM-285)
-// Défini maintenant pour stabiliser le schéma — les use cases de génération arrivent au sprint suivant
+// Créneau : tranche de 30 minutes d'un technicien dans une zone. Il ne se
+// rattache à aucun modèle.
 model Creneau {
-  id            String    @id @default(uuid())
-  date_debut    DateTime
-  date_fin      DateTime? // null à la génération, calculé lors de la réservation
-  is_disponible Boolean   @default(true)
-  date_creation DateTime  @default(now())
+  id            String        @id @default(uuid())
+  date_debut    DateTime // fin = date_debut + 30 min, toujours
+  statut        StatutCreneau @default(Libre)
+  date_creation DateTime      @default(now())
 
-  // FK nullable : null pour les créneaux manuels (futur), renseigné pour les créneaux générés
-  modele_planification_id String?
-  // Snapshot de la zone — dénormalisé intentionnellement pour la stabilité des requêtes client
-  zone_id                 String
+  technicien_id   String
+  zone_id         String
+  // Renseigné seulement pour un créneau « Intervention réservée » ; vidé dans
+  // la même écriture quand le créneau redevient Libre ou Déplacement.
+  intervention_id String?
 
-  modele_planification ModelePlanification? @relation(fields: [modele_planification_id], references: [id], onDelete: SetNull)
-  zone                 Zone                 @relation(fields: [zone_id], references: [id], onDelete: Cascade)
-  interventions        Intervention[]       // relation inverse 1-n : un créneau peut être re-réservé après annulation
+  technicien   Utilisateur   @relation(fields: [technicien_id], references: [id], onDelete: Cascade)
+  zone         Zone          @relation(fields: [zone_id], references: [id], onDelete: Cascade)
+  intervention Intervention? @relation(fields: [intervention_id], references: [id], onDelete: Restrict)
 
+  // Un technicien n'a qu'un créneau par horaire (Refonte 2.0, contraintes)
+  @@unique([technicien_id, date_debut])
   @@map("Creneaux")
 }
 
 // ─── Interventions ───────────────────────────────────────────────────────────
 
+// Aucune intervention n'est supprimée (décision du 16/11/2026) : les clés
+// étrangères vers Utilisateurs, Cycles et Adresses sont restrictives (comportement
+// par défaut), ce qui empêche de supprimer un compte lié à des interventions.
 model Intervention {
-  id                         String             @id @default(uuid())
-  statut                     StatutIntervention @default(Planifiee)
-  commentaire                String?
-  duree_minutes_snapshot     Int                // snapshot de Forfait.duree_minutes au moment de la réservation
-  date_creation              DateTime           @default(now())
-  date_maj                   DateTime           @updatedAt
+  id                     String             @id @default(uuid())
+  statut                 StatutIntervention @default(Planifiee)
+  commentaire_client     String? // saisi par le client à la réservation
+  // Commentaire partagé (technicien, admin, système) : chaque ajout est
+  // concaténé en tête, précédé de la date, de l'heure et de l'auteur.
+  // Jamais visible du client.
+  commentaire_technicien String?
+  // Snapshots figés à la réservation : la donnée reste lisible même si ses
+  // créneaux sont supprimés ou si le forfait change.
+  duree_minutes_snapshot Int
+  date_prevue            DateTime
+  date_cloture           DateTime? // renseignée = clôturée (case réversible)
+  date_creation          DateTime           @default(now())
+  date_maj               DateTime           @updatedAt
 
   client_id                  String
+  technicien_id              String
   cycle_id                   String
-  forfait_id                 String
-  creneau_id                 String             // un créneau peut être re-réservé après annulation ; l'unicité active est garantie par is_disponible
   adresse_id                 String
-  historique_prix_forfait_id String             // snapshot du prix actif au moment de la réservation
-  technicien_id              String?            // snapshot depuis ModelePlanification (nullable si créneau manuel)
+  historique_prix_forfait_id String // prix actif à la réservation ; mène au forfait
 
-  client          Utilisateur           @relation(fields: [client_id],                   references: [id])
-  cycle           Cycle                 @relation(fields: [cycle_id],                    references: [id])
-  forfait         Forfait               @relation(fields: [forfait_id],                  references: [id])
-  creneau         Creneau               @relation(fields: [creneau_id],                  references: [id])
-  adresse         Adresse               @relation(fields: [adresse_id],                  references: [id])
-  historique_prix HistoriquePrixForfait @relation(fields: [historique_prix_forfait_id],  references: [id])
+  client          Utilisateur           @relation("InterventionClient", fields: [client_id], references: [id])
+  technicien      Utilisateur           @relation("InterventionTechnicien", fields: [technicien_id], references: [id])
+  cycle           Cycle                 @relation(fields: [cycle_id], references: [id])
+  adresse         Adresse               @relation(fields: [adresse_id], references: [id])
+  historique_prix HistoriquePrixForfait @relation(fields: [historique_prix_forfait_id], references: [id])
 
-  photos          Photo[]
+  creneaux Creneau[] // le bloc réservé : les créneaux portent le lien
+  paiement Paiement?
+  photos   Photo[]
 
   @@map("Interventions")
+}
+
+// Un seul paiement par intervention : un nouveau passage en Réalisée remplace
+// le paiement existant.
+model Paiement {
+  id            String   @id @default(uuid())
+  montant_total Decimal  @db.Decimal(10, 2) // montant encaissé
+  date_paiement DateTime // date d'encaissement
+  // Texte validé par le code contre l'énumération des modes de paiement
+  // (Espèces, Carte bancaire, Chèque, Virement) : aucune table à administrer.
+  mode_paiement String
+  date_creation DateTime @default(now())
+
+  intervention_id String       @unique
+  intervention    Intervention @relation(fields: [intervention_id], references: [id])
+
+  @@map("Paiements")
 }
 
 // ─── Photos ──────────────────────────────────────────────────────────────────
 
 enum ContextePhoto {
-  client      // Photo ajoutée par le client lors de la réservation
-  technicien  // Photo ajoutée par le technicien à la clôture de l'intervention
+  client // Photo ajoutée par le client lors de la réservation
+  technicien // Photo ajoutée par le technicien à la clôture de l'intervention
 }
 
 model Photo {
-  id              String        @id @default(uuid())
-  url_s3          String        // URL complète HTTPS du fichier sur S3
-  cle_s3          String        // Clé S3 — conservée pour permettre la suppression du fichier
-  contexte        ContextePhoto // Discriminateur : qui a uploadé et à quelle étape
-  date_creation   DateTime      @default(now())
+  id            String        @id @default(uuid())
+  url_s3        String // URL complète HTTPS du fichier sur S3
+  cle_s3        String // Clé S3 — conservée pour permettre la suppression du fichier
+  contexte      ContextePhoto // Discriminateur : qui a uploadé et à quelle étape
+  date_creation DateTime      @default(now())
 
   intervention_id String
-  intervention    Intervention  @relation(fields: [intervention_id], references: [id], onDelete: Cascade)
+  intervention    Intervention @relation(fields: [intervention_id], references: [id], onDelete: Cascade)
 
   @@map("Photos")
 }

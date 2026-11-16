@@ -12,7 +12,6 @@ import { CycleModule } from '../features/cycle/cycle.module';
 import { ForfaitsModule } from '../features/forfaits/forfaits.module';
 import { ZonesModule } from '../features/zones/zones.module';
 import { AffectationsModule } from '../features/affectations/affectations.module';
-import { PlanningModule } from '../features/planning/planning.module';
 import { AdressesModule } from '../features/adresses/adresses.module';
 import { InterventionModule } from '../features/intervention/intervention.module';
 
@@ -29,7 +28,6 @@ import { InterventionModule } from '../features/intervention/intervention.module
         ForfaitsModule,
         ZonesModule,
         AffectationsModule,
-        PlanningModule,
         AdressesModule,
         InterventionModule,
     ],
