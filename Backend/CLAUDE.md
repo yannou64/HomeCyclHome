@@ -77,7 +77,7 @@ features/<nom>/
   modules : fuseau d'exploitation, réservabilité d'un créneau, puis calcul des blocs
   et concaténation du commentaire partagé (socle V2). Aucun import Nest, Prisma ni
   `features/` ; un `.spec.ts` à côté. Exemples en place :
-  `shared/domain/creneau-reservable.ts`, `shared/domain/jour-travail.ts`.
+  `shared/domain/blocs.ts`, `shared/domain/jour-travail.ts`.
 
 Pas de dossier `domain/` dans un module : « domaine » désigne ici la couche des règles
 pures, à ne pas confondre avec un module (domaine fonctionnel).
