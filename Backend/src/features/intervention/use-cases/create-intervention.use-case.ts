@@ -5,7 +5,7 @@ import {
     Injectable,
     Inject,
 } from '@nestjs/common';
-import { estCreneauReservable } from '../../planning/domain/creneau-reservable';
+import { estCreneauReservable } from '../../../shared/domain/creneau-reservable';
 import {
     INTERVENTIONS_REPO,
     type IInterventionsRepository,

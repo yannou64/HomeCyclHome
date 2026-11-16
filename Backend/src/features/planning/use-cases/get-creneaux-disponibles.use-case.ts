@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Inject } from '@nestjs/common';
-import { estCreneauReservable } from '../domain/creneau-reservable';
-import { jourTravail } from '../domain/jour-travail';
+import { estCreneauReservable } from '../../../shared/domain/creneau-reservable';
+import { jourTravail } from '../../../shared/domain/jour-travail';
 import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
 import { CreneauDisponibleResponseDto } from '../dto/output/creneau-disponible-response.dto';
 import {

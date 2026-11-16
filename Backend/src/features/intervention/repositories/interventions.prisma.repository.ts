@@ -11,7 +11,7 @@ import type {
     InterventionForCancel,
     GetAdminInterventionsParams,
 } from './interventions.repository.interface';
-import { bornesDuJourTravail } from '../../planning/domain/jour-travail';
+import { bornesDuJourTravail } from '../../../shared/domain/jour-travail';
 import type { CreneauAvecTechnicien } from '../../planning/dto/output/creneau-response.dto';
 import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
 import type { InterventionListItemResponseDto } from '../dto/output/intervention-list-item-response.dto';
