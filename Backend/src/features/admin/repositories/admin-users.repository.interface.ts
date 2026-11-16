@@ -21,7 +21,12 @@ export type CreateAdminUserData = {
     email: string;
     telephone: string;
     role: UserRole;
-    password: string; // sera hashé dans l'implémentation
+    password: string; // en clair : le use case le hache avant d'appeler le repository
+};
+
+// Ce que le repository enregistre : l'identité et le mot de passe déjà haché
+export type NewAdminUserData = Omit<CreateAdminUserData, 'password'> & {
+    passwordHash: string;
 };
 
 // Toutes les propriétés sont optionnelles : on ne met à jour que ce qui change
@@ -36,7 +41,7 @@ export interface IAdminUsersRepository {
     ): Promise<{ users: AdminUserResponseDto[]; total: number }>;
     findById(id: string): Promise<AdminUserResponseDto | null>;
     findByEmail(email: string): Promise<AdminUserResponseDto | null>;
-    create(data: CreateAdminUserData): Promise<AdminUserResponseDto>;
+    create(data: NewAdminUserData): Promise<AdminUserResponseDto>;
     update(
         id: string,
         data: UpdateAdminUserData,

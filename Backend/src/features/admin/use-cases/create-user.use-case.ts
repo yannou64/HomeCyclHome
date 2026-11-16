@@ -1,4 +1,6 @@
 import { ConflictException, Injectable, Inject } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { PASSWORD_HASH_ROUNDS } from '../../../config/password.config';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
     ADMIN_USERS_REPO,
@@ -21,8 +23,10 @@ export class CreateUserUseCase {
             );
         }
 
-        // Le hashage du mot de passe est délégué à l'implémentation Prisma
-        // (c'est de l'infrastructure, pas de la logique métier)
-        return this.repo.create(data);
+        // Le mot de passe est haché ici, comme à l'inscription : le repository
+        // ne reçoit jamais le mot de passe en clair.
+        const { password, ...identite } = data;
+        const passwordHash = await bcrypt.hash(password, PASSWORD_HASH_ROUNDS);
+        return this.repo.create({ ...identite, passwordHash });
     }
 }

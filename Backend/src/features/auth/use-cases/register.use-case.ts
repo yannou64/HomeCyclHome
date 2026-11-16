@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { PASSWORD_HASH_ROUNDS } from '../../../config/password.config';
 import { EmailService } from '../../email/email.service';
 import type { RegisterDto } from '../dto/input/register.dto';
 import {
@@ -26,7 +27,10 @@ export class RegisterUseCase {
             throw new ConflictException('Cet email est déjà utilisé.');
         }
 
-        const passwordHash = await bcrypt.hash(dto.password, 12);
+        const passwordHash = await bcrypt.hash(
+            dto.password,
+            PASSWORD_HASH_ROUNDS,
+        );
         const emailConfirmationToken = crypto.randomBytes(32).toString('hex');
         const tokenExpiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
 
