@@ -22,12 +22,18 @@ ne sont pas ici : elles sont dans la spec du vault (racine, section 2).
 
 ## 2. Architecture — Clean Architecture pragmatique
 
-- **Domaine** : règles métier pures, sans dépendance.
-- **Application** : use cases, DTOs, orchestration.
-- **Infrastructure** : repositories Prisma, controllers HTTP, services externes.
+Monolithe modulaire : un module NestJS = un domaine fonctionnel. Aucun découpage en
+micro-services n'est visé. Raisons et compromis : note `Conception - HomeCycl'Home`
+du vault, section « Organisation du code backend ».
 
-**Règle fondamentale :** la logique métier ne dépend jamais de l'infrastructure. Un
-use case n'importe jamais Prisma.
+- **Controller** : le HTTP uniquement (route, guards, DTO, appel du use case).
+- **Use case** : une opération métier et toutes ses vérifications.
+- **Repository** : interface (contrat) + implémentation Prisma.
+- **`shared/domain/`** : règles pures communes à plusieurs modules.
+
+**« Pragmatique » :** on isole l'infrastructure (Prisma, S3, SMTP), pas NestJS. Un use
+case n'importe jamais Prisma, mais il utilise Nest normalement : `@Injectable`,
+exceptions HTTP, `JwtService`.
 
 ---
 
@@ -36,9 +42,9 @@ use case n'importe jamais Prisma.
 ```
 src/
 ├── app/          # app.module.ts, main.ts (bootstrap : cookies, CORS, pipes, Swagger)
-├── config/       # cookie, helmet, jwt, throttler
+├── config/       # cookie, helmet, jwt, password (coût bcrypt), throttler
 ├── features/     # un dossier = un module NestJS métier
-└── shared/       # domain/ (règles métier transverses), prisma/, database/, guards/ (RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
+└── shared/       # domain/ (règles pures communes), prisma/, database/, guards/ (JwtAuthGuard, RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
 test/             # configuration et tests d'intégration Supertest
 ```
 
@@ -49,16 +55,13 @@ n'est pas recopiée ici.
 
 ```
 features/<nom>/
-├── <nom>.module.ts                       # câblage DI : token → implémentation Prisma
+├── <nom>.module.ts                       # jeton → implémentation Prisma, liste des use cases
 ├── controllers/<nom>.controller.ts       # HTTP uniquement, délègue aux use cases
-├── domain/                               # règles pures partagées (optionnel)
-│   ├── <regle>.ts                        # aucun import Nest/Prisma, entrée → sortie
-│   └── <regle>.spec.ts
 ├── use-cases/
 │   ├── <verbe>-<nom>.use-case.ts         # 1 fichier = 1 opération métier
 │   └── <verbe>-<nom>.use-case.spec.ts    # test unitaire colocalisé
 ├── repositories/
-│   ├── <nom>.repository.interface.ts     # contrat
+│   ├── <nom>.repository.interface.ts     # contrat + jeton d'injection
 │   └── <nom>.prisma.repository.ts        # implémentation Prisma
 └── dto/
     ├── input/                            # validés par class-validator
@@ -67,16 +70,17 @@ features/<nom>/
 
 **Référence du pattern :** module `admin`.
 
-**Quand créer un `domain/` :** seulement pour une règle qui est métier (pas
-technique), partagée par plusieurs use cases, et pure. Sinon elle reste dans son use
-case. Exemples en place : `planning/domain/creneau-reservable.ts`,
-`planning/domain/jour-travail.ts`.
+**Où mettre une règle pure :** deux emplacements seulement.
+- **Par défaut, dans le use case de son module**, même si elle est pure (exemple : le
+  *ray casting* de `zones/use-cases/check-zone.use-case.ts`).
+- **Dans `src/shared/domain/`**, seulement si la spec la déclare commune à plusieurs
+  modules : fuseau d'exploitation, réservabilité d'un créneau, puis calcul des blocs
+  et concaténation du commentaire partagé (socle V2). Aucun import Nest, Prisma ni
+  `features/` ; un `.spec.ts` à côté. Exemples en place :
+  `shared/domain/creneau-reservable.ts`, `shared/domain/jour-travail.ts`.
 
-**Où le mettre :**
-- règle utilisée par un seul module → `features/<module>/domain/` ;
-- règle utilisée par plusieurs modules (fuseau d'exploitation, calcul des blocs,
-  concaténation du commentaire partagé…) → `src/shared/domain/`. Mêmes exigences :
-  aucun import Nest ni Prisma, un `.spec.ts` à côté.
+Pas de dossier `domain/` dans un module : « domaine » désigne ici la couche des règles
+pures, à ne pas confondre avec un module (domaine fonctionnel).
 
 L'écriture conditionnelle n'est pas une règle pure (elle parle à la base) : son aide
 partagée, si elle en a une, va dans `shared/database/`, pas dans `shared/domain/`.
@@ -92,15 +96,26 @@ fonctions en `camelCase`.
 **Controllers :** reçoivent la requête, appellent le use case, renvoient la réponse.
 Aucune logique métier. Injectent des use cases, jamais un repository.
 
-**Use cases :** une classe = une opération métier. Classe TypeScript **sans
-décorateur Nest** (pas d'`@Injectable`) : le module la construit par un `useFactory`
-qui lui injecte le repository par son token (voir `admin.module.ts`). C'est ce qui
-la garde indépendante du framework et testable avec un simple `new`. Dépendent d'une
-interface de repository. Portent toutes les vérifications et règles. Lancent des exceptions
-NestJS (`NotFoundException`, `ConflictException`, `ForbiddenException`…).
+**Use cases :** une classe = une opération métier, décorée `@Injectable()`. Elle
+reçoit le repository par son jeton : `@Inject(USERS_REPO) private readonly repo:
+IUsersRepository`, l'interface importée avec `type`. Les autres dépendances
+(`JwtService`, un autre use case) s'injectent par leur classe ; une dépendance
+réduite par `Pick<EmailService, …>` exige `@Inject(EmailService)`. Le module se
+contente de lister la classe. Portent toutes les vérifications et règles, et lancent
+des exceptions NestJS (`NotFoundException`, `ConflictException`,
+`ForbiddenException`…). Le test unitaire construit le use case avec `new` et un faux
+repository. Référence : module `admin`.
 
-**Repositories :** l'interface définit le contrat, l'implémentation Prisma les appels
-réels, le module relie les deux par un token d'injection (voir `admin.module.ts`).
+**Mots de passe :** hachés dans le use case (`bcrypt`, coût `PASSWORD_HASH_ROUNDS`
+de `src/config/password.config.ts`). Le repository ne reçoit jamais un mot de passe
+en clair.
+
+**Repositories :** l'interface définit le contrat et déclare le jeton d'injection
+(`export const USERS_REPO = 'USERS_REPO'`) ; l'implémentation Prisma fait les appels
+réels ; le module relie les deux par `{ provide: USERS_REPO, useClass:
+UsersPrismaRepository }`. Le jeton vit dans le fichier d'interface, pas dans le
+module : le use case l'importe sans créer d'import circulaire. Le repository renvoie
+directement le DTO de sortie (pas d'entité métier intermédiaire, compromis assumé).
 
 **DTOs :** toujours validés et transformés. Jamais de `password_hash` ni de modèle
 Prisma brut en réponse. Nommage, appliqué à tous les modules :
@@ -154,12 +169,13 @@ partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 (`setUTCHours(0, 0, 0, 0)`, `getUTCDate()`, `getUTCDay()`…) ou
 `toISOString().slice(0, 10)`. Les use cases V1 de `planning` bornent encore les
 journées avec `setUTCHours` : dette V1, pas un modèle. Base
-existante : `planning/domain/jour-travail.ts` (`jourTravail`,
-`bornesDuJourTravail`) — à déplacer dans `shared/domain/` au socle V2.
+existante : `shared/domain/jour-travail.ts` (`jourTravail`, `bornesDuJourTravail`).
+⚠️ `bornesDuJourTravail` est fausse les jours de changement d'heure (journée de 23 h
+ou 25 h comptée comme 24 h) : à corriger au socle V2.
 
 **Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases (par
 exemple le calcul des blocs, utilisé par la réservation et la création par l'admin)
-se code une fois, dans un `domain/`, et se teste seul.
+se code une fois, dans `shared/domain/`, et se teste seul.
 
 **Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
 doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
@@ -220,7 +236,7 @@ seul test est un écart de spec à signaler, pas une raison de le dédoubler.
 
 | Ce que le critère vérifie | Type | Emplacement |
 |---|---|---|
-| Une règle pure (calcul, validation) | Unitaire | `domain/<regle>.spec.ts` |
+| Une règle pure commune à plusieurs modules | Unitaire | `shared/domain/<regle>.spec.ts` |
 | La logique d'un use case (vérifications, exceptions) | Unitaire, repository simulé | `use-cases/*.use-case.spec.ts` |
 | Une transaction, une écriture conditionnelle, une concurrence, une clé étrangère, un droit d'accès de bout en bout | Intégration, PostgreSQL réel | `test/*.e2e-spec.ts` |
 

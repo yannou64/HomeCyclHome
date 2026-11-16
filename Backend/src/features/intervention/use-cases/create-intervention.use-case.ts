@@ -2,11 +2,16 @@ import {
     BadRequestException,
     ConflictException,
     UnprocessableEntityException,
+    Injectable,
+    Inject,
 } from '@nestjs/common';
-import { estCreneauReservable } from '../../planning/domain/creneau-reservable';
-import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
+import { estCreneauReservable } from '../../../shared/domain/creneau-reservable';
+import {
+    INTERVENTIONS_REPO,
+    type IInterventionsRepository,
+} from '../repositories/interventions.repository.interface';
 import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
-import type { EmailService } from '../../email/email.service';
+import { EmailService } from '../../email/email.service';
 
 // Type plat compatible avec CreateInterventionDto (class-validator).
 // Les champs conditionnels sont optionnels ici — les gardes runtime dans execute()
@@ -35,9 +40,12 @@ export type CreateInterventionInput = {
     commentaire?: string;
 };
 
+@Injectable()
 export class CreateInterventionUseCase {
     constructor(
+        @Inject(INTERVENTIONS_REPO)
         private readonly repo: IInterventionsRepository,
+        @Inject(EmailService)
         private readonly emailService: Pick<
             EmailService,
             'sendInterventionConfirmationEmail'

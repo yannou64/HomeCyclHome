@@ -1,8 +1,17 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { IAuthRepository } from '../repositories/auth.repository.interface';
+import {
+    BadRequestException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    AUTH_REPO,
+    type IAuthRepository,
+} from '../repositories/auth.repository.interface';
 
+@Injectable()
 export class ConfirmEmailUseCase {
-    constructor(private readonly repo: IAuthRepository) {}
+    constructor(@Inject(AUTH_REPO) private readonly repo: IAuthRepository) {}
 
     async execute(token: string): Promise<{ message: string }> {
         const user = await this.repo.findByConfirmationToken(token);

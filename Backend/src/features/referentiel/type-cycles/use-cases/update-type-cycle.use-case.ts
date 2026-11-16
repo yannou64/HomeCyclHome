@@ -1,9 +1,20 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { TypeCycleResponseDto } from '../dto/output/type-cycle-response.dto';
-import { ITypeCyclesRepository } from '../repositories/type-cycles.repository.interface';
+import {
+    TYPE_CYCLES_REPO,
+    type ITypeCyclesRepository,
+} from '../repositories/type-cycles.repository.interface';
 
+@Injectable()
 export class UpdateTypeCycleUseCase {
-    constructor(private readonly repo: ITypeCyclesRepository) {}
+    constructor(
+        @Inject(TYPE_CYCLES_REPO) private readonly repo: ITypeCyclesRepository,
+    ) {}
 
     async execute(id: string, libelle: string): Promise<TypeCycleResponseDto> {
         const typeCycle = await this.repo.findById(id);

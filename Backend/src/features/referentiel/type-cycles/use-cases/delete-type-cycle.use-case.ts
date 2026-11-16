@@ -1,8 +1,14 @@
-import { NotFoundException } from '@nestjs/common';
-import { ITypeCyclesRepository } from '../repositories/type-cycles.repository.interface';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
+import {
+    TYPE_CYCLES_REPO,
+    type ITypeCyclesRepository,
+} from '../repositories/type-cycles.repository.interface';
 
+@Injectable()
 export class DeleteTypeCycleUseCase {
-    constructor(private readonly repo: ITypeCyclesRepository) {}
+    constructor(
+        @Inject(TYPE_CYCLES_REPO) private readonly repo: ITypeCyclesRepository,
+    ) {}
 
     async execute(id: string): Promise<void> {
         const typeCycle = await this.repo.findById(id);

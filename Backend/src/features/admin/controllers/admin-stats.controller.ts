@@ -5,7 +5,7 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { GetAdminStatsUseCase } from '../use-cases/get-admin-stats.use-case';

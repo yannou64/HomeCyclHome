@@ -2,11 +2,20 @@ import {
     ConflictException,
     ForbiddenException,
     NotFoundException,
+    Injectable,
+    Inject,
 } from '@nestjs/common';
-import type { IInterventionsRepository } from '../repositories/interventions.repository.interface';
+import {
+    INTERVENTIONS_REPO,
+    type IInterventionsRepository,
+} from '../repositories/interventions.repository.interface';
 
+@Injectable()
 export class CancelInterventionUseCase {
-    constructor(private readonly repo: IInterventionsRepository) {}
+    constructor(
+        @Inject(INTERVENTIONS_REPO)
+        private readonly repo: IInterventionsRepository,
+    ) {}
 
     async execute(interventionId: string, clientId: string): Promise<void> {
         const intervention =

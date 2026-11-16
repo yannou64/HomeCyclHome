@@ -1,12 +1,14 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable, Inject } from '@nestjs/common';
 import { ZoneResponseDto } from '../dto/output/zone-response.dto';
 import {
-    CreateZoneData,
-    IZonesRepository,
+    ZONES_REPO,
+    type CreateZoneData,
+    type IZonesRepository,
 } from '../repositories/zones.repository.interface';
 
+@Injectable()
 export class CreateZoneUseCase {
-    constructor(private readonly repo: IZonesRepository) {}
+    constructor(@Inject(ZONES_REPO) private readonly repo: IZonesRepository) {}
 
     async execute(data: CreateZoneData): Promise<ZoneResponseDto> {
         const exists = await this.repo.existsByNom(data.nomZone);

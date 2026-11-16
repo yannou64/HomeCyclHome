@@ -1,4 +1,14 @@
-import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
+/**
+ * Ce que la règle lit d'un créneau, et rien d'autre. Elle est commune au
+ * planning (créneaux proposés) et à l'intervention (réservation) : elle ne
+ * dépend d'aucun module. Le type CreneauDeLaGrille du planning convient
+ * tel quel (typage structurel : il possède ces trois champs).
+ */
+export type CreneauDeLaGrille = {
+    dateDebut: string;
+    isDisponible: boolean;
+    intervalleMinutes: number;
+};
 
 /**
  * Règle métier centrale du tunnel de réservation.
@@ -23,7 +33,7 @@ import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
  * @param dureeMinutes durée du forfait choisi par le client
  */
 export function estCreneauReservable(
-    creneauxDuJour: CreneauAvecTechnicien[],
+    creneauxDuJour: CreneauDeLaGrille[],
     index: number,
     dureeMinutes: number,
 ): boolean {
@@ -79,10 +89,7 @@ export function estCreneauReservable(
 }
 
 // Millisecondes écoulées entre les débuts de deux slots
-function ecartMs(
-    depuis: CreneauAvecTechnicien,
-    vers: CreneauAvecTechnicien,
-): number {
+function ecartMs(depuis: CreneauDeLaGrille, vers: CreneauDeLaGrille): number {
     return (
         new Date(vers.dateDebut).getTime() -
         new Date(depuis.dateDebut).getTime()

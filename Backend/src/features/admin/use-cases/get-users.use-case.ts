@@ -1,12 +1,17 @@
+import { Injectable, Inject } from '@nestjs/common';
 import { PaginatedUsersResponseDto } from '../dto/output/paginated-users-response.dto';
 import {
-    FindManyUsersParams,
-    IAdminUsersRepository,
+    ADMIN_USERS_REPO,
+    type FindManyUsersParams,
+    type IAdminUsersRepository,
 } from '../repositories/admin-users.repository.interface';
 
+@Injectable()
 export class GetUsersUseCase {
     // Le UseCase reçoit le repository par injection — il ne sait pas que c'est Prisma
-    constructor(private readonly repo: IAdminUsersRepository) {}
+    constructor(
+        @Inject(ADMIN_USERS_REPO) private readonly repo: IAdminUsersRepository,
+    ) {}
 
     async execute(
         params: FindManyUsersParams,

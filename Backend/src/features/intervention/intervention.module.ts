@@ -9,11 +9,8 @@ import { GetAdminInterventionsUseCase } from './use-cases/get-admin-intervention
 import { GetAdminInterventionDetailUseCase } from './use-cases/get-admin-intervention-detail.use-case';
 import { UploadInterventionPhotosUseCase } from './use-cases/upload-intervention-photos.use-case';
 import { EmailModule } from '../email/email.module';
-import { EmailService } from '../email/email.service';
 import { StorageModule } from '../../shared/storage/storage.module';
-import { StorageService } from '../../shared/storage/storage.service';
-
-export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
+import { INTERVENTIONS_REPO } from './repositories/interventions.repository.interface';
 
 @Module({
     imports: [EmailModule, StorageModule],
@@ -23,46 +20,12 @@ export const INTERVENTIONS_REPO = 'INTERVENTIONS_REPO';
             provide: INTERVENTIONS_REPO,
             useClass: InterventionsPrismaRepository,
         },
-        {
-            provide: CreateInterventionUseCase,
-            useFactory: (
-                repo: InterventionsPrismaRepository,
-                emailService: EmailService,
-            ) => new CreateInterventionUseCase(repo, emailService),
-            inject: [INTERVENTIONS_REPO, EmailService],
-        },
-        {
-            provide: GetClientInterventionsUseCase,
-            useFactory: (repo: InterventionsPrismaRepository) =>
-                new GetClientInterventionsUseCase(repo),
-            inject: [INTERVENTIONS_REPO],
-        },
-        {
-            provide: CancelInterventionUseCase,
-            useFactory: (repo: InterventionsPrismaRepository) =>
-                new CancelInterventionUseCase(repo),
-            inject: [INTERVENTIONS_REPO],
-        },
-        {
-            provide: GetAdminInterventionsUseCase,
-            useFactory: (repo: InterventionsPrismaRepository) =>
-                new GetAdminInterventionsUseCase(repo),
-            inject: [INTERVENTIONS_REPO],
-        },
-        {
-            provide: GetAdminInterventionDetailUseCase,
-            useFactory: (repo: InterventionsPrismaRepository) =>
-                new GetAdminInterventionDetailUseCase(repo),
-            inject: [INTERVENTIONS_REPO],
-        },
-        {
-            provide: UploadInterventionPhotosUseCase,
-            useFactory: (
-                repo: InterventionsPrismaRepository,
-                storage: StorageService,
-            ) => new UploadInterventionPhotosUseCase(repo, storage),
-            inject: [INTERVENTIONS_REPO, StorageService],
-        },
+        CreateInterventionUseCase,
+        GetClientInterventionsUseCase,
+        CancelInterventionUseCase,
+        GetAdminInterventionsUseCase,
+        GetAdminInterventionDetailUseCase,
+        UploadInterventionPhotosUseCase,
     ],
 })
 export class InterventionModule {}

@@ -1,8 +1,19 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { IAdminUsersRepository } from '../repositories/admin-users.repository.interface';
+import {
+    ForbiddenException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
+import {
+    ADMIN_USERS_REPO,
+    type IAdminUsersRepository,
+} from '../repositories/admin-users.repository.interface';
 
+@Injectable()
 export class DeleteUserUseCase {
-    constructor(private readonly repo: IAdminUsersRepository) {}
+    constructor(
+        @Inject(ADMIN_USERS_REPO) private readonly repo: IAdminUsersRepository,
+    ) {}
 
     async execute(
         requestingAdminId: string,

@@ -1,9 +1,16 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
 import { AffectationResponseDto } from '../dto/output/affectation-response.dto';
-import { IAffectationsRepository } from '../repositories/affectations.repository.interface';
+import {
+    AFFECTATIONS_REPO,
+    type IAffectationsRepository,
+} from '../repositories/affectations.repository.interface';
 
+@Injectable()
 export class GetAffectationByTechnicienUseCase {
-    constructor(private readonly repo: IAffectationsRepository) {}
+    constructor(
+        @Inject(AFFECTATIONS_REPO)
+        private readonly repo: IAffectationsRepository,
+    ) {}
 
     async execute(technicienId: string): Promise<AffectationResponseDto> {
         const affectation = await this.repo.findByTechnicienId(technicienId);

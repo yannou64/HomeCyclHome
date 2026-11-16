@@ -23,7 +23,7 @@ import type { Request, Response } from 'express';
 import { ACCESS_COOKIE, REFRESH_COOKIE } from '../../../config/cookie.config';
 import { LoginDto } from '../dto/input/login.dto';
 import { RegisterDto } from '../dto/input/register.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { ConfirmEmailUseCase } from '../use-cases/confirm-email.use-case';
 import { LoginUseCase } from '../use-cases/login.use-case';
 import { LogoutUseCase } from '../use-cases/logout.use-case';

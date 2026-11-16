@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { SetTechnicienZonesDto } from '../dto/input/set-technicien-zones.dto';
 import { DeleteTechnicienAffectationsUseCase } from '../use-cases/delete-technicien-affectations.use-case';
 import { GetAffectationByTechnicienUseCase } from '../use-cases/get-affectation-by-technicien.use-case';

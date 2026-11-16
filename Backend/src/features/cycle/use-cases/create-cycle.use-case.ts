@@ -1,9 +1,16 @@
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateCycleInput } from '../dto/input/create-cycle.dto';
 import { CycleResponseDto } from '../dto/output/cycle-response.dto';
-import { ICyclesRepository } from '../repositories/cycles.repository.interface';
+import {
+    CYCLES_REPO,
+    type ICyclesRepository,
+} from '../repositories/cycles.repository.interface';
 
+@Injectable()
 export class CreateCycleUseCase {
-    constructor(private readonly repo: ICyclesRepository) {}
+    constructor(
+        @Inject(CYCLES_REPO) private readonly repo: ICyclesRepository,
+    ) {}
 
     execute(
         utilisateurId: string,

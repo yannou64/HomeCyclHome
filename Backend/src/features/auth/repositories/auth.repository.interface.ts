@@ -1,3 +1,7 @@
+// Jeton d'injection : l'interface disparaît à la compilation, Nest
+// retrouve l'implémentation par ce nom (voir le module).
+export const AUTH_REPO = 'AUTH_REPO';
+
 // Données retournées par le repository — inclut les champs sensibles nécessaires aux use cases
 export type AuthUserData = {
     id: string;

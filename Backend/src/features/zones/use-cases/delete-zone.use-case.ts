@@ -1,8 +1,12 @@
-import { NotFoundException } from '@nestjs/common';
-import { IZonesRepository } from '../repositories/zones.repository.interface';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
+import {
+    ZONES_REPO,
+    type IZonesRepository,
+} from '../repositories/zones.repository.interface';
 
+@Injectable()
 export class DeleteZoneUseCase {
-    constructor(private readonly repo: IZonesRepository) {}
+    constructor(@Inject(ZONES_REPO) private readonly repo: IZonesRepository) {}
 
     async execute(id: string): Promise<void> {
         const zone = await this.repo.findById(id);

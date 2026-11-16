@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { Prisma, Utilisateur } from '../../../generated/prisma/client';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
-    CreateAdminUserData,
+    NewAdminUserData,
     FindManyUsersParams,
     IAdminUsersRepository,
     UpdateAdminUserData,
@@ -83,10 +82,7 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
         return user ? this.toDto(user) : null;
     }
 
-    async create(data: CreateAdminUserData): Promise<AdminUserResponseDto> {
-        // Le hashage appartient à l'infrastructure — le UseCase ne sait pas comment le mot de passe est stocké
-        const password_hash = await bcrypt.hash(data.password, 10);
-
+    async create(data: NewAdminUserData): Promise<AdminUserResponseDto> {
         const user = await this.prisma.utilisateur.create({
             data: {
                 nom: data.nom,
@@ -94,7 +90,7 @@ export class AdminUsersPrismaRepository implements IAdminUsersRepository {
                 email: data.email,
                 telephone: data.telephone,
                 role: data.role,
-                password_hash,
+                password_hash: data.passwordHash, // déjà haché par le use case
                 is_actif: true, // créé par un admin → actif immédiatement, sans confirmation email
             },
         });

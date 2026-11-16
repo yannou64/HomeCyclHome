@@ -1,9 +1,12 @@
-import { BadRequestException } from '@nestjs/common';
-import { estCreneauReservable } from '../domain/creneau-reservable';
-import { jourTravail } from '../domain/jour-travail';
+import { BadRequestException, Injectable, Inject } from '@nestjs/common';
+import { estCreneauReservable } from '../../../shared/domain/creneau-reservable';
+import { jourTravail } from '../../../shared/domain/jour-travail';
 import { CreneauAvecTechnicien } from '../dto/output/creneau-response.dto';
 import { CreneauDisponibleResponseDto } from '../dto/output/creneau-disponible-response.dto';
-import { IPlanningRepository } from '../repositories/planning.repository.interface';
+import {
+    PLANNING_REPO,
+    type IPlanningRepository,
+} from '../repositories/planning.repository.interface';
 
 export type GetCreneauxDisponiblesInput = {
     zoneId: string;
@@ -12,8 +15,11 @@ export type GetCreneauxDisponiblesInput = {
     dateFin: string; // ISO date — borne inclusive
 };
 
+@Injectable()
 export class GetCreneauxDisponiblesUseCase {
-    constructor(private readonly repo: IPlanningRepository) {}
+    constructor(
+        @Inject(PLANNING_REPO) private readonly repo: IPlanningRepository,
+    ) {}
 
     async execute(
         input: GetCreneauxDisponiblesInput,

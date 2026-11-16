@@ -1,9 +1,13 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Injectable, Inject } from '@nestjs/common';
 import { ZoneResponseDto } from '../dto/output/zone-response.dto';
-import { IZonesRepository } from '../repositories/zones.repository.interface';
+import {
+    ZONES_REPO,
+    type IZonesRepository,
+} from '../repositories/zones.repository.interface';
 
+@Injectable()
 export class GetZoneByIdUseCase {
-    constructor(private readonly repo: IZonesRepository) {}
+    constructor(@Inject(ZONES_REPO) private readonly repo: IZonesRepository) {}
 
     async execute(id: string): Promise<ZoneResponseDto> {
         const zone = await this.repo.findById(id);

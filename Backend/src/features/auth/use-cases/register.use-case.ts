@@ -1,14 +1,20 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import type { EmailService } from '../../email/email.service';
+import { PASSWORD_HASH_ROUNDS } from '../../../config/password.config';
+import { EmailService } from '../../email/email.service';
 import type { RegisterDto } from '../dto/input/register.dto';
-import type { IAuthRepository } from '../repositories/auth.repository.interface';
+import {
+    AUTH_REPO,
+    type IAuthRepository,
+} from '../repositories/auth.repository.interface';
 
+@Injectable()
 export class RegisterUseCase {
     constructor(
-        private readonly repo: IAuthRepository,
+        @Inject(AUTH_REPO) private readonly repo: IAuthRepository,
         // Pick : le use case ne dépend que de la méthode qu'il appelle.
+        @Inject(EmailService)
         private readonly emailService: Pick<
             EmailService,
             'sendConfirmationEmail'
@@ -21,7 +27,10 @@ export class RegisterUseCase {
             throw new ConflictException('Cet email est déjà utilisé.');
         }
 
-        const passwordHash = await bcrypt.hash(dto.password, 12);
+        const passwordHash = await bcrypt.hash(
+            dto.password,
+            PASSWORD_HASH_ROUNDS,
+        );
         const emailConfirmationToken = crypto.randomBytes(32).toString('hex');
         const tokenExpiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
 

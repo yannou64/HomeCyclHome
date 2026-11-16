@@ -1,9 +1,20 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { MarqueResponseDto } from '../dto/output/marque-response.dto';
-import { IMarquesRepository } from '../repositories/marques.repository.interface';
+import {
+    MARQUES_REPO,
+    type IMarquesRepository,
+} from '../repositories/marques.repository.interface';
 
+@Injectable()
 export class UpdateMarqueUseCase {
-    constructor(private readonly repo: IMarquesRepository) {}
+    constructor(
+        @Inject(MARQUES_REPO) private readonly repo: IMarquesRepository,
+    ) {}
 
     async execute(id: string, libelle: string): Promise<MarqueResponseDto> {
         const marque = await this.repo.findById(id);

@@ -1,5 +1,8 @@
-import { BadRequestException } from '@nestjs/common';
-import { IPlanningRepository } from '../repositories/planning.repository.interface';
+import { BadRequestException, Injectable, Inject } from '@nestjs/common';
+import {
+    PLANNING_REPO,
+    type IPlanningRepository,
+} from '../repositories/planning.repository.interface';
 
 export type DeleteCreneauxDisponiblesInput = {
     technicienId: string;
@@ -7,8 +10,11 @@ export type DeleteCreneauxDisponiblesInput = {
     dateFin: string;
 };
 
+@Injectable()
 export class DeleteCreneauxDisponiblesUseCase {
-    constructor(private readonly repo: IPlanningRepository) {}
+    constructor(
+        @Inject(PLANNING_REPO) private readonly repo: IPlanningRepository,
+    ) {}
 
     async execute(
         input: DeleteCreneauxDisponiblesInput,

@@ -1,12 +1,21 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { ForfaitResponseDto } from '../dto/output/forfait-response.dto';
 import {
-    IForfaitsRepository,
-    UpdateForfaitData,
+    FORFAITS_REPO,
+    type IForfaitsRepository,
+    type UpdateForfaitData,
 } from '../repositories/forfaits.repository.interface';
 
+@Injectable()
 export class UpdateForfaitUseCase {
-    constructor(private readonly repo: IForfaitsRepository) {}
+    constructor(
+        @Inject(FORFAITS_REPO) private readonly repo: IForfaitsRepository,
+    ) {}
 
     async execute(
         id: string,

@@ -91,7 +91,8 @@ note** :
 |---|---|---|---|---|
 
 Choix du type, selon `Backend/CLAUDE.md` section Tests :
-- règle pure → unitaire `domain/` ;
+- règle pure commune à plusieurs modules → unitaire `shared/domain/` (sinon elle
+  reste dans son use case et se teste avec lui) ;
 - logique d'un use case → unitaire, repository simulé ;
 - transaction, écriture conditionnelle, concurrence, clé étrangère, droit d'accès de
   bout en bout → intégration (`test/*.e2e-spec.ts`) ;

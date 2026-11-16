@@ -1,4 +1,5 @@
 import { ConflictException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { IAdminUsersRepository } from '../repositories/admin-users.repository.interface';
 import { CreateUserUseCase } from './create-user.use-case';
 
@@ -39,8 +40,26 @@ describe('CreateUserUseCase', () => {
         const result = await useCase.execute(validPayload);
 
         expect(mockRepo.findByEmail).toHaveBeenCalledWith(validPayload.email);
-        expect(mockRepo.create).toHaveBeenCalledWith(validPayload);
         expect(result.id).toBe('new-uuid');
+    });
+
+    it('devrait transmettre au repository le mot de passe haché, jamais en clair', async () => {
+        mockRepo.findByEmail.mockResolvedValue(null);
+        mockRepo.create.mockResolvedValue({
+            id: 'new-uuid',
+            ...validPayload,
+            isActif: true,
+            dateCreation: new Date(),
+        });
+
+        await useCase.execute(validPayload);
+
+        const { password, ...identite } = validPayload;
+        const recu = mockRepo.create.mock.calls[0][0];
+        expect(recu).toMatchObject(identite);
+        expect(recu).not.toHaveProperty('password');
+        // Le hash correspond bien au mot de passe saisi
+        expect(await bcrypt.compare(password, recu.passwordHash)).toBe(true);
     });
 
     it("devrait lever ConflictException si l'email est déjà utilisé", async () => {
