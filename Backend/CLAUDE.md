@@ -44,7 +44,7 @@ src/
 ├── app/          # app.module.ts, main.ts (bootstrap : cookies, CORS, pipes, Swagger)
 ├── config/       # cookie, helmet, jwt, password (coût bcrypt), throttler
 ├── features/     # un dossier = un module NestJS métier
-└── shared/       # domain/ (règles pures communes), prisma/, database/, guards/ (JwtAuthGuard, RolesGuard), decorators/ (@Roles), storage/ (S3), dto/
+└── shared/       # domain/ (règles pures communes), prisma/, database/, guards/ (JwtAuthGuard, RolesGuard), decorators/ (@Roles), storage/ (S3), dto/, types/ (UserRole). Ne dépend jamais de features/
 test/             # configuration et tests d'intégration Supertest
 ```
 

@@ -8,7 +8,7 @@ import {
     Max,
     Min,
 } from 'class-validator';
-import { UserRole } from '../../../users/dto/output/user-profile-response.dto';
+import { UserRole } from '../../../../shared/types/user-role';
 
 export class GetUsersQueryDto {
     // @Type(() => Number) convertit la string de l'URL en nombre avant validation

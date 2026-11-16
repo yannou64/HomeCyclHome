@@ -1,5 +1,5 @@
 import { IsEmail, IsIn, IsString, Matches, MinLength } from 'class-validator';
-import { UserRole } from '../../../users/dto/output/user-profile-response.dto';
+import { UserRole } from '../../../../shared/types/user-role';
 
 export class CreateAdminUserDto {
     @IsString()

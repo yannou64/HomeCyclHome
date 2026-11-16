@@ -1,5 +1,5 @@
 import { IsEmail, IsIn, IsOptional, IsString, Matches } from 'class-validator';
-import { UserRole } from '../../../users/dto/output/user-profile-response.dto';
+import { UserRole } from '../../../../shared/types/user-role';
 
 export class UpdateAdminUserDto {
     @IsOptional()
