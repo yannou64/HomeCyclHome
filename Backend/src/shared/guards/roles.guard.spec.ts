@@ -1,11 +1,41 @@
 import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Roles } from '../decorators/roles.decorator';
+import type { UserRole } from '../types/user-role';
 import { RolesGuard } from './roles.guard';
 
-// Helper : fabrique un faux contexte HTTP avec le rôle donné
-const mockContext = (role: string): ExecutionContext =>
+// De vrais controllers décorés : le guard lit les métadonnées avec le vrai
+// Reflector, comme en production. (L'ancienne version simulait reflector.get
+// et ne voyait pas que @Roles posé sur la classe était ignoré.)
+
+@Roles('admin')
+class ControllerAdmin {
+    lister(): void {}
+}
+
+@Roles('admin')
+class ControllerAdminAvecException {
+    @Roles('admin', 'technicien')
+    consulter(): void {}
+}
+
+class ControllerSansRole {
+    @Roles('admin')
+    supprimer(): void {}
+
+    profil(): void {}
+}
+
+// Faux contexte HTTP : la route appelée (classe + méthode) et le rôle connecté
+const contexte = (
+    classe: new () => object,
+    methode: string,
+    role: UserRole,
+): ExecutionContext =>
     ({
-        getHandler: () => ({}),
+        getClass: () => classe,
+        getHandler: () =>
+            (classe.prototype as Record<string, unknown>)[methode],
         switchToHttp: () => ({
             getRequest: () => ({ user: { role } }),
         }),
@@ -13,38 +43,51 @@ const mockContext = (role: string): ExecutionContext =>
 
 describe('RolesGuard', () => {
     let guard: RolesGuard;
-    let reflector: Reflector;
 
     beforeEach(() => {
-        reflector = new Reflector();
-        guard = new RolesGuard(reflector);
+        guard = new RolesGuard(new Reflector());
     });
 
-    it('devrait autoriser quand aucun rôle requis (pas de @Roles)', () => {
-        // Simule une route sans décorateur @Roles → reflector retourne undefined
-        jest.spyOn(reflector, 'get').mockReturnValue(undefined);
-        expect(guard.canActivate(mockContext('client'))).toBe(true);
+    it('applique @Roles posé sur la classe à toutes ses méthodes', () => {
+        expect(
+            guard.canActivate(contexte(ControllerAdmin, 'lister', 'client')),
+        ).toBe(false);
+        expect(
+            guard.canActivate(
+                contexte(ControllerAdmin, 'lister', 'technicien'),
+            ),
+        ).toBe(false);
+        expect(
+            guard.canActivate(contexte(ControllerAdmin, 'lister', 'admin')),
+        ).toBe(true);
     });
 
-    it('devrait autoriser un admin sur une route @Roles(admin)', () => {
-        jest.spyOn(reflector, 'get').mockReturnValue(['admin']);
-        expect(guard.canActivate(mockContext('admin'))).toBe(true);
+    it('applique @Roles posé sur la méthode', () => {
+        expect(
+            guard.canActivate(
+                contexte(ControllerSansRole, 'supprimer', 'client'),
+            ),
+        ).toBe(false);
+        expect(
+            guard.canActivate(
+                contexte(ControllerSansRole, 'supprimer', 'admin'),
+            ),
+        ).toBe(true);
     });
 
-    it('devrait refuser un client sur une route @Roles(admin)', () => {
-        jest.spyOn(reflector, 'get').mockReturnValue(['admin']);
-        expect(guard.canActivate(mockContext('client'))).toBe(false);
+    it('fait primer @Roles de la méthode sur celui de la classe', () => {
+        const consulter = (role: UserRole) =>
+            guard.canActivate(
+                contexte(ControllerAdminAvecException, 'consulter', role),
+            );
+        expect(consulter('technicien')).toBe(true);
+        expect(consulter('admin')).toBe(true);
+        expect(consulter('client')).toBe(false);
     });
 
-    it('devrait refuser un technicien sur une route @Roles(admin)', () => {
-        jest.spyOn(reflector, 'get').mockReturnValue(['admin']);
-        expect(guard.canActivate(mockContext('technicien'))).toBe(false);
-    });
-
-    it('devrait autoriser plusieurs rôles si la route les accepte tous', () => {
-        jest.spyOn(reflector, 'get').mockReturnValue(['admin', 'technicien']);
-        expect(guard.canActivate(mockContext('technicien'))).toBe(true);
-        expect(guard.canActivate(mockContext('admin'))).toBe(true);
-        expect(guard.canActivate(mockContext('client'))).toBe(false);
+    it('autorise tout utilisateur connecté quand ni la classe ni la méthode ne portent @Roles', () => {
+        expect(
+            guard.canActivate(contexte(ControllerSansRole, 'profil', 'client')),
+        ).toBe(true);
     });
 });
