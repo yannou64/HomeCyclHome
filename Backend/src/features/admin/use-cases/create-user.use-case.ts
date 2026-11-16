@@ -1,12 +1,16 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable, Inject } from '@nestjs/common';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
-    CreateAdminUserData,
-    IAdminUsersRepository,
+    ADMIN_USERS_REPO,
+    type CreateAdminUserData,
+    type IAdminUsersRepository,
 } from '../repositories/admin-users.repository.interface';
 
+@Injectable()
 export class CreateUserUseCase {
-    constructor(private readonly repo: IAdminUsersRepository) {}
+    constructor(
+        @Inject(ADMIN_USERS_REPO) private readonly repo: IAdminUsersRepository,
+    ) {}
 
     async execute(data: CreateAdminUserData): Promise<AdminUserResponseDto> {
         // Règle métier : l'email doit être unique dans le système

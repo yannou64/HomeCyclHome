@@ -1,6 +1,10 @@
 import { UserRole } from '../../users/dto/output/user-profile-response.dto';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 
+// Jeton d'injection : l'interface disparaît à la compilation, Nest
+// retrouve l'implémentation par ce nom (voir le module).
+export const ADMIN_USERS_REPO = 'ADMIN_USERS_REPO';
+
 // Paramètres acceptés par findMany — reflète les filtres de GetUsersQueryDto
 export type FindManyUsersParams = {
     page: number;

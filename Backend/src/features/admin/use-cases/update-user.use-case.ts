@@ -1,12 +1,21 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    NotFoundException,
+    Injectable,
+    Inject,
+} from '@nestjs/common';
 import { AdminUserResponseDto } from '../dto/output/admin-user-response.dto';
 import {
-    IAdminUsersRepository,
-    UpdateAdminUserData,
+    ADMIN_USERS_REPO,
+    type IAdminUsersRepository,
+    type UpdateAdminUserData,
 } from '../repositories/admin-users.repository.interface';
 
+@Injectable()
 export class UpdateUserUseCase {
-    constructor(private readonly repo: IAdminUsersRepository) {}
+    constructor(
+        @Inject(ADMIN_USERS_REPO) private readonly repo: IAdminUsersRepository,
+    ) {}
 
     async execute(
         targetUserId: string,
