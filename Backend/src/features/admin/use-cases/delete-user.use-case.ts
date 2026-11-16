@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     ForbiddenException,
     NotFoundException,
     Injectable,
@@ -8,6 +9,11 @@ import {
     ADMIN_USERS_REPO,
     type IAdminUsersRepository,
 } from '../repositories/admin-users.repository.interface';
+
+// Message renvoyé à l'admin quand le compte visé est lié à des interventions
+// (spec : cas d'utilisation « (Tous) Supprimer un compte 2.0 »).
+export const MESSAGE_COMPTE_LIE_ADMIN =
+    'Ce compte est lié à des interventions : il ne peut pas être supprimé.';
 
 @Injectable()
 export class DeleteUserUseCase {
@@ -33,6 +39,16 @@ export class DeleteUserUseCase {
             );
         }
 
-        await this.repo.delete(targetUserId);
+        // 1. Contrôle avant toute écriture : client OU technicien référencé
+        if ((await this.repo.compterInterventions(targetUserId)) > 0) {
+            throw new ConflictException(MESSAGE_COMPTE_LIE_ADMIN);
+        }
+
+        // 2. Suppression, avec le filet de la clé étrangère (course possible
+        //    entre le contrôle et le DELETE) traduit en ce même refus
+        const resultat = await this.repo.delete(targetUserId);
+        if (!resultat.supprime) {
+            throw new ConflictException(MESSAGE_COMPTE_LIE_ADMIN);
+        }
     }
 }

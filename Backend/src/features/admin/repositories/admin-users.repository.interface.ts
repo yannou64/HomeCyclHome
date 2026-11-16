@@ -34,6 +34,10 @@ export type UpdateAdminUserData = Partial<
     Omit<CreateAdminUserData, 'password'>
 >;
 
+// Résultat d'une suppression : `supprime: false` quand la base l'a refusée parce
+// que le compte est encore référencé (violation de clé étrangère, RESTRICT).
+export type ResultatSuppression = { supprime: boolean };
+
 // Le contrat : le UseCase dépend de cette interface, jamais de Prisma directement
 export interface IAdminUsersRepository {
     findMany(
@@ -46,5 +50,7 @@ export interface IAdminUsersRepository {
         id: string,
         data: UpdateAdminUserData,
     ): Promise<AdminUserResponseDto>;
-    delete(id: string): Promise<void>;
+    // Nombre d'interventions où l'utilisateur est client OU technicien, tous statuts
+    compterInterventions(id: string): Promise<number>;
+    delete(id: string): Promise<ResultatSuppression>;
 }

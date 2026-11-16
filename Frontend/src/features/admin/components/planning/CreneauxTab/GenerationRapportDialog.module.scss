@@ -41,7 +41,7 @@
 }
 
 .statConflict .statValue {
-    color: #b91c1c;
+    color: $color-danger;
 }
 
 .statLabel {
@@ -54,7 +54,7 @@
 .conflictWarning {
     font-family: $font-primary;
     font-size: $font-size-label;
-    color: #b91c1c;
+    color: $color-danger;
     background-color: #fee2e2;
     border-radius: $radius-md;
     padding: $spacing-sm $spacing-md;

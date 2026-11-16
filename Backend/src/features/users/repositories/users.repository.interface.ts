@@ -11,9 +11,15 @@ export type UpdateUserData = {
     telephone?: string;
 };
 
+// Résultat d'une suppression : `supprime: false` quand la base l'a refusée parce
+// que le compte est encore référencé (violation de clé étrangère, RESTRICT).
+export type ResultatSuppression = { supprime: boolean };
+
 // Le contrat : les use cases dépendent de cette interface, jamais de Prisma directement
 export interface IUsersRepository {
     findById(id: string): Promise<UserProfileResponseDto | null>;
     update(id: string, data: UpdateUserData): Promise<UserProfileResponseDto>;
-    deleteById(id: string): Promise<void>;
+    // Nombre d'interventions où l'utilisateur est client OU technicien, tous statuts
+    compterInterventions(id: string): Promise<number>;
+    deleteById(id: string): Promise<ResultatSuppression>;
 }

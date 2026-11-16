@@ -23,6 +23,7 @@ describe('DeleteAccountUseCase', () => {
         mockRepo = {
             findById: jest.fn(),
             update: jest.fn(),
+            compterInterventions: jest.fn(),
             deleteById: jest.fn(),
         };
         useCase = new DeleteAccountUseCase(mockRepo);
@@ -31,7 +32,8 @@ describe('DeleteAccountUseCase', () => {
     it('devrait supprimer le compte si utilisateur trouvé', async () => {
         // ARRANGE — l'utilisateur existe
         mockRepo.findById.mockResolvedValue(makeProfile());
-        mockRepo.deleteById.mockResolvedValue(undefined);
+        mockRepo.compterInterventions.mockResolvedValue(0); // aucune intervention
+        mockRepo.deleteById.mockResolvedValue({ supprime: true });
 
         // ACT
         await useCase.execute('uuid-test');

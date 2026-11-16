@@ -23,6 +23,13 @@
     margin-top: $spacing-sm;
 }
 
+// Même style que les erreurs des autres dialogues admin (PauseRecurrenteFormDialog…)
+.error {
+    color: $color-error;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+}
+
 .actions {
     display: flex;
     gap: $spacing-sm;
@@ -49,7 +56,7 @@
     padding: $spacing-xs $spacing-md;
     border: none;
     border-radius: $radius-md;
-    background-color: #b91c1c;
+    background-color: $color-danger;
     font-family: $font-primary;
     font-size: $font-size-body;
     font-weight: $font-semibold;

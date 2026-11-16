@@ -9,7 +9,7 @@
     font-family: $font-primary;
     font-size: $font-size-h2;
     font-weight: $font-bold;
-    color: #b91c1c;
+    color: $color-danger;
     margin-bottom: $spacing-xs;
 }
 
@@ -23,18 +23,18 @@
 
 .deleteButton {
     padding: $spacing-xs $spacing-md;
-    border: 1px solid #b91c1c;
+    border: 1px solid $color-danger;
     border-radius: $radius-md;
     background: white;
     font-family: $font-primary;
     font-size: $font-size-body;
     font-weight: $font-semibold;
-    color: #b91c1c;
+    color: $color-danger;
     cursor: pointer;
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: #b91c1c;
+        background-color: $color-danger;
         color: white;
     }
 }
@@ -66,7 +66,7 @@
 .error {
     font-family: $font-primary;
     font-size: $font-size-body;
-    color: #b91c1c;
+    color: $color-error;
     margin-top: $spacing-xs;
 }
 
@@ -101,7 +101,7 @@
     padding: $spacing-xs $spacing-md;
     border: none;
     border-radius: $radius-md;
-    background-color: #b91c1c;
+    background-color: $color-danger;
     font-family: $font-primary;
     font-size: $font-size-body;
     font-weight: $font-semibold;

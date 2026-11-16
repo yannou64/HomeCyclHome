@@ -95,7 +95,7 @@
     padding: 2px 10px;
     border-radius: $radius-full;
     background-color: #fee2e2;
-    color: #b91c1c;
+    color: $color-danger;
     font-size: $font-size-label;
     font-weight: $font-semibold;
 }
@@ -151,5 +151,5 @@
 }
 
 .error {
-    color: #b91c1c;
+    color: $color-error;
 }

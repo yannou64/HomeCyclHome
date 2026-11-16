@@ -29,6 +29,7 @@ describe('GetUsersUseCase', () => {
             findByEmail: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
+            compterInterventions: jest.fn(),
             delete: jest.fn(),
         };
         useCase = new GetUsersUseCase(mockRepo);
