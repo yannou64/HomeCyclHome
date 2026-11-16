@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { CreateModelePlanificationDto } from '../dto/input/create-modele-planification.dto';
 import { UpdateModelePlanificationDto } from '../dto/input/update-modele-planification.dto';
 import { CreatePauseRecurrenteDto } from '../dto/input/create-pause-recurrente.dto';

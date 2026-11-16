@@ -19,7 +19,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import type { Request } from 'express';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { CreateCycleDto } from '../dto/input/create-cycle.dto';
 import { UpdateCycleDto } from '../dto/input/update-cycle.dto';
 import { CreateCycleUseCase } from '../use-cases/create-cycle.use-case';

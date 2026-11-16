@@ -25,7 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { CreateInterventionUseCase } from '../use-cases/create-intervention.use-case';
 import { GetClientInterventionsUseCase } from '../use-cases/get-client-interventions.use-case';
 import { CancelInterventionUseCase } from '../use-cases/cancel-intervention.use-case';

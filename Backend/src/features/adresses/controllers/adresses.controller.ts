@@ -19,7 +19,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
 import { GetAdressesUseCase } from '../use-cases/get-adresses.use-case';
 import { CreateAdresseUseCase } from '../use-cases/create-adresse.use-case';
 import { UpdateAdresseUseCase } from '../use-cases/update-adresse.use-case';
