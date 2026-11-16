@@ -128,6 +128,11 @@ composants.** Deux feuilles :
 Ajout d'un composant : CLI shadcn (`components.json`), helper `cn` dans
 `shared/utils/cn`.
 
+**Couleurs d'état :** `$color-error` pour les messages d'erreur (classe `.error`),
+`$color-danger` pour les actions destructrices et les signaux de conflit,
+`$color-warning` pour les avertissements. Jamais la valeur hexadécimale dans un
+composant.
+
 **Constantes d'affichage partagées :** une correspondance utilisée à plusieurs
 endroits (couleur de zone → code hexadécimal…) vit dans un seul fichier de `shared/`.
 Ses valeurs viennent de la spec.

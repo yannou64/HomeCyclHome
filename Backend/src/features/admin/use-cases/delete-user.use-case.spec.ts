@@ -13,6 +13,7 @@ describe('DeleteUserUseCase', () => {
             findByEmail: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
+            compterInterventions: jest.fn(),
             delete: jest.fn(),
         };
         useCase = new DeleteUserUseCase(mockRepo);
@@ -29,6 +30,9 @@ describe('DeleteUserUseCase', () => {
             isActif: true,
             dateCreation: new Date(),
         });
+
+        mockRepo.compterInterventions.mockResolvedValue(0); // aucune intervention
+        mockRepo.delete.mockResolvedValue({ supprime: true });
 
         await useCase.execute('admin-123', 'user-456');
 

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 // Couleurs
 $color-myOrange: #f26419;
 $color-myYellow: #dfb202;
@@ -14,6 +16,15 @@ $color-border: #ddd5d2;
 
 $color-warning: #b45309;
 $color-warning-bg: #fef3c7;
+
+// Messages d'erreur (refus de l'API, validation) : une seule couleur pour tous.
+// Le violet de la charte (#ddaacc) est trop pâle pour du texte (contraste 1,9:1
+// sur blanc). On garde sa teinte en l'assombrissant : #aa4488, contraste 5,4:1
+// sur blanc et 5,1:1 sur le fond mint, au-dessus du minimum WCAG AA (4,5:1).
+$color-error: color.adjust($color-myViolet, $lightness: -30%);
+
+// Actions destructrices (boutons « Supprimer ») et signaux de conflit
+$color-danger: #b91c1c; // contraste 6,5:1 sur blanc
 
 // Font families
 $font-primary: 'Nunito', sans-serif;
