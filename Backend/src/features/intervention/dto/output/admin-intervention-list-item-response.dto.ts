@@ -23,8 +23,8 @@ export class AdminInterventionListItemResponseDto {
     @ApiProperty()
     id!: string;
 
-    @ApiProperty({ enum: ['Planifiee', 'Terminee', 'Annulee'] })
-    statut!: 'Planifiee' | 'Terminee' | 'Annulee';
+    @ApiProperty({ enum: ['Planifiee', 'Realisee', 'Annulee', 'EnConflit'] })
+    statut!: 'Planifiee' | 'Realisee' | 'Annulee' | 'EnConflit';
 
     @ApiProperty({
         description:
@@ -38,8 +38,10 @@ export class AdminInterventionListItemResponseDto {
     @ApiProperty()
     forfaitNom!: string;
 
-    @ApiProperty({ type: () => ZoneSnapshotDto })
-    zone!: ZoneSnapshotDto;
+    // Lue sur les créneaux de l'intervention : null si ses créneaux ont été
+    // supprimés (intervention en conflit).
+    @ApiProperty({ nullable: true, type: () => ZoneSnapshotDto })
+    zone!: ZoneSnapshotDto | null;
 
     @ApiProperty({ nullable: true, type: () => TechnicienSnapshotDto })
     technicien!: TechnicienSnapshotDto | null;

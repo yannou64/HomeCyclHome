@@ -3,217 +3,35 @@ import { Prisma } from '../../../generated/prisma/client';
 import { PrismaService } from '../../../shared/prisma/prisma.service';
 import type {
     IInterventionsRepository,
-    UpsertAdresseInput,
-    CreateCycleInput,
-    CreateInterventionData,
-    PrixForfait,
-    ClientInfo,
-    InterventionForCancel,
     GetAdminInterventionsParams,
 } from './interventions.repository.interface';
-import { bornesDuJourTravail } from '../../../shared/domain/jour-travail';
-import type { CreneauAvecTechnicien } from '../../planning/dto/output/creneau-response.dto';
-import type { InterventionCreatedResponseDto } from '../dto/output/intervention-created-response.dto';
 import type { InterventionListItemResponseDto } from '../dto/output/intervention-list-item-response.dto';
 import type { AdminInterventionListItemResponseDto } from '../dto/output/admin-intervention-list-item-response.dto';
 import type { AdminInterventionDetailResponseDto } from '../dto/output/admin-intervention-detail-response.dto';
 
+// Fin prévue d'une intervention : sa date de début plus sa durée figée.
+function finPrevue(datePrevue: Date, dureeMinutes: number): string {
+    return new Date(
+        datePrevue.getTime() + dureeMinutes * 60 * 1000,
+    ).toISOString();
+}
+
+// Zone d'une intervention, lue sur son premier créneau (le schéma V2 ne la
+// fige pas sur l'intervention). Null quand ses créneaux ont été supprimés.
+const ZONE_DU_PREMIER_CRENEAU = {
+    select: { zone: { select: { id: true, nom_zone: true } } },
+    orderBy: { date_debut: 'asc' },
+    take: 1,
+} satisfies Prisma.Intervention$creneauxArgs;
+
+function zoneDe(creneaux: { zone: { id: string; nom_zone: string } }[]) {
+    const zone = creneaux[0]?.zone;
+    return zone ? { id: zone.id, nom: zone.nom_zone } : null;
+}
+
 @Injectable()
 export class InterventionsPrismaRepository implements IInterventionsRepository {
     constructor(private readonly prisma: PrismaService) {}
-
-    async isCreneauDisponible(creneauId: string): Promise<boolean> {
-        const creneau = await this.prisma.creneau.findUnique({
-            where: { id: creneauId },
-            select: { is_disponible: true },
-        });
-        return creneau?.is_disponible ?? false;
-    }
-
-    async createCycle(
-        utilisateurId: string,
-        data: CreateCycleInput,
-    ): Promise<string> {
-        const cycle = await this.prisma.cycle.create({
-            data: {
-                libelle: 'Mon vélo',
-                utilisateur_id: utilisateurId,
-                type_cycle_id: data.typeCycleId,
-                marque_id: data.marqueId,
-            },
-            select: { id: true },
-        });
-        return cycle.id;
-    }
-
-    async upsertAdresse(data: UpsertAdresseInput): Promise<string> {
-        const adresse = await this.prisma.adresse.upsert({
-            where: { google_place_id: data.googlePlaceId },
-            update: {},
-            create: {
-                rue: data.rue,
-                code_postal: data.codePostal,
-                ville: data.ville,
-                pays: data.pays ?? 'France',
-                latitude: data.latitude,
-                longitude: data.longitude,
-                google_place_id: data.googlePlaceId,
-                numero: data.numero ?? null,
-            },
-            select: { id: true },
-        });
-        return adresse.id;
-    }
-
-    async getPrixActuelForfait(forfaitId: string): Promise<PrixForfait | null> {
-        const prix = await this.prisma.historiquePrixForfait.findFirst({
-            where: { forfait_id: forfaitId, date_fin: null },
-            select: { id: true, montant: true },
-        });
-        if (!prix) return null;
-        return { id: prix.id, montant: Number(prix.montant) };
-    }
-
-    async getTechnicienFromCreneau(creneauId: string): Promise<string | null> {
-        const creneau = await this.prisma.creneau.findUnique({
-            where: { id: creneauId },
-            select: {
-                modele_planification: { select: { technicien_id: true } },
-            },
-        });
-        return creneau?.modele_planification?.technicien_id ?? null;
-    }
-
-    // Recharge le voisinage du créneau pour rejouer la règle de réservabilité à
-    // l'écriture. Le périmètre — même technicien, même journée — doit rester
-    // identique à celui du regroupement côté lecture, sinon les deux chemins
-    // pourraient diverger.
-    async findCreneauxDuJour(
-        creneauId: string,
-    ): Promise<CreneauAvecTechnicien[]> {
-        const cible = await this.prisma.creneau.findUnique({
-            where: { id: creneauId },
-            select: {
-                date_debut: true,
-                zone_id: true,
-                modele_planification: { select: { technicien_id: true } },
-            },
-        });
-        if (!cible) return [];
-
-        const technicienId = cible.modele_planification?.technicien_id ?? null;
-        const { debut, fin } = bornesDuJourTravail(cible.date_debut);
-
-        const creneaux = await this.prisma.creneau.findMany({
-            where: {
-                date_debut: { gte: debut, lte: fin },
-                // Créneau généré : on suit le technicien. Créneau manuel (sans
-                // modèle) : on se rabat sur les autres créneaux manuels de la zone.
-                ...(technicienId
-                    ? { modele_planification: { technicien_id: technicienId } }
-                    : {
-                          modele_planification_id: null,
-                          zone_id: cible.zone_id,
-                      }),
-            },
-            include: {
-                modele_planification: {
-                    select: {
-                        technicien_id: true,
-                        intervalle_minutes: true,
-                        technicien: { select: { prenom: true } },
-                    },
-                },
-            },
-            orderBy: { date_debut: 'asc' },
-        });
-
-        return creneaux.map((c) => ({
-            id: c.id,
-            dateDebut: c.date_debut.toISOString(),
-            dateFin: c.date_fin?.toISOString() ?? null,
-            isDisponible: c.is_disponible,
-            zoneId: c.zone_id,
-            modelePlanificationId: c.modele_planification_id,
-            technicienId: c.modele_planification?.technicien_id ?? null,
-            technicienPrenom: c.modele_planification?.technicien.prenom ?? null,
-            intervalleMinutes:
-                c.modele_planification?.intervalle_minutes ?? Infinity,
-        }));
-    }
-
-    async getForfaitDuree(forfaitId: string): Promise<number> {
-        const forfait = await this.prisma.forfait.findUniqueOrThrow({
-            where: { id: forfaitId },
-            select: { duree_minutes: true },
-        });
-        return forfait.duree_minutes;
-    }
-
-    async createInterventionTransaction(
-        data: CreateInterventionData,
-    ): Promise<InterventionCreatedResponseDto> {
-        const intervention = await this.prisma.$transaction(async (tx) => {
-            const premierCreneau = await tx.creneau.findUniqueOrThrow({
-                where: { id: data.creneauId },
-                select: {
-                    date_debut: true,
-                    zone_id: true,
-                    modele_planification_id: true,
-                },
-            });
-
-            const dateFinBloc = new Date(
-                premierCreneau.date_debut.getTime() +
-                    data.dureeMinutesSnapshot * 60 * 1000,
-            );
-
-            const created = await tx.intervention.create({
-                data: {
-                    client_id: data.clientId,
-                    cycle_id: data.cycleId,
-                    forfait_id: data.forfaitId,
-                    creneau_id: data.creneauId,
-                    adresse_id: data.adresseId,
-                    historique_prix_forfait_id: data.historiquePrixForfaitId,
-                    duree_minutes_snapshot: data.dureeMinutesSnapshot,
-                    technicien_id: data.technicienId ?? null,
-                    commentaire: data.commentaire ?? null,
-                },
-                select: { id: true, statut: true, date_creation: true },
-            });
-
-            // Verrouille tous les créneaux du bloc (ex: forfait 2h = 4 créneaux de 30 min)
-            await tx.creneau.updateMany({
-                where: {
-                    zone_id: premierCreneau.zone_id,
-                    modele_planification_id:
-                        premierCreneau.modele_planification_id,
-                    date_debut: {
-                        gte: premierCreneau.date_debut,
-                        lt: dateFinBloc,
-                    },
-                },
-                data: { is_disponible: false },
-            });
-
-            return created;
-        });
-
-        return {
-            id: intervention.id,
-            statut: intervention.statut,
-            dateCreation: intervention.date_creation.toISOString(),
-        };
-    }
-
-    async findClientById(clientId: string): Promise<ClientInfo | null> {
-        const user = await this.prisma.utilisateur.findUnique({
-            where: { id: clientId },
-            select: { email: true, prenom: true },
-        });
-        return user ?? null;
-    }
 
     async getInterventionsByClientId(
         clientId: string,
@@ -225,10 +43,12 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 id: true,
                 statut: true,
                 date_creation: true,
+                date_prevue: true,
                 duree_minutes_snapshot: true,
-                commentaire: true,
-                creneau: { select: { date_debut: true, date_fin: true } },
-                forfait: { select: { nom: true } },
+                commentaire_client: true,
+                historique_prix: {
+                    select: { forfait: { select: { nom: true } } },
+                },
                 adresse: {
                     select: {
                         numero: true,
@@ -251,9 +71,9 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
             id: i.id,
             statut: i.statut,
             dateCreation: i.date_creation.toISOString(),
-            dateDebut: i.creneau.date_debut?.toISOString() ?? '',
-            dateFin: i.creneau.date_fin?.toISOString() ?? null,
-            forfaitNom: i.forfait.nom,
+            dateDebut: i.date_prevue.toISOString(),
+            dateFin: finPrevue(i.date_prevue, i.duree_minutes_snapshot),
+            forfaitNom: i.historique_prix.forfait.nom,
             dureeMinutesSnapshot: i.duree_minutes_snapshot,
             adresse: {
                 numero: i.adresse.numero,
@@ -266,64 +86,8 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 marque: i.cycle.marque.libelle,
                 type: i.cycle.type_cycle.libelle,
             },
-            commentaire: i.commentaire,
+            commentaire: i.commentaire_client,
         }));
-    }
-
-    async findInterventionForCancel(
-        id: string,
-    ): Promise<InterventionForCancel | null> {
-        const intervention = await this.prisma.intervention.findUnique({
-            where: { id },
-            select: { client_id: true, statut: true, creneau_id: true },
-        });
-        if (!intervention) return null;
-        return {
-            clientId: intervention.client_id,
-            statut: intervention.statut,
-            creneauId: intervention.creneau_id,
-        };
-    }
-
-    async cancelInterventionTransaction(
-        interventionId: string,
-        creneauId: string,
-    ): Promise<void> {
-        await this.prisma.$transaction(async (tx) => {
-            const intervention = await tx.intervention.findUniqueOrThrow({
-                where: { id: interventionId },
-                select: { duree_minutes_snapshot: true },
-            });
-
-            const creneau = await tx.creneau.findUniqueOrThrow({
-                where: { id: creneauId },
-                select: {
-                    date_debut: true,
-                    zone_id: true,
-                    modele_planification_id: true,
-                },
-            });
-
-            const dateFinBloc = new Date(
-                creneau.date_debut.getTime() +
-                    intervention.duree_minutes_snapshot * 60 * 1000,
-            );
-
-            await tx.intervention.update({
-                where: { id: interventionId },
-                data: { statut: 'Annulee' },
-            });
-
-            // Libère tous les créneaux du bloc
-            await tx.creneau.updateMany({
-                where: {
-                    zone_id: creneau.zone_id,
-                    modele_planification_id: creneau.modele_planification_id,
-                    date_debut: { gte: creneau.date_debut, lt: dateFinBloc },
-                },
-                data: { is_disponible: true },
-            });
-        });
     }
 
     async findAllInterventions(params: GetAdminInterventionsParams): Promise<{
@@ -333,26 +97,18 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
         const { statut, zoneId, technicienId, page, limit } = params;
         const now = new Date();
 
-        // Fusionné en un seul objet : deux spreads séparés ciblant tous les deux
-        // la clé `creneau` s'écraseraient silencieusement au lieu de se combiner.
-        const creneauFilter: Prisma.CreneauWhereInput = {
-            ...(zoneId ? { zone_id: zoneId } : {}),
-            ...(statut === 'enRetard'
-                ? { date_debut: { lt: now } }
-                : statut === 'Planifiee'
-                  ? { date_debut: { gte: now } }
-                  : {}),
-        };
-
         const where: Prisma.InterventionWhereInput = {
             ...(statut === 'archivees'
-                ? { statut: { in: ['Terminee', 'Annulee'] } }
+                ? { statut: { in: ['Realisee', 'Annulee'] } }
                 : statut
                   ? { statut: 'Planifiee' }
                   : {}),
-            ...(Object.keys(creneauFilter).length > 0
-                ? { creneau: creneauFilter }
-                : {}),
+            ...(statut === 'enRetard'
+                ? { date_prevue: { lt: now } }
+                : statut === 'Planifiee'
+                  ? { date_prevue: { gte: now } }
+                  : {}),
+            ...(zoneId ? { creneaux: { some: { zone_id: zoneId } } } : {}),
             ...(technicienId ? { technicien_id: technicienId } : {}),
         };
 
@@ -362,54 +118,31 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 select: {
                     id: true,
                     statut: true,
-                    technicien_id: true,
-                    creneau: {
-                        select: {
-                            date_debut: true,
-                            zone: { select: { id: true, nom_zone: true } },
-                        },
+                    date_prevue: true,
+                    technicien: {
+                        select: { id: true, prenom: true, nom: true },
                     },
-                    forfait: { select: { nom: true } },
+                    historique_prix: {
+                        select: { forfait: { select: { nom: true } } },
+                    },
+                    creneaux: ZONE_DU_PREMIER_CRENEAU,
                 },
-                orderBy: { creneau: { date_debut: 'asc' } },
+                orderBy: { date_prevue: 'asc' },
                 skip: (page - 1) * limit,
                 take: limit,
             }),
             this.prisma.intervention.count({ where }),
         ]);
 
-        // technicien_id est un snapshot scalaire sans @relation Prisma → requête séparée
-        const technicienIds = [
-            ...new Set(
-                interventions
-                    .map((i) => i.technicien_id)
-                    .filter((id): id is string => id !== null),
-            ),
-        ];
-        const techniciens =
-            technicienIds.length > 0
-                ? await this.prisma.utilisateur.findMany({
-                      where: { id: { in: technicienIds } },
-                      select: { id: true, prenom: true, nom: true },
-                  })
-                : [];
-        const technicienMap = new Map<
-            string,
-            { id: string; prenom: string; nom: string }
-        >(techniciens.map((t) => [t.id, t]));
-
         return {
             interventions: interventions.map((i) => ({
                 id: i.id,
                 statut: i.statut,
-                enRetard:
-                    i.statut === 'Planifiee' && i.creneau.date_debut < now,
-                dateDebut: i.creneau.date_debut.toISOString(),
-                forfaitNom: i.forfait.nom,
-                zone: { id: i.creneau.zone.id, nom: i.creneau.zone.nom_zone },
-                technicien: i.technicien_id
-                    ? (technicienMap.get(i.technicien_id) ?? null)
-                    : null,
+                enRetard: i.statut === 'Planifiee' && i.date_prevue < now,
+                dateDebut: i.date_prevue.toISOString(),
+                forfaitNom: i.historique_prix.forfait.nom,
+                zone: zoneDe(i.creneaux),
+                technicien: i.technicien,
             })),
             total,
         };
@@ -455,17 +188,14 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
                 id: true,
                 statut: true,
                 date_creation: true,
+                date_prevue: true,
                 duree_minutes_snapshot: true,
-                commentaire: true,
-                technicien_id: true,
-                creneau: {
-                    select: {
-                        date_debut: true,
-                        date_fin: true,
-                        zone: { select: { id: true, nom_zone: true } },
-                    },
+                commentaire_client: true,
+                technicien: { select: { id: true, prenom: true, nom: true } },
+                historique_prix: {
+                    select: { forfait: { select: { nom: true } } },
                 },
-                forfait: { select: { nom: true } },
+                creneaux: ZONE_DU_PREMIER_CRENEAU,
                 client: {
                     select: {
                         id: true,
@@ -499,31 +229,23 @@ export class InterventionsPrismaRepository implements IInterventionsRepository {
 
         if (!intervention) return null;
 
-        // technicien_id est un snapshot scalaire sans @relation Prisma → requête séparée
-        const technicien = intervention.technicien_id
-            ? await this.prisma.utilisateur.findUnique({
-                  where: { id: intervention.technicien_id },
-                  select: { id: true, prenom: true, nom: true },
-              })
-            : null;
-
         return {
             id: intervention.id,
             statut: intervention.statut,
             enRetard:
                 intervention.statut === 'Planifiee' &&
-                intervention.creneau.date_debut < new Date(),
-            dateDebut: intervention.creneau.date_debut.toISOString(),
-            forfaitNom: intervention.forfait.nom,
-            zone: {
-                id: intervention.creneau.zone.id,
-                nom: intervention.creneau.zone.nom_zone,
-            },
-            technicien,
+                intervention.date_prevue < new Date(),
+            dateDebut: intervention.date_prevue.toISOString(),
+            forfaitNom: intervention.historique_prix.forfait.nom,
+            zone: zoneDe(intervention.creneaux),
+            technicien: intervention.technicien,
             dateCreation: intervention.date_creation.toISOString(),
-            dateFin: intervention.creneau.date_fin?.toISOString() ?? null,
+            dateFin: finPrevue(
+                intervention.date_prevue,
+                intervention.duree_minutes_snapshot,
+            ),
             dureeMinutesSnapshot: intervention.duree_minutes_snapshot,
-            commentaire: intervention.commentaire,
+            commentaire: intervention.commentaire_client,
             client: {
                 id: intervention.client.id,
                 prenom: intervention.client.prenom,

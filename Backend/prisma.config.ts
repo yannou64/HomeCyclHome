@@ -13,6 +13,8 @@ export default defineConfig({
     schema: 'prisma/schema.prisma',
     migrations: {
         path: 'prisma/migrations',
+        // Jeu de démonstration : npx prisma db seed (voir prisma/seed.ts)
+        seed: 'ts-node --transpile-only prisma/seed.ts',
     },
     datasource: {
         url: databaseUrl,

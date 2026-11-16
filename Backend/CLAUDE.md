@@ -146,12 +146,10 @@ vault). Les règles qu'ils servent restent dans la spec.
 **Transaction « tout ou rien ».** Quand la séquence d'une US place plusieurs
 écritures dans une transaction, elles vivent dans **une seule méthode du
 repository**, via `prisma.$transaction(async (tx) => { … })`. Le use case appelle
-cette méthode ; il ne voit jamais `tx`. Exemples en place, **pour la forme de la
-transaction seulement** : `forfaits/repositories/forfaits.prisma.repository.ts`,
-`intervention/repositories/interventions.prisma.repository.ts`. ⚠️ Dans ce dernier,
-le `updateMany` des créneaux n'est **pas** conditionnel (dette V1, refondue par la
-réservation V2) : ne pas le recopier. Aucune écriture conditionnelle n'existe encore
-dans le code ; la brique partagée est posée au socle V2.
+cette méthode ; il ne voit jamais `tx`. Exemple en place, **pour la forme de la
+transaction seulement** : `forfaits/repositories/forfaits.prisma.repository.ts`.
+Aucune écriture conditionnelle n'existe encore dans le code ; la brique partagée est
+posée au socle V2.
 
 **Écriture conditionnelle.** Une écriture qui dépend d'un état attendu se fait par
 `updateMany({ where: { id, <état attendu> }, data })` et **lit `count`** :
@@ -218,8 +216,17 @@ interventions, un technicien et les siennes).
   `src/`), uniquement dans les repositories et `PrismaService`.
 - Cycle : modifier `schema.prisma` → `npx prisma migrate dev --name <nom>` →
   `npx prisma generate` (Prisma 7 ne régénère plus le client pendant `migrate dev`).
-- Les migrations V1 sont abandonnées au socle V2 (base réinitialisée, voir
-  `Refonte 2.0`).
+  Si `migrate dev` demande une remise à zéro de la base, c'est à Yannick de la faire :
+  Prisma bloque toute commande destructrice lancée par l'IA. Une migration peut aussi
+  s'écrire sans base : `npx prisma migrate diff --from-… --to-schema … --script`.
+- Migrations : une seule migration initiale V2, `prisma/migrations/…_init_v2` (les
+  migrations V1 sont abandonnées, voir `Refonte 2.0`). Les suivantes s'y ajoutent.
+- **Jeu de démonstration** : `npx prisma db seed` (`prisma/seed.ts`). Il vide toutes
+  les tables puis insère comptes, zones, forfaits, modèles, créneaux et une
+  intervention ; il refuse `NODE_ENV=production`. Le mot de passe des comptes vient de
+  `SEED_MOT_DE_PASSE` (`.env`), jamais du code : le dépôt est public. Comptes et
+  adresses de test : note `Données de test` du vault. Le seed est exclu du build
+  (`tsconfig.build.json`).
 - Le nom Prisma fait foi côté code quand il diffère du MCD.
 
 ---

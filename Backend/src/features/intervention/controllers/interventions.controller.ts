@@ -1,12 +1,8 @@
 import {
     BadRequestException,
-    Body,
     Controller,
     Get,
-    HttpCode,
-    HttpStatus,
     Param,
-    Patch,
     Post,
     Req,
     UploadedFiles,
@@ -18,7 +14,6 @@ import {
     ApiConsumes,
     ApiCookieAuth,
     ApiCreatedResponse,
-    ApiNoContentResponse,
     ApiOkResponse,
     ApiOperation,
     ApiTags,
@@ -26,11 +21,8 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../../shared/guards/jwt-auth.guard';
-import { CreateInterventionUseCase } from '../use-cases/create-intervention.use-case';
 import { GetClientInterventionsUseCase } from '../use-cases/get-client-interventions.use-case';
-import { CancelInterventionUseCase } from '../use-cases/cancel-intervention.use-case';
 import { UploadInterventionPhotosUseCase } from '../use-cases/upload-intervention-photos.use-case';
-import { CreateInterventionDto } from '../dto/input/create-intervention.dto';
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024; // 30 Mo
@@ -41,38 +33,15 @@ const MAX_FILE_SIZE_BYTES = 30 * 1024 * 1024; // 30 Mo
 @UseGuards(JwtAuthGuard)
 export class InterventionsController {
     constructor(
-        private readonly createInterventionUseCase: CreateInterventionUseCase,
         private readonly getClientInterventionsUseCase: GetClientInterventionsUseCase,
-        private readonly cancelInterventionUseCase: CancelInterventionUseCase,
         private readonly uploadInterventionPhotosUseCase: UploadInterventionPhotosUseCase,
     ) {}
-
-    @ApiOperation({
-        summary:
-            'Crée une intervention et marque le créneau indisponible dans une transaction atomique',
-    })
-    @ApiCreatedResponse({
-        description: 'Intervention créée, créneau marqué indisponible',
-    })
-    @Post()
-    create(@Req() req: Request, @Body() dto: CreateInterventionDto) {
-        const { userId } = req.user as { userId: string };
-        return this.createInterventionUseCase.execute(userId, dto);
-    }
 
     @ApiOkResponse({ description: 'Liste des interventions du client' })
     @Get()
     getMyInterventions(@Req() req: Request) {
         const { userId } = req.user as { userId: string };
         return this.getClientInterventionsUseCase.execute(userId);
-    }
-
-    @ApiNoContentResponse({ description: 'Intervention annulée' })
-    @Patch(':id/annuler')
-    @HttpCode(HttpStatus.NO_CONTENT)
-    cancelIntervention(@Req() req: Request, @Param('id') id: string) {
-        const { userId } = req.user as { userId: string };
-        return this.cancelInterventionUseCase.execute(id, userId);
     }
 
     @ApiOperation({
