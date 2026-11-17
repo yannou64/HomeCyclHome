@@ -82,6 +82,29 @@
     }
 }
 
+.checkboxLabel {
+    align-self: flex-start; // ne s'étire pas sur la largeur du formulaire
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    // Annule le style global des <input> (_base.scss : largeur 100 %, bordure,
+    // padding), pensé pour les champs texte et non pour une case à cocher
+    input {
+        width: auto;
+        padding: 0;
+        margin: 0;
+        border: none;
+        flex-shrink: 0;
+        accent-color: $color-myOrange; // même accent que le focus des champs
+        cursor: pointer;
+    }
+}
+
 .error {
     color: $color-error;
     font-family: $font-primary;

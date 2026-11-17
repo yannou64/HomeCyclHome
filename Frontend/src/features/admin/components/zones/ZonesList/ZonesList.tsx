@@ -16,6 +16,8 @@ import {
 } from '../../../../../shared/components/ui/pagination';
 import { usePagination } from '../../../../../shared/hooks/usePagination';
 import type { Zone } from '../../../types/zones.types';
+import { PastilleCouleur } from '../PastilleCouleur/PastilleCouleur';
+import { couleurAffichee } from '../../../../../shared/utils/couleursZones';
 import styles from './ZonesList.module.scss';
 
 interface ZonesListProps {
@@ -73,7 +75,22 @@ export function ZonesList({
                             pageItems.map((zone) => (
                                 <TableRow key={zone.id}>
                                     <TableCell className={styles.nomCell}>
-                                        {zone.nomZone}
+                                        {/* Couleur de la zone, grise si elle
+                                            est inactive (couleur enregistrée
+                                            inchangée) */}
+                                        <span
+                                            className={styles.nomAvecPastille}
+                                        >
+                                            <PastilleCouleur
+                                                hex={couleurAffichee(zone)}
+                                                titre={
+                                                    zone.isActive
+                                                        ? zone.couleur
+                                                        : `${zone.couleur} (zone inactive)`
+                                                }
+                                            />
+                                            {zone.nomZone}
+                                        </span>
                                     </TableCell>
                                     <TableCell>
                                         {zone.points.length} sommet

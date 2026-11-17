@@ -9,6 +9,7 @@ const makeZone = (
 ): ZoneResponseDto => ({
     id: 'zone-1',
     nomZone: 'Lyon Centre',
+    couleur: 'Rouge' as const,
     isActive: true,
     dateCreation: new Date(),
     points: [

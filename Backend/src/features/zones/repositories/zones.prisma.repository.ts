@@ -56,6 +56,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
         const zone = await this.prisma.zone.create({
             data: {
                 nom_zone: data.nomZone,
+                couleur: data.couleur,
                 points: {
                     create: data.points.map((p) => ({
                         latitude: p.latitude,
@@ -91,6 +92,8 @@ export class ZonesPrismaRepository implements IZonesRepository {
                     ...(data.isActive !== undefined && {
                         is_active: data.isActive,
                     }),
+                    // Seule la zone change : aucun créneau ni intervention n'est touché
+                    ...(data.couleur && { couleur: data.couleur }),
                 },
                 include: { points: { orderBy: { ordre: 'asc' } } },
             });
@@ -108,6 +111,7 @@ export class ZonesPrismaRepository implements IZonesRepository {
             id: zone.id,
             nomZone: zone.nom_zone,
             isActive: zone.is_active,
+            couleur: zone.couleur,
             dateCreation: zone.date_creation,
             points: zone.points.map((p) => this.toPointDto(p)),
         };

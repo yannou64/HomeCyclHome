@@ -5,6 +5,7 @@ import { UpdateZoneUseCase } from './update-zone.use-case';
 const existingZone = {
     id: 'uuid-1',
     nomZone: 'Lyon Centre',
+    couleur: 'Rouge' as const,
     isActive: true,
     dateCreation: new Date('2026-01-01'),
     points: [

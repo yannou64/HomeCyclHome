@@ -2,7 +2,11 @@ import { randomUUID } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../src/shared/prisma/prisma.service';
 import type { UserRole } from '../../src/shared/types/user-role';
-import type { StatutIntervention } from '../../src/generated/prisma/enums';
+import type {
+    CouleurZone,
+    StatutCreneau,
+    StatutIntervention,
+} from '../../src/generated/prisma/enums';
 
 export const MOT_DE_PASSE_DE_TEST = 'MotDePasse123!';
 
@@ -158,4 +162,62 @@ export async function creerIntervention(
         cycleId: cycle.id,
         adresseId,
     };
+}
+
+/** Options de creerZone : tout est facultatif. */
+export type OptionsZone = {
+    couleur?: CouleurZone; // Rouge (défaut du schéma) si absente
+    isActive?: boolean; // active par défaut
+};
+
+/**
+ * Crée une zone avec un tracé de 3 points (le minimum d'un polygone).
+ * Son nom est unique à chaque appel. Renvoie son id.
+ */
+export async function creerZone(
+    prisma: PrismaService,
+    options: OptionsZone = {},
+): Promise<{ id: string }> {
+    return prisma.zone.create({
+        data: {
+            nom_zone: `Zone ${randomUUID()}`,
+            couleur: options.couleur,
+            is_active: options.isActive ?? true,
+            points: {
+                create: [
+                    { latitude: 45.76, longitude: 4.83, ordre: 0 },
+                    { latitude: 45.77, longitude: 4.85, ordre: 1 },
+                    { latitude: 45.75, longitude: 4.86, ordre: 2 },
+                ],
+            },
+        },
+        select: { id: true },
+    });
+}
+
+/** Données d'un créneau de test. */
+export type OptionsCreneau = {
+    technicienId: string;
+    zoneId: string;
+    dateDebut?: Date; // un horaire fixe par défaut
+    statut?: StatutCreneau; // Libre par défaut
+    interventionId?: string; // pour un créneau « Intervention réservée »
+};
+
+/** Crée un créneau de 30 minutes. Renvoie son id. */
+export async function creerCreneau(
+    prisma: PrismaService,
+    options: OptionsCreneau,
+): Promise<{ id: string }> {
+    return prisma.creneau.create({
+        data: {
+            technicien_id: options.technicienId,
+            zone_id: options.zoneId,
+            date_debut:
+                options.dateDebut ?? new Date('2026-06-01T07:30:00.000Z'),
+            statut: options.statut ?? 'Libre',
+            intervention_id: options.interventionId,
+        },
+        select: { id: true },
+    });
 }

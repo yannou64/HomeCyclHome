@@ -4,6 +4,7 @@ import { CreateZoneUseCase } from './create-zone.use-case';
 
 const validPayload = {
     nomZone: 'Lyon Centre',
+    couleur: 'Rouge' as const,
     points: [
         { latitude: 45.75, longitude: 4.83, ordre: 0 },
         { latitude: 45.76, longitude: 4.84, ordre: 1 },

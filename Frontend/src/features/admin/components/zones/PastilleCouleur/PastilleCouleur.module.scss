@@ -1,0 +1,20 @@
+@use '../../../../../app/styles/index' as *;
+
+.pastille {
+    display: inline-block;
+    flex-shrink: 0;
+    border-radius: $radius-full;
+    background-color: var(--pastille-couleur);
+}
+
+// Liste des zones : discrète, à côté du nom
+.petite {
+    width: $spacing-sm;
+    height: $spacing-sm;
+}
+
+// Sélecteur du formulaire : assez grande pour être cliquée au doigt
+.grande {
+    width: $spacing-md;
+    height: $spacing-md;
+}
