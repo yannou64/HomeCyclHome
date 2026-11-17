@@ -6,6 +6,12 @@ import type {
     UpdateZonePayload,
 } from '../../../types/zones.types';
 import { ZoneMapDrawer } from '../ZoneMapDrawer/ZoneMapDrawer';
+import { ZoneCouleurPicker } from '../ZoneCouleurPicker/ZoneCouleurPicker';
+import {
+    COULEUR_ZONE_PAR_DEFAUT,
+    type CouleurZone,
+} from '../../../../../shared/utils/couleursZones';
+import { getApiErrorMessage } from '../../../../../shared/utils/apiError';
 import styles from './ZoneForm.module.scss';
 
 interface ZoneFormProps {
@@ -17,6 +23,15 @@ interface ZoneFormProps {
 export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
     const [nomZone, setNomZone] = useState(zone?.nomZone ?? '');
     const [points, setPoints] = useState<ZonePoint[]>(zone?.points ?? []);
+    // Création : la première couleur de la palette ; modification : la couleur
+    // enregistrée, même si la zone est inactive (le gris n'est qu'un affichage)
+    const [couleur, setCouleur] = useState<CouleurZone>(
+        zone?.couleur ?? COULEUR_ZONE_PAR_DEFAUT,
+    );
+    // État d'activité : modifiable seulement en modification (une zone naît
+    // active, V1 « Administrer les zones », RG9). Une zone inactive garde sa
+    // couleur enregistrée : seul l'affichage passe au gris.
+    const [isActive, setIsActive] = useState(zone?.isActive ?? true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -41,10 +56,19 @@ export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
 
         setIsSubmitting(true);
         try {
-            await onSubmit({ nomZone: nomZone.trim(), points });
+            const commun = { nomZone: nomZone.trim(), couleur, points };
+            // isActive n'est envoyé qu'en modification : à la création, le
+            // champ n'existe pas (la zone naît active)
+            await onSubmit(zone ? { ...commun, isActive } : commun);
             onCancel(); // retour à la liste après succès
-        } catch {
-            setError('Une erreur est survenue. Veuillez réessayer.');
+        } catch (err) {
+            // Message de l'API (couleur refusée, nom déjà pris…) s'il y en a un
+            setError(
+                getApiErrorMessage(
+                    err,
+                    'Une erreur est survenue. Veuillez réessayer.',
+                ),
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -80,6 +104,24 @@ export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
                         disabled={isSubmitting}
                     />
                 </div>
+
+                {zone && (
+                    <label className={styles.checkboxLabel}>
+                        <input
+                            type="checkbox"
+                            checked={isActive}
+                            onChange={(e) => setIsActive(e.target.checked)}
+                            disabled={isSubmitting}
+                        />
+                        Zone active
+                    </label>
+                )}
+
+                <ZoneCouleurPicker
+                    valeur={couleur}
+                    onChange={setCouleur}
+                    disabled={isSubmitting}
+                />
 
                 <div className={styles.field}>
                     <p className={styles.label}>Délimitation géographique</p>

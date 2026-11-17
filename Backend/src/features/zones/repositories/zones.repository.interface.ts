@@ -1,4 +1,5 @@
 import { ZoneResponseDto } from '../dto/output/zone-response.dto';
+import type { CouleurZone } from '../dto/couleur-zone';
 
 export type ZonePointData = {
     latitude: number;
@@ -8,12 +9,14 @@ export type ZonePointData = {
 
 export type CreateZoneData = {
     nomZone: string;
+    couleur: CouleurZone;
     points: ZonePointData[];
 };
 
 export type UpdateZoneData = {
     nomZone?: string;
     isActive?: boolean;
+    couleur?: CouleurZone;
     points?: ZonePointData[];
 };
 
