@@ -136,6 +136,9 @@ composant.
 **Constantes d'affichage partagées :** une correspondance utilisée à plusieurs
 endroits (couleur de zone → code hexadécimal…) vit dans un seul fichier de `shared/`.
 Ses valeurs viennent de la spec.
+- **Couleur d'une zone** : `shared/utils/couleursZones.ts`. Toujours afficher
+  `couleurAffichee(zone)` (gris si la zone est inactive), jamais la couleur
+  enregistrée directement ; l'API ne transmet que le nom de la couleur.
 
 **Styles inline :** seulement pour une valeur calculée à l'exécution (variable CSS,
 durée d'animation).

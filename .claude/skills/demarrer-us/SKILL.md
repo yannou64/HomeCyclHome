@@ -78,6 +78,21 @@ Le code de la V1 n'est pas un modèle pour les patterns V2 (écriture conditionn
 fuseau) : en cas de différence entre le code existant et `Backend/CLAUDE.md`, c'est
 le `CLAUDE.md` qui fait foi.
 
+**Vérifie la branche avant tout développement** (`CLAUDE.md` racine, section 7) :
+```bash
+git branch --show-current && git status --short && git fetch origin \
+  && git log --oneline -1 dev && git log --oneline -1 origin/dev
+```
+- la branche courante doit couvrir le sujet de l'US (son épique ou son lot de
+  travail) ; sinon, ou si l'on est sur `dev` ou `main`, propose de créer la
+  branche avant tout code ;
+- si `dev` local est en retard sur `origin/dev` (une PR fusionnée entre-temps),
+  la nouvelle branche doit partir d'un `dev` à jour :
+  `git switch dev && git pull && git switch -c <type>/<sujet>` ;
+- des modifications non commitées d'un autre sujet : signale-les, ne les
+  déplace pas toi-même.
+Propose les commandes, ne les lance pas : la branche est l'affaire de Yannick.
+
 Repère ensuite dans le dépôt ce qui existe déjà pour cette US : module (voir « Où ça vit dans
 le code » dans le Lisez-moi), use cases, schéma Prisma, composants, et un éventuel
 `describe` qui porte déjà le nom de l'US. Repère aussi ce qui est à créer ou à
@@ -96,8 +111,11 @@ Choix du type, selon `Backend/CLAUDE.md` section Tests :
 - logique d'un use case → unitaire, repository simulé ;
 - transaction, écriture conditionnelle, concurrence, clé étrangère, droit d'accès de
   bout en bout → intégration (`test/*.e2e-spec.ts`) ;
-- critère purement visuel (frontend) → « non automatisable — vérification
-  manuelle », à signaler comme tel.
+- critère purement visuel (frontend) → « manuel » : vérifié à l'écran, sans
+  test. S'il ne porte pas encore le repère `*(manuel)*` dans la note, propose à
+  Yannick de l'ajouter avant le développement (convention : `Assistant IA -
+  Critères vérifiés à la main`) ; sans repère, `verifier-ca.py` le compterait
+  comme « case cochée mais aucun test ».
 
 Les critères qui contiennent un exemple chiffré deviennent des tests tels quels.
 
