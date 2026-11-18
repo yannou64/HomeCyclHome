@@ -76,6 +76,12 @@ Conséquences :
   ```
   La couverture se lit dans les noms de tests ; Yannick coche les cases à partir
   du rapport de `/terminer-us`.
+- **Critère vérifié à la main.** Un critère d'affichage, que rien ne teste
+  automatiquement (pas de tests frontend), porte le repère `*(manuel)*` dans la
+  note, juste avant son étiquette de règle. Il n'a pas de test `CAnn` ; sa case se
+  coche après vérification à l'écran, et `verifier-ca.py` le reconnaît. Le repère
+  est ajouté dans la note par Yannick, avant le développement. Convention :
+  `Assistant IA - Critères vérifiés à la main`.
 - **Audit aux points de contrôle** (C1, C2, C3, fin de V2) : `/audit-alignement`.
 
 ---

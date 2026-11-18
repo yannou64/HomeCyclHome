@@ -45,7 +45,9 @@ existent. Si un test échoue, arrête-toi : montre l'échec, l'US n'est pas term
 |---|---|---|---|---|
 
 Statuts : **couvert** (au moins un test qui passe) · **non couvert** · **manuel**
-(critère visuel, non automatisable — à vérifier par Yannick).
+(critère marqué `*(manuel)*` dans la note, vérifié à l'écran par Yannick, sans
+test). Un critère d'affichage sans repère est un point à corriger : demande à
+Yannick d'ajouter `*(manuel)*` dans la note avant de conclure.
 
 ## Étape 3 — Définition de fini
 Vérifie, en citant le code :
@@ -66,7 +68,8 @@ awk '/^## Critères d.acceptation/{f=1;next} /^## /{f=0} f && /^- \[.\] /' "<not
   | sed -E 's/^- \[.\] //' | shasum -a 256 | cut -c1-12
 ```
 Elle sera notée dans le Journal : `/audit-alignement` s'en sert pour détecter un
-critère modifié après l'implémentation.
+critère modifié après l'implémentation. Le repère `*(manuel)*` fait partie du
+texte : calcule l'empreinte **après** l'ajout des repères.
 
 ## Étape 5 — Proposer l'entrée du Journal
 Rédige, sans l'écrire encore :
