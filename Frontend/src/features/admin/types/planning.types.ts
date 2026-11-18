@@ -1,86 +1,54 @@
+import type { CouleurZone } from '../../../shared/utils/couleursZones';
+
+// Planning V2 — modèles de planification d'un technicien.
+// Les heures circulent en minutes depuis minuit : 480 = 8h00.
+
+export const JOURS_SEMAINE = [
+    'lundi',
+    'mardi',
+    'mercredi',
+    'jeudi',
+    'vendredi',
+    'samedi',
+    'dimanche',
+] as const;
+
+export type JourSemaine = (typeof JOURS_SEMAINE)[number];
+
+export type BlocHoraire = {
+    debut: number;
+    fin: number;
+};
+
+/** Zone proposée dans le formulaire : affectée au technicien et active. */
+export type ZoneProposee = {
+    id: string;
+    nomZone: string;
+    couleur: CouleurZone;
+};
+
+/** Un modèle dans la liste de la page Planification. */
+export type ModeleResume = {
+    id: string;
+    intitule: string;
+    zone: ZoneProposee;
+    // Faux si la zone n'est plus affectée ou est inactive (affichage en S3)
+    valide: boolean;
+};
+
+/** Modèle complet, renvoyé après la création. */
 export type ModelePlanification = {
     id: string;
+    intitule: string;
     technicienId: string;
     zoneId: string;
-    jourSemaine: number; // 0=lundi … 6=dimanche
-    heureDebut: number; // minutes depuis minuit (ex: 510 = 8h30)
-    heureFin: number;
-    intervalleMinutes: number;
-    isActif: boolean;
-    dateDebutValidite: string; // ISO 8601
-    dateFinValidite: string | null;
+    jours: JourSemaine[];
+    blocs: BlocHoraire[];
 };
 
-export type CreateModelePlanificationPayload = {
-    technicienId: string;
+export type CreateModelePayload = {
+    intitule: string;
     zoneId: string;
-    jourSemaine: number;
-    heureDebut: number;
-    heureFin: number;
-    intervalleMinutes: number;
-    isActif: boolean;
-    dateDebutValidite: string;
-    dateFinValidite: string | null;
-};
-
-export type UpdateModelePlanificationPayload =
-    Partial<CreateModelePlanificationPayload>;
-
-export type PauseRecurrente = {
-    id: string;
-    technicienId: string;
-    jourSemaine: number | null; // null = tous les jours
-    heureDebut: number;
-    heureFin: number;
-    description: string | null;
-};
-
-export type CreatePauseRecurrentePayload = {
-    technicienId: string;
-    jourSemaine?: number | null;
-    heureDebut: number;
-    heureFin: number;
-    description?: string | null;
-};
-
-export type Indisponibilite = {
-    id: string;
-    technicienId: string;
-    dateDebut: string; // ISO 8601
-    dateFin: string;
-    motif: string | null;
-};
-
-export type CreateIndisponibilitePayload = {
-    technicienId: string;
-    dateDebut: string;
-    dateFin: string;
-    motif?: string | null;
-};
-
-// ── Créneaux ──────────────────────────────────────────────────────────────────
-
-export type Creneau = {
-    id: string;
-    dateDebut: string; // ISO 8601
-    dateFin: string | null; // null à la génération, rempli à la réservation
-    isDisponible: boolean;
-    zoneId: string;
-    modelePlanificationId: string | null;
-};
-
-export type GenerateCreneauxPayload = {
-    modeleId: string;
-    dateFinGeneration?: string; // borne exclusive (ISO date) — optionnel
-};
-
-export type GenerateAllCreneauxPayload = {
-    technicienId: string;
-    dateFinGeneration?: string;
-};
-
-export type GenerationRapport = {
-    created: number;
-    skipped: number;
-    conflicts: number;
+    jours: JourSemaine[];
+    blocs: BlocHoraire[];
 };

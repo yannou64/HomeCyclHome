@@ -14,6 +14,7 @@ import { ZonesModule } from '../features/zones/zones.module';
 import { AffectationsModule } from '../features/affectations/affectations.module';
 import { AdressesModule } from '../features/adresses/adresses.module';
 import { InterventionModule } from '../features/intervention/intervention.module';
+import { PlanningModule } from '../features/planning/planning.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { InterventionModule } from '../features/intervention/intervention.module
         AffectationsModule,
         AdressesModule,
         InterventionModule,
+        PlanningModule,
     ],
     providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

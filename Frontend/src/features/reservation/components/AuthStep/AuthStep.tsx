@@ -40,7 +40,7 @@ export function AuthStep() {
                 className={styles.backLink}
                 onClick={() => goToStep('creneau')}
             >
-                ← Retour au choix du créneau
+                Retour
             </button>
         </div>
     );

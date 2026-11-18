@@ -147,6 +147,27 @@ durée d'animation).
 `authenticated`), `MobileMenu` (drawer orange), `AddressBlock` (Autocomplete + CTA),
 `Footer` (fond mocha, liens légaux, copyright).
 
+### Règles d'interface (uniformisation)
+
+Une même action a **le même libellé, la même forme et la même place** partout dans
+l'application. Avant de créer ou de modifier un composant : appliquer ces règles ;
+un composant existant qui s'en écarte est corrigé quand on le touche. Une règle
+manque ou ne convient pas : la proposer à Yannick, puis l'ajouter ici.
+
+**Revenir, annuler, étape précédente** — trois actions distinctes :
+
+| Action | Libellé | Forme et place |
+|---|---|---|
+| Quitter l'écran pour l'écran parent | « ← Retour » | Lien texte (couleur `$color-text-label`, souligné au survol), **en haut à gauche, au-dessus du titre**. Jamais de doublon en bas de l'écran |
+| Abandonner une saisie (formulaire, dialogue) | « Annuler » | Bouton secondaire, **en bas, juste à gauche** du bouton principal |
+| Étape précédente d'un tunnel (réservation) | « Retour » | Lien texte souligné (`$color-text-label`), **sous** le bouton principal de l'étape (mobile d'abord) |
+
+- Exception : quand l'action principale est elle-même une annulation
+  (« Confirmer l'annulation »), le bouton de renoncement s'appelle « Retour »,
+  pour ne pas afficher deux « Annuler ».
+- Références : `admin/components/planning/ModeleCreationForm` (retour et
+  annuler), `reservation/components/CreneauSelector` (étape précédente).
+
 ---
 
 ## 5. Données, appels API et état

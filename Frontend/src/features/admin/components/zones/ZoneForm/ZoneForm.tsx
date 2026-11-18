@@ -76,17 +76,18 @@ export function ZoneForm({ zone, onSubmit, onCancel }: ZoneFormProps) {
 
     return (
         <div className={styles.wrapper}>
+            {/* Règles d'interface : « ← Retour » en haut à gauche, au-dessus du titre */}
             <div className={styles.header}>
-                <h2 className={styles.title}>
-                    {zone ? 'Modifier la zone' : 'Nouvelle zone'}
-                </h2>
                 <button
                     type="button"
                     className={styles.cancelLink}
                     onClick={onCancel}
                 >
-                    ← Retour à la liste
+                    ← Retour
                 </button>
+                <h2 className={styles.title}>
+                    {zone ? 'Modifier la zone' : 'Nouvelle zone'}
+                </h2>
             </div>
 
             <form onSubmit={handleSubmit} className={styles.form}>

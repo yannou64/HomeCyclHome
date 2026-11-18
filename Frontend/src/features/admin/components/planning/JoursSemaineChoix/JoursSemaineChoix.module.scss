@@ -1,0 +1,61 @@
+@use '../../../../../app/styles/index' as *;
+
+.fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: $font-primary;
+
+    &:disabled {
+        opacity: 0.6;
+    }
+}
+
+// Même apparence que les libellés des formulaires admin
+.legend {
+    padding: 0;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.jours {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+}
+
+// Pastille à bascule : bordure au repos, pleine (orange) une fois choisie
+.jour {
+    min-width: 3.25rem;
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-full;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover {
+        border-color: $color-myOrange;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-myOrange;
+        outline-offset: 2px;
+    }
+
+    &[aria-pressed='true'] {
+        border-color: $color-myOrange;
+        background-color: $color-myOrange;
+        color: white;
+        font-weight: $font-semibold;
+    }
+}

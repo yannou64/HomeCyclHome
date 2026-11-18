@@ -1,0 +1,122 @@
+@use '../../../../../app/styles/index' as *;
+
+// Même carte que les autres sections admin (AdminPlanningSection .wrapper)
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    background: white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    padding: $spacing-lg;
+    font-family: $font-primary;
+}
+
+.technicien {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.titre {
+    align-self: center;
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+}
+
+.modeles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.sousTitre {
+    font-size: $font-size-h2;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+}
+
+.liste {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modele {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+}
+
+.intitule {
+    font-weight: $font-semibold;
+}
+
+.zone {
+    color: $color-text-label;
+
+    &::before {
+        content: '— ';
+    }
+}
+
+.info {
+    font-size: $font-size-body;
+    color: $color-text-label;
+}
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}
+
+.entrees {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.boutonEntree {
+    min-width: 240px;
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.retour {
+    align-self: flex-start;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    cursor: pointer;
+
+    &:hover {
+        color: $color-text-primary;
+        text-decoration: underline;
+    }
+}
