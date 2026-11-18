@@ -10,14 +10,6 @@
     padding: $spacing-lg;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: $spacing-sm;
-}
-
 .title {
     font-family: $font-primary;
     font-size: $font-size-h1;
@@ -57,39 +49,8 @@
     }
 }
 
-.placeholder {
+.error {
+    color: $color-error;
     font-family: $font-primary;
-    font-size: $font-size-body;
-    color: $color-text-label;
-    font-style: italic;
-    text-align: center;
-    padding: $spacing-xl 0;
-}
-
-.tabs {
-    width: 100%;
-}
-
-.tabsList {
-    background-color: $color-myLightGreen !important;
-    border-radius: $radius-md !important;
-    padding: 6px !important;
-    gap: 4px !important;
-    height: auto !important;
-}
-
-.tabsTrigger {
-    font-family: $font-primary !important;
-    font-size: $font-size-body !important;
-    font-weight: $font-medium !important;
-    color: $color-text-label !important;
-    border-radius: $radius-md !important;
-    padding: 8px 20px !important;
-
-    &[data-state='active'] {
-        background-color: white !important;
-        color: $color-myOrange !important;
-        font-weight: $font-bold !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-    }
+    font-size: $font-size-label;
 }

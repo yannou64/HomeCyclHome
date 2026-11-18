@@ -221,3 +221,34 @@ export async function creerCreneau(
         select: { id: true },
     });
 }
+
+/** Affecte un technicien à une zone (prérequis d'un modèle, RG5). */
+export async function creerAffectation(
+    prisma: PrismaService,
+    technicienId: string,
+    zoneId: string,
+): Promise<void> {
+    await prisma.technicienZone.create({
+        data: { technicien_id: technicienId, zone_id: zoneId },
+    });
+}
+
+/**
+ * Crée un modèle de planification directement en base : lundi, un bloc
+ * 8h00–12h00 (480–720 minutes depuis minuit). Renvoie son id.
+ */
+export async function creerModele(
+    prisma: PrismaService,
+    options: { technicienId: string; zoneId: string; intitule: string },
+): Promise<{ id: string }> {
+    return prisma.modelePlanification.create({
+        data: {
+            intitule: options.intitule,
+            technicien_id: options.technicienId,
+            zone_id: options.zoneId,
+            lundi: true,
+            blocs: { create: [{ debut: 480, fin: 720 }] },
+        },
+        select: { id: true },
+    });
+}

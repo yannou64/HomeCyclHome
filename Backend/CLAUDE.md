@@ -240,6 +240,11 @@ interventions, un technicien et les siennes).
   s'écrire sans base : `npx prisma migrate diff --from-… --to-schema … --script`.
 - Migrations : une seule migration initiale V2, `prisma/migrations/…_init_v2` (les
   migrations V1 sont abandonnées, voir `Refonte 2.0`). Les suivantes s'y ajoutent.
+- **Contrainte que Prisma ne sait pas décrire** (`CHECK`, index sur une
+  expression) : elle s'écrit en SQL dans une migration vide,
+  `npx prisma migrate dev --create-only --name <nom>`, puis `npx prisma migrate dev`.
+  Elle n'apparaît pas dans `schema.prisma` : la commenter dans le SQL. Exemple :
+  `…_blocs_horaires_regles` (règles d'un bloc horaire).
 - **Jeu de démonstration** : `npx prisma db seed` (`prisma/seed.ts`). Il vide toutes
   les tables puis insère comptes, zones, forfaits, modèles, créneaux et une
   intervention ; il refuse `NODE_ENV=production`. Le mot de passe des comptes vient de
@@ -307,6 +312,10 @@ En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variable
 | `seConnecter(app, utilisateur)` | Connexion par la vraie route `/api/auth/login`, renvoie les cookies à passer en `.set('Cookie', cookies)` |
 | `creerIntervention(prisma, options?)` | Intervention avec tout ce qu'elle exige (client, technicien, cycle, adresse liée, forfait, prix) ; options `statut`, `clientId`, `technicienId` pour réutiliser un utilisateur déjà connecté |
 | `creerCycle(prisma, utilisateurId)` · `creerAdresseDe(prisma, utilisateurId)` | Un cycle de l'utilisateur ; une `Adresse` et son lien `PeutSeSituer` (renvoie les deux ids) |
+| `creerZone(prisma, { couleur?, isActive? })` | Zone au nom unique, tracé de 3 points, active par défaut |
+| `creerCreneau(prisma, { technicienId, zoneId, dateDebut?, statut?, interventionId? })` | Créneau de 30 min, Libre par défaut |
+| `creerAffectation(prisma, technicienId, zoneId)` | Affecte un technicien à une zone |
+| `creerModele(prisma, { technicienId, zoneId, intitule })` | Modèle de planification : lundi, un bloc 8h00–12h00 |
 
 Une fabrique manque pour un test : l'ajouter dans `test/helpers/fabriques.ts`,
 écrite directement avec Prisma, jamais par l'API qu'on est en train de tester.

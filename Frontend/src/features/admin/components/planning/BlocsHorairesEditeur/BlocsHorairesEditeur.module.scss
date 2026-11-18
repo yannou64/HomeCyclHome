@@ -1,0 +1,108 @@
+@use '../../../../../app/styles/index' as *;
+
+.fieldset {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-xs;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: $font-primary;
+
+    &:disabled {
+        opacity: 0.6;
+    }
+}
+
+.ligne {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.champs {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    color: $color-text-label;
+}
+
+.select {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+        border-color: $color-myOrange;
+    }
+}
+
+.supprimer {
+    padding: 4px $spacing-xs;
+    border: none;
+    border-radius: $radius-sm;
+    background: none;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    cursor: pointer;
+
+    &:hover {
+        color: $color-danger;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-myOrange;
+    }
+}
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}
+
+// Masquée à l'écran, présente pour les lecteurs d'écran
+.legendeMasquee {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+// Bouton secondaire, même style que les boutons « Annuler » / « Retour »
+.ajouter {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        border-color: $color-myOrange;
+        background-color: $color-myLightGreen;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-myOrange;
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

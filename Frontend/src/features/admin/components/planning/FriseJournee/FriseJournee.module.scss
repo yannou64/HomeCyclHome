@@ -1,0 +1,45 @@
+@use '../../../../../app/styles/index' as *;
+
+// 13 heures de journée : la hauteur fixe garde une échelle lisible
+.frise {
+    position: relative;
+    height: 26rem;
+    margin-left: $spacing-lg; // place pour les libellés d'heure
+    border-left: 1px solid $color-border;
+    font-family: $font-primary;
+}
+
+// Trait horizontal de chaque heure pleine
+.heure {
+    position: absolute;
+    top: var(--haut);
+    left: 0;
+    right: 0;
+    border-top: 1px dashed $color-border;
+}
+
+.libelle {
+    position: absolute;
+    left: calc(-1 * #{$spacing-lg});
+    transform: translateY(-50%);
+    font-size: $font-size-caption;
+    color: $color-text-label;
+}
+
+.bloc {
+    position: absolute;
+    top: var(--haut);
+    height: var(--hauteur);
+    left: $spacing-xs;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 $spacing-xs;
+    border-radius: $radius-sm;
+    background-color: var(--bloc-couleur);
+    opacity: 0.75; // un chevauchement se voit : la zone commune est plus foncée
+    color: white;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    overflow: hidden;
+}
