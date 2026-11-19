@@ -75,7 +75,7 @@ Conséquences :
   });
   ```
   La couverture se lit dans les noms de tests ; Yannick coche les cases à partir
-  du rapport de `/terminer-us`.
+  du rapport de `/terminer-uc`.
 - **Critère vérifié à la main.** Un critère d'affichage, que rien ne teste
   automatiquement (pas de tests frontend), porte le repère `*(manuel)*` dans la
   note, juste avant son étiquette de règle. Il n'a pas de test `CAnn` ; sa case se
@@ -86,19 +86,23 @@ Conséquences :
 
 ---
 
-## 4. Workflow — une user story à la fois
+## 4. Workflow — préparer par cas d'utilisation, livrer par user story
+
+Les US d'un cas d'utilisation partagent ses règles de gestion, son API, son
+repository et son écran : on les prépare ensemble, une fois. On les livre une par
+une. La traçabilité reste par US (`describe`, empreinte).
 
 | Étape | Qui | Outil |
 |---|---|---|
-| 1. Lire la spec de l'US, produire le plan de tests `CA<n>`, signaler les écarts | Claude | `/demarrer-us <US>` |
-| 2. Valider le plan de tests | Yannick | — |
-| 3. RED : écrire les tests, les voir échouer | Claude | — |
-| 4. GREEN puis refactor : implémenter jusqu'au vert | Claude | — |
-| 5. Vérifier la définition de fini, rapport de couverture, entrée du Journal | Claude | `/terminer-us <US>` |
-| 6. Cocher les critères, commit, PR vers `dev` | Yannick | — |
+| 1. Lire la spec du cas d'utilisation et de ses US restantes : un plan de tests `CA<n>` par US, conception commune (API, repository, écran, ordre de livraison), écarts | Claude | `/demarrer-uc <cas d'utilisation>` |
+| 2. Valider plans de tests, conception et écarts | Yannick | — |
+| 3. Pour chaque US, dans l'ordre : RED, GREEN puis refactor, proposition de commit | Claude | — |
+| 4. Commiter chaque US | Yannick | — |
+| 5. Couverture par US, définition de fini, une empreinte par US, entrée du Journal | Claude | `/terminer-uc <cas d'utilisation>` (ou `<US>` pour en clore une seule) |
+| 6. Cocher les critères, push, PR vers `dev` | Yannick | — |
 
-Rappel : Yannick se décrit « tête en l'air ». Quand une US semble terminée, proposer
-explicitement `/terminer-us` — proposer, ne jamais le lancer soi-même.
+Rappel : Yannick se décrit « tête en l'air ». Quand la dernière US du lot est verte,
+proposer explicitement `/terminer-uc` — proposer, ne jamais le lancer soi-même.
 
 ---
 

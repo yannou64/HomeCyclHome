@@ -19,7 +19,13 @@ Vault de la V2 (noté `<V2>` ci-dessous ; `<dépôt>` = racine du dépôt de cod
 propositions ; Yannick décide de ce qui est appliqué.
 
 ## Contrôle 1 — Critères ↔ tests
-Pour chaque US du périmètre ayant une entrée dans le Journal de développement :
+Pour chaque US du périmètre dont l'empreinte figure dans le Journal de développement
+(dans une entrée d'US, ancien format, ou dans une entrée de cas d'utilisation, qui
+porte une ligne `Empreinte · <nom de l'US>` par US) :
+```bash
+grep -n 'Empreinte' "<V2>/Assistant IA/Assistant IA - Journal de développement.md"
+```
+Pour l'ancien format (`Empreinte : …` sans nom), l'US est celle du titre de l'entrée.
 1. Recalcule l'empreinte de ses critères :
    ```bash
    awk '/^## Critères d.acceptation/{f=1;next} /^## /{f=0} f && /^- \[.\] /' "<note de l'US>" \
