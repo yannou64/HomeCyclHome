@@ -213,6 +213,33 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         }
     }
 
+    async supprimerModele(
+        technicienId: string,
+        modeleId: string,
+    ): Promise<boolean> {
+        try {
+            // Tout ou rien (séquence, étapes 8 à 10) : blocs puis modèle
+            await this.prisma.$transaction(async (tx) => {
+                // Filtre sur le modèle seul : si la suppression du modèle
+                // échoue ensuite, celle des blocs est annulée avec elle (CA11)
+                await tx.blocHoraire.deleteMany({
+                    where: { modele_planification_id: modeleId },
+                });
+                // Écriture conditionnelle : le modèle doit exister pour ce
+                // technicien. 0 ligne = inexistant, d'un autre technicien, ou
+                // déjà supprimé par un autre onglet (CA02, CA10)
+                const r = await tx.modelePlanification.deleteMany({
+                    where: { id: modeleId, technicien_id: technicienId },
+                });
+                exigerLignesModifiees(r);
+            });
+            return true;
+        } catch (err) {
+            if (estEtatModifieEntreTemps(err)) return false;
+            throw err;
+        }
+    }
+
     /** Liste de jours → sept booléens (lundi: true, mardi: false…). */
     private colonnesJours(jours: JourSemaine[]): Record<JourSemaine, boolean> {
         return Object.fromEntries(

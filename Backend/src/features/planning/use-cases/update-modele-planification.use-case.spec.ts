@@ -34,6 +34,7 @@ describe('US-02 Modifier un modèle de planification 2.0', () => {
             trouverModeles: jest.fn().mockResolvedValue([]),
             creerModele: jest.fn().mockResolvedValue({ id: 'autre' }),
             trouverModele: jest.fn().mockResolvedValue(modeleActuel),
+            supprimerModele: jest.fn().mockResolvedValue(true),
             modifierModele: jest.fn().mockResolvedValue({ id: 'modele-1' }),
         };
         useCase = new UpdateModelePlanificationUseCase(repo);

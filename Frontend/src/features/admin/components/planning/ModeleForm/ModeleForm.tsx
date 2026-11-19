@@ -24,6 +24,7 @@ interface ModeleFormProps {
     modele?: ModeleDetail;
     onEnregistre: () => void; // retour à la liste des modèles, rechargée
     onRetour: () => void;
+    onSupprimer?: () => void; // en modification : « Supprimer le modèle »
 }
 
 /**
@@ -40,6 +41,7 @@ export function ModeleForm({
     modele,
     onEnregistre,
     onRetour,
+    onSupprimer,
 }: ModeleFormProps) {
     const { zones, zonesError, enregistrer, isSubmitting, error, setError } =
         useEnregistrerModele(technicienId, modele?.id);
@@ -132,6 +134,7 @@ export function ModeleForm({
                 enModification={enModification}
                 isSubmitting={isSubmitting}
                 onAnnuler={onRetour}
+                onSupprimer={onSupprimer}
             />
         </form>
     );

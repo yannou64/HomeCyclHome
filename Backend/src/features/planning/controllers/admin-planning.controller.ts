@@ -1,7 +1,9 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
+    HttpCode,
     Param,
     Post,
     Put,
@@ -10,6 +12,7 @@ import {
 import {
     ApiCookieAuth,
     ApiCreatedResponse,
+    ApiNoContentResponse,
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger';
@@ -23,6 +26,7 @@ import { ModelePlanificationResponseDto } from '../dto/output/modele-planificati
 import { ModeleResumeResponseDto } from '../dto/output/modele-resume-response.dto';
 import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dto';
 import { CreateModelePlanificationUseCase } from '../use-cases/create-modele-planification.use-case';
+import { DeleteModelePlanificationUseCase } from '../use-cases/delete-modele-planification.use-case';
 import { GetModeleUseCase } from '../use-cases/get-modele.use-case';
 import { GetModelesUseCase } from '../use-cases/get-modeles.use-case';
 import { GetZonesProposeesUseCase } from '../use-cases/get-zones-proposees.use-case';
@@ -41,6 +45,7 @@ export class AdminPlanningController {
         private readonly getModelesUseCase: GetModelesUseCase,
         private readonly getModeleUseCase: GetModeleUseCase,
         private readonly updateModeleUseCase: UpdateModelePlanificationUseCase,
+        private readonly deleteModeleUseCase: DeleteModelePlanificationUseCase,
     ) {}
 
     @ApiOkResponse({
@@ -97,5 +102,16 @@ export class AdminPlanningController {
         @Body() dto: UpdateModelePlanificationDto,
     ) {
         return this.updateModeleUseCase.execute(technicienId, modeleId, dto);
+    }
+
+    // 204 : la suppression réussie ne renvoie rien
+    @ApiNoContentResponse({ description: 'Modèle et blocs supprimés' })
+    @Delete('techniciens/:technicienId/modeles/:modeleId')
+    @HttpCode(204)
+    deleteModele(
+        @Param('technicienId') technicienId: string,
+        @Param('modeleId') modeleId: string,
+    ) {
+        return this.deleteModeleUseCase.execute(technicienId, modeleId);
     }
 }

@@ -92,4 +92,11 @@ export interface IPlanningRepository {
         modeleId: string,
         data: ModifierModeleData,
     ): Promise<ModelePlanificationResponseDto | null>;
+
+    /**
+     * Supprime le modèle et ses blocs en une seule transaction (tout ou
+     * rien). Renvoie false si le modèle n'existe pas pour ce technicien
+     * (inexistant, d'un autre technicien, ou déjà supprimé).
+     */
+    supprimerModele(technicienId: string, modeleId: string): Promise<boolean>;
 }

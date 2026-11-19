@@ -112,7 +112,10 @@ dur.**
   `src/features/auth/components/LoginForm/` :
   `@use '../../../../app/styles/index' as *;` ;
 - jamais de style global dans un module (uniquement dans `global.scss`) ;
-- `composes` pour réutiliser une classe entre modules.
+- `composes` seulement à l'intérieur d'un même fichier : entre deux modules
+  SCSS, Vite lit le fichier cible comme du CSS brut, sans le compiler, et le
+  build échoue. Entre deux modules, recopier la règle (exemple :
+  `admin/components/planning/ModeleEdition`).
 
 **Admin — shadcn/ui :** les écrans d'administration utilisent les composants de
 `shared/components/ui/` (`Dialog`, `Table`, `Tabs`, `Pagination`, `Button`). Ils

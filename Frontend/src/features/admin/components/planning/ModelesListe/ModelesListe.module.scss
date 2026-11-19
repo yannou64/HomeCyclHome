@@ -68,3 +68,15 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+// Seul lien actif d'un modèle invalide (RG11) : lien texte souligné
+.lienSupprimer {
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: $color-danger;
+    text-decoration: underline;
+    cursor: pointer;
+}

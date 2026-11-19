@@ -7,6 +7,7 @@ interface ModeleEditionProps {
     modeleId: string;
     onEnregistre: () => void; // retour à la liste des modèles, rechargée
     onRetour: () => void;
+    onSupprimer: () => void; // ouvre la confirmation de suppression (US-03)
 }
 
 /**
@@ -20,6 +21,7 @@ export function ModeleEdition({
     modeleId,
     onEnregistre,
     onRetour,
+    onSupprimer,
 }: ModeleEditionProps) {
     const { modele, isLoading, error } = useModele(technicienId, modeleId);
 
@@ -30,6 +32,7 @@ export function ModeleEdition({
                 modele={modele}
                 onEnregistre={onEnregistre}
                 onRetour={onRetour}
+                onSupprimer={onSupprimer}
             />
         );
     }

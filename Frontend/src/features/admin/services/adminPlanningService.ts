@@ -68,4 +68,8 @@ export const adminPlanningService = {
         );
         return r.data;
     },
+
+    async deleteModele(technicienId: string, modeleId: string): Promise<void> {
+        await apiClient.delete(`${base(technicienId)}/modeles/${modeleId}`);
+    },
 };

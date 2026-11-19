@@ -1,0 +1,81 @@
+@use '../../../../../app/styles/index' as *;
+
+// Même fenêtre que la suppression d'un utilisateur (DeleteConfirmDialog)
+.content {
+    font-family: $font-primary !important;
+    max-width: 400px !important;
+    background-color: white !important;
+    padding: $spacing-lg !important;
+    border-radius: $radius-lg !important;
+}
+
+.title {
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.message {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    line-height: 1.6;
+    margin-top: $spacing-sm;
+}
+
+.error {
+    color: $color-error;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+}
+
+// « Annuler » juste à gauche du bouton principal (règles d'interface)
+.actions {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: flex-end;
+    margin-top: $spacing-md;
+}
+
+.boutonSecondaire {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Action destructrice : $color-danger (Frontend/CLAUDE.md, couleurs d'état)
+.boutonDanger {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-danger;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
