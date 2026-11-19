@@ -1,0 +1,49 @@
+@use '../../../../../app/styles/index' as *;
+
+// Même apparence que les autres champs du formulaire de modèle (ModeleForm)
+.champ {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+// Pastille de la zone choisie, à gauche de la liste
+.zone {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.input {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+    width: 100%;
+    outline: none;
+
+    &:focus {
+        border-color: $color-myOrange;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        background: $color-myLightGreen;
+    }
+}
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}

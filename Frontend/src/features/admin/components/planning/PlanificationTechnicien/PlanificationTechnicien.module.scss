@@ -38,35 +38,6 @@
     color: $color-text-primary;
 }
 
-.liste {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.modele {
-    display: inline-flex;
-    align-items: center;
-    gap: $spacing-xs;
-    font-size: $font-size-body;
-    color: $color-text-primary;
-}
-
-.intitule {
-    font-weight: $font-semibold;
-}
-
-.zone {
-    color: $color-text-label;
-
-    &::before {
-        content: '— ';
-    }
-}
-
 .info {
     font-size: $font-size-body;
     color: $color-text-label;

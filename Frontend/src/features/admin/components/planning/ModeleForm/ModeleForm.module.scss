@@ -99,13 +99,6 @@
     }
 }
 
-// Pastille de la zone choisie, à gauche de la liste
-.zone {
-    display: flex;
-    align-items: center;
-    gap: $spacing-xs;
-}
-
 .apercu {
     display: flex;
     flex-direction: column;
@@ -118,53 +111,4 @@
 .error {
     color: $color-error;
     font-size: $font-size-label;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: $spacing-xs;
-    padding-top: $spacing-sm;
-    border-top: 1px solid $color-border;
-}
-
-.boutonSecondaire {
-    padding: $spacing-xs $spacing-md;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    background: white;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    color: $color-text-primary;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-        background-color: $color-myLightGreen;
-    }
-
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-}
-
-.boutonPrincipal {
-    padding: $spacing-xs $spacing-md;
-    border: none;
-    border-radius: $radius-md;
-    background-color: $color-myOrange;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    font-weight: $font-semibold;
-    color: white;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-        opacity: 0.9;
-    }
-
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
 }

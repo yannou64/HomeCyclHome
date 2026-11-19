@@ -32,11 +32,12 @@ export type ModeleResume = {
     id: string;
     intitule: string;
     zone: ZoneProposee;
-    // Faux si la zone n'est plus affectée ou est inactive (affichage en S3)
+    // Faux si la zone n'est plus affectée ou est inactive : le modèle est
+    // marqué invalide, on ne peut plus que le supprimer (RG11)
     valide: boolean;
 };
 
-/** Modèle complet, renvoyé après la création. */
+/** Modèle complet, renvoyé après la création ou la modification. */
 export type ModelePlanification = {
     id: string;
     intitule: string;
@@ -52,3 +53,9 @@ export type CreateModelePayload = {
     jours: JourSemaine[];
     blocs: BlocHoraire[];
 };
+
+/** Modèle ouvert pour être modifié : ses valeurs, et s'il est encore valide. */
+export type ModeleDetail = ModelePlanification & { valide: boolean };
+
+// La modification remplace tout le modèle : même saisie qu'à la création
+export type UpdateModelePayload = CreateModelePayload;

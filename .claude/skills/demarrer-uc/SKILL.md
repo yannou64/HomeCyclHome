@@ -78,7 +78,7 @@ commandes indiquées. Ne lis jamais en entier l'Index des spécifications ni une
 4. La séquence en texte de chaque US restante, extraite seule. La note s'appelle
    « Séquences (export IA) - <épique> » :
    ```bash
-   awk -v t="### <nom exact de l'US>" '$0==t{f=1} f&&/^##/&&$0!=t{exit} f' \
+   awk -v t="### <nom exact de l'US>" '$(0)==t{f=1} f&&/^##/&&$(0)!=t{exit} f' \
      "<V2>/Assistant IA/Séquences/Séquences (export IA) - <épique>.md"
    ```
    Ordre des échanges, appels à la base, transactions (dernière ligne du bloc).

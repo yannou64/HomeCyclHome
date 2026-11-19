@@ -165,7 +165,7 @@ manque ou ne convient pas : la proposer à Yannick, puis l'ajouter ici.
 - Exception : quand l'action principale est elle-même une annulation
   (« Confirmer l'annulation »), le bouton de renoncement s'appelle « Retour »,
   pour ne pas afficher deux « Annuler ».
-- Références : `admin/components/planning/ModeleCreationForm` (retour et
+- Références : `admin/components/planning/ModeleForm` (retour et
   annuler), `reservation/components/CreneauSelector` (étape précédente).
 
 ---
