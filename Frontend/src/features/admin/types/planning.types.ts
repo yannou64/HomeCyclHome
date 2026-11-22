@@ -59,3 +59,27 @@ export type ModeleDetail = ModelePlanification & { valide: boolean };
 
 // La modification remplace tout le modèle : même saisie qu'à la création
 export type UpdateModelePayload = CreateModelePayload;
+
+// Couverture des zones (« Visualiser la couverture des zones 2.0 »).
+// Les jours sont ceux de Paris, au format 'AAAA-MM-JJ'.
+
+/** Une zone couverte un jour donné : de quoi afficher son tag. */
+export type ZoneCouverte = {
+    id: string;
+    nomZone: string;
+    couleur: CouleurZone;
+    isActive: boolean; // inactive : tag en gris clair (couleurAffichee)
+};
+
+/** Un jour couvert du mois et ses zones. Un jour absent n'a aucun tag. */
+export type JourCouvert = {
+    jour: string;
+    zones: ZoneCouverte[];
+};
+
+/** Calendrier de couverture d'un mois ('AAAA-MM'). */
+export type CouvertureMois = {
+    mois: string;
+    aujourdHui: string; // date pivot par défaut, calculée par l'API (fuseau)
+    jours: JourCouvert[];
+};

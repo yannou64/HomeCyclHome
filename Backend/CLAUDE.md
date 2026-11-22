@@ -79,6 +79,11 @@ features/<nom>/
   `features/` ; un `.spec.ts` à côté. Exemples en place :
   `shared/domain/blocs.ts`, `shared/domain/jour-travail.ts`.
 
+Une règle partagée par plusieurs use cases du **même** module reste dans le use
+case qui l'a introduite, exportée comme fonction et importée par les autres
+(exemple : `verifierBlocs` de `planning/use-cases/create-modele-planification.use-case.ts`,
+reprise par la modification d'un modèle).
+
 Pas de dossier `domain/` dans un module : « domaine » désigne ici la couche des règles
 pures, à ne pas confondre avec un module (domaine fonctionnel).
 

@@ -13,6 +13,7 @@ import { ModelePlanificationResponseDto } from '../dto/output/modele-planificati
 import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dto';
 import {
     CreateModeleData,
+    CreneauAvecZone,
     IPlanningRepository,
     ModeleAvecZone,
     ModeleDetail,
@@ -238,6 +239,42 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             if (estEtatModifieEntreTemps(err)) return false;
             throw err;
         }
+    }
+
+    async trouverCreneauxEntre(
+        debut: Date,
+        fin: Date,
+    ): Promise<CreneauAvecZone[]> {
+        // Bornes déjà calculées en heure de Paris par le use case : ici, une
+        // simple plage d'instants UTC, [debut, fin[
+        const creneaux = await this.prisma.creneau.findMany({
+            where: { date_debut: { gte: debut, lt: fin } },
+            orderBy: { date_debut: 'asc' },
+            select: {
+                date_debut: true,
+                statut: true,
+                technicien_id: true,
+                zone: {
+                    select: {
+                        id: true,
+                        nom_zone: true,
+                        couleur: true,
+                        is_active: true,
+                    },
+                },
+            },
+        });
+        return creneaux.map((c) => ({
+            dateDebut: c.date_debut,
+            statut: c.statut,
+            technicienId: c.technicien_id,
+            zone: {
+                id: c.zone.id,
+                nomZone: c.zone.nom_zone,
+                couleur: c.zone.couleur,
+                isActive: c.zone.is_active,
+            },
+        }));
     }
 
     /** Liste de jours → sept booléens (lundi: true, mardi: false…). */

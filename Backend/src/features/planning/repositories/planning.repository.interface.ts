@@ -38,6 +38,18 @@ export type ModeleDetail = ModelePlanificationResponseDto & {
     zoneAffectee: boolean;
 };
 
+/**
+ * Un créneau lu pour la couverture : son instant de début (UTC), son statut,
+ * son technicien et les faits sur sa zone. Le regroupement par jour de Paris
+ * se fait dans le use case.
+ */
+export type CreneauAvecZone = {
+    dateDebut: Date;
+    statut: 'Libre' | 'InterventionReservee' | 'Deplacement';
+    technicienId: string;
+    zone: { id: string; nomZone: string; couleur: string; isActive: boolean };
+};
+
 // Le contrat : les use cases dépendent de cette interface, jamais de Prisma
 export interface IPlanningRepository {
     /** Vrai si l'id désigne un utilisateur de rôle technicien. */
@@ -99,4 +111,7 @@ export interface IPlanningRepository {
      * (inexistant, d'un autre technicien, ou déjà supprimé).
      */
     supprimerModele(technicienId: string, modeleId: string): Promise<boolean>;
+
+    /** Créneaux dont le début est dans [debut, fin[, avec leur zone. */
+    trouverCreneauxEntre(debut: Date, fin: Date): Promise<CreneauAvecZone[]>;
 }
