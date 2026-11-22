@@ -14,10 +14,13 @@ import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dt
 import {
     CreateModeleData,
     CreneauAvecZone,
+    DerniersCreneaux,
     IPlanningRepository,
     ModeleAvecZone,
     ModeleDetail,
     ModifierModeleData,
+    TechnicienResume,
+    ZoneResume,
 } from './planning.repository.interface';
 
 type ModeleAvecBlocs = ModelePlanification & { blocs: BlocHoraire[] };
@@ -275,6 +278,69 @@ export class PlanningPrismaRepository implements IPlanningRepository {
                 isActive: c.zone.is_active,
             },
         }));
+    }
+
+    async trouverTechniciens(): Promise<TechnicienResume[]> {
+        const techniciens = await this.prisma.utilisateur.findMany({
+            where: { role: 'technicien' },
+            orderBy: [{ nom: 'asc' }, { prenom: 'asc' }],
+            select: { id: true, prenom: true, nom: true, is_actif: true },
+        });
+        return techniciens.map((u) => ({
+            id: u.id,
+            prenom: u.prenom,
+            nom: u.nom,
+            isActif: u.is_actif,
+        }));
+    }
+
+    async trouverZones(): Promise<ZoneResume[]> {
+        const zones = await this.prisma.zone.findMany({
+            orderBy: { nom_zone: 'asc' },
+            select: {
+                id: true,
+                nom_zone: true,
+                couleur: true,
+                is_active: true,
+            },
+        });
+        return zones.map((z) => ({
+            id: z.id,
+            nomZone: z.nom_zone,
+            couleur: z.couleur,
+            isActive: z.is_active,
+        }));
+    }
+
+    async derniersCreneaux(): Promise<DerniersCreneaux> {
+        // Deux agrégats en base (MAX par groupe) plutôt que lire tous les
+        // créneaux : une ligne par technicien, une ligne par zone
+        const [parTechnicien, parZone] = await Promise.all([
+            this.prisma.creneau.groupBy({
+                by: ['technicien_id'],
+                _max: { date_debut: true },
+            }),
+            this.prisma.creneau.groupBy({
+                by: ['zone_id'],
+                _max: { date_debut: true },
+            }),
+        ]);
+        const versMap = <K extends string>(
+            lignes: ({ _max: { date_debut: Date | null } } & Record<
+                K,
+                string
+            >)[],
+            cle: K,
+        ) =>
+            new Map(
+                lignes
+                    .filter((l) => l._max.date_debut !== null)
+                    .map((l) => [l[cle], l._max.date_debut as Date]),
+            );
+        return {
+            parTechnicien: versMap(parTechnicien, 'technicien_id'),
+            parZone: versMap(parZone, 'zone_id'),
+        };
     }
 
     /** Liste de jours → sept booléens (lundi: true, mardi: false…). */

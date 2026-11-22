@@ -19,6 +19,12 @@ describe('US-01 Consulter le calendrier de couverture et choisir une date 2.0', 
             trouverModele: jest.fn().mockResolvedValue(null),
             supprimerModele: jest.fn().mockResolvedValue(true),
             trouverCreneauxEntre: jest.fn().mockResolvedValue([]),
+            trouverTechniciens: jest.fn().mockResolvedValue([]),
+            trouverZones: jest.fn().mockResolvedValue([]),
+            derniersCreneaux: jest.fn().mockResolvedValue({
+                parTechnicien: new Map(),
+                parZone: new Map(),
+            }),
             modifierModele: jest.fn().mockResolvedValue(null),
         };
         useCase = new GetCouvertureMoisUseCase(repo);

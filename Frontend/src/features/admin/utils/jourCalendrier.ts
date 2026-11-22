@@ -14,3 +14,9 @@ export function jourDeCase(date: Date): string {
 export function moisDeCase(date: Date): string {
     return `${date.getFullYear()}-${deux(date.getMonth() + 1)}`;
 }
+
+/** 'AAAA-MM-JJ' → 'JJ/MM/AAAA', pour l'affichage. */
+export function formaterJour(jour: string): string {
+    const [annee, mois, j] = jour.split('-');
+    return `${j}/${mois}/${annee}`;
+}

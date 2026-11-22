@@ -36,10 +36,38 @@
     align-items: center;
     padding: 0 $spacing-xs;
     border-radius: $radius-sm;
-    background-color: var(--bloc-couleur);
-    opacity: 0.75; // un chevauchement se voit : la zone commune est plus foncée
-    color: white;
     font-size: $font-size-label;
     font-weight: $font-semibold;
     overflow: hidden;
+}
+
+// Bloc d'un modèle, dans la couleur de la zone
+.plein {
+    background-color: var(--bloc-couleur);
+    opacity: 0.75; // un chevauchement se voit : la zone commune est plus foncée
+    color: white;
+}
+
+// Créneaux (maquette « Planning — couverture des zones ») : un léger retrait
+// en bas sépare deux créneaux qui se suivent
+.libre,
+.deplacement,
+.reservee {
+    height: calc(var(--hauteur) - 2px);
+}
+
+// Libre : case vide, bordée (une place à vendre)
+.libre {
+    border: 1.5px solid $color-text-primary;
+    background: white;
+}
+
+// Déplacement : grisé
+.deplacement {
+    background-color: $color-border;
+}
+
+// Intervention réservée : orange plein
+.reservee {
+    background-color: $color-myOrange;
 }

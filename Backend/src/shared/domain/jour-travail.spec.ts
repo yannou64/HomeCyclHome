@@ -5,6 +5,7 @@ import {
     instantDuJour,
     jourDeSemaine,
     jourTravail,
+    minutesDuJour,
 } from './jour-travail';
 
 // Tests de caractérisation : ils figent le comportement actuel des fonctions
@@ -132,5 +133,27 @@ describe('aujourdHui', () => {
         expect(aujourdHui(new Date('2026-01-15T23:30:00.000Z'))).toBe(
             '2026-01-16',
         );
+    });
+});
+
+describe('minutesDuJour', () => {
+    it('donne l’heure d’horloge de Paris en minutes, en hiver (UTC+1)', () => {
+        // 07h30 UTC = 8h30 à Paris
+        expect(minutesDuJour(new Date('2026-01-15T07:30:00.000Z'))).toBe(510);
+    });
+
+    it('donne l’heure d’horloge de Paris en minutes, en été (UTC+2)', () => {
+        // 06h00 UTC = 8h00 à Paris
+        expect(minutesDuJour(new Date('2026-06-10T06:00:00.000Z'))).toBe(480);
+    });
+
+    it('lit l’horloge, pas le temps écoulé, le jour du passage à l’heure d’été', () => {
+        // 29/03/2026 : 8h00 à Paris = 06h00 UTC ; depuis minuit, 7 h seulement
+        // se sont écoulées, mais l'horloge indique bien 8h00
+        expect(minutesDuJour(new Date('2026-03-29T06:00:00.000Z'))).toBe(480);
+    });
+
+    it('est l’inverse d’instantDuJour', () => {
+        expect(minutesDuJour(instantDuJour('2026-10-25', 1170))).toBe(1170);
     });
 });

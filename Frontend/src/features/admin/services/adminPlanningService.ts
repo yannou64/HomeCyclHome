@@ -3,6 +3,7 @@ import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
     CouvertureMois,
     CreateModelePayload,
+    Journee,
     ModeleDetail,
     ModelePlanification,
     ModeleResume,
@@ -80,6 +81,13 @@ export const adminPlanningService = {
             '/admin/planning/couverture',
             { params: mois ? { mois } : {} },
         );
+        return r.data;
+    },
+
+    async getJournee(date: string): Promise<Journee> {
+        const r = await apiClient.get<Journee>('/admin/planning/journee', {
+            params: { date },
+        });
         return r.data;
     },
 };

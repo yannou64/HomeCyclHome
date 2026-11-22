@@ -83,3 +83,32 @@ export type CouvertureMois = {
     aujourdHui: string; // date pivot par défaut, calculée par l'API (fuseau)
     jours: JourCouvert[];
 };
+
+export type StatutCreneau = 'Libre' | 'InterventionReservee' | 'Deplacement';
+
+/** Un créneau de 30 min, placé en minutes après minuit (heure de Paris). */
+export type CreneauJournee = { debut: number; statut: StatutCreneau };
+
+/** Carte d'un technicien pour la date pivot. */
+export type CarteTechnicien = {
+    id: string;
+    prenom: string;
+    nom: string;
+    zone: ZoneCouverte | null; // null : aucun créneau ce jour-là
+    creneaux: CreneauJournee[];
+    planifieJusquau: string | null; // null : « non planifié »
+};
+
+/** Carte d'une zone pour la date pivot. */
+export type CarteZone = ZoneCouverte & {
+    etat: 'disponible' | 'complet' | 'non couverte';
+    tranchesLibres: number[]; // débuts des tranches où un technicien est libre
+    derniereCouverture: string | null; // null : « aucune couverture »
+};
+
+/** La journée pivot : une carte par technicien, une carte par zone. */
+export type Journee = {
+    date: string;
+    techniciens: CarteTechnicien[];
+    zones: CarteZone[];
+};

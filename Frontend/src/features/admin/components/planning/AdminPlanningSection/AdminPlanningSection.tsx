@@ -3,16 +3,17 @@ import { useCouvertureMois } from '../../../hooks/useCouvertureMois';
 import { useTechniciens } from '../../../hooks/useTechniciens';
 import { CalendrierCouverture } from '../CalendrierCouverture/CalendrierCouverture';
 import { ChoixTechnicien } from '../ChoixTechnicien/ChoixTechnicien';
+import { JourneePivot } from '../JourneePivot/JourneePivot';
 import { LegendeZones } from '../LegendeZones/LegendeZones';
 import { PlanificationTechnicien } from '../PlanificationTechnicien/PlanificationTechnicien';
 import styles from './AdminPlanningSection.module.scss';
 
 /**
  * Section Planning de l'admin : la couverture des zones (« Visualiser la
- * couverture des zones 2.0 »), centrée sur une date pivot. US-01 : le
- * calendrier du mois et sa légende ; la journée de la date pivot arrive avec
- * US-02. En attendant le bouton *Détail* (S3), un sélecteur donne accès à
- * l'écran Planification d'un technicien.
+ * couverture des zones 2.0 »), centrée sur une date pivot : le calendrier du
+ * mois et sa légende (US-01), puis la journée de la date pivot, techniciens et
+ * zones (US-02). En attendant le bouton *Détail* (S3), un sélecteur donne
+ * accès à l'écran Planification d'un technicien.
  */
 export function AdminPlanningSection() {
     const { techniciens, error: erreurTechniciens } = useTechniciens();
@@ -66,6 +67,8 @@ export function AdminPlanningSection() {
                     <LegendeZones jours={couverture.jours} />
                 </div>
             )}
+
+            <JourneePivot date={datePivot} />
 
             <ChoixTechnicien
                 techniciens={techniciens}

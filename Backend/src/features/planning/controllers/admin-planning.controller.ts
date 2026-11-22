@@ -22,8 +22,10 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { CreateModelePlanificationDto } from '../dto/input/create-modele-planification.dto';
 import { GetCouvertureQueryDto } from '../dto/input/get-couverture-query.dto';
+import { GetJourneeQueryDto } from '../dto/input/get-journee-query.dto';
 import { UpdateModelePlanificationDto } from '../dto/input/update-modele-planification.dto';
 import { CouvertureMoisResponseDto } from '../dto/output/couverture-mois-response.dto';
+import { JourneeResponseDto } from '../dto/output/journee-response.dto';
 import { ModeleDetailResponseDto } from '../dto/output/modele-detail-response.dto';
 import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { ModeleResumeResponseDto } from '../dto/output/modele-resume-response.dto';
@@ -31,6 +33,7 @@ import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dt
 import { CreateModelePlanificationUseCase } from '../use-cases/create-modele-planification.use-case';
 import { DeleteModelePlanificationUseCase } from '../use-cases/delete-modele-planification.use-case';
 import { GetCouvertureMoisUseCase } from '../use-cases/get-couverture-mois.use-case';
+import { GetJourneeUseCase } from '../use-cases/get-journee.use-case';
 import { GetModeleUseCase } from '../use-cases/get-modele.use-case';
 import { GetModelesUseCase } from '../use-cases/get-modeles.use-case';
 import { GetZonesProposeesUseCase } from '../use-cases/get-zones-proposees.use-case';
@@ -51,6 +54,7 @@ export class AdminPlanningController {
         private readonly updateModeleUseCase: UpdateModelePlanificationUseCase,
         private readonly deleteModeleUseCase: DeleteModelePlanificationUseCase,
         private readonly getCouvertureUseCase: GetCouvertureMoisUseCase,
+        private readonly getJourneeUseCase: GetJourneeUseCase,
     ) {}
 
     // Calendrier de couverture d'un mois (US-01 « Consulter le calendrier de
@@ -62,6 +66,17 @@ export class AdminPlanningController {
     @Get('couverture')
     getCouverture(@Query() query: GetCouvertureQueryDto) {
         return this.getCouvertureUseCase.execute(query.mois);
+    }
+
+    // Journée pivot : cartes technicien et cartes zone (US-02 « Consulter la
+    // journée des techniciens et les disponibilités des zones 2.0 »)
+    @ApiOkResponse({
+        description: 'Cartes technicien et cartes zone de la journée',
+        type: JourneeResponseDto,
+    })
+    @Get('journee')
+    getJournee(@Query() query: GetJourneeQueryDto) {
+        return this.getJourneeUseCase.execute(query.date);
     }
 
     @ApiOkResponse({

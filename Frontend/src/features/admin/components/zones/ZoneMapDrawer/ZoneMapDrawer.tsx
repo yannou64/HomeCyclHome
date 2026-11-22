@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
+import { importLibrary } from '../../../../../shared/utils/googleMaps';
 import type { ZonePoint } from '../../../types/zones.types';
 import styles from './ZoneMapDrawer.module.scss';
-
-// setOptions est appelé une seule fois au niveau module, avant tout importLibrary
-setOptions({
-    key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
-    v: 'weekly',
-});
 
 const LYON_CENTER = { lat: 45.75, lng: 4.85 };
 const DEFAULT_ZOOM = 11;

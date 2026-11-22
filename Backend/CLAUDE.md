@@ -182,7 +182,9 @@ partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 `toISOString().slice(0, 10)`. Brique partagée : `shared/domain/jour-travail.ts`,
 type `JourCalendaire` (`YYYY-MM-DD`) :
 `jourTravail`, `aujourdHui`, `instantDuJour(jour, minutes)` (heure d'horloge de
-Paris → instant UTC), `bornesDuJourTravail`, `ajouterJours`, `jourDeSemaine`. Justes
+Paris → instant UTC), son inverse `minutesDuJour(instant)` (instant → minutes
+d'horloge à Paris, 8h30 → 510), `bornesDuJourTravail`, `ajouterJours`,
+`jourDeSemaine`. Justes
 aux changements d'heure (journées de 23 h et 25 h testées).
 
 **Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases se

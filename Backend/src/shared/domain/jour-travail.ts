@@ -48,6 +48,24 @@ export function instantDuJour(jour: JourCalendaire, minutes: number): Date {
 }
 
 /**
+ * Heure d'horloge d'un instant à Paris, en minutes après minuit (8h30 → 510).
+ * Inverse d'`instantDuJour` : sert à placer un créneau sur la plage 7h–20h.
+ * Lit l'horloge de Paris, pas le temps écoulé depuis minuit : le jour du
+ * passage à l'heure d'été, 8h00 reste 480 alors que 7 h seulement ont passé.
+ */
+export function minutesDuJour(instant: Date): number {
+    const parties = new Intl.DateTimeFormat('en-GB', {
+        timeZone: FUSEAU,
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23', // 0 à 23 : minuit vaut 0, jamais 24
+    }).formatToParts(instant);
+    const valeur = (type: 'hour' | 'minute') =>
+        Number(parties.find((p) => p.type === type)?.value);
+    return valeur('hour') * 60 + valeur('minute');
+}
+
+/**
  * Bornes UTC de la journée de travail d'un instant : de minuit à minuit moins
  * une milliseconde, heure de Paris. Une journée dure 23 h ou 25 h aux
  * changements d'heure : la fin est calculée sur le minuit du lendemain.
