@@ -249,6 +249,9 @@ métier et la liste de messages du `ValidationPipe`.
 ## 7. Google Maps
 
 - Uniquement `@googlemaps/js-api-loader` (pas `@react-google-maps/api`).
+- Configuration unique dans `shared/utils/googleMaps.ts` (`setOptions` appelé une
+  seule fois) : importer `importLibrary` depuis ce module, jamais directement
+  depuis `@googlemaps/js-api-loader`.
 - Autocomplete limité à la France (`componentRestrictions: { country: 'fr' }`).
 - Une adresse sélectionnée est décomposée (`numero`, `rue`, `codePostal`, `ville`,
   `latitude`, `longitude`, `googlePlaceId`) avant envoi : jamais d'adresse brute.

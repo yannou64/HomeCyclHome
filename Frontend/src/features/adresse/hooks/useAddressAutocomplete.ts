@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { importLibrary, setOptions } from '@googlemaps/js-api-loader';
+import { importLibrary } from '../../../shared/utils/googleMaps';
 import type { DecomposedAddress } from '../types/adresse.types';
-
-setOptions({
-    key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string,
-    v: 'weekly',
-});
 
 function extractComponent(
     components: google.maps.GeocoderAddressComponent[],

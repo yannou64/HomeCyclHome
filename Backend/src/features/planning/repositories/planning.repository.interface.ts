@@ -38,6 +38,40 @@ export type ModeleDetail = ModelePlanificationResponseDto & {
     zoneAffectee: boolean;
 };
 
+/**
+ * Un créneau lu pour la couverture : son instant de début (UTC), son statut,
+ * son technicien et les faits sur sa zone. Le regroupement par jour de Paris
+ * se fait dans le use case.
+ */
+export type CreneauAvecZone = {
+    dateDebut: Date;
+    statut: 'Libre' | 'InterventionReservee' | 'Deplacement';
+    technicienId: string;
+    zone: { id: string; nomZone: string; couleur: string; isActive: boolean };
+};
+
+/** Un technicien, pour les cartes de la journée. */
+export type TechnicienResume = {
+    id: string;
+    prenom: string;
+    nom: string;
+    isActif: boolean;
+};
+
+/** Une zone, pour les cartes de la journée. */
+export type ZoneResume = {
+    id: string;
+    nomZone: string;
+    couleur: string;
+    isActive: boolean;
+};
+
+/** Début du dernier créneau de chaque technicien et de chaque zone (UTC). */
+export type DerniersCreneaux = {
+    parTechnicien: Map<string, Date>;
+    parZone: Map<string, Date>;
+};
+
 // Le contrat : les use cases dépendent de cette interface, jamais de Prisma
 export interface IPlanningRepository {
     /** Vrai si l'id désigne un utilisateur de rôle technicien. */
@@ -99,4 +133,16 @@ export interface IPlanningRepository {
      * (inexistant, d'un autre technicien, ou déjà supprimé).
      */
     supprimerModele(technicienId: string, modeleId: string): Promise<boolean>;
+
+    /** Créneaux dont le début est dans [debut, fin[, avec leur zone. */
+    trouverCreneauxEntre(debut: Date, fin: Date): Promise<CreneauAvecZone[]>;
+
+    /** Tous les utilisateurs de rôle technicien, actifs ou non. */
+    trouverTechniciens(): Promise<TechnicienResume[]>;
+
+    /** Toutes les zones, actives ou non. */
+    trouverZones(): Promise<ZoneResume[]>;
+
+    /** Le dernier créneau de chaque technicien et de chaque zone. */
+    derniersCreneaux(): Promise<DerniersCreneaux>;
 }

@@ -17,36 +17,31 @@
     color: $color-text-primary;
 }
 
-.selectorWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+// Calendrier et légende côte à côte sur desktop (maquette), empilés sinon
+.haut {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+    align-items: start;
 }
 
-.selectorLabel {
-    font-family: $font-primary;
-    font-size: $font-size-label;
-    font-weight: $font-semibold;
-    color: $color-text-label;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+@include desktop {
+    .haut {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
 }
 
-.selector {
-    padding: $spacing-xs $spacing-sm;
+.carteCalendrier {
+    padding: $spacing-sm;
     border: 1px solid $color-border;
-    border-radius: $radius-md;
+    border-radius: $radius-lg;
+    background: white;
+}
+
+.info {
     font-family: $font-primary;
     font-size: $font-size-body;
-    color: $color-text-primary;
-    background: white;
-    min-width: 240px;
-    cursor: pointer;
-
-    &:focus {
-        outline: none;
-        border-color: $color-myOrange;
-    }
+    color: $color-text-label;
 }
 
 .error {

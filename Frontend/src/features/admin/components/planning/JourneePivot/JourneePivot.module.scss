@@ -1,0 +1,49 @@
+@use '../../../../../app/styles/index' as *;
+
+.journee {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    font-family: $font-primary;
+}
+
+.date {
+    font-size: $font-size-body;
+    color: $color-text-label;
+}
+
+.titre {
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+// Mobile : une carte par ligne. Desktop (maquette) : trois techniciens, deux
+// zones par ligne
+.grilleTechniciens,
+.grilleZones {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-sm;
+}
+
+@include desktop {
+    .grilleTechniciens {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grilleZones {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.info {
+    font-size: $font-size-body;
+    color: $color-text-label;
+}
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}

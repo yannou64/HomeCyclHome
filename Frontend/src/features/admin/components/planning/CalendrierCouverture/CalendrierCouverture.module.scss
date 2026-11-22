@@ -1,0 +1,85 @@
+@use '../../../../../app/styles/index' as *;
+
+// Habillage de la vue mois de FullCalendar (maquette « Planning — couverture
+// des zones ») : ses classes ne sont pas des classes de module, d'où :global,
+// limité à l'intérieur de .calendrier
+.calendrier {
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: $color-text-primary;
+
+    :global {
+        --fc-border-color: #{$color-border};
+        --fc-page-bg-color: white;
+        --fc-today-bg-color: transparent; // seule la date pivot est mise en évidence
+
+        .fc-toolbar-title {
+            font-size: $font-size-h2;
+            font-weight: $font-semibold;
+            text-transform: capitalize;
+        }
+
+        // Flèches mois précédent et suivant : boutons orange de la maquette
+        .fc-button-primary {
+            border: none;
+            border-radius: $radius-md;
+            background-color: $color-myOrange;
+
+            &:hover,
+            &:not(:disabled):active {
+                background-color: $color-myOrange;
+                opacity: 0.9;
+            }
+        }
+
+        .fc-col-header-cell-cushion {
+            color: $color-text-label;
+            font-weight: $font-semibold;
+        }
+
+        .fc-daygrid-day {
+            cursor: pointer;
+        }
+
+        // Jours des mois voisins, estompés
+        .fc-day-other {
+            opacity: 0.5;
+        }
+    }
+}
+
+// Date pivot (CA09) : contour et fond orange clair
+.selectionne {
+    outline: 2px solid $color-myOrange;
+    outline-offset: -2px;
+    background-color: rgba($color-myOrange, 0.08);
+}
+
+// Contenu d'une case : numéro en haut à droite, points en bas
+.case {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $spacing-xs;
+    width: 100%;
+    min-height: 3rem;
+}
+
+.numero {
+    color: $color-text-primary;
+}
+
+.points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-self: center;
+    margin-top: auto;
+}
+
+.point {
+    width: 10px;
+    height: 10px;
+    border-radius: $radius-full;
+    background-color: var(--point-couleur);
+}

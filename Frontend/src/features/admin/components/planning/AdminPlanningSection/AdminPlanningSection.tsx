@@ -1,21 +1,31 @@
 import { useState } from 'react';
+import { useCouvertureMois } from '../../../hooks/useCouvertureMois';
 import { useTechniciens } from '../../../hooks/useTechniciens';
+import { CalendrierCouverture } from '../CalendrierCouverture/CalendrierCouverture';
+import { ChoixTechnicien } from '../ChoixTechnicien/ChoixTechnicien';
+import { JourneePivot } from '../JourneePivot/JourneePivot';
+import { LegendeZones } from '../LegendeZones/LegendeZones';
 import { PlanificationTechnicien } from '../PlanificationTechnicien/PlanificationTechnicien';
 import styles from './AdminPlanningSection.module.scss';
 
 /**
- * Section Planning de l'admin.
- *
- * Point d'entrée provisoire (écart du 18/11/2026, option c) : un sélecteur de
- * technicien ouvre son écran Planification. En S3, le parcours définitif le
- * remplacera : Couverture des zones → Détail d'un technicien → Planifier.
+ * Section Planning de l'admin : la couverture des zones (« Visualiser la
+ * couverture des zones 2.0 »), centrée sur une date pivot : le calendrier du
+ * mois et sa légende (US-01), puis la journée de la date pivot, techniciens et
+ * zones (US-02). En attendant le bouton *Détail* (S3), un sélecteur donne
+ * accès à l'écran Planification d'un technicien.
  */
 export function AdminPlanningSection() {
-    const { techniciens, error } = useTechniciens();
+    const { techniciens, error: erreurTechniciens } = useTechniciens();
     const [technicienId, setTechnicienId] = useState('');
+    // Mois demandé : null tant que l'admin n'a pas changé de mois (l'API
+    // renvoie alors le mois du jour)
+    const [mois, setMois] = useState<string | null>(null);
+    // Date choisie dans le calendrier ; à défaut, la date du jour (RG4)
+    const [dateChoisie, setDateChoisie] = useState<string | null>(null);
+    const { couverture, error } = useCouvertureMois(mois);
 
     const technicien = techniciens.find((t) => t.id === technicienId);
-
     if (technicien) {
         // key : un autre technicien remonte l'écran (formulaire réinitialisé)
         return (
@@ -27,33 +37,44 @@ export function AdminPlanningSection() {
         );
     }
 
+    const datePivot = dateChoisie ?? couverture?.aujourdHui ?? '';
+
+    // FullCalendar annonce aussi le mois de départ : on ne recharge que si
+    // c'est un autre mois que celui déjà chargé
+    const changerDeMois = (nouveau: string) => {
+        if (nouveau !== couverture?.mois) setMois(nouveau);
+    };
+
     return (
         <div className={styles.wrapper}>
-            <h2 className={styles.title}>Planification</h2>
-
-            <div className={styles.selectorWrapper}>
-                <label
-                    htmlFor="planning-technicien"
-                    className={styles.selectorLabel}
-                >
-                    Technicien
-                </label>
-                <select
-                    id="planning-technicien"
-                    className={styles.selector}
-                    value={technicienId}
-                    onChange={(e) => setTechnicienId(e.target.value)}
-                >
-                    <option value="">— Sélectionner un technicien —</option>
-                    {techniciens.map((t) => (
-                        <option key={t.id} value={t.id}>
-                            {t.prenom} {t.nom}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            <h2 className={styles.title}>Planning</h2>
 
             {error && <p className={styles.error}>{error}</p>}
+            {!couverture && !error && (
+                <p className={styles.info}>Chargement…</p>
+            )}
+
+            {couverture && (
+                <div className={styles.haut}>
+                    <div className={styles.carteCalendrier}>
+                        <CalendrierCouverture
+                            couverture={couverture}
+                            datePivot={datePivot}
+                            onMoisChange={changerDeMois}
+                            onChoisirDate={setDateChoisie}
+                        />
+                    </div>
+                    <LegendeZones jours={couverture.jours} />
+                </div>
+            )}
+
+            <JourneePivot date={datePivot} />
+
+            <ChoixTechnicien
+                techniciens={techniciens}
+                onChoisir={setTechnicienId}
+                erreur={erreurTechniciens}
+            />
         </div>
     );
 }

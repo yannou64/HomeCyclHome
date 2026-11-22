@@ -79,6 +79,11 @@ features/<nom>/
   `features/` ; un `.spec.ts` à côté. Exemples en place :
   `shared/domain/blocs.ts`, `shared/domain/jour-travail.ts`.
 
+Une règle partagée par plusieurs use cases du **même** module reste dans le use
+case qui l'a introduite, exportée comme fonction et importée par les autres
+(exemple : `verifierBlocs` de `planning/use-cases/create-modele-planification.use-case.ts`,
+reprise par la modification d'un modèle).
+
 Pas de dossier `domain/` dans un module : « domaine » désigne ici la couche des règles
 pures, à ne pas confondre avec un module (domaine fonctionnel).
 
@@ -177,7 +182,9 @@ partagé, jamais par `getDate()`, `setHours()`, `getDay()`, leurs variantes UTC
 `toISOString().slice(0, 10)`. Brique partagée : `shared/domain/jour-travail.ts`,
 type `JourCalendaire` (`YYYY-MM-DD`) :
 `jourTravail`, `aujourdHui`, `instantDuJour(jour, minutes)` (heure d'horloge de
-Paris → instant UTC), `bornesDuJourTravail`, `ajouterJours`, `jourDeSemaine`. Justes
+Paris → instant UTC), son inverse `minutesDuJour(instant)` (instant → minutes
+d'horloge à Paris, 8h30 → 510), `bornesDuJourTravail`, `ajouterJours`,
+`jourDeSemaine`. Justes
 aux changements d'heure (journées de 23 h et 25 h testées).
 
 **Une règle dense = un seul endroit.** Un calcul partagé par plusieurs use cases se

@@ -8,22 +8,42 @@ const FIN = 20 * 60; // 20h00, bas de la frise
 const DUREE = FIN - DEBUT;
 const HEURES = Array.from({ length: 14 }, (_, i) => 7 + i); // 7h … 20h
 
+/**
+ * Apparence d'un bloc. Par défaut « plein » : un bloc d'un modèle, dans la
+ * couleur de la zone, avec ses heures. Les trois autres montrent les statuts
+ * d'un créneau (« Visualiser la couverture », RG8 et RG9).
+ */
+export type VarianteBloc = 'plein' | 'libre' | 'deplacement' | 'reservee';
+
+export type BlocFrise = BlocHoraire & { variante?: VarianteBloc };
+
 interface FriseJourneeProps {
-    blocs: BlocHoraire[];
-    couleur: string; // teinte de la zone choisie (ou gris si aucune)
+    blocs: BlocFrise[];
+    couleur?: string; // teinte des blocs pleins (zone choisie, ou gris)
+    titre?: string; // nom accessible ; absent : frise décorative (aria-hidden)
 }
 
 /**
- * Aperçu d'une journée type de 7h00 à 20h00 : chaque bloc est dessiné à sa
- * place, dans la couleur de la zone. Les blocs sont semi-transparents : un
- * chevauchement apparaît plus foncé.
- *
- * Purement visuel (aria-hidden) : les mêmes informations sont dans les champs
- * du formulaire, lisibles par un lecteur d'écran.
+ * Une journée de 7h00 à 20h00, la même plage fixe partout : chaque bloc est
+ * dessiné à sa place.
+ * - Formulaire d'un modèle : blocs pleins, dans la couleur de la zone,
+ *   semi-transparents (un chevauchement apparaît plus foncé). Purement visuel :
+ *   les mêmes informations sont dans les champs du formulaire.
+ * - Cartes de la page Planning : un bloc de 30 min par créneau, selon son
+ *   statut. Le statut est aussi donné en infobulle.
  */
-export function FriseJournee({ blocs, couleur }: FriseJourneeProps) {
+export function FriseJournee({
+    blocs,
+    couleur = 'transparent',
+    titre,
+}: FriseJourneeProps) {
     return (
-        <div className={styles.frise} aria-hidden="true">
+        <div
+            className={styles.frise}
+            {...(titre
+                ? { role: 'img', 'aria-label': titre }
+                : { 'aria-hidden': true })}
+        >
             {HEURES.map((h) => (
                 <div
                     key={h}
@@ -36,21 +56,38 @@ export function FriseJournee({ blocs, couleur }: FriseJourneeProps) {
 
             {blocs
                 .filter((b) => b.fin > b.debut)
-                .map((b, i) => (
-                    <div
-                        key={i}
-                        className={styles.bloc}
-                        style={{
-                            ...position(b.debut, b.fin),
-                            ['--bloc-couleur' as string]: couleur,
-                        }}
-                    >
-                        {formaterHeure(b.debut)} – {formaterHeure(b.fin)}
-                    </div>
-                ))}
+                .map((b, i) => {
+                    const variante = b.variante ?? 'plein';
+                    const heures = `${formaterHeure(b.debut)} – ${formaterHeure(b.fin)}`;
+                    return (
+                        <div
+                            key={i}
+                            className={`${styles.bloc} ${styles[variante]}`}
+                            style={{
+                                ...position(b.debut, b.fin),
+                                ['--bloc-couleur' as string]: couleur,
+                            }}
+                            title={
+                                variante === 'plein'
+                                    ? undefined
+                                    : `${heures} : ${LIBELLES[variante]}`
+                            }
+                        >
+                            {/* Heures écrites dans les blocs d'un modèle ; un
+                                créneau de 30 min est trop petit */}
+                            {variante === 'plein' && heures}
+                        </div>
+                    );
+                })}
         </div>
     );
 }
+
+const LIBELLES: Record<Exclude<VarianteBloc, 'plein'>, string> = {
+    libre: 'libre',
+    deplacement: 'déplacement',
+    reservee: 'intervention réservée',
+};
 
 /**
  * Place un élément sur la frise. Valeurs calculées à l'exécution : elles

@@ -1,0 +1,59 @@
+@use '../../../../../app/styles/index' as *;
+
+.carte {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+    font-family: $font-primary;
+}
+
+.entete {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+}
+
+.nom {
+    font-size: $font-size-body;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.inactive,
+.repere {
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+// « Complet » ou « Non couverte » : en évidence au-dessus de la frise
+.etat {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+// Mobile : miniature au-dessus de la frise. Desktop : côte à côte (maquette)
+.corps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-sm;
+    align-items: start;
+}
+
+@include desktop {
+    .corps {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+}
+
+.disponibilites {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}

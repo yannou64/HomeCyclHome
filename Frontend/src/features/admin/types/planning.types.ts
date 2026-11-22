@@ -59,3 +59,56 @@ export type ModeleDetail = ModelePlanification & { valide: boolean };
 
 // La modification remplace tout le modèle : même saisie qu'à la création
 export type UpdateModelePayload = CreateModelePayload;
+
+// Couverture des zones (« Visualiser la couverture des zones 2.0 »).
+// Les jours sont ceux de Paris, au format 'AAAA-MM-JJ'.
+
+/** Une zone couverte un jour donné : de quoi afficher son tag. */
+export type ZoneCouverte = {
+    id: string;
+    nomZone: string;
+    couleur: CouleurZone;
+    isActive: boolean; // inactive : tag en gris clair (couleurAffichee)
+};
+
+/** Un jour couvert du mois et ses zones. Un jour absent n'a aucun tag. */
+export type JourCouvert = {
+    jour: string;
+    zones: ZoneCouverte[];
+};
+
+/** Calendrier de couverture d'un mois ('AAAA-MM'). */
+export type CouvertureMois = {
+    mois: string;
+    aujourdHui: string; // date pivot par défaut, calculée par l'API (fuseau)
+    jours: JourCouvert[];
+};
+
+export type StatutCreneau = 'Libre' | 'InterventionReservee' | 'Deplacement';
+
+/** Un créneau de 30 min, placé en minutes après minuit (heure de Paris). */
+export type CreneauJournee = { debut: number; statut: StatutCreneau };
+
+/** Carte d'un technicien pour la date pivot. */
+export type CarteTechnicien = {
+    id: string;
+    prenom: string;
+    nom: string;
+    zone: ZoneCouverte | null; // null : aucun créneau ce jour-là
+    creneaux: CreneauJournee[];
+    planifieJusquau: string | null; // null : « non planifié »
+};
+
+/** Carte d'une zone pour la date pivot. */
+export type CarteZone = ZoneCouverte & {
+    etat: 'disponible' | 'complet' | 'non couverte';
+    tranchesLibres: number[]; // débuts des tranches où un technicien est libre
+    derniereCouverture: string | null; // null : « aucune couverture »
+};
+
+/** La journée pivot : une carte par technicien, une carte par zone. */
+export type Journee = {
+    date: string;
+    techniciens: CarteTechnicien[];
+    zones: CarteZone[];
+};

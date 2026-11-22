@@ -1,7 +1,9 @@
 import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
+    CouvertureMois,
     CreateModelePayload,
+    Journee,
     ModeleDetail,
     ModelePlanification,
     ModeleResume,
@@ -71,5 +73,21 @@ export const adminPlanningService = {
 
     async deleteModele(technicienId: string, modeleId: string): Promise<void> {
         await apiClient.delete(`${base(technicienId)}/modeles/${modeleId}`);
+    },
+
+    // Sans mois : celui du jour, à Paris (calculé par l'API)
+    async getCouverture(mois: string | null): Promise<CouvertureMois> {
+        const r = await apiClient.get<CouvertureMois>(
+            '/admin/planning/couverture',
+            { params: mois ? { mois } : {} },
+        );
+        return r.data;
+    },
+
+    async getJournee(date: string): Promise<Journee> {
+        const r = await apiClient.get<Journee>('/admin/planning/journee', {
+            params: { date },
+        });
+        return r.data;
     },
 };
