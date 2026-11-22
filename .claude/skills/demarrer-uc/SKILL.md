@@ -16,7 +16,8 @@ son écran : on les lit et on les conçoit ensemble, une seule fois. On les livr
 ensuite une par une (RED, GREEN, commit). La traçabilité reste par US :
 `describe` = nom exact de l'US, une empreinte par US.
 
-Vault de la V2 (lecture seule, sauf la note *Écarts* à l'étape 6 avec accord) :
+Vault de la V2 (lecture seule, sauf la note *Écarts* à l'étape 6 avec accord, et
+le repère `*(manuel)*` à l'étape 4) :
 ```
 /Users/yannickbiot/Mini Brain/30 Projets/HomeCycl'Home/3. Développement - Suivi et contrôle/V2
 ```
@@ -134,11 +135,16 @@ Choix du type, selon `Backend/CLAUDE.md` section Tests :
 - logique d'un use case → unitaire, repository simulé ;
 - transaction, écriture conditionnelle, concurrence, clé étrangère, droit d'accès de
   bout en bout → intégration (`test/*.e2e-spec.ts`), un fichier par US ;
-- critère purement visuel (frontend) → « manuel » : vérifié à l'écran, sans
-  test. S'il ne porte pas encore le repère `*(manuel)*` dans la note, propose à
-  Yannick de l'ajouter avant le développement (convention : `Assistant IA -
-  Critères vérifiés à la main`) ; sans repère, `verifier-ca.py` le compterait
-  comme « case cochée mais aucun test ».
+- critère d'affichage (frontend) → « manuel » : vérifié à l'écran, sans test.
+  **Tu poses toi-même le repère `*(manuel)*`** dans la note, juste avant
+  l'étiquette de règle (`… *(manuel)* *(RG3)*`), en ne modifiant que cette
+  ligne. Limites : section « Cases et repères » du Lisez-moi (affichage
+  seulement, jamais pour une règle métier, un refus, un droit d'accès ou un code
+  HTTP). **Critère douteux** (affichage ou règle ?) : repère manuel (choix de
+  Yannick du 22/11/2026). Chaque repère est listé dans ta réponse et justifié
+  dans le Journal (critère, raison), après les Invariants de sécurité des liens
+  de `/Users/yannickbiot/Mini Brain/CLAUDE.md`. Pose-les une fois le plan de
+  tests validé, avant le RED : le repère entre dans l'empreinte.
 
 Les critères qui contiennent un exemple chiffré deviennent des tests tels quels.
 
@@ -197,4 +203,5 @@ jamais toi-même.
 - Convention des tests : `describe` = nom exact de l'US, chaque `it` commence par le
   `CAnn` de la note et finit par son étiquette entre crochets :
   `it('CA07 — refuse un nom hors énumération [RG2]', …)`, `[RG2, RG5]` ou `[—]`.
-- Ne coche aucune case dans le vault. Ne modifie aucune note de spec.
+- Ne coche aucune case dans ce skill (les cases se cochent dans `/terminer-uc`).
+  Dans une note de spec, seul le repère `*(manuel)*` peut être ajouté.

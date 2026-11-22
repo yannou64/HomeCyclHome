@@ -42,7 +42,11 @@ Pour l'ancien format (`Empreinte : …` sans nom), l'US est celle du titre de l'
    `[RG…]` divergentes, `describe` sans US, RG sans critère. Les numéros `CAnn`
    sont ceux écrits dans les notes, jamais recomptés.
 3. Cases cochées dans le vault mais sans test qui passe, et l'inverse (information
-   pour Yannick — tu ne coches ni ne décoches rien).
+   pour Yannick — l'audit est en lecture seule : il signale, il ne coche ni ne
+   décoche rien ; c'est `/terminer-uc` qui tient les cases).
+4. Repères `*(manuel)*` : chacun est-il justifié dans le Journal, et porte-t-il
+   bien sur un critère d'affichage (limites : « Cases et repères » du
+   Lisez-moi) ?
 
 ## Contrôle 2 — Écarts en attente
 Lignes de `Assistant IA - Écarts d'implémentation.md` sans décision, avec leur âge,

@@ -49,8 +49,10 @@ Ses règles s'appliquent telles quelles et ne sont pas répétées ici.
 Conséquences :
 - Ne jamais recopier dans le dépôt (CLAUDE.md, README, commentaires de doc) une règle
   métier, un critère ou une date du plan : renvoyer à la note par son nom.
-- Dans le vault, Claude n'écrit que dans *Écarts* et *Journal*. Il ne coche jamais
-  une case `- [ ]`.
+- Dans le vault, Claude n'écrit que dans *Écarts* et *Journal*, avec une seule
+  exception dans les notes d'US : la case d'un critère testé et le repère
+  `*(manuel)*` (décision du 22/11/2026). Règles et limites : section « Cases et
+  repères » de `Assistant IA - Lisez-moi`, qui fait foi.
 - Le dossier `V1/` du vault est en lecture seule. Le vault « Brouillon » de la V1 a
   été supprimé le 11/11/2026 : toute référence à `sprint-actuel.md`, `log.md` ou
   `metier.md` est obsolète.
@@ -74,13 +76,17 @@ Conséquences :
       it('CA07 — refuse un nom hors énumération [RG2]', async () => { /* … */ });
   });
   ```
-  La couverture se lit dans les noms de tests ; Yannick coche les cases à partir
-  du rapport de `/terminer-uc`.
+  La couverture se lit dans les noms de tests. Claude coche la case d'un critère
+  testé seulement après une exécution verte et le feu vert de `verifier-ca.py`
+  (dans `/terminer-uc`) ; jamais une case manuelle ni une case de pilotage.
 - **Critère vérifié à la main.** Un critère d'affichage, que rien ne teste
   automatiquement (pas de tests frontend), porte le repère `*(manuel)*` dans la
   note, juste avant son étiquette de règle. Il n'a pas de test `CAnn` ; sa case se
-  coche après vérification à l'écran, et `verifier-ca.py` le reconnaît. Le repère
-  est ajouté dans la note par Yannick, avant le développement. Convention :
+  coche après vérification à l'écran, par Yannick seul, et `verifier-ca.py` le
+  reconnaît. Claude pose le repère pendant `/demarrer-uc`, sur les critères
+  d'affichage seulement, et le justifie dans le Journal. Critère douteux
+  (affichage ou règle ?) : repère manuel, choix de Yannick du 22/11/2026.
+  Conventions : `Assistant IA - Lisez-moi` (« Cases et repères ») et
   `Assistant IA - Critères vérifiés à la main`.
 - **Audit aux points de contrôle** (C1, C2, C3, fin de V2) : `/audit-alignement`.
 
@@ -98,8 +104,8 @@ une. La traçabilité reste par US (`describe`, empreinte).
 | 2. Valider plans de tests, conception et écarts | Yannick | — |
 | 3. Pour chaque US, dans l'ordre : RED, GREEN puis refactor, proposition de commit | Claude | — |
 | 4. Commiter chaque US | Yannick | — |
-| 5. Couverture par US, définition de fini, une empreinte par US, entrée du Journal | Claude | `/terminer-uc <cas d'utilisation>` (ou `<US>` pour en clore une seule) |
-| 6. Cocher les critères, push, PR vers `dev` | Yannick | — |
+| 5. Couverture par US, définition de fini, cases des critères testés, une empreinte par US, entrée du Journal | Claude | `/terminer-uc <cas d'utilisation>` (ou `<US>` pour en clore une seule) |
+| 6. Vérifier à l'écran et cocher les critères manuels, push, PR vers `dev` | Yannick | — |
 
 Rappel : Yannick se décrit « tête en l'air ». Quand la dernière US du lot est verte,
 proposer explicitement `/terminer-uc` — proposer, ne jamais le lancer soi-même.
