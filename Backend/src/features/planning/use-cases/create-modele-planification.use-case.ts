@@ -22,6 +22,35 @@ function heure(minutes: number): string {
 }
 
 /**
+ * RG4, partie qui dépend de plusieurs valeurs. Deux blocs se chevauchent si
+ * chacun commence avant la fin de l'autre ; deux blocs contigus (8h–10h puis
+ * 10h–12h) ne se chevauchent pas (écart du 18/11/2026).
+ *
+ * Règle du module planning : écrite ici, exportée pour la modification d'un
+ * modèle (et plus tard pour Planifier), jamais recopiée.
+ */
+export function verifierBlocs(blocs: Bloc[]): void {
+    for (const b of blocs) {
+        if (b.fin <= b.debut) {
+            throw new BadRequestException(
+                `La fin d’un bloc doit être après son début (${heure(b.debut)}–${heure(b.fin)}).`,
+            );
+        }
+    }
+    // Triés par début : il suffit de comparer chaque bloc au suivant
+    const tries = [...blocs].sort((a, b) => a.debut - b.debut);
+    for (let i = 1; i < tries.length; i++) {
+        const precedent = tries[i - 1];
+        const courant = tries[i];
+        if (courant.debut < precedent.fin) {
+            throw new BadRequestException(
+                `Les blocs ${heure(precedent.debut)}–${heure(precedent.fin)} et ${heure(courant.debut)}–${heure(courant.fin)} se chevauchent.`,
+            );
+        }
+    }
+}
+
+/**
  * Crée le modèle de planification d'un technicien (US-01 d'« Administrer les
  * modèles de planification 2.0 »).
  *
@@ -46,7 +75,7 @@ export class CreateModelePlanificationUseCase {
         }
 
         // RG4 : blocs cohérents (fin après début, aucun chevauchement)
-        this.verifierBlocs(saisie.blocs);
+        verifierBlocs(saisie.blocs);
 
         // RG5 : zone affectée au technicien et active
         if (
@@ -73,31 +102,5 @@ export class CreateModelePlanificationUseCase {
             jours: saisie.jours,
             blocs: saisie.blocs,
         });
-    }
-
-    /**
-     * RG4, partie qui dépend de plusieurs valeurs. Deux blocs se chevauchent
-     * si chacun commence avant la fin de l'autre ; deux blocs contigus
-     * (8h–10h puis 10h–12h) ne se chevauchent pas (écart du 18/11/2026).
-     */
-    private verifierBlocs(blocs: Bloc[]): void {
-        for (const b of blocs) {
-            if (b.fin <= b.debut) {
-                throw new BadRequestException(
-                    `La fin d’un bloc doit être après son début (${heure(b.debut)}–${heure(b.fin)}).`,
-                );
-            }
-        }
-        // Triés par début : il suffit de comparer chaque bloc au suivant
-        const tries = [...blocs].sort((a, b) => a.debut - b.debut);
-        for (let i = 1; i < tries.length; i++) {
-            const precedent = tries[i - 1];
-            const courant = tries[i];
-            if (courant.debut < precedent.fin) {
-                throw new BadRequestException(
-                    `Les blocs ${heure(precedent.debut)}–${heure(precedent.fin)} et ${heure(courant.debut)}–${heure(courant.fin)} se chevauchent.`,
-                );
-            }
-        }
     }
 }

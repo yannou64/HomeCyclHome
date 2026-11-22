@@ -26,6 +26,18 @@ export type ModeleAvecZone = {
     zoneAffectee: boolean;
 };
 
+/** Ce que le repository remplace dans un modèle existant, déjà contrôlé. */
+export type ModifierModeleData = Omit<CreateModeleData, 'technicienId'>;
+
+/**
+ * Un modèle complet tel que lu en base, avec les faits sur sa zone : le use
+ * case en déduit s'il est valide (RG11) et donc modifiable.
+ */
+export type ModeleDetail = ModelePlanificationResponseDto & {
+    zoneActive: boolean;
+    zoneAffectee: boolean;
+};
+
 // Le contrat : les use cases dépendent de cette interface, jamais de Prisma
 export interface IPlanningRepository {
     /** Vrai si l'id désigne un utilisateur de rôle technicien. */
@@ -44,15 +56,47 @@ export interface IPlanningRepository {
 
     /**
      * Vrai si le technicien a déjà un modèle de cet intitulé, sans tenir
-     * compte de la casse (RG3, CA07).
+     * compte de la casse (RG3). `saufModeleId` : le modèle en cours de
+     * modification ne compte pas comme doublon de lui-même.
      */
-    intituleExiste(technicienId: string, intitule: string): Promise<boolean>;
+    intituleExiste(
+        technicienId: string,
+        intitule: string,
+        saufModeleId?: string,
+    ): Promise<boolean>;
 
     /** Modèles du technicien, triés par intitulé, avec les faits sur leur zone. */
     trouverModeles(technicienId: string): Promise<ModeleAvecZone[]>;
+
+    /**
+     * Le modèle `modeleId` s'il appartient au technicien, sinon null : un
+     * modèle d'un autre technicien est « introuvable » (RG10).
+     */
+    trouverModele(
+        technicienId: string,
+        modeleId: string,
+    ): Promise<ModeleDetail | null>;
 
     /** Écrit le modèle et ses blocs en une seule transaction (tout ou rien). */
     creerModele(
         data: CreateModeleData,
     ): Promise<ModelePlanificationResponseDto>;
+
+    /**
+     * Remplace l'intitulé, la zone, les jours et tous les blocs du modèle, en
+     * une seule transaction (tout ou rien). Renvoie null si le modèle n'existe
+     * plus pour ce technicien (supprimé entre-temps).
+     */
+    modifierModele(
+        technicienId: string,
+        modeleId: string,
+        data: ModifierModeleData,
+    ): Promise<ModelePlanificationResponseDto | null>;
+
+    /**
+     * Supprime le modèle et ses blocs en une seule transaction (tout ou
+     * rien). Renvoie false si le modèle n'existe pas pour ce technicien
+     * (inexistant, d'un autre technicien, ou déjà supprimé).
+     */
+    supprimerModele(technicienId: string, modeleId: string): Promise<boolean>;
 }

@@ -2,8 +2,10 @@ import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
     CreateModelePayload,
+    ModeleDetail,
     ModelePlanification,
     ModeleResume,
+    UpdateModelePayload,
     ZoneProposee,
 } from '../types/planning.types';
 
@@ -42,5 +44,32 @@ export const adminPlanningService = {
             payload,
         );
         return r.data;
+    },
+
+    async getModele(
+        technicienId: string,
+        modeleId: string,
+    ): Promise<ModeleDetail> {
+        const r = await apiClient.get<ModeleDetail>(
+            `${base(technicienId)}/modeles/${modeleId}`,
+        );
+        return r.data;
+    },
+
+    // PUT : la modification remplace tout le modèle
+    async updateModele(
+        technicienId: string,
+        modeleId: string,
+        payload: UpdateModelePayload,
+    ): Promise<ModelePlanification> {
+        const r = await apiClient.put<ModelePlanification>(
+            `${base(technicienId)}/modeles/${modeleId}`,
+            payload,
+        );
+        return r.data;
+    },
+
+    async deleteModele(technicienId: string, modeleId: string): Promise<void> {
+        await apiClient.delete(`${base(technicienId)}/modeles/${modeleId}`);
     },
 };

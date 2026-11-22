@@ -18,6 +18,9 @@ describe('US-01 Créer un modèle de planification 2.0', () => {
             intituleExiste: jest.fn().mockResolvedValue(false),
             trouverModeles: jest.fn().mockResolvedValue([]),
             creerModele: jest.fn().mockResolvedValue({ id: 'modele-1' }),
+            trouverModele: jest.fn().mockResolvedValue(null),
+            supprimerModele: jest.fn().mockResolvedValue(true),
+            modifierModele: jest.fn().mockResolvedValue(null),
         };
         useCase = new CreateModelePlanificationUseCase(repo);
     });

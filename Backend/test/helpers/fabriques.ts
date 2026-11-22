@@ -234,20 +234,37 @@ export async function creerAffectation(
 }
 
 /**
- * Crée un modèle de planification directement en base : lundi, un bloc
- * 8h00–12h00 (480–720 minutes depuis minuit). Renvoie son id.
+ * Crée un modèle de planification directement en base. Par défaut : lundi,
+ * un bloc 8h00–12h00 (480–720 minutes depuis minuit). Renvoie son id.
  */
 export async function creerModele(
     prisma: PrismaService,
-    options: { technicienId: string; zoneId: string; intitule: string },
+    options: {
+        technicienId: string;
+        zoneId: string;
+        intitule: string;
+        // Noms de colonnes booléennes : 'lundi', 'mardi'…
+        jours?: (
+            | 'lundi'
+            | 'mardi'
+            | 'mercredi'
+            | 'jeudi'
+            | 'vendredi'
+            | 'samedi'
+            | 'dimanche'
+        )[];
+        blocs?: { debut: number; fin: number }[];
+    },
 ): Promise<{ id: string }> {
+    const jours = options.jours ?? ['lundi'];
     return prisma.modelePlanification.create({
         data: {
             intitule: options.intitule,
             technicien_id: options.technicienId,
             zone_id: options.zoneId,
-            lundi: true,
-            blocs: { create: [{ debut: 480, fin: 720 }] },
+            // ['lundi', 'mardi'] → { lundi: true, mardi: true }
+            ...Object.fromEntries(jours.map((j) => [j, true])),
+            blocs: { create: options.blocs ?? [{ debut: 480, fin: 720 }] },
         },
         select: { id: true },
     });

@@ -315,7 +315,7 @@ En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variable
 | `creerZone(prisma, { couleur?, isActive? })` | Zone au nom unique, tracé de 3 points, active par défaut |
 | `creerCreneau(prisma, { technicienId, zoneId, dateDebut?, statut?, interventionId? })` | Créneau de 30 min, Libre par défaut |
 | `creerAffectation(prisma, technicienId, zoneId)` | Affecte un technicien à une zone |
-| `creerModele(prisma, { technicienId, zoneId, intitule })` | Modèle de planification : lundi, un bloc 8h00–12h00 |
+| `creerModele(prisma, { technicienId, zoneId, intitule, jours?, blocs? })` | Modèle de planification ; par défaut lundi, un bloc 8h00–12h00 |
 
 Une fabrique manque pour un test : l'ajouter dans `test/helpers/fabriques.ts`,
 écrite directement avec Prisma, jamais par l'API qu'on est en train de tester.

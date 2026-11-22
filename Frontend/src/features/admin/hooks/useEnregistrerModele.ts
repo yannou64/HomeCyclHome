@@ -8,10 +8,11 @@ import type {
 } from '../types/planning.types';
 
 /**
- * Formulaire de création d'un modèle : charge les zones proposées (affectées
- * au technicien et actives) et envoie la création.
+ * Formulaire d'un modèle : charge les zones proposées (affectées au
+ * technicien et actives) et enregistre la saisie. Sans `modeleId`, c'est une
+ * création ; avec, une modification, enregistrée sans confirmation (RG8).
  */
-export function useCreerModele(technicienId: string) {
+export function useEnregistrerModele(technicienId: string, modeleId?: string) {
     const loadZones = useCallback(
         () => adminPlanningService.getZonesProposees(technicienId),
         [technicienId],
@@ -31,15 +32,24 @@ export function useCreerModele(technicienId: string) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    /** Renvoie true si le modèle est créé. */
-    async function creer(payload: CreateModelePayload): Promise<boolean> {
+    /** Renvoie true si le modèle est enregistré. */
+    async function enregistrer(payload: CreateModelePayload): Promise<boolean> {
         setIsSubmitting(true);
         setError(null);
         try {
-            await adminPlanningService.createModele(technicienId, payload);
+            if (modeleId) {
+                await adminPlanningService.updateModele(
+                    technicienId,
+                    modeleId,
+                    payload,
+                );
+            } else {
+                await adminPlanningService.createModele(technicienId, payload);
+            }
             return true;
         } catch (err) {
-            // Refus du serveur (intitulé déjà pris, zone invalide…) : son message
+            // Refus du serveur (intitulé déjà pris, zone invalide, modèle
+            // devenu invalide…) : son message
             setError(getApiErrorMessage(err, 'Une erreur est survenue.'));
             return false;
         } finally {
@@ -51,7 +61,7 @@ export function useCreerModele(technicienId: string) {
         zones,
         isLoadingZones,
         zonesError,
-        creer,
+        enregistrer,
         isSubmitting,
         error,
         setError,

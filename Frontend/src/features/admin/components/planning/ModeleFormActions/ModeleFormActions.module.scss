@@ -1,0 +1,75 @@
+@use '../../../../../app/styles/index' as *;
+
+// Bas du formulaire d'un modèle : « Annuler » juste à gauche du bouton
+// principal (règles d'interface, Frontend/CLAUDE.md)
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-xs;
+    padding-top: $spacing-sm;
+    border-top: 1px solid $color-border;
+}
+
+.boutonSecondaire {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.boutonPrincipal {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Action destructrice, à l'écart à gauche : contour $color-danger. Le rouge
+// plein est réservé au bouton « Continuer » de la confirmation.
+.boutonSupprimer {
+    margin-right: auto; // pousse les deux autres boutons à droite
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-danger;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-danger;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: $color-myLightGreen;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

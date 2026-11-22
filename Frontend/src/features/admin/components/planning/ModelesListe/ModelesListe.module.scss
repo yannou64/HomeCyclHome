@@ -1,0 +1,82 @@
+@use '../../../../../app/styles/index' as *;
+
+.liste {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modele {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+}
+
+// Contenu commun d'une ligne : pastille, intitulé, zone
+%ligne {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+}
+
+// Modèle valide : un lien vers l'écran du modèle, souligné au survol
+.lien {
+    @extend %ligne;
+    padding: 0;
+    border: none;
+    background: none;
+    color: $color-text-primary;
+    cursor: pointer;
+
+    &:hover .intitule {
+        text-decoration: underline;
+    }
+}
+
+// Modèle invalide (RG11) : en rouge, lien inactif. $color-danger : signal à
+// traiter (Frontend/CLAUDE.md, couleurs d'état)
+.invalide {
+    @extend %ligne;
+    color: $color-danger;
+    cursor: default;
+
+    .zone {
+        color: $color-danger;
+    }
+}
+
+.intitule {
+    font-weight: $font-semibold;
+}
+
+.zone {
+    color: $color-text-label;
+
+    &::before {
+        content: '— ';
+    }
+}
+
+.libelleInvalide {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+// Seul lien actif d'un modèle invalide (RG11) : lien texte souligné
+.lienSupprimer {
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: $color-danger;
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,10 +1,18 @@
 import { useState } from 'react';
 import { useModelesTechnicien } from '../../../hooks/useModelesTechnicien';
+import { useSupprimerModele } from '../../../hooks/useSupprimerModele';
 import type { AdminUser } from '../../../types/admin.types';
-import { hexDeCouleur } from '../../../../../shared/utils/couleursZones';
-import { PastilleCouleur } from '../../zones/PastilleCouleur/PastilleCouleur';
-import { ModeleCreationForm } from '../ModeleCreationForm/ModeleCreationForm';
+import { ModeleEdition } from '../ModeleEdition/ModeleEdition';
+import { ModeleForm } from '../ModeleForm/ModeleForm';
+import { ModelesListe } from '../ModelesListe/ModelesListe';
+import { SupprimerModeleDialog } from '../SupprimerModeleDialog/SupprimerModeleDialog';
 import styles from './PlanificationTechnicien.module.scss';
+
+// Ce que montre la page : la liste, la création, ou l'écran d'un modèle
+type Vue =
+    | { ecran: 'liste' }
+    | { ecran: 'creation' }
+    | { ecran: 'modele'; modeleId: string };
 
 interface PlanificationTechnicienProps {
     technicien: AdminUser;
@@ -15,9 +23,10 @@ interface PlanificationTechnicienProps {
  * Page Planification d'un technicien (wireframe « planning 2.0 ») : la liste
  * de ses modèles, *Créer un nouveau modèle* et *Planification libre*.
  *
- * Avancée en S2 pour la création d'un modèle (écart du 18/11/2026, option c).
- * Ouvrir un modèle, la planification libre et le repère rouge des modèles
- * invalides arrivent en S3 (« Choisir le mode de planification 2.0 »).
+ * Avancée en S2 pour administrer les modèles (écart du 18/11/2026, option c) :
+ * créer, ouvrir et modifier un modèle (écran d'un modèle, écart du 19/11/2026,
+ * option A). La planification libre et la génération des créneaux arrivent en
+ * S3 (« Planifier un technicien 2.0 »).
  */
 export function PlanificationTechnicien({
     technicien,
@@ -26,19 +35,58 @@ export function PlanificationTechnicien({
     const { modeles, isLoading, error, reload } = useModelesTechnicien(
         technicien.id,
     );
-    const [vue, setVue] = useState<'liste' | 'creation'>('liste');
+    const { supprimer } = useSupprimerModele(technicien.id);
+    const [vue, setVue] = useState<Vue>({ ecran: 'liste' });
+    // Modèle dont la suppression attend confirmation (null : fenêtre fermée)
+    const [aSupprimer, setASupprimer] = useState<string | null>(null);
     const nomTechnicien = `${technicien.prenom} ${technicien.nom}`;
 
-    if (vue === 'creation') {
+    const retourListe = () => setVue({ ecran: 'liste' });
+    const apresEnregistrement = () => {
+        reload(); // la liste affiche le modèle créé ou modifié
+        retourListe();
+    };
+
+    // « Continuer » : supprime, puis retour à la liste rechargée (séquence
+    // de l'US-03, étape 13). Une erreur remonte à la fenêtre, qui l'affiche.
+    const confirmerSuppression = async () => {
+        if (!aSupprimer) return;
+        await supprimer(aSupprimer);
+        setASupprimer(null);
+        apresEnregistrement();
+    };
+
+    // La fenêtre est la même depuis l'écran d'un modèle et depuis la liste
+    const dialogue = (
+        <SupprimerModeleDialog
+            isOpen={aSupprimer !== null}
+            onClose={() => setASupprimer(null)}
+            onConfirm={confirmerSuppression}
+        />
+    );
+
+    if (vue.ecran === 'creation') {
         return (
-            <ModeleCreationForm
+            <ModeleForm
                 technicienId={technicien.id}
-                onCree={() => {
-                    reload(); // la liste affiche le nouveau modèle
-                    setVue('liste');
-                }}
-                onRetour={() => setVue('liste')}
+                onEnregistre={apresEnregistrement}
+                onRetour={retourListe}
             />
+        );
+    }
+
+    if (vue.ecran === 'modele') {
+        return (
+            <>
+                <ModeleEdition
+                    technicienId={technicien.id}
+                    modeleId={vue.modeleId}
+                    onEnregistre={apresEnregistrement}
+                    onRetour={retourListe}
+                    onSupprimer={() => setASupprimer(vue.modeleId)}
+                />
+                {dialogue}
+            </>
         );
     }
 
@@ -64,29 +112,20 @@ export function PlanificationTechnicien({
                     </p>
                 )}
 
-                <ul className={styles.liste}>
-                    {modeles.map((m) => (
-                        <li key={m.id} className={styles.modele}>
-                            <PastilleCouleur
-                                hex={hexDeCouleur(m.zone.couleur)}
-                                titre={m.zone.couleur}
-                            />
-                            <span className={styles.intitule}>
-                                {m.intitule}
-                            </span>
-                            <span className={styles.zone}>
-                                {m.zone.nomZone}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                <ModelesListe
+                    modeles={modeles}
+                    onOuvrir={(modeleId) =>
+                        setVue({ ecran: 'modele', modeleId })
+                    }
+                    onSupprimer={setASupprimer}
+                />
             </section>
 
             <div className={styles.entrees}>
                 <button
                     type="button"
                     className={styles.boutonEntree}
-                    onClick={() => setVue('creation')}
+                    onClick={() => setVue({ ecran: 'creation' })}
                 >
                     Créer un nouveau modèle
                 </button>
@@ -99,6 +138,7 @@ export function PlanificationTechnicien({
                     Planification libre
                 </button>
             </div>
+            {dialogue}
         </div>
     );
 }
