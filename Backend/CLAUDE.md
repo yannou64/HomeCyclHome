@@ -195,6 +195,16 @@ déplacement + N créneaux + déplacement, avec les ids à réserver et les dép
 réutilisés). Utilisé par la réservation et par la création d'une intervention par
 l'admin ; ses tests couvrent CA05 à CA13 de l'US-02 de *Réserver*.
 
+**Verrou de période.** Une transaction qui supprime ou remplace un ensemble de
+lignes que d'autres requêtes peuvent modifier en même temps (les créneaux d'une
+période, qu'une réservation peut prendre) commence par les verrouiller :
+`tx.$queryRaw\`SELECT … FOR UPDATE\``, puis travaille sur ce qu'elle a lu. La
+requête concurrente attend la fin de la transaction, puis ne trouve plus sa
+ligne (son écriture conditionnelle modifie 0 ligne). Sans verrou, une ligne
+modifiée entre la lecture et la suppression échapperait au traitement (une
+intervention réservée perdrait ses créneaux sans passer en conflit). Exemple :
+`remplacerCreneaux` de `planning/repositories/planning.prisma.repository.ts`.
+
 **Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
 doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
 l'erreur Prisma en exception métier. Les deux se combinent quand une course est
@@ -321,6 +331,7 @@ En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variable
 | `creerCycle(prisma, utilisateurId)` · `creerAdresseDe(prisma, utilisateurId)` | Un cycle de l'utilisateur ; une `Adresse` et son lien `PeutSeSituer` (renvoie les deux ids) |
 | `creerZone(prisma, { couleur?, isActive? })` | Zone au nom unique, tracé de 3 points, active par défaut |
 | `creerCreneau(prisma, { technicienId, zoneId, dateDebut?, statut?, interventionId? })` | Créneau de 30 min, Libre par défaut |
+| `creerBlocReserve(prisma, { technicienId, zoneId, interventionId, jour, debut, nbReserves? })` | Bloc réservé d'une intervention, un jour de Paris : déplacement, N créneaux réservés liés (2 par défaut), déplacement, à partir de `debut` (minutes d'horloge) |
 | `creerAffectation(prisma, technicienId, zoneId)` | Affecte un technicien à une zone |
 | `creerModele(prisma, { technicienId, zoneId, intitule, jours?, blocs? })` | Modèle de planification ; par défaut lundi, un bloc 8h00–12h00 |
 

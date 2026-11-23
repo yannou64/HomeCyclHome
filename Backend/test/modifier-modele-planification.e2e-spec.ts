@@ -379,6 +379,45 @@ describe('US-02 Modifier un modèle de planification 2.0', () => {
         expect(await t.prisma.blocHoraire.count()).toBe(2);
     });
 
+    // Reporté en S3 (écart du 22/11/2026, option A) : le bouton « Modifier le
+    // modèle » de l'écran de planification (« Planifier un technicien 2.0 »)
+    // envoie les valeurs ajustées à cette même route PUT.
+    it('CA16 — fait passer les valeurs ajustées depuis l’écran de planification par les mêmes validations et le même enregistrement [RG8]', async () => {
+        const { cookies, zoneId, modeleId, route } = await preparer();
+
+        // Valeurs ajustées invalides (deux blocs qui se chevauchent) : même
+        // refus qu'une modification ordinaire, le modèle ne change pas
+        await request(serveur)
+            .put(route)
+            .set('Cookie', cookies)
+            .send(
+                corpsValide(zoneId, {
+                    intitule: 'Semaine matin',
+                    blocs: [
+                        { debut: 480, fin: 720 },
+                        { debut: 600, fin: 780 },
+                    ],
+                }),
+            )
+            .expect(400);
+        await attendreInchange(modeleId, zoneId);
+
+        // Valeurs ajustées valides, intitulé inchangé (l'écran de
+        // planification renvoie celui du modèle) : enregistrées
+        await request(serveur)
+            .put(route)
+            .set('Cookie', cookies)
+            .send(corpsValide(zoneId, { intitule: 'Semaine matin' }))
+            .expect(200);
+        const m = await relire(modeleId);
+        expect(m.intitule).toBe('Semaine matin');
+        expect([m.lundi, m.mardi, m.jeudi]).toEqual([false, true, true]);
+        expect(m.blocs).toEqual([
+            { debut: 840, fin: 960 },
+            { debut: 990, fin: 1080 },
+        ]);
+    });
+
     it('CA17 — ne change ni le technicien du modèle ni les créneaux existants [RG2, RG7]', async () => {
         const { cookies, technicienId, zoneId, modeleId, route } =
             await preparer();

@@ -2,17 +2,19 @@ import { useState } from 'react';
 import { useModelesTechnicien } from '../../../hooks/useModelesTechnicien';
 import { useSupprimerModele } from '../../../hooks/useSupprimerModele';
 import type { AdminUser } from '../../../types/admin.types';
-import { ModeleEdition } from '../ModeleEdition/ModeleEdition';
+import { EcranPlanification } from '../EcranPlanification/EcranPlanification';
 import { ModeleForm } from '../ModeleForm/ModeleForm';
 import { ModelesListe } from '../ModelesListe/ModelesListe';
 import { SupprimerModeleDialog } from '../SupprimerModeleDialog/SupprimerModeleDialog';
 import styles from './PlanificationTechnicien.module.scss';
 
-// Ce que montre la page : la liste, la création, ou l'écran d'un modèle
+// Ce que montre la page : la liste, la création, l'écran d'un modèle ou la
+// planification libre
 type Vue =
     | { ecran: 'liste' }
     | { ecran: 'creation' }
-    | { ecran: 'modele'; modeleId: string };
+    | { ecran: 'modele'; modeleId: string }
+    | { ecran: 'libre' };
 
 interface PlanificationTechnicienProps {
     technicien: AdminUser;
@@ -25,8 +27,8 @@ interface PlanificationTechnicienProps {
  *
  * Avancée en S2 pour administrer les modèles (écart du 18/11/2026, option c) :
  * créer, ouvrir et modifier un modèle (écran d'un modèle, écart du 19/11/2026,
- * option A). La planification libre et la génération des créneaux arrivent en
- * S3 (« Planifier un technicien 2.0 »).
+ * option A). Un modèle et la planification libre s'ouvrent sur le même écran
+ * de planification, prérempli ou vide (« Planifier un technicien 2.0 »).
  */
 export function PlanificationTechnicien({
     technicien,
@@ -75,15 +77,27 @@ export function PlanificationTechnicien({
         );
     }
 
+    // Planification libre : écran vide, sans modèle (US-01, CA09)
+    if (vue.ecran === 'libre') {
+        return (
+            <EcranPlanification
+                technicienId={technicien.id}
+                onRetour={retourListe}
+                onSupprimerModele={() => {}} // aucun modèle à supprimer
+            />
+        );
+    }
+
+    // Écran d'un modèle : le même, prérempli. Au retour, la liste est
+    // rechargée : « Modifier le modèle » a pu changer son intitulé.
     if (vue.ecran === 'modele') {
         return (
             <>
-                <ModeleEdition
+                <EcranPlanification
                     technicienId={technicien.id}
                     modeleId={vue.modeleId}
-                    onEnregistre={apresEnregistrement}
-                    onRetour={retourListe}
-                    onSupprimer={() => setASupprimer(vue.modeleId)}
+                    onRetour={apresEnregistrement}
+                    onSupprimerModele={() => setASupprimer(vue.modeleId)}
                 />
                 {dialogue}
             </>
@@ -132,8 +146,7 @@ export function PlanificationTechnicien({
                 <button
                     type="button"
                     className={styles.boutonEntree}
-                    disabled
-                    title="Disponible prochainement"
+                    onClick={() => setVue({ ecran: 'libre' })}
                 >
                     Planification libre
                 </button>

@@ -1,0 +1,38 @@
+@use '../../../../../app/styles/index' as *;
+
+// Déplacé de ModeleForm : même champ sur la création et sur l'écran d'un
+// modèle.
+.champ {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.input {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+    width: 100%;
+    outline: none;
+
+    &:focus {
+        border-color: $color-myOrange;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        background: $color-myLightGreen;
+    }
+}

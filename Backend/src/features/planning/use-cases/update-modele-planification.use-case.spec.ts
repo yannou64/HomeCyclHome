@@ -42,6 +42,10 @@ describe('US-02 Modifier un modèle de planification 2.0', () => {
                 parTechnicien: new Map(),
                 parZone: new Map(),
             }),
+            compterPeriode: jest
+                .fn()
+                .mockResolvedValue({ creneaux: 0, interventions: 0 }),
+            remplacerCreneaux: jest.fn().mockResolvedValue(null),
             modifierModele: jest.fn().mockResolvedValue({ id: 'modele-1' }),
         };
         useCase = new UpdateModelePlanificationUseCase(repo);

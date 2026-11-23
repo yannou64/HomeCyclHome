@@ -1,8 +1,12 @@
 import { apiClient } from '../../../shared/services/apiClient';
 import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
+    ApercuPlanification,
     CouvertureMois,
+    PlanifierPayload,
+    ResultatPlanification,
     CreateModelePayload,
+    EcranPlanification,
     Journee,
     ModeleDetail,
     ModelePlanification,
@@ -33,6 +37,40 @@ export const adminPlanningService = {
     async getZonesProposees(technicienId: string): Promise<ZoneProposee[]> {
         const r = await apiClient.get<ZoneProposee[]>(
             `${base(technicienId)}/zones`,
+        );
+        return r.data;
+    },
+
+    async getEcranPlanification(
+        technicienId: string,
+    ): Promise<EcranPlanification> {
+        const r = await apiClient.get<EcranPlanification>(
+            `${base(technicienId)}/planification`,
+        );
+        return r.data;
+    },
+
+    // Aperçu : valide la saisie et compte ce qu'elle remplacerait, sans écrire
+    async apercuPlanification(
+        technicienId: string,
+        payload: PlanifierPayload,
+    ): Promise<ApercuPlanification> {
+        const r = await apiClient.post<ApercuPlanification>(
+            `${base(technicienId)}/planification/apercu`,
+            payload,
+        );
+        return r.data;
+    },
+
+    // Génération : refusée (409) sans confirmation si la période a déjà des
+    // créneaux
+    async planifier(
+        technicienId: string,
+        payload: PlanifierPayload,
+    ): Promise<ResultatPlanification> {
+        const r = await apiClient.post<ResultatPlanification>(
+            `${base(technicienId)}/planification`,
+            payload,
         );
         return r.data;
     },

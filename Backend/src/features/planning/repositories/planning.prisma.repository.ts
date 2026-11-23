@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type {
-    BlocHoraire,
-    ModelePlanification,
+import {
+    Prisma,
+    type BlocHoraire,
+    type ModelePlanification,
 } from '../../../generated/prisma/client';
+import { ajouterAuCommentaire } from '../../../shared/database/commentaire-partage';
 import {
     estEtatModifieEntreTemps,
     exigerLignesModifiees,
@@ -12,6 +14,7 @@ import { JOURS_SEMAINE, type JourSemaine } from '../dto/jours-semaine';
 import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dto';
 import {
+    ComptagePeriode,
     CreateModeleData,
     CreneauAvecZone,
     DerniersCreneaux,
@@ -19,11 +22,24 @@ import {
     ModeleAvecZone,
     ModeleDetail,
     ModifierModeleData,
+    RemplacementCreneaux,
+    ResultatRemplacement,
     TechnicienResume,
     ZoneResume,
 } from './planning.repository.interface';
 
 type ModeleAvecBlocs = ModelePlanification & { blocs: BlocHoraire[] };
+
+/**
+ * Vrai si PostgreSQL a refusé une écriture pour cause d'unicité (code Prisma
+ * P2002). Locale à ce repository tant qu'elle n'a pas d'autre usage.
+ */
+function estViolationUnicite(err: unknown): boolean {
+    return (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+    );
+}
 
 @Injectable()
 export class PlanningPrismaRepository implements IPlanningRepository {
@@ -213,6 +229,116 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         } catch (err) {
             // Modèle disparu entre-temps : le use case répondra « introuvable »
             if (estEtatModifieEntreTemps(err)) return null;
+            throw err;
+        }
+    }
+
+    async compterPeriode(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<ComptagePeriode> {
+        const where = {
+            technicien_id: technicienId,
+            date_debut: { gte: debut, lt: fin },
+        };
+        const [creneaux, lies] = await Promise.all([
+            this.prisma.creneau.count({ where }),
+            // Interventions distinctes : seuls les créneaux réservés portent
+            // le lien, plusieurs par intervention (son bloc)
+            this.prisma.creneau.findMany({
+                where: { ...where, intervention_id: { not: null } },
+                distinct: ['intervention_id'],
+                select: { intervention_id: true },
+            }),
+        ]);
+        return { creneaux, interventions: lies.length };
+    }
+
+    async remplacerCreneaux(
+        data: RemplacementCreneaux,
+    ): Promise<ResultatRemplacement | null> {
+        const periode = {
+            technicien_id: data.technicienId,
+            date_debut: { gte: data.debut, lt: data.fin },
+        };
+        try {
+            // Tout ou rien (séquence de l'US-03, étapes 10 à 15)
+            return await this.prisma.$transaction(async (tx) => {
+                // 0. Verrouiller les créneaux de la période : une réservation
+                //    simultanée (qui modifie un créneau Libre) attend la fin
+                //    de cette transaction, puis ne trouve plus son créneau.
+                //    Sans verrou, une intervention réservée entre l'étape 1
+                //    et l'étape 3 perdrait ses créneaux sans passer en conflit.
+                const verrouilles = await tx.$queryRaw<
+                    { intervention_id: string | null }[]
+                >`
+                    SELECT intervention_id FROM "Creneaux"
+                    WHERE technicien_id = ${data.technicienId}
+                      AND date_debut >= ${data.debut}
+                      AND date_debut < ${data.fin}
+                    FOR UPDATE
+                `;
+                const touchees = [
+                    ...new Set(
+                        verrouilles
+                            .map((c) => c.intervention_id)
+                            .filter((id): id is string => id !== null),
+                    ),
+                ];
+
+                // 1. Les Planifiées touchées passent en conflit (RG11) ; une
+                //    Réalisée ou une En conflit garde son statut. Écriture
+                //    conditionnelle : si un statut a changé entre la lecture
+                //    et l'écriture, tout est annulé.
+                const planifiees = await tx.intervention.findMany({
+                    where: { id: { in: touchees }, statut: 'Planifiee' },
+                    select: { id: true },
+                });
+                const ids = planifiees.map((i) => i.id);
+                const r = await tx.intervention.updateMany({
+                    where: { id: { in: ids }, statut: 'Planifiee' },
+                    data: { statut: 'EnConflit' },
+                });
+                exigerLignesModifiees(r, ids.length);
+
+                // 2. L'origine du conflit, en tête du commentaire partagé de
+                //    chaque intervention passée en conflit (RG16)
+                for (const id of ids) {
+                    await ajouterAuCommentaire(tx, id, data.entreeConflit);
+                }
+
+                // 3. Tous les créneaux de la période, quel que soit leur
+                //    statut ou leur jour de semaine (RG9) : les blocs réservés
+                //    y sont en entier, déplacements compris
+                const supprimes = await tx.creneau.deleteMany({
+                    where: periode,
+                });
+
+                // 4. Les nouveaux créneaux Libres, sans lien vers un modèle
+                //    (RG12). L'unicité (technicien, horaire) est garantie par
+                //    la base.
+                await tx.creneau.createMany({
+                    data: data.nouveaux.map((dateDebut) => ({
+                        technicien_id: data.technicienId,
+                        zone_id: data.zoneId,
+                        date_debut: dateDebut,
+                        statut: 'Libre' as const,
+                    })),
+                });
+
+                return {
+                    creneauxSupprimes: supprimes.count,
+                    interventionsEnConflit: ids.length,
+                };
+            });
+        } catch (err) {
+            // Statut modifié entre-temps, ou créneau créé au même horaire par
+            // une autre génération simultanée : transaction annulée, le use
+            // case répond par un conflit
+            if (estEtatModifieEntreTemps(err) || estViolationUnicite(err)) {
+                return null;
+            }
             throw err;
         }
     }

@@ -7,6 +7,10 @@ import type {
     StatutCreneau,
     StatutIntervention,
 } from '../../src/generated/prisma/enums';
+import {
+    instantDuJour,
+    type JourCalendaire,
+} from '../../src/shared/domain/jour-travail';
 
 export const MOT_DE_PASSE_DE_TEST = 'MotDePasse123!';
 
@@ -220,6 +224,48 @@ export async function creerCreneau(
         },
         select: { id: true },
     });
+}
+
+/**
+ * Crée le bloc réservé d'une intervention, un jour de Paris : un créneau
+ * « Déplacement », `nbReserves` créneaux « Intervention réservée » liés à
+ * l'intervention, puis un « Déplacement », contigus à partir de `debut`
+ * (minutes d'horloge à Paris : 480 = 8h00). Renvoie les ids, dans l'ordre.
+ */
+export async function creerBlocReserve(
+    prisma: PrismaService,
+    options: {
+        technicienId: string;
+        zoneId: string;
+        interventionId: string;
+        jour: JourCalendaire;
+        debut: number;
+        nbReserves?: number; // 2 par défaut (une heure d'intervention)
+    },
+): Promise<string[]> {
+    const nb = options.nbReserves ?? 2;
+    // Déplacement, réservés…, déplacement : nb + 2 créneaux de 30 minutes
+    const statuts: StatutCreneau[] = [
+        'Deplacement',
+        ...Array<StatutCreneau>(nb).fill('InterventionReservee'),
+        'Deplacement',
+    ];
+    const ids: string[] = [];
+    for (const [i, statut] of statuts.entries()) {
+        const creneau = await creerCreneau(prisma, {
+            technicienId: options.technicienId,
+            zoneId: options.zoneId,
+            dateDebut: instantDuJour(options.jour, options.debut + i * 30),
+            statut,
+            // Seul un créneau réservé porte le lien vers l'intervention
+            interventionId:
+                statut === 'InterventionReservee'
+                    ? options.interventionId
+                    : undefined,
+        });
+        ids.push(creneau.id);
+    }
+    return ids;
 }
 
 /** Affecte un technicien à une zone (prérequis d'un modèle, RG5). */

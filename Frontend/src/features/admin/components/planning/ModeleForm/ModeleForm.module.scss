@@ -35,78 +35,8 @@
     color: $color-text-primary;
 }
 
-// Mobile d'abord : le formulaire, puis l'aperçu en dessous
-.colonnes {
-    display: grid;
-    grid-template-columns: minmax(0, 32rem);
-    justify-content: center; // le groupe reste centré dans la carte
-    gap: $spacing-lg;
-}
-
-// Desktop : formulaire à gauche, aperçu à droite.
-// - Les deux colonnes ont une largeur plafonnée : au-delà, c'est l'espace
-//   entre elles qui grandit, et le groupe reste centré.
-// - Cet espace suit la largeur de la fenêtre (6 % de la largeur), donc
-//   grandit moins vite qu'elle, entre 2rem et 8rem.
-// - align-items: start : le formulaire commence à la hauteur du haut de
-//   l'aperçu (choix de Yannick), quelle que soit la colonne la plus haute.
-@include desktop {
-    .colonnes {
-        grid-template-columns: minmax(0, 32rem) 18rem;
-        column-gap: clamp(#{$spacing-lg}, 6vw, 8rem);
-        align-items: start;
-    }
-}
-
-.formulaire {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-md;
-}
-
-.champ {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-}
-
-.label {
-    font-size: $font-size-label;
-    font-weight: $font-semibold;
-    color: $color-text-primary;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.input {
-    padding: $spacing-xs $spacing-sm;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    color: $color-text-primary;
-    background: white;
-    width: 100%;
-    outline: none;
-
-    &:focus {
-        border-color: $color-myOrange;
-    }
-
-    &:disabled {
-        opacity: 0.6;
-        background: $color-myLightGreen;
-    }
-}
-
-.apercu {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-sm;
-    padding: $spacing-sm;
-    border-radius: $radius-md;
-    background-color: $color-myLightGreen;
-}
+// Les deux colonnes (zone, jours, blocs | journée type) sont dans
+// SaisiePlanification, le champ Titre dans IntituleChamp.
 
 .error {
     color: $color-error;

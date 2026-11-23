@@ -23,14 +23,21 @@ import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { CreateModelePlanificationDto } from '../dto/input/create-modele-planification.dto';
 import { GetCouvertureQueryDto } from '../dto/input/get-couverture-query.dto';
 import { GetJourneeQueryDto } from '../dto/input/get-journee-query.dto';
+import { PlanifierTechnicienDto } from '../dto/input/planifier-technicien.dto';
 import { UpdateModelePlanificationDto } from '../dto/input/update-modele-planification.dto';
+import { ApercuPlanificationResponseDto } from '../dto/output/apercu-planification-response.dto';
 import { CouvertureMoisResponseDto } from '../dto/output/couverture-mois-response.dto';
+import { PlanificationResponseDto } from '../dto/output/planification-response.dto';
+import { PlanifierTechnicienUseCase } from '../use-cases/planifier-technicien.use-case';
+import { EcranPlanificationResponseDto } from '../dto/output/ecran-planification-response.dto';
 import { JourneeResponseDto } from '../dto/output/journee-response.dto';
 import { ModeleDetailResponseDto } from '../dto/output/modele-detail-response.dto';
 import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { ModeleResumeResponseDto } from '../dto/output/modele-resume-response.dto';
 import { ZoneProposeeResponseDto } from '../dto/output/zone-proposee-response.dto';
+import { ApercuPlanificationUseCase } from '../use-cases/apercu-planification.use-case';
 import { CreateModelePlanificationUseCase } from '../use-cases/create-modele-planification.use-case';
+import { GetEcranPlanificationUseCase } from '../use-cases/get-ecran-planification.use-case';
 import { DeleteModelePlanificationUseCase } from '../use-cases/delete-modele-planification.use-case';
 import { GetCouvertureMoisUseCase } from '../use-cases/get-couverture-mois.use-case';
 import { GetJourneeUseCase } from '../use-cases/get-journee.use-case';
@@ -55,6 +62,9 @@ export class AdminPlanningController {
         private readonly deleteModeleUseCase: DeleteModelePlanificationUseCase,
         private readonly getCouvertureUseCase: GetCouvertureMoisUseCase,
         private readonly getJourneeUseCase: GetJourneeUseCase,
+        private readonly getEcranPlanificationUseCase: GetEcranPlanificationUseCase,
+        private readonly apercuPlanificationUseCase: ApercuPlanificationUseCase,
+        private readonly planifierTechnicienUseCase: PlanifierTechnicienUseCase,
     ) {}
 
     // Calendrier de couverture d'un mois (US-01 « Consulter le calendrier de
@@ -119,6 +129,47 @@ export class AdminPlanningController {
         @Param('modeleId') modeleId: string,
     ) {
         return this.getModeleUseCase.execute(technicienId, modeleId);
+    }
+
+    // Ouverture de l'écran de planification (US-02 « Définir les blocs, la
+    // zone, les jours et la période 2.0 »)
+    @ApiOkResponse({
+        description: 'Demain (à Paris) et les zones proposées',
+        type: EcranPlanificationResponseDto,
+    })
+    @Get('techniciens/:technicienId/planification')
+    getEcranPlanification(@Param('technicienId') technicienId: string) {
+        return this.getEcranPlanificationUseCase.execute(technicienId);
+    }
+
+    // Génération (US-03 « Générer les créneaux et réinitialiser la période
+    // 2.0 ») : 409 sans confirmation si la période a déjà des créneaux
+    @ApiCreatedResponse({
+        description: 'Créneaux de la période remplacés',
+        type: PlanificationResponseDto,
+    })
+    @Post('techniciens/:technicienId/planification')
+    planifierTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Body() dto: PlanifierTechnicienDto,
+    ) {
+        return this.planifierTechnicienUseCase.execute(technicienId, dto);
+    }
+
+    // Aperçu : valide la saisie et compte ce qu'elle remplacerait, sans rien
+    // écrire. POST parce qu'il reçoit un corps ; 200 et non 201, puisque rien
+    // n'est créé.
+    @ApiOkResponse({
+        description: 'Nombres de l’avertissement',
+        type: ApercuPlanificationResponseDto,
+    })
+    @Post('techniciens/:technicienId/planification/apercu')
+    @HttpCode(200)
+    apercuPlanification(
+        @Param('technicienId') technicienId: string,
+        @Body() dto: PlanifierTechnicienDto,
+    ) {
+        return this.apercuPlanificationUseCase.execute(technicienId, dto);
     }
 
     // PUT : la modification remplace tout le modèle (séquence de l'US-02)
