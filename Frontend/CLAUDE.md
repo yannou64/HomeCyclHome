@@ -135,6 +135,11 @@ Ajout d'un composant : CLI shadcn (`components.json`), helper `cn` dans
 `$color-danger` pour les actions destructrices et les signaux de conflit,
 `$color-warning` pour les avertissements. Jamais la valeur hexadécimale dans un
 composant.
+- **Message de succès** : pas encore de jeton. `$color-success` est à créer dans
+  `_variables.scss`, valeur choisie par Yannick. En attendant : fond
+  `$color-myGreen`, texte `$color-text-primary` (référence :
+  `admin/components/planning/PlanificationForm`, classe `.confirmation`).
+  `cycle/components/MesCycles` (`green` en dur) sera corrigé quand on le touche.
 
 **Constantes d'affichage partagées :** une correspondance utilisée à plusieurs
 endroits (couleur de zone → code hexadécimal…) vit dans un seul fichier de `shared/`.

@@ -195,6 +195,16 @@ déplacement + N créneaux + déplacement, avec les ids à réserver et les dép
 réutilisés). Utilisé par la réservation et par la création d'une intervention par
 l'admin ; ses tests couvrent CA05 à CA13 de l'US-02 de *Réserver*.
 
+**Verrou de période.** Une transaction qui supprime ou remplace un ensemble de
+lignes que d'autres requêtes peuvent modifier en même temps (les créneaux d'une
+période, qu'une réservation peut prendre) commence par les verrouiller :
+`tx.$queryRaw\`SELECT … FOR UPDATE\``, puis travaille sur ce qu'elle a lu. La
+requête concurrente attend la fin de la transaction, puis ne trouve plus sa
+ligne (son écriture conditionnelle modifie 0 ligne). Sans verrou, une ligne
+modifiée entre la lecture et la suppression échapperait au traitement (une
+intervention réservée perdrait ses créneaux sans passer en conflit). Exemple :
+`remplacerCreneaux` de `planning/repositories/planning.prisma.repository.ts`.
+
 **Erreurs de base de données.** Une contrainte violée (clé étrangère, unicité) ne
 doit jamais finir en erreur 500 brute : la vérifier dans le use case ou traduire
 l'erreur Prisma en exception métier. Les deux se combinent quand une course est
