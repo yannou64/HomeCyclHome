@@ -30,6 +30,27 @@
     }
 }
 
+.boutonPrincipal {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
 // Action destructrice, à l'écart à gauche : contour $color-danger. Le rouge
 // plein est réservé au bouton « Continuer » de la confirmation.
 .boutonSupprimer {

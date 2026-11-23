@@ -25,7 +25,10 @@ import { GetCouvertureQueryDto } from '../dto/input/get-couverture-query.dto';
 import { GetJourneeQueryDto } from '../dto/input/get-journee-query.dto';
 import { PlanifierTechnicienDto } from '../dto/input/planifier-technicien.dto';
 import { UpdateModelePlanificationDto } from '../dto/input/update-modele-planification.dto';
+import { ApercuPlanificationResponseDto } from '../dto/output/apercu-planification-response.dto';
 import { CouvertureMoisResponseDto } from '../dto/output/couverture-mois-response.dto';
+import { PlanificationResponseDto } from '../dto/output/planification-response.dto';
+import { PlanifierTechnicienUseCase } from '../use-cases/planifier-technicien.use-case';
 import { EcranPlanificationResponseDto } from '../dto/output/ecran-planification-response.dto';
 import { JourneeResponseDto } from '../dto/output/journee-response.dto';
 import { ModeleDetailResponseDto } from '../dto/output/modele-detail-response.dto';
@@ -61,6 +64,7 @@ export class AdminPlanningController {
         private readonly getJourneeUseCase: GetJourneeUseCase,
         private readonly getEcranPlanificationUseCase: GetEcranPlanificationUseCase,
         private readonly apercuPlanificationUseCase: ApercuPlanificationUseCase,
+        private readonly planifierTechnicienUseCase: PlanifierTechnicienUseCase,
     ) {}
 
     // Calendrier de couverture d'un mois (US-01 « Consulter le calendrier de
@@ -138,9 +142,27 @@ export class AdminPlanningController {
         return this.getEcranPlanificationUseCase.execute(technicienId);
     }
 
-    // Aperçu : valide la saisie sans rien écrire. POST parce qu'il reçoit un
-    // corps ; 200 et non 201, puisque rien n'est créé.
-    @ApiOkResponse({ description: 'Planification valide' })
+    // Génération (US-03 « Générer les créneaux et réinitialiser la période
+    // 2.0 ») : 409 sans confirmation si la période a déjà des créneaux
+    @ApiCreatedResponse({
+        description: 'Créneaux de la période remplacés',
+        type: PlanificationResponseDto,
+    })
+    @Post('techniciens/:technicienId/planification')
+    planifierTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Body() dto: PlanifierTechnicienDto,
+    ) {
+        return this.planifierTechnicienUseCase.execute(technicienId, dto);
+    }
+
+    // Aperçu : valide la saisie et compte ce qu'elle remplacerait, sans rien
+    // écrire. POST parce qu'il reçoit un corps ; 200 et non 201, puisque rien
+    // n'est créé.
+    @ApiOkResponse({
+        description: 'Nombres de l’avertissement',
+        type: ApercuPlanificationResponseDto,
+    })
     @Post('techniciens/:technicienId/planification/apercu')
     @HttpCode(200)
     apercuPlanification(

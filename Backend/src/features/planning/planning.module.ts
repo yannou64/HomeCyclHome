@@ -4,6 +4,7 @@ import { PlanningPrismaRepository } from './repositories/planning.prisma.reposit
 import { PLANNING_REPO } from './repositories/planning.repository.interface';
 import { ApercuPlanificationUseCase } from './use-cases/apercu-planification.use-case';
 import { GetEcranPlanificationUseCase } from './use-cases/get-ecran-planification.use-case';
+import { PlanifierTechnicienUseCase } from './use-cases/planifier-technicien.use-case';
 import { CreateModelePlanificationUseCase } from './use-cases/create-modele-planification.use-case';
 import { DeleteModelePlanificationUseCase } from './use-cases/delete-modele-planification.use-case';
 import { GetCouvertureMoisUseCase } from './use-cases/get-couverture-mois.use-case';
@@ -27,6 +28,7 @@ import { UpdateModelePlanificationUseCase } from './use-cases/update-modele-plan
         GetJourneeUseCase,
         GetEcranPlanificationUseCase,
         ApercuPlanificationUseCase,
+        PlanifierTechnicienUseCase,
     ],
 })
 export class PlanningModule {}

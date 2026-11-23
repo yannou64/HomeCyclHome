@@ -321,6 +321,7 @@ En CI, le job `test-backend` fournit une base PostgreSQL jetable et les variable
 | `creerCycle(prisma, utilisateurId)` · `creerAdresseDe(prisma, utilisateurId)` | Un cycle de l'utilisateur ; une `Adresse` et son lien `PeutSeSituer` (renvoie les deux ids) |
 | `creerZone(prisma, { couleur?, isActive? })` | Zone au nom unique, tracé de 3 points, active par défaut |
 | `creerCreneau(prisma, { technicienId, zoneId, dateDebut?, statut?, interventionId? })` | Créneau de 30 min, Libre par défaut |
+| `creerBlocReserve(prisma, { technicienId, zoneId, interventionId, jour, debut, nbReserves? })` | Bloc réservé d'une intervention, un jour de Paris : déplacement, N créneaux réservés liés (2 par défaut), déplacement, à partir de `debut` (minutes d'horloge) |
 | `creerAffectation(prisma, technicienId, zoneId)` | Affecte un technicien à une zone |
 | `creerModele(prisma, { technicienId, zoneId, intitule, jours?, blocs? })` | Modèle de planification ; par défaut lundi, un bloc 8h00–12h00 |
 

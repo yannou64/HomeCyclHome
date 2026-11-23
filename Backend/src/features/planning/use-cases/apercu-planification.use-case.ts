@@ -5,11 +5,16 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import type { PlanifierTechnicienDto } from '../dto/input/planifier-technicien.dto';
+import type { ApercuPlanificationResponseDto } from '../dto/output/apercu-planification-response.dto';
 import {
     PLANNING_REPO,
     type IPlanningRepository,
 } from '../repositories/planning.repository.interface';
-import { ajouterJours, aujourdHui } from '../../../shared/domain/jour-travail';
+import {
+    ajouterJours,
+    aujourdHui,
+    instantDuJour,
+} from '../../../shared/domain/jour-travail';
 import { verifierBlocs } from './create-modele-planification.use-case';
 
 /**
@@ -60,10 +65,24 @@ export async function verifierPlanification(
 }
 
 /**
- * Aperçu d'une planification (US-02 « Définir les blocs, la zone, les jours
- * et la période 2.0 », séquence étapes 10 à 13) : valide la saisie, sans rien
- * écrire. L'US-03 y ajoute le nombre de créneaux et d'interventions touchés,
- * pour l'avertissement.
+ * Instants UTC qui bornent la période, en journées entières de Paris (RG9) :
+ * du minuit du premier jour (inclus) au minuit du lendemain du dernier jour
+ * (exclu). Justes aux changements d'heure (journées de 23 h ou 25 h).
+ */
+export function bornesDeLaPeriode(saisie: PlanifierTechnicienDto): {
+    debut: Date;
+    fin: Date;
+} {
+    return {
+        debut: instantDuJour(saisie.dateDebut, 0),
+        fin: instantDuJour(ajouterJours(saisie.dateFin, 1), 0),
+    };
+}
+
+/**
+ * Aperçu d'une planification (séquences de l'US-02, étapes 10 à 13, et de
+ * l'US-03, étapes 2 à 6) : valide la saisie, puis compte ce qu'elle
+ * remplacerait, pour l'avertissement (RG10). N'écrit rien.
  */
 @Injectable()
 export class ApercuPlanificationUseCase {
@@ -74,7 +93,14 @@ export class ApercuPlanificationUseCase {
     async execute(
         technicienId: string,
         saisie: PlanifierTechnicienDto,
-    ): Promise<void> {
+    ): Promise<ApercuPlanificationResponseDto> {
         await verifierPlanification(this.repo, technicienId, saisie);
+
+        const { debut, fin } = bornesDeLaPeriode(saisie);
+        const compte = await this.repo.compterPeriode(technicienId, debut, fin);
+        return {
+            creneauxSupprimes: compte.creneaux,
+            interventionsTouchees: compte.interventions,
+        };
     }
 }

@@ -10,7 +10,7 @@ import { ApercuPlanificationUseCase } from './apercu-planification.use-case';
 describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () => {
     let repo: Pick<
         jest.Mocked<IPlanningRepository>,
-        'technicienExiste' | 'zoneAffecteeEtActive'
+        'technicienExiste' | 'zoneAffecteeEtActive' | 'compterPeriode'
     >;
     let useCase: ApercuPlanificationUseCase;
 
@@ -39,11 +39,17 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
         repo = {
             technicienExiste: jest.fn().mockResolvedValue(true),
             zoneAffecteeEtActive: jest.fn().mockResolvedValue(true),
+            compterPeriode: jest
+                .fn()
+                .mockResolvedValue({ creneaux: 0, interventions: 0 }),
         };
         useCase = new ApercuPlanificationUseCase(
             repo as unknown as IPlanningRepository,
         );
     });
+
+    // Une saisie acceptée : l'aperçu renvoie les nombres de l'avertissement
+    const ACCEPTEE = { creneauxSupprimes: 0, interventionsTouchees: 0 };
 
     afterEach(() => {
         jest.useRealTimers();
@@ -62,7 +68,7 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
         // Témoin : la saisie de base est acceptée
         await expect(
             useCase.execute('technicien-1', saisie()),
-        ).resolves.toBeUndefined();
+        ).resolves.toEqual(ACCEPTEE);
     });
 
     it('CA11 — refuse un bloc qui chevauche un bloc existant [RG3]', async () => {
@@ -89,7 +95,7 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
                     ],
                 }),
             ),
-        ).resolves.toBeUndefined();
+        ).resolves.toEqual(ACCEPTEE);
     });
 
     it('CA16 — refuse une date de début antérieure à demain, dans le fuseau d’exploitation [RG6]', async () => {
@@ -105,7 +111,7 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
                 'technicien-1',
                 saisie({ dateDebut: '2026-11-24', dateFin: '2026-11-30' }),
             ),
-        ).resolves.toBeUndefined();
+        ).resolves.toEqual(ACCEPTEE);
 
         // Fuseau : le 30/11 à 23h30 UTC, il est déjà 0h30 le 1er/12 à Paris.
         // Le 1er/12 est donc aujourd'hui, refusé ; en UTC il serait demain.
@@ -132,6 +138,6 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
                 'technicien-1',
                 saisie({ dateDebut: '2026-11-30', dateFin: '2026-11-30' }),
             ),
-        ).resolves.toBeUndefined();
+        ).resolves.toEqual(ACCEPTEE);
     });
 });

@@ -72,6 +72,31 @@ export type DerniersCreneaux = {
     parZone: Map<string, Date>;
 };
 
+/** Ce qu'une planification ferait disparaître sur sa période (RG10). */
+export type ComptagePeriode = {
+    creneaux: number; // tous statuts confondus
+    interventions: number; // distinctes, tous statuts (écart du 23/11/2026)
+};
+
+/**
+ * Remplacement des créneaux d'un technicien sur une période (« Planifier un
+ * technicien 2.0 », RG9) : déjà contrôlé, les instants déjà calculés à Paris.
+ */
+export type RemplacementCreneaux = {
+    technicienId: string;
+    zoneId: string;
+    debut: Date; // minuit (Paris) du premier jour, inclus
+    fin: Date; // minuit (Paris) du lendemain du dernier jour, exclu
+    nouveaux: Date[]; // début de chaque créneau Libre à créer
+    entreeConflit: string; // entrée du commentaire partagé, déjà formatée (RG16)
+};
+
+/** Ce que le remplacement a fait. */
+export type ResultatRemplacement = {
+    creneauxSupprimes: number;
+    interventionsEnConflit: number;
+};
+
 // Le contrat : les use cases dépendent de cette interface, jamais de Prisma
 export interface IPlanningRepository {
     /** Vrai si l'id désigne un utilisateur de rôle technicien. */
@@ -145,4 +170,24 @@ export interface IPlanningRepository {
 
     /** Le dernier créneau de chaque technicien et de chaque zone. */
     derniersCreneaux(): Promise<DerniersCreneaux>;
+
+    /** Créneaux du technicien dans [debut, fin[ et interventions liées. */
+    compterPeriode(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<ComptagePeriode>;
+
+    /**
+     * Une seule transaction (tout ou rien, séquence de l'US-03 étapes 10 à
+     * 15) : passe en conflit les interventions Planifiées qui ont un créneau
+     * dans la période, écrit l'origine dans leur commentaire partagé,
+     * supprime tous les créneaux du technicien de la période, crée les
+     * nouveaux créneaux Libres. Renvoie null si la transaction a été annulée
+     * parce que le planning a changé entre-temps (statut d'une intervention,
+     * créneau créé au même horaire par une autre génération).
+     */
+    remplacerCreneaux(
+        data: RemplacementCreneaux,
+    ): Promise<ResultatRemplacement | null>;
 }

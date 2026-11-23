@@ -25,6 +25,10 @@ describe('US-01 Consulter le calendrier de couverture et choisir une date 2.0', 
                 parTechnicien: new Map(),
                 parZone: new Map(),
             }),
+            compterPeriode: jest
+                .fn()
+                .mockResolvedValue({ creneaux: 0, interventions: 0 }),
+            remplacerCreneaux: jest.fn().mockResolvedValue(null),
             modifierModele: jest.fn().mockResolvedValue(null),
         };
         useCase = new GetCouvertureMoisUseCase(repo);

@@ -18,8 +18,8 @@ import { ajouterJours, aujourdHui } from '../src/shared/domain/jour-travail';
 // - GET  …/planification         : ouverture (demain, zones proposées) ;
 // - POST …/planification/apercu  : validation de la saisie, sans écriture.
 // Les critères qui dépendent de l'heure (CA04, CA16) et de la cohérence des
-// blocs entre eux (CA10, CA11, CA17) sont testés en unitaire. CA19 attend la
-// génération (US-03, écart du 23/11/2026, option A).
+// blocs entre eux (CA10, CA11, CA17) sont testés en unitaire. CA19 passe par
+// la génération de l'US-03 (écart du 23/11/2026, option A).
 type CorpsPlanification = {
     zoneId?: string;
     jours?: string[];
@@ -228,6 +228,36 @@ describe('US-02 Définir les blocs, la zone, les jours et la période 2.0', () =
             .set('Cookie', cookies)
             .send(corpsValide(zoneId))
             .expect(200);
+    });
+
+    it('CA19 — génère des créneaux avec les valeurs ajustées d’un modèle sans modifier le modèle [RG12]', async () => {
+        const { cookies, technicienId, zoneId } = await preparer();
+        const modele = await creerModele(t.prisma, {
+            technicienId,
+            zoneId,
+            intitule: 'Semaine matin',
+        });
+        const avant = await t.prisma.modelePlanification.findUniqueOrThrow({
+            where: { id: modele.id },
+            include: { blocs: true },
+        });
+
+        // Le modèle (lundi, 8h00–12h00) ajusté pour cette planification :
+        // lundi et mercredi, deux blocs. La génération ne reçoit que les
+        // valeurs, jamais le modèle.
+        await request(serveur)
+            .post(routeEcran(technicienId))
+            .set('Cookie', cookies)
+            .send(corpsValide(zoneId))
+            .expect(201);
+
+        expect(await t.prisma.creneau.count()).toBeGreaterThan(0);
+        expect(
+            await t.prisma.modelePlanification.findUniqueOrThrow({
+                where: { id: modele.id },
+                include: { blocs: true },
+            }),
+        ).toEqual(avant);
     });
 
     it('CA20 — enregistre les valeurs ajustées dans le modèle par « Modifier le modèle », sans confirmation [RG12]', async () => {

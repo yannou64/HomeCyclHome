@@ -74,6 +74,15 @@ export function erreurSaisieModele(saisie: {
     blocs: BlocHoraire[];
 }): string | null {
     if (!saisie.intitule.trim()) return 'L’intitulé est obligatoire.';
+    return erreurSaisieCommune(saisie);
+}
+
+/** Contrôles communs à un modèle et à une planification : zone, jours, blocs. */
+function erreurSaisieCommune(saisie: {
+    zoneId: string;
+    jours: unknown[];
+    blocs: BlocHoraire[];
+}): string | null {
     if (!saisie.zoneId) return 'Choisissez une zone.';
     if (saisie.jours.length === 0) {
         return 'Choisissez au moins un jour de la semaine.';
@@ -83,4 +92,26 @@ export function erreurSaisieModele(saisie: {
         return 'Corrigez les blocs horaires signalés.';
     }
     return null;
+}
+
+/**
+ * Première erreur d'une planification, dans l'ordre de l'écran (période
+ * d'abord), ou null. Même rôle que erreurSaisieModele : un confort, le
+ * serveur refait tous les contrôles.
+ */
+export function erreurSaisiePlanification(saisie: {
+    dateDebut: string;
+    dateFin: string;
+    zoneId: string;
+    jours: unknown[];
+    blocs: BlocHoraire[];
+}): string | null {
+    if (!saisie.dateDebut || !saisie.dateFin) {
+        return 'Choisissez la date de début et la date de fin.';
+    }
+    // 'AAAA-MM-JJ' : l'ordre alphabétique est l'ordre chronologique
+    if (saisie.dateFin < saisie.dateDebut) {
+        return 'La date de fin ne peut pas précéder la date de début.';
+    }
+    return erreurSaisieCommune(saisie);
 }

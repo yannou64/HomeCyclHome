@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useEnregistrerModele } from '../../../hooks/useEnregistrerModele';
+import { useGenererCreneaux } from '../../../hooks/useGenererCreneaux';
 import type {
     EcranPlanification,
     ModeleDetail,
     Periode,
 } from '../../../types/planning.types';
-import { erreurSaisieModele } from '../../../utils/blocsHoraires';
+import {
+    erreurSaisieModele,
+    erreurSaisiePlanification,
+} from '../../../utils/blocsHoraires';
+import { messageResultat } from '../../../utils/messagePlanification';
 import { IntituleChamp } from '../IntituleChamp/IntituleChamp';
 import { PeriodeChoix } from '../PeriodeChoix/PeriodeChoix';
 import { PlanificationActions } from '../PlanificationActions/PlanificationActions';
+import { ReinitialiserPeriodeDialog } from '../ReinitialiserPeriodeDialog/ReinitialiserPeriodeDialog';
 import {
     SaisiePlanification,
     type ValeursSaisie,
@@ -33,6 +39,8 @@ interface PlanificationFormProps {
  * - Écran d'un modèle : ses valeurs préremplies et modifiables pour cette
  *   planification sans toucher au modèle ; « Modifier le modèle » les
  *   enregistre dans le modèle, sans confirmation (RG12).
+ * - Dans les deux cas, « Générer les créneaux » (US-03) : avertissement si
+ *   la période a déjà des créneaux, puis remplacement.
  *
  * Rendu seulement une fois l'écran (et le modèle) chargés : les états
  * s'initialisent au montage avec ces valeurs, sans effet.
@@ -44,13 +52,12 @@ export function PlanificationForm({
     onRetour,
     onSupprimerModele,
 }: PlanificationFormProps) {
-    const { enregistrer, isSubmitting, error, setError } = useEnregistrerModele(
-        technicienId,
-        modele?.id,
-    );
-    // Message affiché après « Modifier le modèle » : l'admin reste sur
-    // l'écran, pour générer ensuite s'il le veut (séquence : « Modifié, sans
-    // fenêtre »)
+    const enregistrement = useEnregistrerModele(technicienId, modele?.id);
+    const generation = useGenererCreneaux(technicienId);
+    const isSubmitting = enregistrement.isSubmitting || generation.isSubmitting;
+    const error = enregistrement.error ?? generation.error;
+    // Message affiché après une action réussie : l'admin reste sur l'écran
+    // (« Modifié, sans fenêtre » ; « Créneaux générés »)
     const [confirmation, setConfirmation] = useState<string | null>(null);
 
     // RG6 : début prérempli avec demain (calculé par l'API), fin vide (CA04)
@@ -69,23 +76,51 @@ export function PlanificationForm({
         blocs: modele?.blocs ?? [],
     }));
 
-    // Toute nouvelle saisie efface le message de l'action précédente
+    // Toute nouvelle saisie efface les messages de l'action précédente
+    const reinitialiserMessages = () => {
+        setConfirmation(null);
+        enregistrement.setError(null);
+        generation.setError(null);
+    };
     const changerValeurs = (v: ValeursSaisie) => {
         setValeurs(v);
-        setConfirmation(null);
+        reinitialiserMessages();
     };
 
     const modifierModele = async () => {
-        setConfirmation(null);
+        reinitialiserMessages();
         const manque = erreurSaisieModele({ intitule, ...valeurs });
         if (manque) {
-            setError(manque);
+            enregistrement.setError(manque);
             return;
         }
         // Mêmes validations et même route qu'une modification ordinaire
         // (CA16 de « Modifier un modèle »)
-        const ok = await enregistrer({ intitule: intitule.trim(), ...valeurs });
+        const ok = await enregistrement.enregistrer({
+            intitule: intitule.trim(),
+            ...valeurs,
+        });
         if (ok) setConfirmation('Le modèle est modifié.');
+    };
+
+    // « Générer les créneaux » : aperçu, puis génération directe si la
+    // période est vide, sinon la fenêtre d'avertissement s'ouvre (RG10)
+    const generer = async () => {
+        reinitialiserMessages();
+        const saisie = { ...periode, ...valeurs };
+        const manque = erreurSaisiePlanification(saisie);
+        if (manque) {
+            generation.setError(manque);
+            return;
+        }
+        const resultat = await generation.demander(saisie);
+        if (resultat) setConfirmation(messageResultat(resultat));
+    };
+
+    // « Réinitialiser et générer » dans la fenêtre ; une erreur y reste
+    const confirmerGeneration = async () => {
+        const resultat = await generation.confirmer();
+        setConfirmation(messageResultat(resultat));
     };
 
     return (
@@ -133,14 +168,19 @@ export function PlanificationForm({
             )}
 
             {/* Boutons de modèle : seulement sur l'écran d'un modèle (CA08,
-                CA09 de l'US-01) */}
-            {modele && (
-                <PlanificationActions
-                    isSubmitting={isSubmitting}
-                    onModifierModele={modifierModele}
-                    onSupprimerModele={onSupprimerModele}
-                />
-            )}
+                CA09 de l'US-01) ; « Générer » partout */}
+            <PlanificationActions
+                isSubmitting={isSubmitting}
+                onGenerer={generer}
+                onModifierModele={modele ? modifierModele : undefined}
+                onSupprimerModele={modele ? onSupprimerModele : undefined}
+            />
+
+            <ReinitialiserPeriodeDialog
+                avertissement={generation.avertissement}
+                onAnnuler={generation.annuler}
+                onConfirmer={confirmerGeneration}
+            />
         </div>
     );
 }

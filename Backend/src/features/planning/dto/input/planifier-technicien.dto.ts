@@ -1,5 +1,5 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { Matches } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
+import { IsBoolean, IsOptional, Matches } from 'class-validator';
 import { CreateModelePlanificationDto } from './create-modele-planification.dto';
 
 // Un jour de Paris au format AAAA-MM-JJ (même format que la journée pivot)
@@ -34,4 +34,12 @@ export class PlanifierTechnicienDto extends OmitType(
         message: 'La date de fin est obligatoire, au format AAAA-MM-JJ.',
     })
     dateFin!: string;
+
+    // Génération seulement (l'aperçu l'ignore) : l'admin a confirmé
+    // l'avertissement. Sans elle, une période qui a déjà des créneaux est
+    // refusée (RG10 : rien n'est appliqué sans confirmation).
+    @ApiPropertyOptional()
+    @IsOptional()
+    @IsBoolean({ message: 'La confirmation est vraie ou fausse.' })
+    confirmation?: boolean;
 }
