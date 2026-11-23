@@ -35,3 +35,19 @@
     font-weight: $font-bold;
     color: $color-text-primary;
 }
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}
+
+// Action réussie (« Le modèle est modifié. ») : aucun jeton « succès » dans
+// le design system ; texte mocha sur le vert menthe de la charte
+.confirmation {
+    align-self: flex-start;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-md;
+    background-color: $color-myGreen;
+    color: $color-text-primary;
+    font-size: $font-size-label;
+}

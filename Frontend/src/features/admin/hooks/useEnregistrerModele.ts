@@ -2,18 +2,16 @@ import { useState } from 'react';
 import { getApiErrorMessage } from '../../../shared/utils/apiError';
 import { adminPlanningService } from '../services/adminPlanningService';
 import type { CreateModelePayload } from '../types/planning.types';
-import { useZonesProposees } from './useZonesProposees';
 
 /**
- * Formulaire d'un modèle : charge les zones proposées (affectées au
- * technicien et actives) et enregistre la saisie. Sans `modeleId`, c'est une
- * création ; avec, une modification, enregistrée sans confirmation (RG8).
+ * Enregistre un modèle. Sans `modeleId`, c'est une création (formulaire d'un
+ * nouveau modèle) ; avec, une modification par « Modifier le modèle » depuis
+ * l'écran de planification, enregistrée sans confirmation (RG12).
+ *
+ * Les zones proposées ne sont pas chargées ici : chaque écran les charge
+ * (useZonesProposees pour la création, useEcranPlanification sinon).
  */
 export function useEnregistrerModele(technicienId: string, modeleId?: string) {
-    // Même chargement que l'écran de planification : un seul hook
-    const { zones, isLoadingZones, zonesError } =
-        useZonesProposees(technicienId);
-
     // Action déclenchée par l'utilisateur : état local modifié dans la fonction
     // appelée par l'événement (Frontend/CLAUDE.md, section 5)
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,13 +42,5 @@ export function useEnregistrerModele(technicienId: string, modeleId?: string) {
         }
     }
 
-    return {
-        zones,
-        isLoadingZones,
-        zonesError,
-        enregistrer,
-        isSubmitting,
-        error,
-        setError,
-    };
+    return { enregistrer, isSubmitting, error, setError };
 }

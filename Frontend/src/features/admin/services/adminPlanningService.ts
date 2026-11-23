@@ -3,6 +3,7 @@ import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
     CouvertureMois,
     CreateModelePayload,
+    EcranPlanification,
     Journee,
     ModeleDetail,
     ModelePlanification,
@@ -33,6 +34,15 @@ export const adminPlanningService = {
     async getZonesProposees(technicienId: string): Promise<ZoneProposee[]> {
         const r = await apiClient.get<ZoneProposee[]>(
             `${base(technicienId)}/zones`,
+        );
+        return r.data;
+    },
+
+    async getEcranPlanification(
+        technicienId: string,
+    ): Promise<EcranPlanification> {
+        const r = await apiClient.get<EcranPlanification>(
+            `${base(technicienId)}/planification`,
         );
         return r.data;
     },

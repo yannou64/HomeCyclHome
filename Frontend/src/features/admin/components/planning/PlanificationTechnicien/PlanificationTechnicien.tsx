@@ -2,10 +2,9 @@ import { useState } from 'react';
 import { useModelesTechnicien } from '../../../hooks/useModelesTechnicien';
 import { useSupprimerModele } from '../../../hooks/useSupprimerModele';
 import type { AdminUser } from '../../../types/admin.types';
-import { ModeleEdition } from '../ModeleEdition/ModeleEdition';
+import { EcranPlanification } from '../EcranPlanification/EcranPlanification';
 import { ModeleForm } from '../ModeleForm/ModeleForm';
 import { ModelesListe } from '../ModelesListe/ModelesListe';
-import { PlanificationLibre } from '../PlanificationLibre/PlanificationLibre';
 import { SupprimerModeleDialog } from '../SupprimerModeleDialog/SupprimerModeleDialog';
 import styles from './PlanificationTechnicien.module.scss';
 
@@ -28,9 +27,8 @@ interface PlanificationTechnicienProps {
  *
  * Avancée en S2 pour administrer les modèles (écart du 18/11/2026, option c) :
  * créer, ouvrir et modifier un modèle (écran d'un modèle, écart du 19/11/2026,
- * option A). La planification libre s'ouvre vide (US-01 « Choisir le mode de
- * planification 2.0 ») ; la période et la génération arrivent avec les US-02
- * et US-03.
+ * option A). Un modèle et la planification libre s'ouvrent sur le même écran
+ * de planification, prérempli ou vide (« Planifier un technicien 2.0 »).
  */
 export function PlanificationTechnicien({
     technicien,
@@ -82,22 +80,24 @@ export function PlanificationTechnicien({
     // Planification libre : écran vide, sans modèle (US-01, CA09)
     if (vue.ecran === 'libre') {
         return (
-            <PlanificationLibre
+            <EcranPlanification
                 technicienId={technicien.id}
                 onRetour={retourListe}
+                onSupprimerModele={() => {}} // aucun modèle à supprimer
             />
         );
     }
 
+    // Écran d'un modèle : le même, prérempli. Au retour, la liste est
+    // rechargée : « Modifier le modèle » a pu changer son intitulé.
     if (vue.ecran === 'modele') {
         return (
             <>
-                <ModeleEdition
+                <EcranPlanification
                     technicienId={technicien.id}
                     modeleId={vue.modeleId}
-                    onEnregistre={apresEnregistrement}
-                    onRetour={retourListe}
-                    onSupprimer={() => setASupprimer(vue.modeleId)}
+                    onRetour={apresEnregistrement}
+                    onSupprimerModele={() => setASupprimer(vue.modeleId)}
                 />
                 {dialogue}
             </>

@@ -1,6 +1,6 @@
 @use '../../../../../app/styles/index' as *;
 
-// Même carte et même retour que le formulaire qu'elle précède (ModeleForm).
+// Même carte et même retour que le formulaire qu'elle précède (PlanificationForm).
 // Recopiés : `composes` ne fonctionne pas d'un fichier SCSS à l'autre avec
 // Vite (le fichier cible est lu comme du CSS brut, sans être compilé).
 .wrapper {

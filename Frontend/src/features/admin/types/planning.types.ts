@@ -60,6 +60,20 @@ export type ModeleDetail = ModelePlanification & { valide: boolean };
 // La modification remplace tout le modèle : même saisie qu'à la création
 export type UpdateModelePayload = CreateModelePayload;
 
+// Planification d'un technicien (« Planifier un technicien 2.0 »).
+
+/** Ouverture de l'écran de planification. */
+export type EcranPlanification = {
+    demain: string; // 'AAAA-MM-JJ', calculé par l'API à Paris (RG6)
+    zones: ZoneProposee[]; // affectées au technicien et actives
+};
+
+/** Période d'une planification, bornes incluses ('AAAA-MM-JJ'). */
+export type Periode = {
+    dateDebut: string;
+    dateFin: string; // vide tant que l'admin ne l'a pas choisie
+};
+
 // Couverture des zones (« Visualiser la couverture des zones 2.0 »).
 // Les jours sont ceux de Paris, au format 'AAAA-MM-JJ'.
 

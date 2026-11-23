@@ -1,0 +1,68 @@
+@use '../../../../../app/styles/index' as *;
+
+// Un fieldset sans son cadre par défaut : il groupe les deux dates pour
+// l'accessibilité (légende « Période » annoncée avec chaque champ)
+.periode {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 0;
+}
+
+// Même libellé que les autres champs de la saisie
+.label {
+    padding: 0;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+// Mobile d'abord : les deux dates l'une sous l'autre, puis côte à côte
+.dates {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+}
+
+@include desktop {
+    .dates {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.date {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.sousLabel {
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+.input {
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-primary;
+    background: white;
+    width: 100%;
+    outline: none;
+
+    &:focus {
+        border-color: $color-myOrange;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        background: $color-myLightGreen;
+    }
+}
