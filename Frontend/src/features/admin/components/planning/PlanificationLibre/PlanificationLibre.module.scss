@@ -1,0 +1,37 @@
+@use '../../../../../app/styles/index' as *;
+
+// Même carte, même retour et même titre que le formulaire d'un modèle
+// (ModeleForm). Recopiés : `composes` ne fonctionne pas d'un fichier SCSS à
+// l'autre avec Vite.
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    background: white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    padding: $spacing-lg;
+    font-family: $font-primary;
+}
+
+.retour {
+    align-self: flex-start;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    cursor: pointer;
+
+    &:hover {
+        color: $color-text-primary;
+        text-decoration: underline;
+    }
+}
+
+.titre {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}

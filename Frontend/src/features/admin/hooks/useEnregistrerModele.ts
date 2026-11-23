@@ -1,11 +1,8 @@
-import { useCallback, useState } from 'react';
-import { useAsyncData } from '../../../shared/hooks/useAsyncData';
+import { useState } from 'react';
 import { getApiErrorMessage } from '../../../shared/utils/apiError';
 import { adminPlanningService } from '../services/adminPlanningService';
-import type {
-    CreateModelePayload,
-    ZoneProposee,
-} from '../types/planning.types';
+import type { CreateModelePayload } from '../types/planning.types';
+import { useZonesProposees } from './useZonesProposees';
 
 /**
  * Formulaire d'un modèle : charge les zones proposées (affectées au
@@ -13,19 +10,9 @@ import type {
  * création ; avec, une modification, enregistrée sans confirmation (RG8).
  */
 export function useEnregistrerModele(technicienId: string, modeleId?: string) {
-    const loadZones = useCallback(
-        () => adminPlanningService.getZonesProposees(technicienId),
-        [technicienId],
-    );
-    const {
-        data: zones,
-        isLoading: isLoadingZones,
-        error: zonesError,
-    } = useAsyncData<ZoneProposee[]>(
-        loadZones,
-        [],
-        'Impossible de charger les zones du technicien.',
-    );
+    // Même chargement que l'écran de planification : un seul hook
+    const { zones, isLoadingZones, zonesError } =
+        useZonesProposees(technicienId);
 
     // Action déclenchée par l'utilisateur : état local modifié dans la fonction
     // appelée par l'événement (Frontend/CLAUDE.md, section 5)

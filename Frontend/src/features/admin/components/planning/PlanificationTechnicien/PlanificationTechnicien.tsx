@@ -5,14 +5,17 @@ import type { AdminUser } from '../../../types/admin.types';
 import { ModeleEdition } from '../ModeleEdition/ModeleEdition';
 import { ModeleForm } from '../ModeleForm/ModeleForm';
 import { ModelesListe } from '../ModelesListe/ModelesListe';
+import { PlanificationLibre } from '../PlanificationLibre/PlanificationLibre';
 import { SupprimerModeleDialog } from '../SupprimerModeleDialog/SupprimerModeleDialog';
 import styles from './PlanificationTechnicien.module.scss';
 
-// Ce que montre la page : la liste, la création, ou l'écran d'un modèle
+// Ce que montre la page : la liste, la création, l'écran d'un modèle ou la
+// planification libre
 type Vue =
     | { ecran: 'liste' }
     | { ecran: 'creation' }
-    | { ecran: 'modele'; modeleId: string };
+    | { ecran: 'modele'; modeleId: string }
+    | { ecran: 'libre' };
 
 interface PlanificationTechnicienProps {
     technicien: AdminUser;
@@ -25,8 +28,9 @@ interface PlanificationTechnicienProps {
  *
  * Avancée en S2 pour administrer les modèles (écart du 18/11/2026, option c) :
  * créer, ouvrir et modifier un modèle (écran d'un modèle, écart du 19/11/2026,
- * option A). La planification libre et la génération des créneaux arrivent en
- * S3 (« Planifier un technicien 2.0 »).
+ * option A). La planification libre s'ouvre vide (US-01 « Choisir le mode de
+ * planification 2.0 ») ; la période et la génération arrivent avec les US-02
+ * et US-03.
  */
 export function PlanificationTechnicien({
     technicien,
@@ -70,6 +74,16 @@ export function PlanificationTechnicien({
             <ModeleForm
                 technicienId={technicien.id}
                 onEnregistre={apresEnregistrement}
+                onRetour={retourListe}
+            />
+        );
+    }
+
+    // Planification libre : écran vide, sans modèle (US-01, CA09)
+    if (vue.ecran === 'libre') {
+        return (
+            <PlanificationLibre
+                technicienId={technicien.id}
                 onRetour={retourListe}
             />
         );
@@ -132,8 +146,7 @@ export function PlanificationTechnicien({
                 <button
                     type="button"
                     className={styles.boutonEntree}
-                    disabled
-                    title="Disponible prochainement"
+                    onClick={() => setVue({ ecran: 'libre' })}
                 >
                     Planification libre
                 </button>

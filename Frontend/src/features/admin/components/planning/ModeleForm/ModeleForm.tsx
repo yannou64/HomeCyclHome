@@ -1,20 +1,12 @@
 import { useState } from 'react';
 import { useEnregistrerModele } from '../../../hooks/useEnregistrerModele';
-import type {
-    BlocHoraire,
-    JourSemaine,
-    ModeleDetail,
-} from '../../../types/planning.types';
+import type { ModeleDetail } from '../../../types/planning.types';
 import { erreurSaisieModele } from '../../../utils/blocsHoraires';
-import {
-    GRIS_ZONE_INACTIVE,
-    hexDeCouleur,
-} from '../../../../../shared/utils/couleursZones';
-import { BlocsHorairesEditeur } from '../BlocsHorairesEditeur/BlocsHorairesEditeur';
-import { FriseJournee } from '../FriseJournee/FriseJournee';
-import { JoursSemaineChoix } from '../JoursSemaineChoix/JoursSemaineChoix';
 import { ModeleFormActions } from '../ModeleFormActions/ModeleFormActions';
-import { ZoneChoix } from '../ZoneChoix/ZoneChoix';
+import {
+    SaisiePlanification,
+    type ValeursSaisie,
+} from '../SaisiePlanification/SaisiePlanification';
 import styles from './ModeleForm.module.scss';
 
 interface ModeleFormProps {
@@ -48,26 +40,25 @@ export function ModeleForm({
     // Initialisés une fois, au montage : le parent ne rend ce formulaire
     // qu'une fois le modèle chargé
     const [intitule, setIntitule] = useState(modele?.intitule ?? '');
-    const [zoneId, setZoneId] = useState(modele?.zoneId ?? '');
-    const [jours, setJours] = useState<JourSemaine[]>(modele?.jours ?? []);
-    const [blocs, setBlocs] = useState<BlocHoraire[]>(modele?.blocs ?? []);
-
-    const zone = zones.find((z) => z.id === zoneId);
-    const couleur = zone ? hexDeCouleur(zone.couleur) : GRIS_ZONE_INACTIVE;
+    // Zone, jours et blocs : un seul état, tenu ici et affiché par la saisie
+    // partagée (SaisiePlanification)
+    const [valeurs, setValeurs] = useState<ValeursSaisie>({
+        zoneId: modele?.zoneId ?? '',
+        jours: modele?.jours ?? [],
+        blocs: modele?.blocs ?? [],
+    });
     const enModification = modele !== undefined;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const manque = erreurSaisieModele({ intitule, zoneId, jours, blocs });
+        const manque = erreurSaisieModele({ intitule, ...valeurs });
         if (manque) {
             setError(manque);
             return;
         }
         const ok = await enregistrer({
             intitule: intitule.trim(),
-            zoneId,
-            jours,
-            blocs,
+            ...valeurs,
         });
         if (ok) onEnregistre();
     };
@@ -81,48 +72,26 @@ export function ModeleForm({
                 {enModification ? modele.intitule : 'Nouveau modèle'}
             </h2>
 
-            <div className={styles.colonnes}>
-                <div className={styles.formulaire}>
-                    <label className={styles.champ}>
-                        <span className={styles.label}>Titre</span>
-                        <input
-                            className={styles.input}
-                            value={intitule}
-                            maxLength={100}
-                            placeholder="Ex : Semaine matin"
-                            onChange={(e) => setIntitule(e.target.value)}
-                            disabled={isSubmitting}
-                        />
-                    </label>
-
-                    <ZoneChoix
-                        zones={zones}
-                        valeur={zoneId}
-                        couleur={couleur}
-                        onChange={setZoneId}
-                        erreur={zonesError}
+            <SaisiePlanification
+                zones={zones}
+                zonesError={zonesError}
+                valeurs={valeurs}
+                onChange={setValeurs}
+                disabled={isSubmitting}
+            >
+                {/* Propre au modèle : son titre, en tête de la saisie */}
+                <label className={styles.champ}>
+                    <span className={styles.label}>Titre</span>
+                    <input
+                        className={styles.input}
+                        value={intitule}
+                        maxLength={100}
+                        placeholder="Ex : Semaine matin"
+                        onChange={(e) => setIntitule(e.target.value)}
                         disabled={isSubmitting}
                     />
-                    <JoursSemaineChoix
-                        valeur={jours}
-                        onChange={setJours}
-                        disabled={isSubmitting}
-                    />
-                    <BlocsHorairesEditeur
-                        valeur={blocs}
-                        onChange={setBlocs}
-                        disabled={isSubmitting}
-                    />
-                </div>
-
-                <aside
-                    className={styles.apercu}
-                    aria-label="Aperçu de la journée type"
-                >
-                    <p className={styles.label}>Journée type</p>
-                    <FriseJournee blocs={blocs} couleur={couleur} />
-                </aside>
-            </div>
+                </label>
+            </SaisiePlanification>
 
             {error && (
                 <p className={styles.error} role="alert">

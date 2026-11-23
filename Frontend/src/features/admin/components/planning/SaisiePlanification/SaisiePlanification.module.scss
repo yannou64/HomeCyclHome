@@ -1,0 +1,50 @@
+@use '../../../../../app/styles/index' as *;
+
+// Déplacé de ModeleForm : les deux colonnes sont communes au modèle et à la
+// planification.
+
+// Mobile d'abord : le formulaire, puis l'aperçu en dessous
+.colonnes {
+    display: grid;
+    grid-template-columns: minmax(0, 32rem);
+    justify-content: center; // le groupe reste centré dans la carte
+    gap: $spacing-lg;
+}
+
+// Desktop : formulaire à gauche, aperçu à droite.
+// - Les deux colonnes ont une largeur plafonnée : au-delà, c'est l'espace
+//   entre elles qui grandit, et le groupe reste centré.
+// - Cet espace suit la largeur de la fenêtre (6 % de la largeur), donc
+//   grandit moins vite qu'elle, entre 2rem et 8rem.
+// - align-items: start : le formulaire commence à la hauteur du haut de
+//   l'aperçu (choix de Yannick), quelle que soit la colonne la plus haute.
+@include desktop {
+    .colonnes {
+        grid-template-columns: minmax(0, 32rem) 18rem;
+        column-gap: clamp(#{$spacing-lg}, 6vw, 8rem);
+        align-items: start;
+    }
+}
+
+.formulaire {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}
+
+.label {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.apercu {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    border-radius: $radius-md;
+    background-color: $color-myLightGreen;
+}
