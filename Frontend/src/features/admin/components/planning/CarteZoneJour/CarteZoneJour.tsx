@@ -25,7 +25,7 @@ interface CarteZoneJourProps {
  * Carte d'une zone pour la date pivot (US-02) : les tranches de 30 min où au
  * moins un technicien de la zone est libre, cumulées sans être comptées
  * (RG9), sur la même plage fixe 7h–20h que les cartes technicien, et
- * « dernière couverture le ». À gauche, la miniature du tracé (écart du
+ * « dernière couverture le ». Sous la frise, la miniature du tracé (écart du
  * 22/11/2026).
  */
 export function CarteZoneJour({ carte, points }: CarteZoneJourProps) {
@@ -46,22 +46,26 @@ export function CarteZoneJour({ carte, points }: CarteZoneJourProps) {
                 )}
             </header>
 
-            <div className={styles.corps}>
-                <ZoneMiniature
-                    nomZone={carte.nomZone}
-                    points={points}
-                    couleur={couleurAffichee(carte)}
+            {/* « Non couverte » ou « Complet » : la frise serait vide ; l'état
+                prend sa place, à la même hauteur, pour que les cartes restent
+                alignées (choix de Yannick du 24/11/2026) */}
+            {etat ? (
+                <p className={styles.etat}>{etat}</p>
+            ) : (
+                <FriseJournee
+                    taille="compacte"
+                    blocs={blocs}
+                    titre={`Disponibilités de ${carte.nomZone} : ${blocs.length} tranche(s) libre(s)`}
                 />
-                <div className={styles.disponibilites}>
-                    {etat && <p className={styles.etat}>{etat}</p>}
-                    <FriseJournee
-                        blocs={blocs}
-                        titre={`Disponibilités de ${carte.nomZone} : ${
-                            etat ?? `${blocs.length} tranche(s) libre(s)`
-                        }`}
-                    />
-                </div>
-            </div>
+            )}
+
+            {/* Tracé de la zone, sous ses disponibilités, sur toute la
+                largeur de la carte (choix de Yannick du 24/11/2026) */}
+            <ZoneMiniature
+                nomZone={carte.nomZone}
+                points={points}
+                couleur={couleurAffichee(carte)}
+            />
 
             <p className={styles.repere}>
                 {carte.derniereCouverture ? (

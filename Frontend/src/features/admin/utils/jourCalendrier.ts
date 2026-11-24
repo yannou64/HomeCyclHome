@@ -15,6 +15,18 @@ export function moisDeCase(date: Date): string {
     return `${date.getFullYear()}-${deux(date.getMonth() + 1)}`;
 }
 
+/**
+ * 'AAAA-MM-JJ' → 'Jeudi'. Pure arithmétique de calendrier : le jour est lu à
+ * midi UTC et formaté en UTC, aucun fuseau n'intervient.
+ */
+export function nomDuJour(jour: string): string {
+    const nom = new Date(`${jour}T12:00:00Z`).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        timeZone: 'UTC',
+    });
+    return nom.charAt(0).toUpperCase() + nom.slice(1);
+}
+
 /** 'AAAA-MM-JJ' → 'JJ/MM/AAAA', pour l'affichage. */
 export function formaterJour(jour: string): string {
     const [annee, mois, j] = jour.split('-');

@@ -6,6 +6,7 @@ import {
 } from '../dto/output/couverture-mois-response.dto';
 import {
     PLANNING_REPO,
+    type CreneauAvecZone,
     type IPlanningRepository,
 } from '../repositories/planning.repository.interface';
 import {
@@ -44,35 +45,56 @@ export class GetCouvertureMoisUseCase {
         const jourCourant = aujourdHui();
         const moisVise = mois ?? jourCourant.slice(0, 7); // 'AAAA-MM-JJ' → 'AAAA-MM'
 
-        // Du 1er du mois à 0h00 au 1er du mois suivant à 0h00, heure de Paris
-        const creneaux = await this.repo.trouverCreneauxEntre(
-            instantDuJour(`${moisVise}-01`, 0),
-            instantDuJour(`${moisSuivant(moisVise)}-01`, 0),
-        );
+        const { debut, fin } = bornesDuMois(moisVise);
+        const creneaux = await this.repo.trouverCreneauxEntre(debut, fin);
 
-        // Étape 7 : grouper par jour local, une seule fois chaque zone par jour
-        const parJour = new Map<
-            JourCalendaire,
-            Map<string, ZoneCouverteResponseDto>
-        >();
-        for (const c of creneaux) {
-            const jour = jourTravail(c.dateDebut);
-            const zones =
-                parJour.get(jour) ?? new Map<string, ZoneCouverteResponseDto>();
-            zones.set(c.zone.id, c.zone);
-            parJour.set(jour, zones);
-        }
-
-        // Jours dans l'ordre, zones par nom : un affichage stable
-        const jours: JourCouvertResponseDto[] = [...parJour.entries()]
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([jour, zones]) => ({
-                jour,
-                zones: [...zones.values()].sort((a, b) =>
-                    a.nomZone.localeCompare(b.nomZone),
-                ),
-            }));
-
-        return { mois: moisVise, aujourdHui: jourCourant, jours };
+        return {
+            mois: moisVise,
+            aujourdHui: jourCourant,
+            jours: joursCouverts(creneaux),
+        };
     }
+}
+
+/**
+ * Du 1er du mois à 0h00 au 1er du mois suivant à 0h00, heure de Paris.
+ * Exportée pour le calendrier d'un technicien (« Consulter le planning d'un
+ * technicien 2.0 »).
+ */
+export function bornesDuMois(mois: string): { debut: Date; fin: Date } {
+    return {
+        debut: instantDuJour(`${mois}-01`, 0),
+        fin: instantDuJour(`${moisSuivant(mois)}-01`, 0),
+    };
+}
+
+/**
+ * Étape 7 : groupe les créneaux par jour de Paris, chaque zone une seule fois
+ * par jour. Jours dans l'ordre, zones par nom : un affichage stable.
+ * Exportée pour le calendrier d'un technicien, qui la reçoit filtrée sur lui :
+ * il n'a alors qu'une zone par jour (RG2 de l'épique).
+ */
+export function joursCouverts(
+    creneaux: CreneauAvecZone[],
+): JourCouvertResponseDto[] {
+    const parJour = new Map<
+        JourCalendaire,
+        Map<string, ZoneCouverteResponseDto>
+    >();
+    for (const c of creneaux) {
+        const jour = jourTravail(c.dateDebut);
+        const zones =
+            parJour.get(jour) ?? new Map<string, ZoneCouverteResponseDto>();
+        zones.set(c.zone.id, c.zone);
+        parJour.set(jour, zones);
+    }
+
+    return [...parJour.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([jour, zones]) => ({
+            jour,
+            zones: [...zones.values()].sort((a, b) =>
+                a.nomZone.localeCompare(b.nomZone),
+            ),
+        }));
 }

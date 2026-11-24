@@ -38,3 +38,27 @@
     font-size: $font-size-label;
     color: $color-text-label;
 }
+
+// « Voir son planning » : bouton principal pleine largeur, en bas de la
+// carte (point d'entrée de la planification, décision du 24/11/2026)
+.boutonPlanning {
+    width: 100%;
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-text-primary;
+        outline-offset: 2px;
+    }
+}

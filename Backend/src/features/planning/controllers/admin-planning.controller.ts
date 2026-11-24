@@ -30,7 +30,15 @@ import { CouvertureMoisResponseDto } from '../dto/output/couverture-mois-respons
 import { PlanificationResponseDto } from '../dto/output/planification-response.dto';
 import { PlanifierTechnicienUseCase } from '../use-cases/planifier-technicien.use-case';
 import { EcranPlanificationResponseDto } from '../dto/output/ecran-planification-response.dto';
-import { JourneeResponseDto } from '../dto/output/journee-response.dto';
+import { CalendrierTechnicienResponseDto } from '../dto/output/calendrier-technicien-response.dto';
+import {
+    JourneeResponseDto,
+    TechnicienJourneeResponseDto,
+} from '../dto/output/journee-response.dto';
+import { GetCalendrierTechnicienUseCase } from '../use-cases/get-calendrier-technicien.use-case';
+import { GetJourneeTechnicienUseCase } from '../use-cases/get-journee-technicien.use-case';
+import { GetInterventionsTechnicienUseCase } from '../use-cases/get-interventions-technicien.use-case';
+import { InterventionTechnicienResponseDto } from '../dto/output/intervention-technicien-response.dto';
 import { ModeleDetailResponseDto } from '../dto/output/modele-detail-response.dto';
 import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { ModeleResumeResponseDto } from '../dto/output/modele-resume-response.dto';
@@ -65,6 +73,9 @@ export class AdminPlanningController {
         private readonly getEcranPlanificationUseCase: GetEcranPlanificationUseCase,
         private readonly apercuPlanificationUseCase: ApercuPlanificationUseCase,
         private readonly planifierTechnicienUseCase: PlanifierTechnicienUseCase,
+        private readonly getCalendrierTechnicienUseCase: GetCalendrierTechnicienUseCase,
+        private readonly getJourneeTechnicienUseCase: GetJourneeTechnicienUseCase,
+        private readonly getInterventionsTechnicienUseCase: GetInterventionsTechnicienUseCase,
     ) {}
 
     // Calendrier de couverture d'un mois (US-01 « Consulter le calendrier de
@@ -87,6 +98,56 @@ export class AdminPlanningController {
     @Get('journee')
     getJournee(@Query() query: GetJourneeQueryDto) {
         return this.getJourneeUseCase.execute(query.date);
+    }
+
+    // Page d'un technicien (US-01 « Consulter le calendrier et la journée
+    // d'un technicien 2.0 ») : mêmes paramètres que la couverture
+    @ApiOkResponse({
+        description:
+            'Jours planifiés du technicien sur le mois, un point par jour',
+        type: CalendrierTechnicienResponseDto,
+    })
+    @Get('techniciens/:technicienId/calendrier')
+    getCalendrierTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Query() query: GetCouvertureQueryDto,
+    ) {
+        return this.getCalendrierTechnicienUseCase.execute(
+            technicienId,
+            query.mois,
+        );
+    }
+
+    @ApiOkResponse({
+        description: 'Zone et créneaux du technicien pour la journée',
+        type: TechnicienJourneeResponseDto,
+    })
+    @Get('techniciens/:technicienId/journee')
+    getJourneeTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Query() query: GetJourneeQueryDto,
+    ) {
+        return this.getJourneeTechnicienUseCase.execute(
+            technicienId,
+            query.date,
+        );
+    }
+
+    // Interventions du jour (US-02 « Consulter les interventions d'un
+    // technicien 2.0 »)
+    @ApiOkResponse({
+        description: 'Interventions du jour portées par ses créneaux, triées',
+        type: [InterventionTechnicienResponseDto],
+    })
+    @Get('techniciens/:technicienId/interventions')
+    getInterventionsTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Query() query: GetJourneeQueryDto,
+    ) {
+        return this.getInterventionsTechnicienUseCase.execute(
+            technicienId,
+            query.date,
+        );
     }
 
     @ApiOkResponse({

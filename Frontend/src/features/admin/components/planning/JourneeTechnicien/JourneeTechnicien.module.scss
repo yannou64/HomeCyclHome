@@ -1,0 +1,65 @@
+@use '../../../../../app/styles/index' as *;
+
+// Carte blanche, comme celle du calendrier (maquette « Page d'un technicien »)
+.carte {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+    font-family: $font-primary;
+}
+
+.date {
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.jour {
+    color: $color-myYellow;
+}
+
+// Légende des statuts : centrée et discrète (choix de Yannick du
+// 24/11/2026)
+.legende {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px $spacing-sm;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: $font-size-caption;
+    color: $color-text-label;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+}
+
+// Pastilles de la légende : mêmes apparences que les blocs de la frise
+// (FriseJournee), recopiées (`composes` ne traverse pas les fichiers)
+.pastille {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: $radius-sm;
+}
+
+.libre {
+    border: 1.5px solid $color-text-primary;
+    background: white;
+}
+
+.deplacement {
+    background-color: $color-border;
+}
+
+.reservee {
+    background-color: $color-myOrange;
+}

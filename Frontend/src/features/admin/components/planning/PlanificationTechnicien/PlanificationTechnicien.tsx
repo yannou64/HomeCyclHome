@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useModelesTechnicien } from '../../../hooks/useModelesTechnicien';
 import { useSupprimerModele } from '../../../hooks/useSupprimerModele';
-import type { AdminUser } from '../../../types/admin.types';
+import type { TechnicienNomme } from '../../../types/planning.types';
 import { EcranPlanification } from '../EcranPlanification/EcranPlanification';
 import { ModeleForm } from '../ModeleForm/ModeleForm';
 import { ModelesListe } from '../ModelesListe/ModelesListe';
@@ -17,7 +17,7 @@ type Vue =
     | { ecran: 'libre' };
 
 interface PlanificationTechnicienProps {
-    technicien: AdminUser;
+    technicien: TechnicienNomme;
     onRetour: () => void;
 }
 

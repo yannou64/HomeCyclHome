@@ -5,7 +5,9 @@
 // limité à l'intérieur de .calendrier
 .calendrier {
     font-family: $font-primary;
-    font-size: $font-size-label;
+    // Calendrier compact : police de légende (11px, minimum du design
+    // system), comme ses cases, ses points et ses flèches
+    font-size: $font-size-caption;
     color: $color-text-primary;
 
     :global {
@@ -14,7 +16,7 @@
         --fc-today-bg-color: transparent; // seule la date pivot est mise en évidence
 
         .fc-toolbar-title {
-            font-size: $font-size-h2;
+            font-size: $font-size-label;
             font-weight: $font-semibold;
             text-transform: capitalize;
         }
@@ -45,6 +47,48 @@
         .fc-day-other {
             opacity: 0.5;
         }
+
+        // Calendrier compact : FullCalendar réserve sous le numéro une zone
+        // d'événements (2em + 1em de marge) et une zone de bas de case. Nous
+        // n'affichons aucun événement, seulement le numéro et les points de
+        // zone (dans le contenu de la case) : ces zones sont retirées.
+        .fc-daygrid-day-events,
+        .fc-daygrid-day-bottom {
+            display: none;
+        }
+
+        .fc-daygrid-day-frame {
+            min-height: 0;
+        }
+
+        .fc-toolbar.fc-header-toolbar {
+            margin-bottom: $spacing-xs;
+        }
+
+        // Flèches plus petites : la barre du mois prend moins de hauteur
+        .fc-button {
+            padding: 0 6px;
+            font-size: $font-size-caption;
+        }
+
+        // En-têtes des jours (lun., mar.…) et cases : marges resserrées
+        .fc-col-header-cell-cushion,
+        .fc-daygrid-day-top {
+            padding: 0 3px;
+        }
+
+        // Le contenu de la case occupe toute sa largeur (points et numéro
+        // de part et d'autre)
+        .fc-daygrid-day-top {
+            flex-direction: row;
+        }
+
+        // Lien que FullCalendar place autour du contenu de la case : sans
+        // ses marges, le numéro reste petit
+        .fc-daygrid-day-number {
+            padding: 0;
+            width: 100%;
+        }
     }
 }
 
@@ -55,31 +99,72 @@
     background-color: rgba($color-myOrange, 0.08);
 }
 
-// Contenu d'une case : numéro en haut à droite, points en bas
+// Contenu d'une case, sur une seule ligne pour un calendrier bas : les
+// points de zone à gauche, le numéro à droite
 .case {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: $spacing-xs;
+    flex-direction: row-reverse; // numéro (1er dans le DOM) à droite
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
     width: 100%;
-    min-height: 3rem;
+    min-height: 1.1rem;
 }
 
 .numero {
-    color: $color-text-primary;
+    // Taille fixée ici, sans dépendre de ce qu'hérite le lien de
+    // FullCalendar ; 11px est le minimum du design system
+    font-size: $font-size-caption;
+    font-weight: $font-regular;
+    line-height: 1;
+    color: $color-text-label;
 }
 
 .points {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    align-self: center;
-    margin-top: auto;
+    gap: 2px;
 }
 
 .point {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
     border-radius: $radius-full;
     background-color: var(--point-couleur);
+}
+
+// Cases plus hautes (page Planning) : le calendrier s'étend du titre jusqu'au
+// bas des onglets, sans paraître tassé
+// Le calendrier est un « conteneur » : ses cases se dimensionnent en
+// fonction de SA largeur (unité cqi = 1 % de la largeur du conteneur), et
+// non de celle de l'écran. La hauteur suit ainsi la largeur en proportion
+// (choix de Yannick du 24/11/2026).
+.aere {
+    container-type: inline-size;
+}
+
+.aere .case {
+    // 6,2 % de la largeur du calendrier : environ 1,3rem pour un cadre de
+    // 30rem (calendrier d'environ 21rem à côté de sa légende). Plancher de
+    // 1,1rem sur un écran étroit, pour garder la case lisible.
+    min-height: max(1.1rem, 6.2cqi);
+}
+
+// Page Planning, grand écran assez haut : la police grandit un peu avec la
+// largeur de l'écran, de 1200px à 1600px (mêmes bornes que la largeur du
+// calendrier, JourneePivot). La hauteur des cases, elle, suit directement la
+// largeur du calendrier (cqi, ci-dessus).
+@media (min-height: 900px) {
+    .aere {
+        // 11px → 12px
+        font-size: clamp(
+            #{$font-size-caption},
+            calc(#{$font-size-caption} + (100vw - 1200px) * 0.0025),
+            #{$font-size-label}
+        );
+    }
+
+    .aere .numero {
+        font-size: inherit;
+    }
 }

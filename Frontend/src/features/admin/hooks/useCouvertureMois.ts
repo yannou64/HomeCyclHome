@@ -13,10 +13,14 @@ export function useCouvertureMois(mois: string | null) {
         () => adminPlanningService.getCouverture(mois),
         [mois],
     );
-    const { data, isLoading, error } = useAsyncData<CouvertureMois | null>(
-        loadCouverture,
-        null,
-        'Impossible de charger la couverture des zones.',
-    );
-    return { couverture: data, isLoading, error };
+    const { data, isLoading, error, reload } =
+        useAsyncData<CouvertureMois | null>(
+            loadCouverture,
+            null,
+            'Impossible de charger la couverture des zones.',
+        );
+    // reload : la section Planning reste montée pendant la navigation (page
+    // d'un technicien, planification) ; elle recharge la couverture au retour,
+    // les créneaux ayant pu changer entre-temps
+    return { couverture: data, isLoading, error, reload };
 }

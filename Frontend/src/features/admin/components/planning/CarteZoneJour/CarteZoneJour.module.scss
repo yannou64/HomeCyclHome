@@ -30,30 +30,18 @@
 }
 
 // « Complet » ou « Non couverte » : en évidence au-dessus de la frise
+// « Non couverte » ou « Complet », à la place de la frise : même hauteur
+// que la frise compacte (13rem, FriseJournee), texte centré
 .etat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 13rem;
+    border: 1px dashed $color-border;
+    border-radius: $radius-md;
     font-size: $font-size-label;
     font-weight: $font-semibold;
     color: $color-text-primary;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-}
-
-// Mobile : miniature au-dessus de la frise. Desktop : côte à côte (maquette)
-.corps {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: $spacing-sm;
-    align-items: start;
-}
-
-@include desktop {
-    .corps {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    }
-}
-
-.disponibilites {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
 }

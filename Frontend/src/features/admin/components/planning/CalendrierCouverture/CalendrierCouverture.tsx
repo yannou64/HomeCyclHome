@@ -17,12 +17,20 @@ interface CalendrierCouvertureProps {
     datePivot: string; // 'AAAA-MM-JJ', mise en évidence
     onMoisChange: (mois: string) => void; // flèches : mois précédent ou suivant
     onChoisirDate: (jour: string) => void; // clic sur un jour : date pivot
+    // Mois ouvert au montage : celui de cette date. Absente : la date du jour
+    // (page de couverture). La page d'un technicien s'ouvre à la date pivot.
+    dateInitiale?: string;
+    // Cases plus hautes (page Planning, où le calendrier s'étend jusqu'au
+    // titre) ; absente : cases compactes (page d'un technicien)
+    aere?: boolean;
 }
 
 /**
  * Calendrier du mois (US-01 « Consulter le calendrier de couverture et
  * choisir une date 2.0 ») : chaque jour porte un point par zone couverte, de
- * la couleur de la zone (gris clair si elle est inactive). Vue mois de
+ * la couleur de la zone (gris clair si elle est inactive). Réutilisé tel quel
+ * par la page d'un technicien, dont l'API renvoie le même format réduit à lui
+ * (un seul point par jour). Vue mois de
  * FullCalendar, comme le calendrier de réservation (choix de Yannick).
  */
 export function CalendrierCouverture({
@@ -30,6 +38,8 @@ export function CalendrierCouverture({
     datePivot,
     onMoisChange,
     onChoisirDate,
+    dateInitiale,
+    aere = false,
 }: CalendrierCouvertureProps) {
     // Zones de chaque jour couvert, pour retrouver vite celles d'une case
     const zonesParJour = new Map(
@@ -37,12 +47,13 @@ export function CalendrierCouverture({
     );
 
     return (
-        <div className={styles.calendrier}>
+        <div className={`${styles.calendrier} ${aere ? styles.aere : ''}`}>
             <FullCalendar
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
-                // Lu une seule fois, au montage : le mois du jour (RG4)
-                initialDate={couverture.aujourdHui}
+                // Lu une seule fois, au montage : le mois de la date initiale,
+                // à défaut celui du jour (RG4 de la couverture)
+                initialDate={dateInitiale ?? couverture.aujourdHui}
                 locale={frLocale}
                 headerToolbar={{ left: 'prev', center: 'title', right: 'next' }}
                 fixedWeekCount={false}
@@ -72,7 +83,7 @@ interface ContenuCaseProps {
     zones: ZoneCouverte[];
 }
 
-/** Numéro du jour, puis un point par zone couverte ce jour-là (RG3). */
+/** Un point par zone couverte ce jour-là (RG3), puis le numéro, sur une ligne. */
 function ContenuCase({ numero, zones }: ContenuCaseProps) {
     return (
         <div className={styles.case}>

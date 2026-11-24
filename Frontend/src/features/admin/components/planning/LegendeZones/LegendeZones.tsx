@@ -24,10 +24,6 @@ export function LegendeZones({ jours }: LegendeZonesProps) {
 
     return (
         <aside className={styles.legende} aria-label="Légende du calendrier">
-            <h3 className={styles.titre}>Légende</h3>
-            <p className={styles.sousTitre}>
-                Zones (un point = zone couverte ce jour-là)
-            </p>
             {liste.length === 0 ? (
                 <p className={styles.vide}>Aucune zone couverte ce mois-ci.</p>
             ) : (

@@ -1,12 +1,14 @@
 import { apiClient } from '../../../shared/services/apiClient';
-import type { AdminUser, PaginatedUsers } from '../types/admin.types';
 import type {
     ApercuPlanification,
+    CalendrierTechnicien,
+    CarteTechnicien,
     CouvertureMois,
     PlanifierPayload,
     ResultatPlanification,
     CreateModelePayload,
     EcranPlanification,
+    InterventionTechnicien,
     Journee,
     ModeleDetail,
     ModelePlanification,
@@ -20,13 +22,6 @@ const base = (technicienId: string) =>
     `/admin/planning/techniciens/${technicienId}`;
 
 export const adminPlanningService = {
-    async getTechniciens(): Promise<AdminUser[]> {
-        const r = await apiClient.get<PaginatedUsers>('/admin/users', {
-            params: { role: 'technicien', limit: 100 },
-        });
-        return r.data.data;
-    },
-
     async getModeles(technicienId: string): Promise<ModeleResume[]> {
         const r = await apiClient.get<ModeleResume[]>(
             `${base(technicienId)}/modeles`,
@@ -126,6 +121,42 @@ export const adminPlanningService = {
         const r = await apiClient.get<Journee>('/admin/planning/journee', {
             params: { date },
         });
+        return r.data;
+    },
+
+    // Page d'un technicien : son calendrier d'un mois ('AAAA-MM')
+    async getCalendrierTechnicien(
+        technicienId: string,
+        mois: string,
+    ): Promise<CalendrierTechnicien> {
+        const r = await apiClient.get<CalendrierTechnicien>(
+            `${base(technicienId)}/calendrier`,
+            { params: { mois } },
+        );
+        return r.data;
+    },
+
+    // Page d'un technicien : ses interventions du jour, triées par heure
+    async getInterventionsTechnicien(
+        technicienId: string,
+        date: string,
+    ): Promise<InterventionTechnicien[]> {
+        const r = await apiClient.get<InterventionTechnicien[]>(
+            `${base(technicienId)}/interventions`,
+            { params: { date } },
+        );
+        return r.data;
+    },
+
+    // Page d'un technicien : sa journée ('AAAA-MM-JJ'), au format d'une carte
+    async getJourneeTechnicien(
+        technicienId: string,
+        date: string,
+    ): Promise<CarteTechnicien> {
+        const r = await apiClient.get<CarteTechnicien>(
+            `${base(technicienId)}/journee`,
+            { params: { date } },
+        );
         return r.data;
     },
 };

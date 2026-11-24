@@ -21,6 +21,8 @@ describe('US-01 Créer un modèle de planification 2.0', () => {
             trouverModele: jest.fn().mockResolvedValue(null),
             supprimerModele: jest.fn().mockResolvedValue(true),
             trouverCreneauxEntre: jest.fn().mockResolvedValue([]),
+            trouverTechnicien: jest.fn().mockResolvedValue(null),
+            trouverInterventionsDuJour: jest.fn().mockResolvedValue([]),
             trouverTechniciens: jest.fn().mockResolvedValue([]),
             trouverZones: jest.fn().mockResolvedValue([]),
             derniersCreneaux: jest.fn().mockResolvedValue({

@@ -8,6 +8,7 @@ import {
     PLANNING_REPO,
     type CreneauAvecZone,
     type IPlanningRepository,
+    type TechnicienResume,
     type ZoneResume,
 } from '../repositories/planning.repository.interface';
 import {
@@ -33,6 +34,36 @@ function grouperPar(
 /** Un instant → son jour de Paris ; pas de dernier créneau → null. */
 const jourOuNull = (instant: Date | undefined): JourCalendaire | null =>
     instant ? jourTravail(instant) : null;
+
+/**
+ * Carte d'un technicien pour une journée : sa zone du jour, ses créneaux en
+ * minutes d'horloge à Paris, « planifié jusqu'au ». Exportée pour la journée
+ * de la page d'un technicien (« Consulter le planning d'un technicien 2.0 »).
+ *
+ * @param siens   ses créneaux de la journée
+ * @param dernier début de son dernier créneau, toutes dates confondues
+ */
+export function carteTechnicien(
+    t: TechnicienResume,
+    siens: CreneauAvecZone[],
+    dernier: Date | undefined,
+): TechnicienJourneeResponseDto {
+    return {
+        id: t.id,
+        prenom: t.prenom,
+        nom: t.nom,
+        // RG8 : sa zone du jour, il n'en a qu'une (RG2 de l'épique)
+        zone: siens[0]?.zone ?? null,
+        creneaux: siens
+            .map((c) => ({
+                debut: minutesDuJour(c.dateDebut),
+                statut: c.statut,
+            }))
+            .sort((a, b) => a.debut - b.debut),
+        // RG5 : jour de son dernier créneau, null = non planifié
+        planifieJusquau: jourOuNull(dernier),
+    };
+}
 
 /**
  * Journée pivot de la page Planning (US-02 « Consulter la journée des
@@ -68,26 +99,13 @@ export class GetJourneeUseCase {
         // inactives qui ont des créneaux ce jour-là (RG11)
         const cartesTechniciens: TechnicienJourneeResponseDto[] = techniciens
             .filter((t) => t.isActif || parTechnicien.has(t.id))
-            .map((t) => {
-                const siens = parTechnicien.get(t.id) ?? [];
-                return {
-                    id: t.id,
-                    prenom: t.prenom,
-                    nom: t.nom,
-                    // RG8 : sa zone du jour, il n'en a qu'une (RG2 de l'épique)
-                    zone: siens[0]?.zone ?? null,
-                    creneaux: siens
-                        .map((c) => ({
-                            debut: minutesDuJour(c.dateDebut),
-                            statut: c.statut,
-                        }))
-                        .sort((a, b) => a.debut - b.debut),
-                    // RG5 : jour de son dernier créneau, null = non planifié
-                    planifieJusquau: jourOuNull(
-                        derniers.parTechnicien.get(t.id),
-                    ),
-                };
-            });
+            .map((t) =>
+                carteTechnicien(
+                    t,
+                    parTechnicien.get(t.id) ?? [],
+                    derniers.parTechnicien.get(t.id),
+                ),
+            );
 
         const cartesZones: ZoneJourneeResponseDto[] = zones
             .filter((z) => z.isActive || parZone.has(z.id))

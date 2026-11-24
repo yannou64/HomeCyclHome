@@ -1,0 +1,92 @@
+@use '../../../../../app/styles/index' as *;
+
+// Même carte que la section Planning (AdminPlanningSection), recopiée :
+// `composes` ne fonctionne pas d'un fichier SCSS à l'autre avec Vite
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    background: white;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    padding: $spacing-lg;
+    font-family: $font-primary;
+}
+
+// « ← Retour » à gauche, les actions à droite (à la ligne si la place manque)
+.barreHaut {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-xs $spacing-sm;
+}
+
+.retour {
+    align-self: center;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+    cursor: pointer;
+
+    &:hover {
+        color: $color-text-primary;
+        text-decoration: underline;
+    }
+}
+
+// Mobile d'abord : calendrier puis journée ; côte à côte sur desktop
+// (maquette « Page d'un technicien »)
+.grille {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+    align-items: start;
+}
+
+@include desktop {
+    .grille {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+// Colonne de gauche : calendrier, puis interventions du jour
+.gauche {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    min-width: 0;
+}
+
+.carteCalendrier {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    // Largeur plafonnée : au-delà, les cases s'étirent sans rien montrer de
+    // plus (choix de Yannick du 24/11/2026)
+    max-width: 26rem;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+}
+
+// Nom du technicien, en haut de la colonne de gauche
+.nom {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.info {
+    font-size: $font-size-body;
+    color: $color-text-label;
+}
+
+.error {
+    color: $color-error;
+    font-size: $font-size-label;
+}

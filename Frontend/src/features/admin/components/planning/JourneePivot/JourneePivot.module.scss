@@ -1,40 +1,166 @@
 @use '../../../../../app/styles/index' as *;
 
-.journee {
+.page {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
     font-family: $font-primary;
 }
 
-.date {
-    font-size: $font-size-body;
-    color: $color-text-label;
-}
-
-.titre {
-    margin-bottom: $spacing-sm;
-    font-size: $font-size-h2;
-    font-weight: $font-bold;
-    color: $color-text-primary;
-}
-
-// Mobile : une carte par ligne. Desktop (maquette) : trois techniciens, deux
-// zones par ligne
-.grilleTechniciens,
-.grilleZones {
+// Partie haute. Mobile : titre, journée, calendrier, empilés. Desktop : deux
+// colonnes et deux rangées :
+//   titre            | calendrier et légende (sur les deux rangées)
+//   date et onglets  |
+// Le calendrier va du haut du titre au bas des onglets.
+.haut {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: $spacing-sm;
+    gap: $spacing-md;
 }
 
 @include desktop {
-    .grilleTechniciens {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    .haut {
+        // Largeur fixe pour la colonne de gauche, et non max-content : l'onglet
+        // sélectionné passe en gras, donc s'élargit ; une colonne à la
+        // largeur du contenu ferait bouger le calendrier à chaque clic.
+        // 16rem : l'intitulé le plus long, en gras, avec la marge du bouton.
+        grid-template-columns: 16rem minmax(20rem, 1fr);
+        grid-template-rows: auto 1fr;
+
+        // Le calendrier (et sa légende), troisième enfant : sur les deux
+        // rangées ; 30rem au plus, car au-delà ses cases s'étirent sans rien
+        // montrer de plus ; calé à droite, son bord droit s'aligne sur celui
+        // du cadre des cartes. L'espace libre reste au milieu.
+        > :nth-child(3) {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            justify-self: end;
+            width: 100%;
+            max-width: 30rem;
+        }
     }
 
-    .grilleZones {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .zoneTitre {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .blocJournee {
+        grid-column: 1;
+        grid-row: 2;
+    }
+}
+
+// Grand écran (ordinateur, assez haut pour ne pas faire défiler) : le
+// calendrier grandit en continu de 30rem (écran de 1200px) à 40rem (1600px et
+// plus), sans palier visible (choix de Yannick du 24/11/2026). 0.4 = 10rem
+// gagnés sur 400px d'écran.
+@include desktop {
+    @media (min-height: 900px) {
+        .haut > :nth-child(3) {
+            max-width: clamp(
+                30rem,
+                calc(30rem + (100vw - 1200px) * 0.4),
+                40rem
+            );
+        }
+    }
+}
+
+// Bloc journée, sans contour : la date en haut, les onglets en bas, sur le
+// bord bas du cadre du calendrier
+.blocJournee {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: $spacing-sm;
+}
+
+// « JOURNÉE DU » et la date sur une seule ligne, alignés sur leur ligne de
+// base ; line-height: 1 : le haut du texte touche le haut du bloc
+.date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $spacing-xs;
+    line-height: 1;
+    font-size: $font-size-label;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dateValeur {
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+// Onglets : deux boutons l'un au-dessus de l'autre, sans conteneur visible
+// (choix de Yannick du 24/11/2026). !important : les classes Tailwind du
+// composant shadcn l'emporteraient sinon.
+.tabsList {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 !important;
+    gap: $spacing-xs !important;
+    background: none !important;
+}
+
+// Onglet non sélectionné : bouton blanc, bordé de gris. Onglet sélectionné :
+// même liseré orange que le cadre des cartes qu'il remplit.
+.tabsTrigger {
+    justify-content: center !important; // intitulé centré dans le bouton
+    width: 100% !important;
+    padding: $spacing-xs $spacing-sm !important;
+    border: 2px solid $color-border !important;
+    border-radius: $radius-md !important;
+    background: white !important;
+    box-shadow: none !important;
+    font-family: $font-primary !important;
+    font-size: $font-size-body !important;
+    font-weight: $font-medium !important;
+    color: $color-text-label !important;
+
+    &:hover {
+        color: $color-text-primary !important;
+    }
+
+    &[data-state='active'] {
+        border-color: $color-myOrange !important;
+        color: $color-myOrange !important;
+        font-weight: $font-bold !important;
+    }
+}
+
+// Cadre des cartes du jour, sur toute la largeur : mêmes coins et même marge
+// intérieure que le calendrier, et le liseré orange de l'onglet sélectionné
+// (on voit quel onglet remplit le cadre)
+.cadre {
+    padding: $spacing-sm;
+    border: 2px solid $color-myOrange;
+    border-radius: $radius-lg;
+    background: white;
+}
+
+// Une rangée de cartes de largeur fixe (choix de Yannick du 24/11/2026) :
+// les cartes ne s'étirent pas. Elles sont regroupées au centre avec un écart
+// constant : les deux marges extérieures sont égales, sans creux entre les
+// cartes. Quand la place manque, elles passent à la ligne, centrées aussi.
+.rangee {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-lg;
+
+    > * {
+        flex: 0 0 16rem; // largeur fixe : ni étirée, ni réduite
+        max-width: 100%; // sur un écran plus étroit qu'une carte
     }
 }
 
