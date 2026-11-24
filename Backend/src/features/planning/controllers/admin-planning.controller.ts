@@ -37,6 +37,8 @@ import {
 } from '../dto/output/journee-response.dto';
 import { GetCalendrierTechnicienUseCase } from '../use-cases/get-calendrier-technicien.use-case';
 import { GetJourneeTechnicienUseCase } from '../use-cases/get-journee-technicien.use-case';
+import { GetInterventionsTechnicienUseCase } from '../use-cases/get-interventions-technicien.use-case';
+import { InterventionTechnicienResponseDto } from '../dto/output/intervention-technicien-response.dto';
 import { ModeleDetailResponseDto } from '../dto/output/modele-detail-response.dto';
 import { ModelePlanificationResponseDto } from '../dto/output/modele-planification-response.dto';
 import { ModeleResumeResponseDto } from '../dto/output/modele-resume-response.dto';
@@ -73,6 +75,7 @@ export class AdminPlanningController {
         private readonly planifierTechnicienUseCase: PlanifierTechnicienUseCase,
         private readonly getCalendrierTechnicienUseCase: GetCalendrierTechnicienUseCase,
         private readonly getJourneeTechnicienUseCase: GetJourneeTechnicienUseCase,
+        private readonly getInterventionsTechnicienUseCase: GetInterventionsTechnicienUseCase,
     ) {}
 
     // Calendrier de couverture d'un mois (US-01 « Consulter le calendrier de
@@ -125,6 +128,23 @@ export class AdminPlanningController {
         @Query() query: GetJourneeQueryDto,
     ) {
         return this.getJourneeTechnicienUseCase.execute(
+            technicienId,
+            query.date,
+        );
+    }
+
+    // Interventions du jour (US-02 « Consulter les interventions d'un
+    // technicien 2.0 »)
+    @ApiOkResponse({
+        description: 'Interventions du jour portées par ses créneaux, triées',
+        type: [InterventionTechnicienResponseDto],
+    })
+    @Get('techniciens/:technicienId/interventions')
+    getInterventionsTechnicien(
+        @Param('technicienId') technicienId: string,
+        @Query() query: GetJourneeQueryDto,
+    ) {
+        return this.getInterventionsTechnicienUseCase.execute(
             technicienId,
             query.date,
         );

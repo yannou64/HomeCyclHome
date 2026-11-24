@@ -3,6 +3,7 @@ import { usePageTechnicien } from '../../../hooks/usePageTechnicien';
 import type { TechnicienNomme } from '../../../types/planning.types';
 import { CalendrierCouverture } from '../CalendrierCouverture/CalendrierCouverture';
 import { EnteteTechnicien } from '../EnteteTechnicien/EnteteTechnicien';
+import { InterventionsDuJour } from '../InterventionsDuJour/InterventionsDuJour';
 import { JourneeTechnicien } from '../JourneeTechnicien/JourneeTechnicien';
 import styles from './PageTechnicien.module.scss';
 
@@ -17,7 +18,9 @@ interface PageTechnicienProps {
 /**
  * Page d'un technicien (US-01 « Consulter le calendrier et la journée d'un
  * technicien 2.0 », maquette « Page d'un technicien ») : en-tête et boutons,
- * son calendrier (un point par jour planifié) et sa journée du jour choisi.
+ * son calendrier (un point par jour planifié), sa journée du jour choisi, et
+ * ses interventions de ce jour (US-02 « Consulter les interventions d'un
+ * technicien 2.0 »).
  * Lecture seule (RG7).
  */
 export function PageTechnicien({
@@ -29,11 +32,13 @@ export function PageTechnicien({
     // Jour affiché et mois du calendrier : au départ, ceux de la date pivot
     const [date, setDate] = useState(dateInitiale);
     const [mois, setMois] = useState(dateInitiale.slice(0, 7));
-    const { calendrier, journee, error } = usePageTechnicien(
-        technicienId,
-        mois,
-        date,
-    );
+    const {
+        calendrier,
+        journee,
+        interventions,
+        isLoadingInterventions,
+        error,
+    } = usePageTechnicien(technicienId, mois, date);
 
     const technicien = calendrier?.technicien;
     const nom = technicien ? `${technicien.prenom} ${technicien.nom}` : '';
@@ -80,6 +85,12 @@ export function PageTechnicien({
                         </div>
                         <JourneeTechnicien date={date} journee={journee} />
                     </div>
+
+                    {/* US-02 : la liste du jour choisi, sous le calendrier */}
+                    <InterventionsDuJour
+                        interventions={interventions}
+                        isLoading={isLoadingInterventions}
+                    />
                 </>
             )}
         </div>

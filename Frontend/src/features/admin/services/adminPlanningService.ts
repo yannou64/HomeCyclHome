@@ -8,6 +8,7 @@ import type {
     ResultatPlanification,
     CreateModelePayload,
     EcranPlanification,
+    InterventionTechnicien,
     Journee,
     ModeleDetail,
     ModelePlanification,
@@ -131,6 +132,18 @@ export const adminPlanningService = {
         const r = await apiClient.get<CalendrierTechnicien>(
             `${base(technicienId)}/calendrier`,
             { params: { mois } },
+        );
+        return r.data;
+    },
+
+    // Page d'un technicien : ses interventions du jour, triées par heure
+    async getInterventionsTechnicien(
+        technicienId: string,
+        date: string,
+    ): Promise<InterventionTechnicien[]> {
+        const r = await apiClient.get<InterventionTechnicien[]>(
+            `${base(technicienId)}/interventions`,
+            { params: { date } },
         );
         return r.data;
     },

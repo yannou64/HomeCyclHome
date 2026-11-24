@@ -72,6 +72,27 @@ export type DerniersCreneaux = {
     parZone: Map<string, Date>;
 };
 
+/**
+ * Une intervention portée par des créneaux réservés d'un technicien, sur une
+ * journée : ses faits seulement. Le use case en déduit les heures de Paris et
+ * l'ordre (« Consulter le planning d'un technicien 2.0 », RG4).
+ */
+export type InterventionDuJour = {
+    id: string;
+    statut: 'Planifiee' | 'Realisee' | 'Annulee' | 'EnConflit';
+    premierCreneau: Date; // début du premier créneau réservé (UTC)
+    dernierCreneau: Date; // début du dernier créneau réservé (UTC)
+    forfait: string;
+    client: { prenom: string; nom: string; telephone: string; email: string };
+    cycle: { marque: string; type: string }; // jamais le libellé du client
+    adresse: {
+        numero: string | null;
+        rue: string;
+        codePostal: string;
+        ville: string;
+    };
+};
+
 /** Ce qu'une planification ferait disparaître sur sa période (RG10). */
 export type ComptagePeriode = {
     creneaux: number; // tous statuts confondus
@@ -168,6 +189,17 @@ export interface IPlanningRepository {
         fin: Date,
         technicienId?: string,
     ): Promise<CreneauAvecZone[]>;
+
+    /**
+     * Interventions qui ont au moins un créneau réservé du technicien dans
+     * [debut, fin[, avec leurs détails. Une intervention sans créneau n'y
+     * figure donc jamais (RG4).
+     */
+    trouverInterventionsDuJour(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<InterventionDuJour[]>;
 
     /** Le technicien `technicienId`, ou null si l'id n'en désigne pas un. */
     trouverTechnicien(technicienId: string): Promise<TechnicienResume | null>;

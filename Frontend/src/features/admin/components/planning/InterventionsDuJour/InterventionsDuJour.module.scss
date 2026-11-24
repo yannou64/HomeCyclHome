@@ -1,0 +1,28 @@
+@use '../../../../../app/styles/index' as *;
+
+.titre {
+    margin-bottom: $spacing-sm;
+    font-family: $font-primary;
+    font-size: $font-size-h2;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+// Mobile d'abord : une carte par ligne ; deux sur desktop (maquette)
+.grille {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+}
+
+@include desktop {
+    .grille {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.info {
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    color: $color-text-label;
+}

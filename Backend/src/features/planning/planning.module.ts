@@ -5,6 +5,7 @@ import { PLANNING_REPO } from './repositories/planning.repository.interface';
 import { ApercuPlanificationUseCase } from './use-cases/apercu-planification.use-case';
 import { GetEcranPlanificationUseCase } from './use-cases/get-ecran-planification.use-case';
 import { GetCalendrierTechnicienUseCase } from './use-cases/get-calendrier-technicien.use-case';
+import { GetInterventionsTechnicienUseCase } from './use-cases/get-interventions-technicien.use-case';
 import { GetJourneeTechnicienUseCase } from './use-cases/get-journee-technicien.use-case';
 import { PlanifierTechnicienUseCase } from './use-cases/planifier-technicien.use-case';
 import { CreateModelePlanificationUseCase } from './use-cases/create-modele-planification.use-case';
@@ -33,6 +34,7 @@ import { UpdateModelePlanificationUseCase } from './use-cases/update-modele-plan
         PlanifierTechnicienUseCase,
         GetCalendrierTechnicienUseCase,
         GetJourneeTechnicienUseCase,
+        GetInterventionsTechnicienUseCase,
     ],
 })
 export class PlanningModule {}

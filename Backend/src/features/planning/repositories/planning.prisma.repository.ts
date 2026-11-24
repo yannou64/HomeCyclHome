@@ -18,6 +18,7 @@ import {
     CreateModeleData,
     CreneauAvecZone,
     DerniersCreneaux,
+    InterventionDuJour,
     IPlanningRepository,
     ModeleAvecZone,
     ModeleDetail,
@@ -408,6 +409,95 @@ export class PlanningPrismaRepository implements IPlanningRepository {
                 isActive: c.zone.is_active,
             },
         }));
+    }
+
+    async trouverInterventionsDuJour(
+        technicienId: string,
+        debut: Date,
+        fin: Date,
+    ): Promise<InterventionDuJour[]> {
+        // On part des créneaux réservés du technicien ce jour-là : seule une
+        // intervention portée par un créneau peut apparaître (RG4)
+        const reserves = await this.prisma.creneau.findMany({
+            where: {
+                technicien_id: technicienId,
+                statut: 'InterventionReservee',
+                intervention_id: { not: null },
+                date_debut: { gte: debut, lt: fin },
+            },
+            orderBy: { date_debut: 'asc' },
+            select: { date_debut: true, intervention_id: true },
+        });
+
+        // Premier et dernier créneau réservé de chaque intervention (son bloc)
+        const bornes = new Map<string, { premier: Date; dernier: Date }>();
+        for (const { intervention_id: id, date_debut } of reserves) {
+            if (!id) continue; // déjà exclu par la requête ; rassure TypeScript
+            const b = bornes.get(id);
+            // Triés par heure : le premier vu est le premier, le dernier vu
+            // est le dernier
+            if (b) b.dernier = date_debut;
+            else bornes.set(id, { premier: date_debut, dernier: date_debut });
+        }
+        if (bornes.size === 0) return [];
+
+        // Les détails, en une seule requête : forfait, client, cycle (marque
+        // et type), adresse de l'intervention
+        const interventions = await this.prisma.intervention.findMany({
+            where: { id: { in: [...bornes.keys()] } },
+            select: {
+                id: true,
+                statut: true,
+                historique_prix: {
+                    select: { forfait: { select: { nom: true } } },
+                },
+                client: {
+                    select: {
+                        prenom: true,
+                        nom: true,
+                        telephone: true,
+                        email: true,
+                    },
+                },
+                cycle: {
+                    select: {
+                        marque: { select: { libelle: true } },
+                        type_cycle: { select: { libelle: true } },
+                    },
+                },
+                adresse: {
+                    select: {
+                        numero: true,
+                        rue: true,
+                        code_postal: true,
+                        ville: true,
+                    },
+                },
+            },
+        });
+
+        return interventions.flatMap((i) => {
+            const b = bornes.get(i.id);
+            if (!b) return []; // impossible : lue par ses ids
+            return {
+                id: i.id,
+                statut: i.statut,
+                premierCreneau: b.premier,
+                dernierCreneau: b.dernier,
+                forfait: i.historique_prix.forfait.nom,
+                client: i.client,
+                cycle: {
+                    marque: i.cycle.marque.libelle,
+                    type: i.cycle.type_cycle.libelle,
+                },
+                adresse: {
+                    numero: i.adresse.numero,
+                    rue: i.adresse.rue,
+                    codePostal: i.adresse.code_postal,
+                    ville: i.adresse.ville,
+                },
+            };
+        });
     }
 
     async trouverTechnicien(

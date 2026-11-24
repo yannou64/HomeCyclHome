@@ -154,6 +154,23 @@ export type CalendrierTechnicien = CouvertureMois & {
     technicien: TechnicienNomme;
 };
 
+/** Une intervention du jour sur la page d'un technicien (lecture seule). */
+export type InterventionTechnicien = {
+    id: string;
+    statut: 'Planifiee' | 'Realisee' | 'Annulee' | 'EnConflit';
+    debut: number; // minutes d'horloge à Paris (510 = 8h30)
+    fin: number;
+    forfait: string;
+    client: { prenom: string; nom: string; telephone: string; email: string };
+    cycle: { marque: string; type: string };
+    adresse: {
+        numero: string | null;
+        rue: string;
+        codePostal: string;
+        ville: string;
+    };
+};
+
 /** La journée pivot : une carte par technicien, une carte par zone. */
 export type Journee = {
     date: string;

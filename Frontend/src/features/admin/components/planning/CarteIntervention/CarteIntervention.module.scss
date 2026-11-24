@@ -1,0 +1,77 @@
+@use '../../../../../app/styles/index' as *;
+
+.carte {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+    font-family: $font-primary;
+}
+
+// En conflit : bordure du signal de conflit (couleurs d'état)
+.conflit {
+    border-color: $color-danger;
+}
+
+.entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-xs;
+}
+
+.titre {
+    font-size: $font-size-body;
+    font-weight: $font-bold;
+    color: $color-text-primary;
+}
+
+.reperes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+}
+
+// Heures du bloc : pastille orange (maquette)
+.badgeHeure {
+    padding: 2px $spacing-sm;
+    border-radius: $radius-lg;
+    background-color: $color-myOrange;
+    color: white;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    white-space: nowrap;
+}
+
+// Repère « en conflit » : contour du signal de conflit
+.badgeConflit {
+    padding: 2px $spacing-sm;
+    border: 1px solid $color-danger;
+    border-radius: $radius-lg;
+    color: $color-danger;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+}
+
+// Libellés à gauche, valeurs à droite
+.details {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: $spacing-md;
+    row-gap: $spacing-xs;
+    margin: 0;
+    font-size: $font-size-body;
+
+    dt {
+        color: $color-text-label;
+    }
+
+    dd {
+        margin: 0;
+        color: $color-text-primary;
+        overflow-wrap: anywhere; // une adresse e-mail longue ne déborde pas
+    }
+}

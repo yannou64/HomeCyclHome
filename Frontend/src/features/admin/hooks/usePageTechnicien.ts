@@ -4,13 +4,14 @@ import { adminPlanningService } from '../services/adminPlanningService';
 import type {
     CalendrierTechnicien,
     CarteTechnicien,
+    InterventionTechnicien,
 } from '../types/planning.types';
 
 /**
  * Page d'un technicien (« Consulter le planning d'un technicien 2.0 ») : son
- * calendrier du mois affiché et sa journée du jour choisi. Deux chargements
- * indépendants : changer de jour ne recharge pas le mois, et inversement
- * (séquence de l'US-01, étapes 10 à 17).
+ * calendrier du mois affiché, sa journée et ses interventions du jour choisi.
+ * Chargements indépendants : changer de jour ne recharge pas le mois, et
+ * inversement (séquences des US-01 et US-02).
  */
 export function usePageTechnicien(
     technicienId: string,
@@ -26,6 +27,11 @@ export function usePageTechnicien(
         () => adminPlanningService.getJourneeTechnicien(technicienId, date),
         [technicienId, date],
     );
+    const loadInterventions = useCallback(
+        () =>
+            adminPlanningService.getInterventionsTechnicien(technicienId, date),
+        [technicienId, date],
+    );
 
     const calendrier = useAsyncData<CalendrierTechnicien | null>(
         loadCalendrier,
@@ -38,9 +44,17 @@ export function usePageTechnicien(
         'Impossible de charger la journée du technicien.',
     );
 
+    const interventions = useAsyncData<InterventionTechnicien[]>(
+        loadInterventions,
+        [],
+        'Impossible de charger les interventions du technicien.',
+    );
+
     return {
         calendrier: calendrier.data,
         journee: journee.data,
-        error: calendrier.error ?? journee.error,
+        interventions: interventions.data,
+        isLoadingInterventions: interventions.isLoading,
+        error: calendrier.error ?? journee.error ?? interventions.error,
     };
 }
