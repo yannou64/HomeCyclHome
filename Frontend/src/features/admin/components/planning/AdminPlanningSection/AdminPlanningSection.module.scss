@@ -17,25 +17,28 @@
     color: $color-text-primary;
 }
 
-// Calendrier et légende côte à côte sur desktop (maquette), empilés sinon
-.haut {
+// Calendrier et légende dans le même cadre. Mobile : la légende sous le
+// calendrier. Desktop : en colonne étroite à droite, centrée en hauteur
+.carteCalendrier {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: $spacing-md;
-    align-items: start;
-}
-
-@include desktop {
-    .haut {
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    }
-}
-
-.carteCalendrier {
+    gap: $spacing-sm;
     padding: $spacing-sm;
     border: 1px solid $color-border;
     border-radius: $radius-lg;
     background: white;
+}
+
+@include desktop {
+    .carteCalendrier {
+        grid-template-columns: minmax(0, 1fr) max-content;
+
+        // La légende (dernier enfant) : centrée en hauteur à côté du
+        // calendrier
+        > :last-child {
+            align-self: center;
+        }
+    }
 }
 
 .info {

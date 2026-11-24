@@ -71,3 +71,14 @@
 .reservee {
     background-color: $color-myOrange;
 }
+
+// Taille compacte (cartes de la page Planning) : 1rem par heure. Les
+// positions sont en pourcentage, elles suivent la hauteur. Une heure sur
+// deux est écrite (7h, 9h … 19h) : toutes se chevaucheraient.
+.compacte {
+    height: 13rem;
+
+    .heure:nth-child(even) .libelle {
+        display: none;
+    }
+}

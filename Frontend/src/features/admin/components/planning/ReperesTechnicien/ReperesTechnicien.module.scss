@@ -1,0 +1,30 @@
+@use '../../../../../app/styles/index' as *;
+
+// Une ligne : « Planifié jusqu'au » à gauche, la zone du jour à droite,
+// alignée sur le bord droit du calendrier (choix de Yannick du 24/11/2026)
+.reperes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px $spacing-sm;
+    // Hauteur fixe, celle de la pastille de zone : sans zone ce jour-là (ou
+    // pendant le chargement), le cadre du calendrier ne bouge pas
+    min-height: 1.5rem;
+    font-family: $font-primary;
+}
+
+.planifie {
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+// Zone du jour : même pastille que sur la carte du technicien
+.badge {
+    padding: 2px $spacing-xs;
+    border-radius: $radius-sm;
+    background-color: var(--badge-couleur);
+    color: white;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+}

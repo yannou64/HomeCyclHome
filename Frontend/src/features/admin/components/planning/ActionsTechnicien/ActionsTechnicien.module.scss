@@ -1,0 +1,43 @@
+@use '../../../../../app/styles/index' as *;
+
+// Déplacé de EnteteTechnicien : les boutons sont sur la ligne de « ← Retour »
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+}
+
+// Libérer : action destructrice, contour $color-danger (maquette)
+.boutonLiberer {
+    padding: $spacing-xs $spacing-md;
+    border: 1px solid $color-danger;
+    border-radius: $radius-md;
+    background: white;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: $color-danger;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// Planifier : bouton principal
+.boutonPlanifier {
+    padding: $spacing-xs $spacing-md;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}

@@ -3,8 +3,8 @@
 .carte {
     display: flex;
     flex-direction: column;
-    gap: $spacing-sm;
-    padding: $spacing-md;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
     border: 1px solid $color-border;
     border-radius: $radius-lg;
     background: white;
@@ -61,9 +61,9 @@
     display: grid;
     grid-template-columns: max-content minmax(0, 1fr);
     column-gap: $spacing-md;
-    row-gap: $spacing-xs;
+    row-gap: 2px;
     margin: 0;
-    font-size: $font-size-body;
+    font-size: $font-size-label;
 
     dt {
         color: $color-text-label;

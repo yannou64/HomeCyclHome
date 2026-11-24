@@ -1,24 +1,19 @@
 @use '../../../../../app/styles/index' as *;
 
 .titre {
-    margin-bottom: $spacing-sm;
+    margin-bottom: $spacing-xs;
     font-family: $font-primary;
-    font-size: $font-size-h2;
+    font-size: $font-size-body;
     font-weight: $font-bold;
     color: $color-text-primary;
 }
 
-// Mobile d'abord : une carte par ligne ; deux sur desktop (maquette)
+// Dans la colonne de gauche de la page : autant de cartes par ligne que la
+// largeur en permet (au moins 16rem chacune), une seule sur mobile
 .grille {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: $spacing-md;
-}
-
-@include desktop {
-    .grille {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: $spacing-sm;
 }
 
 .info {

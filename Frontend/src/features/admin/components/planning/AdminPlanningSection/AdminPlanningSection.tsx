@@ -81,36 +81,50 @@ export function AdminPlanningSection() {
 
     return (
         <div className={styles.wrapper}>
-            <h2 className={styles.title}>Planning</h2>
-
-            {error && <p className={styles.error}>{error}</p>}
-            {!couverture && !error && (
-                <p className={styles.info}>Chargement…</p>
+            {/* Avant la couverture : le titre seul, et l'état. Ensuite, le
+                titre entre dans la grille de la partie haute (JourneePivot),
+                pour que le calendrier s'aligne sur lui */}
+            {!couverture && (
+                <>
+                    <h2 className={styles.title}>Planning</h2>
+                    {error ? (
+                        <p className={styles.error}>{error}</p>
+                    ) : (
+                        <p className={styles.info}>Chargement…</p>
+                    )}
+                </>
             )}
 
+            {/* La journée organise la page : calendrier et légende en haut,
+                date et onglets sous la légende, cartes sur toute la largeur
+                en dessous (choix de Yannick du 24/11/2026) */}
             {couverture && (
-                <div className={styles.haut}>
-                    <div className={styles.carteCalendrier}>
-                        <CalendrierCouverture
-                            couverture={couverture}
-                            datePivot={datePivot}
-                            // Au retour d'une page technicien : le mois de la
-                            // date pivot, pas celui du jour
-                            dateInitiale={datePivot}
-                            onMoisChange={changerDeMois}
-                            onChoisirDate={setDateChoisie}
-                        />
-                    </div>
-                    <LegendeZones jours={couverture.jours} />
-                </div>
+                <JourneePivot
+                    date={datePivot}
+                    onVoirPlanning={(technicienId) =>
+                        setVue({ ecran: 'technicien', technicienId })
+                    }
+                    titre={<h2 className={styles.title}>Planning</h2>}
+                    calendrier={
+                        // Calendrier et légende dans le même cadre : la
+                        // légende en colonne étroite à droite (choix de
+                        // Yannick du 24/11/2026)
+                        <div className={styles.carteCalendrier}>
+                            <CalendrierCouverture
+                                couverture={couverture}
+                                datePivot={datePivot}
+                                // Au retour d'une page technicien : le mois
+                                // de la date pivot, pas celui du jour
+                                dateInitiale={datePivot}
+                                onMoisChange={changerDeMois}
+                                onChoisirDate={setDateChoisie}
+                                aere // il s'étend jusqu'au titre
+                            />
+                            <LegendeZones jours={couverture.jours} />
+                        </div>
+                    }
+                />
             )}
-
-            <JourneePivot
-                date={datePivot}
-                onVoirPlanning={(technicienId) =>
-                    setVue({ ecran: 'technicien', technicienId })
-                }
-            />
         </div>
     );
 }

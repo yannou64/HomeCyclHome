@@ -21,6 +21,12 @@ interface FriseJourneeProps {
     blocs: BlocFrise[];
     couleur?: string; // teinte des blocs pleins (zone choisie, ou gris)
     titre?: string; // nom accessible ; absent : frise décorative (aria-hidden)
+    // Hauteur de la frise :
+    // - 'normale' (défaut, 26rem) : formulaire d'un modèle, journée de la
+    //   page d'un technicien ;
+    // - 'compacte' (13rem, une heure sur deux écrite) : cartes de la page
+    //   Planning, qui doivent tenir sur une rangée.
+    taille?: 'normale' | 'compacte';
 }
 
 /**
@@ -36,10 +42,13 @@ export function FriseJournee({
     blocs,
     couleur = 'transparent',
     titre,
+    taille = 'normale',
 }: FriseJourneeProps) {
     return (
         <div
-            className={styles.frise}
+            className={`${styles.frise} ${
+                taille === 'normale' ? '' : styles[taille]
+            }`}
             {...(titre
                 ? { role: 'img', 'aria-label': titre }
                 : { 'aria-hidden': true })}

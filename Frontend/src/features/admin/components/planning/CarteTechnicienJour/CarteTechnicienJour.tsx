@@ -48,6 +48,7 @@ export function CarteTechnicienJour({
             </header>
 
             <FriseJournee
+                taille="compacte" // la rangée de cartes tient sans défiler
                 blocs={blocs}
                 titre={
                     blocs.length

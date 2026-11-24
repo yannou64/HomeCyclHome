@@ -13,8 +13,17 @@
     font-family: $font-primary;
 }
 
+// « ← Retour » à gauche, les actions à droite (à la ligne si la place manque)
+.barreHaut {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-xs $spacing-sm;
+}
+
 .retour {
-    align-self: flex-start;
+    align-self: center;
     padding: 0;
     border: none;
     background: none;
@@ -44,19 +53,32 @@
     }
 }
 
+// Colonne de gauche : calendrier, puis interventions du jour
+.gauche {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    min-width: 0;
+}
+
 .carteCalendrier {
     display: flex;
     flex-direction: column;
     gap: $spacing-xs;
+    // Largeur plafonnée : au-delà, les cases s'étirent sans rien montrer de
+    // plus (choix de Yannick du 24/11/2026)
+    max-width: 26rem;
     padding: $spacing-sm;
     border: 1px solid $color-border;
     border-radius: $radius-lg;
     background: white;
 }
 
-.aide {
-    font-size: $font-size-label;
-    color: $color-text-label;
+// Nom du technicien, en haut de la colonne de gauche
+.nom {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-primary;
 }
 
 .info {

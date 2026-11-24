@@ -20,6 +20,9 @@ interface CalendrierCouvertureProps {
     // Mois ouvert au montage : celui de cette date. Absente : la date du jour
     // (page de couverture). La page d'un technicien s'ouvre à la date pivot.
     dateInitiale?: string;
+    // Cases plus hautes (page Planning, où le calendrier s'étend jusqu'au
+    // titre) ; absente : cases compactes (page d'un technicien)
+    aere?: boolean;
 }
 
 /**
@@ -36,6 +39,7 @@ export function CalendrierCouverture({
     onMoisChange,
     onChoisirDate,
     dateInitiale,
+    aere = false,
 }: CalendrierCouvertureProps) {
     // Zones de chaque jour couvert, pour retrouver vite celles d'une case
     const zonesParJour = new Map(
@@ -43,7 +47,7 @@ export function CalendrierCouverture({
     );
 
     return (
-        <div className={styles.calendrier}>
+        <div className={`${styles.calendrier} ${aere ? styles.aere : ''}`}>
             <FullCalendar
                 plugins={[dayGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
@@ -79,7 +83,7 @@ interface ContenuCaseProps {
     zones: ZoneCouverte[];
 }
 
-/** Numéro du jour, puis un point par zone couverte ce jour-là (RG3). */
+/** Un point par zone couverte ce jour-là (RG3), puis le numéro, sur une ligne. */
 function ContenuCase({ numero, zones }: ContenuCaseProps) {
     return (
         <div className={styles.case}>

@@ -22,20 +22,23 @@
     color: $color-myYellow;
 }
 
+// Légende des statuts : centrée et discrète (choix de Yannick du
+// 24/11/2026)
 .legende {
     display: flex;
     flex-wrap: wrap;
-    gap: $spacing-sm;
+    justify-content: center;
+    gap: 4px $spacing-sm;
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: $font-size-label;
-    color: $color-text-primary;
+    font-size: $font-size-caption;
+    color: $color-text-label;
 
     li {
         display: flex;
         align-items: center;
-        gap: $spacing-xs;
+        gap: 4px;
     }
 }
 
@@ -43,8 +46,8 @@
 // (FriseJournee), recopiées (`composes` ne traverse pas les fichiers)
 .pastille {
     display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     border-radius: $radius-sm;
 }
 
