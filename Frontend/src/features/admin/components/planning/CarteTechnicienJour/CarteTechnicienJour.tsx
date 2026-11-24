@@ -8,19 +8,22 @@ import styles from './CarteTechnicienJour.module.scss';
 
 interface CarteTechnicienJourProps {
     carte: CarteTechnicien;
-    onDetail: () => void; // ouvre la page du technicien, à la date pivot
+    onVoirPlanning: () => void; // ouvre la page du technicien, à la date pivot
 }
 
 /**
  * Carte d'un technicien pour la date pivot (US-02 « Consulter la journée des
  * techniciens et les disponibilités des zones 2.0 ») : sa zone du jour, ses
  * créneaux sur la plage fixe 7h–20h, « planifié jusqu'au », et le bouton
- * *Détail* vers la page du technicien (CA17, livré avec « Consulter le
- * planning d'un technicien 2.0 », écart du 22/11/2026).
+ * *Voir son planning* vers la page du technicien (CA17).
+ *
+ * Le bouton s'appelait *Détail* dans la spec : renommé et passé en bouton
+ * principal pleine largeur, car c'est le point d'entrée de la planification
+ * (décision de Yannick, écart du 24/11/2026).
  */
 export function CarteTechnicienJour({
     carte,
-    onDetail,
+    onVoirPlanning,
 }: CarteTechnicienJourProps) {
     const nom = `${carte.prenom} ${carte.nom}`;
     const blocs = blocsDesCreneaux(carte.creneaux);
@@ -53,28 +56,27 @@ export function CarteTechnicienJour({
                 }
             />
 
-            <footer className={styles.pied}>
-                <p className={styles.repere}>
-                    {carte.planifieJusquau ? (
-                        <>
-                            Planifié jusqu'au{' '}
-                            <strong>
-                                {formaterJour(carte.planifieJusquau)}
-                            </strong>
-                        </>
-                    ) : (
-                        'Non planifié'
-                    )}
-                </p>
-                <button
-                    type="button"
-                    className={styles.boutonDetail}
-                    onClick={onDetail}
-                    aria-label={`Détail du planning de ${nom}`}
-                >
-                    Détail
-                </button>
-            </footer>
+            <p className={styles.repere}>
+                {carte.planifieJusquau ? (
+                    <>
+                        Planifié jusqu'au{' '}
+                        <strong>{formaterJour(carte.planifieJusquau)}</strong>
+                    </>
+                ) : (
+                    'Non planifié'
+                )}
+            </p>
+
+            {/* Point d'entrée de la planification : bouton principal, toute la
+                largeur de la carte */}
+            <button
+                type="button"
+                className={styles.boutonPlanning}
+                onClick={onVoirPlanning}
+                aria-label={`Voir le planning de ${nom}`}
+            >
+                Voir son planning
+            </button>
         </article>
     );
 }

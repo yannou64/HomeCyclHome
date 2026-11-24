@@ -9,7 +9,7 @@ import { PlanificationTechnicien } from '../PlanificationTechnicien/Planificatio
 import styles from './AdminPlanningSection.module.scss';
 
 // Ce que montre la section : la couverture, la page d'un technicien (par
-// *Détail*), ou sa planification (par *Planifier*)
+// *Voir son planning*), ou sa planification (par *Planifier*)
 type Vue =
     | { ecran: 'couverture' }
     | { ecran: 'technicien'; technicienId: string }
@@ -18,7 +18,7 @@ type Vue =
 /**
  * Section Planning de l'admin. La couverture des zones (« Visualiser la
  * couverture des zones 2.0 ») est centrée sur une date pivot : le calendrier
- * du mois et sa légende, puis la journée de la date pivot. Le bouton *Détail*
+ * du mois et sa légende, puis la journée de la date pivot. Le bouton *Voir son planning*
  * d'un technicien ouvre sa page (« Consulter le planning d'un technicien
  * 2.0 »), d'où *Planifier* ouvre sa planification. La date pivot est gardée
  * d'un écran à l'autre.
@@ -30,7 +30,7 @@ export function AdminPlanningSection() {
     const [mois, setMois] = useState<string | null>(null);
     // Date choisie dans le calendrier ; à défaut, la date du jour (RG4)
     const [dateChoisie, setDateChoisie] = useState<string | null>(null);
-    const { couverture, error } = useCouvertureMois(mois);
+    const { couverture, error, reload } = useCouvertureMois(mois);
 
     const datePivot = dateChoisie ?? couverture?.aujourdHui ?? '';
 
@@ -41,7 +41,15 @@ export function AdminPlanningSection() {
                 key={vue.technicienId}
                 technicienId={vue.technicienId}
                 dateInitiale={datePivot} // RG5, CA03
-                onRetour={() => setVue({ ecran: 'couverture' })}
+                onRetour={() => {
+                    // Cette section reste montée pendant toute la navigation :
+                    // sa couverture, chargée une fois, ne sait pas que des
+                    // créneaux ont pu être générés depuis. On la recharge.
+                    // (La journée pivot, démontée entre-temps, se recharge
+                    // d'elle-même à son retour.)
+                    reload();
+                    setVue({ ecran: 'couverture' });
+                }}
                 onPlanifier={(technicien) =>
                     setVue({ ecran: 'planification', technicien })
                 }
@@ -99,7 +107,7 @@ export function AdminPlanningSection() {
 
             <JourneePivot
                 date={datePivot}
-                onDetail={(technicienId) =>
+                onVoirPlanning={(technicienId) =>
                     setVue({ ecran: 'technicien', technicienId })
                 }
             />
