@@ -7,13 +7,14 @@ import styles from './JourneePivot.module.scss';
 
 interface JourneePivotProps {
     date: string; // date pivot 'AAAA-MM-JJ' ('' tant qu'elle est inconnue)
+    onDetail: (technicienId: string) => void; // ouvre la page du technicien
 }
 
 /**
  * Niveaux 2 et 3 de la page Planning (US-02) : une carte par technicien et
  * une carte par zone pour la date pivot, mises à jour quand elle change.
  */
-export function JourneePivot({ date }: JourneePivotProps) {
+export function JourneePivot({ date, onDetail }: JourneePivotProps) {
     const { journee, isLoading, error } = useJournee(date);
     // Tracés des zones, pour les miniatures : la route des zones les donne
     // déjà (aucune donnée nouvelle côté API)
@@ -40,7 +41,11 @@ export function JourneePivot({ date }: JourneePivotProps) {
                 ) : (
                     <div className={styles.grilleTechniciens}>
                         {journee.techniciens.map((c) => (
-                            <CarteTechnicienJour key={c.id} carte={c} />
+                            <CarteTechnicienJour
+                                key={c.id}
+                                carte={c}
+                                onDetail={() => onDetail(c.id)}
+                            />
                         ))}
                     </div>
                 )}

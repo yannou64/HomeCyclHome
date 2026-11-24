@@ -141,6 +141,19 @@ export type CarteZone = ZoneCouverte & {
     derniereCouverture: string | null; // null : « aucune couverture »
 };
 
+// Page d'un technicien (« Consulter le planning d'un technicien 2.0 »).
+
+/** Un technicien, de quoi le nommer. */
+export type TechnicienNomme = { id: string; prenom: string; nom: string };
+
+/**
+ * Calendrier d'un technicien : même format que la couverture, réduit à lui
+ * (un seul point par jour planifié, RG2).
+ */
+export type CalendrierTechnicien = CouvertureMois & {
+    technicien: TechnicienNomme;
+};
+
 /** La journée pivot : une carte par technicien, une carte par zone. */
 export type Journee = {
     date: string;

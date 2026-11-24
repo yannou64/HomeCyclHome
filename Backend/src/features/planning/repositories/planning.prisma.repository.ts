@@ -373,11 +373,15 @@ export class PlanningPrismaRepository implements IPlanningRepository {
     async trouverCreneauxEntre(
         debut: Date,
         fin: Date,
+        technicienId?: string,
     ): Promise<CreneauAvecZone[]> {
         // Bornes déjà calculées en heure de Paris par le use case : ici, une
-        // simple plage d'instants UTC, [debut, fin[
+        // simple plage d'instants UTC, [debut, fin[. Sans technicien : tous.
         const creneaux = await this.prisma.creneau.findMany({
-            where: { date_debut: { gte: debut, lt: fin } },
+            where: {
+                date_debut: { gte: debut, lt: fin },
+                ...(technicienId ? { technicien_id: technicienId } : {}),
+            },
             orderBy: { date_debut: 'asc' },
             select: {
                 date_debut: true,
@@ -404,6 +408,19 @@ export class PlanningPrismaRepository implements IPlanningRepository {
                 isActive: c.zone.is_active,
             },
         }));
+    }
+
+    async trouverTechnicien(
+        technicienId: string,
+    ): Promise<TechnicienResume | null> {
+        // Un id qui ne désigne pas un technicien (client, admin) : null
+        const u = await this.prisma.utilisateur.findFirst({
+            where: { id: technicienId, role: 'technicien' },
+            select: { id: true, prenom: true, nom: true, is_actif: true },
+        });
+        return u
+            ? { id: u.id, prenom: u.prenom, nom: u.nom, isActif: u.is_actif }
+            : null;
     }
 
     async trouverTechniciens(): Promise<TechnicienResume[]> {

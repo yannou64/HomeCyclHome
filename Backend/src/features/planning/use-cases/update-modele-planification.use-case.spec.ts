@@ -36,6 +36,7 @@ describe('US-02 Modifier un modèle de planification 2.0', () => {
             trouverModele: jest.fn().mockResolvedValue(modeleActuel),
             supprimerModele: jest.fn().mockResolvedValue(true),
             trouverCreneauxEntre: jest.fn().mockResolvedValue([]),
+            trouverTechnicien: jest.fn().mockResolvedValue(null),
             trouverTechniciens: jest.fn().mockResolvedValue([]),
             trouverZones: jest.fn().mockResolvedValue([]),
             derniersCreneaux: jest.fn().mockResolvedValue({

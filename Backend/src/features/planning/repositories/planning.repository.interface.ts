@@ -159,8 +159,18 @@ export interface IPlanningRepository {
      */
     supprimerModele(technicienId: string, modeleId: string): Promise<boolean>;
 
-    /** Créneaux dont le début est dans [debut, fin[, avec leur zone. */
-    trouverCreneauxEntre(debut: Date, fin: Date): Promise<CreneauAvecZone[]>;
+    /**
+     * Créneaux dont le début est dans [debut, fin[, avec leur zone. Avec
+     * `technicienId` : ceux de ce technicien seulement.
+     */
+    trouverCreneauxEntre(
+        debut: Date,
+        fin: Date,
+        technicienId?: string,
+    ): Promise<CreneauAvecZone[]>;
+
+    /** Le technicien `technicienId`, ou null si l'id n'en désigne pas un. */
+    trouverTechnicien(technicienId: string): Promise<TechnicienResume | null>;
 
     /** Tous les utilisateurs de rôle technicien, actifs ou non. */
     trouverTechniciens(): Promise<TechnicienResume[]>;
