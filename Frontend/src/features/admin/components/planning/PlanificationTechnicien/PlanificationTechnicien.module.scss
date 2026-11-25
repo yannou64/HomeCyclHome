@@ -12,32 +12,6 @@
     font-family: $font-primary;
 }
 
-.technicien {
-    font-size: $font-size-h1;
-    font-weight: $font-bold;
-    color: $color-text-primary;
-}
-
-.titre {
-    align-self: center;
-    font-size: $font-size-h2;
-    font-weight: $font-semibold;
-    color: $color-text-primary;
-}
-
-.modeles {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $spacing-xs;
-}
-
-.sousTitre {
-    font-size: $font-size-h2;
-    font-weight: $font-semibold;
-    color: $color-text-primary;
-}
-
 .info {
     font-size: $font-size-body;
     color: $color-text-label;
@@ -46,34 +20,6 @@
 .error {
     color: $color-error;
     font-size: $font-size-label;
-}
-
-.entrees {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: $spacing-xs;
-}
-
-.boutonEntree {
-    min-width: 240px;
-    padding: $spacing-xs $spacing-md;
-    border: 1px solid $color-border;
-    border-radius: $radius-md;
-    background: white;
-    font-family: $font-primary;
-    font-size: $font-size-body;
-    color: $color-text-primary;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-        background-color: $color-myLightGreen;
-    }
-
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
 }
 
 .retour {
@@ -89,5 +35,81 @@
     &:hover {
         color: $color-text-primary;
         text-decoration: underline;
+    }
+}
+
+// « Planification — Prénom Nom »
+.titre {
+    font-size: $font-size-h1;
+    font-weight: $font-bold;
+    color: $color-text-label;
+}
+
+.technicien {
+    color: $color-text-primary;
+}
+
+// Mobile : modèles puis actions, empilés. Desktop : modèles à gauche, actions
+// à droite dans une colonne de largeur fixe
+.colonnes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $spacing-md;
+    align-items: start;
+}
+
+@include desktop {
+    .colonnes {
+        grid-template-columns: minmax(0, 1fr) 16rem;
+    }
+}
+
+// Cadre des modèles : même cadre que ceux de la page Planning
+.cadre {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.sousTitre {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    color: $color-text-label;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+// Actions : les deux entrées principales de l'écran, en boutons principaux
+// orange (comme *Planifier* ou *Voir son planning*), au même niveau
+// (choix de Yannick du 25/11/2026)
+.boutonEntree {
+    width: 100%;
+    padding: $spacing-xs $spacing-sm;
+    border: none;
+    border-radius: $radius-md;
+    background-color: $color-myOrange;
+    font-family: $font-primary;
+    font-size: $font-size-body;
+    font-weight: $font-semibold;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-text-primary;
+        outline-offset: 2px;
     }
 }

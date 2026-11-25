@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { JOURS_SEMAINE, type JourSemaine } from '../jours-semaine';
+import { BlocHoraireResponseDto } from './modele-planification-response.dto';
 import { ZoneProposeeResponseDto } from './zone-proposee-response.dto';
 
 /**
  * Un modèle dans la liste de la page Planification (US-01 « Choisir le mode
- * de planification 2.0 ») : son intitulé, sa zone, et s'il est encore valide.
+ * de planification 2.0 ») : son intitulé, sa zone, s'il est encore valide, et
+ * ses jours et blocs, pour le situer sans l'ouvrir.
  */
 export class ModeleResumeResponseDto {
     @ApiProperty()
@@ -11,6 +14,13 @@ export class ModeleResumeResponseDto {
 
     @ApiProperty()
     intitule!: string;
+
+    @ApiProperty({ enum: JOURS_SEMAINE, isArray: true })
+    jours!: JourSemaine[];
+
+    // Minutes depuis minuit, triés par début
+    @ApiProperty({ type: () => [BlocHoraireResponseDto] })
+    blocs!: BlocHoraireResponseDto[];
 
     @ApiProperty({ type: () => ZoneProposeeResponseDto })
     zone!: ZoneProposeeResponseDto;

@@ -22,6 +22,8 @@ export type CreateModeleData = {
 export type ModeleAvecZone = {
     id: string;
     intitule: string;
+    jours: JourSemaine[]; // pour situer le modèle dans la liste
+    blocs: { debut: number; fin: number }[]; // triés par début
     zone: { id: string; nomZone: string; couleur: string; isActive: boolean };
     zoneAffectee: boolean;
 };

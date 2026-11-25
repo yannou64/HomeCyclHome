@@ -1,0 +1,126 @@
+@use '../../../../../app/styles/index' as *;
+
+// Carte d'un modèle : même cadre que les cartes de la page Planning
+// (CarteTechnicienJour). Un modèle valide est un <button> : on remet à zéro
+// son apparence de bouton.
+.carte {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-xs;
+    width: 100%;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    background: white;
+    font-family: $font-primary;
+    text-align: left;
+    color: $color-text-primary;
+}
+
+// Modèle valide : la carte s'ouvre ; survol et focus en orange
+button.carte {
+    cursor: pointer;
+
+    &:hover {
+        border-color: $color-myOrange;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $color-myOrange;
+        outline-offset: 2px;
+    }
+}
+
+.entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-xs;
+}
+
+.intitule {
+    font-size: $font-size-body;
+    font-weight: $font-bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Zone : même pastille que sur la carte d'un technicien
+.badge {
+    flex-shrink: 0;
+    padding: 2px $spacing-xs;
+    border-radius: $radius-sm;
+    background-color: var(--badge-couleur);
+    color: white;
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+}
+
+// Les sept jours : petites pastilles, actives en orange, grisées sinon
+.jours {
+    display: flex;
+    gap: 4px;
+}
+
+.jour {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: $radius-full;
+    background-color: $color-myLightGreen;
+    font-size: $font-size-caption;
+    font-weight: $font-semibold;
+    color: $color-text-placeholder;
+}
+
+.jourActif {
+    background-color: $color-myOrange;
+    color: white;
+}
+
+.blocs {
+    font-size: $font-size-label;
+    color: $color-text-primary;
+}
+
+.duree {
+    font-size: $font-size-label;
+    color: $color-text-label;
+}
+
+// Modèle invalide (RG15) : bordure du signal de conflit, non cliquable
+.invalide {
+    border-color: $color-danger;
+}
+
+.piedInvalide {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-xs;
+    margin-top: 4px;
+}
+
+.libelleInvalide {
+    font-size: $font-size-label;
+    font-weight: $font-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $color-danger;
+}
+
+// Seul lien actif d'un modèle invalide : lien texte souligné
+.lienSupprimer {
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: $font-primary;
+    font-size: $font-size-label;
+    color: $color-danger;
+    text-decoration: underline;
+    cursor: pointer;
+}

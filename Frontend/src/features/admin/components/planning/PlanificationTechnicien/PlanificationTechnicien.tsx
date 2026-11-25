@@ -110,46 +110,61 @@ export function PlanificationTechnicien({
             <button type="button" className={styles.retour} onClick={onRetour}>
                 ← Retour
             </button>
-            <h2 className={styles.technicien}>{nomTechnicien}</h2>
-            <p className={styles.titre}>Planification</p>
+            <h2 className={styles.titre}>
+                Planification —{' '}
+                <span className={styles.technicien}>{nomTechnicien}</span>
+            </h2>
 
-            <section className={styles.modeles} aria-labelledby="titre-modeles">
-                <h3 id="titre-modeles" className={styles.sousTitre}>
-                    Modèles
-                </h3>
-
-                {isLoading && <p className={styles.info}>Chargement…</p>}
-                {error && <p className={styles.error}>{error}</p>}
-                {!isLoading && !error && modeles.length === 0 && (
-                    <p className={styles.info}>
-                        Aucun modèle pour ce technicien.
-                    </p>
-                )}
-
-                <ModelesListe
-                    modeles={modeles}
-                    onOuvrir={(modeleId) =>
-                        setVue({ ecran: 'modele', modeleId })
-                    }
-                    onSupprimer={setASupprimer}
-                />
-            </section>
-
-            <div className={styles.entrees}>
-                <button
-                    type="button"
-                    className={styles.boutonEntree}
-                    onClick={() => setVue({ ecran: 'creation' })}
+            {/* Deux sections côte à côte (choix de Yannick du 25/11/2026) :
+                à gauche les modèles existants, à droite les actions */}
+            <div className={styles.colonnes}>
+                <section
+                    className={styles.cadre}
+                    aria-labelledby="titre-modeles"
                 >
-                    Créer un nouveau modèle
-                </button>
-                <button
-                    type="button"
-                    className={styles.boutonEntree}
-                    onClick={() => setVue({ ecran: 'libre' })}
+                    <h3 id="titre-modeles" className={styles.sousTitre}>
+                        Modèles
+                    </h3>
+
+                    {isLoading && <p className={styles.info}>Chargement…</p>}
+                    {error && <p className={styles.error}>{error}</p>}
+                    {!isLoading && !error && modeles.length === 0 && (
+                        <p className={styles.info}>
+                            Aucun modèle pour ce technicien.
+                        </p>
+                    )}
+
+                    <ModelesListe
+                        modeles={modeles}
+                        onOuvrir={(modeleId) =>
+                            setVue({ ecran: 'modele', modeleId })
+                        }
+                        onSupprimer={setASupprimer}
+                    />
+                </section>
+
+                <section
+                    className={styles.actions}
+                    aria-labelledby="titre-actions"
                 >
-                    Planification libre
-                </button>
+                    <h3 id="titre-actions" className={styles.sousTitre}>
+                        Nouvelle planification
+                    </h3>
+                    <button
+                        type="button"
+                        className={styles.boutonEntree}
+                        onClick={() => setVue({ ecran: 'creation' })}
+                    >
+                        Créer un nouveau modèle
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.boutonEntree}
+                        onClick={() => setVue({ ecran: 'libre' })}
+                    >
+                        Planification libre
+                    </button>
+                </section>
             </div>
             {dialogue}
         </div>

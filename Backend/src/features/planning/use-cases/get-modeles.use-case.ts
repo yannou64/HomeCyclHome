@@ -28,6 +28,8 @@ export class GetModelesUseCase {
         return modeles.map((m) => ({
             id: m.id,
             intitule: m.intitule,
+            jours: m.jours,
+            blocs: m.blocs,
             zone: {
                 id: m.zone.id,
                 nomZone: m.zone.nomZone,
