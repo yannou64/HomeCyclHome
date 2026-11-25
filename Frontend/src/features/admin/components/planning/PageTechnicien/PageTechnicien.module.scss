@@ -53,21 +53,22 @@
     }
 }
 
-// Colonne de gauche : calendrier, puis interventions du jour
+// Colonne de gauche : nom, calendrier, puis interventions du jour. Largeur
+// plafonnée pour toute la colonne : au-delà, les cases du calendrier
+// s'étirent sans rien montrer de plus ; les cartes d'intervention prennent
+// ainsi la largeur du calendrier (choix de Yannick du 24 et du 25/11/2026)
 .gauche {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
     min-width: 0;
+    max-width: 26rem;
 }
 
 .carteCalendrier {
     display: flex;
     flex-direction: column;
     gap: $spacing-xs;
-    // Largeur plafonnée : au-delà, les cases s'étirent sans rien montrer de
-    // plus (choix de Yannick du 24/11/2026)
-    max-width: 26rem;
     padding: $spacing-sm;
     border: 1px solid $color-border;
     border-radius: $radius-lg;

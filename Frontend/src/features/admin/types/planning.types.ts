@@ -31,6 +31,8 @@ export type ZoneProposee = {
 export type ModeleResume = {
     id: string;
     intitule: string;
+    jours: JourSemaine[]; // pour situer le modèle sans l'ouvrir
+    blocs: BlocHoraire[]; // triés par début
     zone: ZoneProposee;
     // Faux si la zone n'est plus affectée ou est inactive : le modèle est
     // marqué invalide, on ne peut plus que le supprimer (RG11)

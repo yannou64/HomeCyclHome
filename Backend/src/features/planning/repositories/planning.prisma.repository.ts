@@ -106,6 +106,8 @@ export class PlanningPrismaRepository implements IPlanningRepository {
             where: { technicien_id: technicienId },
             orderBy: { intitule: 'asc' },
             include: {
+                // Ses blocs, pour situer le modèle dans la liste
+                blocs: { orderBy: { debut: 'asc' } },
                 zone: {
                     include: {
                         // Affectation de CE technicien à la zone, s'il y en a une
@@ -120,6 +122,8 @@ export class PlanningPrismaRepository implements IPlanningRepository {
         return modeles.map((m) => ({
             id: m.id,
             intitule: m.intitule,
+            jours: JOURS_SEMAINE.filter((j) => m[j]),
+            blocs: m.blocs.map((b) => ({ debut: b.debut, fin: b.fin })),
             zone: {
                 id: m.zone.id,
                 nomZone: m.zone.nom_zone,
