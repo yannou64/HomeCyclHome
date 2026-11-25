@@ -178,6 +178,9 @@ jobs:
                       docker compose --env-file .env.staging -f docker-compose.staging.yml pull
                       docker compose --env-file .env.staging -f docker-compose.staging.yml up -d
                       docker restart homecyclhome_staging_nginx
+                      # Supprime les images orphelines laissées par le pull (anciennes versions du tag),
+                      # APRÈS le up -d : avant, la nouvelle image ne serait utilisée par aucun conteneur.
+                      docker image prune -f
 
     # ---- DÉPLOIEMENT PROD ----
     deploy-prod:
@@ -210,3 +213,6 @@ jobs:
                       docker compose --env-file .env.prod -f docker-compose.prod.yml pull
                       docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
                       docker restart homecyclhome_prod_nginx
+                      # Supprime les images orphelines laissées par le pull (anciennes versions du tag),
+                      # APRÈS le up -d : avant, la nouvelle image ne serait utilisée par aucun conteneur.
+                      docker image prune -f
